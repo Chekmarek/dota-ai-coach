@@ -18,12 +18,7 @@
 1. Внесите изменения в `app/` и поднимите `version` в `app/package.json` (например, `0.2.0` → `0.3.0`).
 2. Напишите, что нового, в `docs/release-notes/v0.3.0.md`. Коуч покажет этот текст в «Настройки → Обновления».
 3. Если к релизу нужно приложить дополнительные файлы, положите их в `release-extras/v0.3.0/`.
-4. Запушьте коммит и тег:
-   ```
-   git tag v0.3.0
-   git push origin main v0.3.0
-   ```
-   GitHub Actions (`.github/workflows/release.yml`) сам соберёт `app.asar`, `app.asar.sha256` и `DotaCoach-0.3.0-update.zip` и опубликует релиз. После этого коуч у всех предложит обновиться.
+4. Отправьте изменения в `main` (`git push`). Workflow `auto-release` (`.github/workflows/auto-release.yml`) увидит новую версию, сам соберёт `app.asar`, `app.asar.sha256` и `DotaCoach-<версия>-update.zip` и опубликует релиз `v<версия>`. После этого коуч у всех предложит обновиться. Если версия в `package.json` не поменялась, релиз не создаётся.
 
 Собрать файлы локально можно так: `python tools/make_release.py` (результат в `dist/`).
 
