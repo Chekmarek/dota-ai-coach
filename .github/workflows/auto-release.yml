@@ -2,9 +2,9 @@
 # Если релиза vX.Y.Z ещё нет — собирает app.asar, app.asar.sha256, архив установки и публикует релиз.
 # Коуч у всех увидит обновление сам.
 name: auto-release
+# ОТКЛЮЧЕНО: релизы теперь собираются из исходников, ветка sources (.github/workflows/release-sources.yml там).
+# Из app/ релизы не выпускать — в app/ нет распознавания HUD и базы знаний. Остался только ручной запуск.
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
 permissions:
   contents: write
