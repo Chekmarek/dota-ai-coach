@@ -115,8 +115,11 @@ const liveStatusSchema = z.object({
   error: z.string().max(400).nullable().optional()
 });
 
-const OVERLAY_SIZE = { width: 172, height: 46 };
+// Окно чуть больше самого значка (172×46): запас под искры и угольки, он прозрачный и мышь пропускает
+const OVERLAY_SIZE = { width: 196, height: 62 };
 const OVERLAY_MARGIN = 12;
+// Сколько ждать, пока значок уйдёт анимацией, прежде чем спрятать окно
+const OVERLAY_FOLD_MS = 400;
 
 // Значок должен оставаться поверх окна Доты. Windows поднимает окно игры при фокусе,
 // поэтому z-порядок периодически восстанавливаем. Фокус значок не забирает никогда.
@@ -131,6 +134,7 @@ class Overlay {
   win = null;
   last = { state: "off", fps: 0 };
   assertTimer = null;
+  hideTimer = null;
   lastLogKey = null;
 
   update(status) {
@@ -142,11 +146,18 @@ class Overlay {
     const live = this.deps.settings.get().live;
     const visible = live.overlay && (this.last.state === "seeing" || this.last.state === "no-image");
     if (!visible) {
-      if (this.win && !this.win.isDestroyed() && this.win.isVisible()) this.win.hide();
-      this.stopAssert();
+      const win = this.win;
+      if (win && !win.isDestroyed() && win.isVisible()) {
+        // Сначала отправляем скрытое состояние: значок уходит анимацией, окно прячем позже
+        win.webContents.send(LIVE_IPC.overlayState, this.payload());
+        this.scheduleHide();
+      } else {
+        this.stopAssert();
+      }
       this.logState(false, live.overlayCorner, null);
       return;
     }
+    this.cancelHide();
     const win = this.ensure();
     const bounds = this.bounds(live.overlayCorner);
     win.setBounds(bounds);
@@ -155,8 +166,29 @@ class Overlay {
       this.assertTop();
     }
     this.startAssert();
-    win.webContents.send(LIVE_IPC.overlayState, this.last);
+    win.webContents.send(LIVE_IPC.overlayState, this.payload());
     this.logState(true, live.overlayCorner, bounds);
+  }
+
+  /** Состояние для значка и угол: от угла зависит, где прижат сам значок внутри окна */
+  payload() {
+    return { ...this.last, corner: this.deps.settings.get().live.overlayCorner };
+  }
+
+  scheduleHide() {
+    if (this.hideTimer) return;
+    this.hideTimer = setTimeout(() => {
+      this.hideTimer = null;
+      const win = this.win;
+      if (win && !win.isDestroyed()) win.hide();
+      this.stopAssert();
+    }, OVERLAY_FOLD_MS);
+  }
+
+  cancelHide() {
+    if (!this.hideTimer) return;
+    clearTimeout(this.hideTimer);
+    this.hideTimer = null;
   }
 
   hide() {
@@ -238,9 +270,10 @@ class Overlay {
     });
     win.on("closed", () => {
       this.stopAssert();
+      this.cancelHide();
       if (this.win === win) this.win = null;
     });
-    win.webContents.on("did-finish-load", () => win.webContents.send(LIVE_IPC.overlayState, this.last));
+    win.webContents.on("did-finish-load", () => win.webContents.send(LIVE_IPC.overlayState, this.payload()));
     const target = this.deps.pageUrl("overlay");
     if (target.url) void win.loadURL(target.url);
     else void win.loadFile(target.file);
