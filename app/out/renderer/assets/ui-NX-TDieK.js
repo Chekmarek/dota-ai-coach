@@ -12959,8 +12959,14 @@ function LiveGame({ onNavigate }) {
   const s = live?.state ?? "off";
   const hint = live?.reason ? LIVE_HINT[live.reason] : null;
   const showFrame = on && preview && (s === "seeing" || s === "no-image");
+  // Полноэкранный режим Доты: Windows рисует игру поверх всех окон, значок там не виден
+  const exclusive = !!settings?.live.overlay && live?.videoMode === "exclusive";
   return /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx(PageHeader, { title: "Живая игра", subtitle: "Коуч смотрит на окно Dota 2 в реальном времени. Только наблюдение: подсказки во время матча пока выключены." }),
+    exclusive && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "live-warning", role: "alert", "data-testid": "live-exclusive-warning", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Дота в полноэкранном режиме — значок не может быть поверх игры." }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: " В Доте: Настройки → Видео → «Окно без рамок»." })
+    ] }),
     /* @__PURE__ */ jsxRuntimeExports.jsxs(
       Card,
       {

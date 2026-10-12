@@ -105,3 +105,23 @@
   - поле `waitingSince`: в `tick()` ставится, пока нет потока, и сбрасывается при потоке, в `attach()` и в `start()` (там же `lastAttemptAt = -Infinity`);
   - `computeLiveState` не менялся.
 - UI `LiveGame`: подпись плитки «Размер окна» → «Размер кадра».
+
+## 0.6.0
+
+- **Значок поверх игры** (`live.js`, `Overlay`):
+  - `ensure()`: `setAlwaysOnTop(true, "screen-saver", 1)`; фокус не берётся (`focusable: false`, `showInactive()`).
+  - Пока значок виден, каждые 1500 мс `assertTop()`: при потере topmost снова `setAlwaysOnTop`, затем `moveTop()`. Также на `always-on-top-changed` и сразу после `showInactive()`.
+  - Таймер запускается в `refresh()` при показе, останавливается при скрытии и на `closed`.
+  - `liveLog("overlay", { visible, corner, bounds })` — только при изменении видимости, угла или положения.
+- **Режим экрана Доты** (новый `main/dota-video.js`, только чтение):
+  - путь Steam из `HKCU\Software\Valve\Steam` (`reg query`); библиотеки из `libraryfolders.vdf` (`"path"`);
+  - файл `steamapps/common/dota 2 beta/game/dota/cfg/video.txt`; ключи `setting.fullscreen` и `setting.nowindowborder`;
+  - `exclusive` — fullscreen 1 и nowindowborder не 1; `borderless` — nowindowborder 1; `windowed` — оба 0; иначе `unknown`.
+  - Проверено на реальном video.txt (Windows, Steam): `fullscreen "0"`, `nowindowborder "1"` → `borderless`.
+  - Вызывается в `findDotaSource()`, когда окно Доты найдено; не чаще раза в 30 с (кэш в `live.js`). Изменение режима пишется в журнал `dota-video`.
+  - Ничего в Steam и в папку Доты не пишет.
+- **Передача в UI:**
+  - `findDota` возвращает `videoMode`.
+  - `renderer/assets/engine-live.js` (`LiveScreenSource`): раз в 30 с вызывает `findDota`, хранит `videoMode`, отдаёт его в `info()` как поле `videoMode`; ключ изменений включает режим. Поле опционально: старые статусы без него разбираются.
+- **Страница «Живая игра»** (`ui-NX-TDieK.js`, `LiveGame`): при `settings.live.overlay` и `videoMode === "exclusive"` показывается карточка `live-warning` с текстом про «Окно без рамок». Стили в `ui-live.css`.
+- Ничего не добавлено в `settings.json`, новых зависимостей нет, CSP не менялась.

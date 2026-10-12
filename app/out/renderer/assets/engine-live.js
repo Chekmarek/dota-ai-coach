@@ -13,6 +13,8 @@ export const LIVE_FROZEN_MS = 1e4;
 export const LIVE_RECONNECT_MS = 15e3;
 export const LIVE_DARK_LUMA = 4;
 const TICK_MS = 500;
+// Режим экрана Доты (exclusive / borderless / windowed) проверяется не чаще раза в 30 с
+const LIVE_MODE_MS = 3e4;
 const SAMPLE_MS = 500;
 const SAMPLE_W = 64;
 const SAMPLE_H = 36;
@@ -96,6 +98,8 @@ export class LiveScreenSource {
   lastState = null;
   seenWindows = [];
   errorMessage = null;
+  videoMode = null;
+  modeCheckAt = -Infinity;
 
   async start(opts, events) {
     this.opts = opts;
@@ -134,7 +138,18 @@ export class LiveScreenSource {
       // Поток жив, но кадров давно нет (окно пересоздано или свёрнуто) — переподключаемся
       this.detach();
     }
+    this.checkVideoMode(now);
     this.emitLive(false);
+  }
+
+  /** Режим экрана Доты узнаём через main (он сам кэширует результат), пока источник запущен */
+  checkVideoMode(now) {
+    if (now - this.modeCheckAt < LIVE_MODE_MS) return;
+    this.modeCheckAt = now;
+    this.api.findDota().then((res) => {
+      if (this.running) this.videoMode = res?.videoMode ?? null;
+    }).catch(() => {
+    });
   }
 
   async connect() {
@@ -143,6 +158,7 @@ export class LiveScreenSource {
       const res = await this.api.findDota();
       if (!this.running) return;
       this.seenWindows = Array.isArray(res?.windows) ? res.windows : [];
+      this.videoMode = res?.videoMode ?? null;
       const src = res?.source ?? null;
       if (!src) {
         this.lastError = "not-found";
@@ -340,14 +356,15 @@ export class LiveScreenSource {
       captureFps: span > 0 ? Math.round((this.captureStamps.length - 1) * 1e4 / span) / 10 : 0,
       latencyMs: this.latencyMs === null ? null : Math.round(this.latencyMs),
       errorMessage: state === "waiting-dota" ? this.errorMessage : null,
-      seenWindows: state === "waiting-dota" ? this.seenWindows : []
+      seenWindows: state === "waiting-dota" ? this.seenWindows : [],
+      videoMode: this.running ? this.videoMode : null
     };
   }
 
   emitLive(force) {
     if (!this.events) return;
     const info = this.info();
-    const key = `${info.state}|${info.reason}`;
+    const key = `${info.state}|${info.reason}|${info.videoMode}`;
     const changed = key !== this.lastState;
     this.lastState = key;
     this.events.live?.(info, force || changed);
