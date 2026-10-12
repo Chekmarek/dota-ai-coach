@@ -57,4 +57,18 @@ Expand-Archive release\0.2.0\DotaCoach-0.2.0-win-x64-portable.zip -DestinationPa
 $env:DOTACOACH_PACKAGED_EXE = "D:\DotaCoach\.tmp\portable-check\DotaCoach.exe"; npx playwright test packaged
 ```
 
+## Выпуск новой версии
+
+Релизы собирает GitHub Actions из ветки `sources` (`.github/workflows/release-sources.yml`):
+
+1. Поднять версию: `npm version 0.7.1 --no-git-tag-version` (меняет `package.json` и `package-lock.json`).
+2. Написать, что нового, в `docs/release-notes/v0.7.1.md` (2–5 пунктов по-русски) — коуч покажет это во вкладке «Обновления».
+3. Проверить локально: `npm run typecheck`, `npm test`, `npm run test:e2e`.
+4. Закоммитить и запушить в `sources`. GitHub сам проверит типы и тесты, соберёт установщик, zip, `app.asar`
+   и `app.asar.sha256` и опубликует релиз `v0.7.1`. Коуч у всех предложит «Установить».
+
+Если версия в `package.json` не поменялась, релиз не создаётся. Ход сборки — на вкладке Actions репозитория.
+⚠ База знаний лежит рядом с `app.asar` (`resources\data`), поэтому при её обновлении (`npm run kb:import`)
+пользователям нужен новый установщик — через автообновление приходит только `app.asar`.
+
 Документы: [архитектура](docs/ARCHITECTURE.md) · [ограничения](docs/LIMITATIONS.md) · [политика использования](docs/POLICY.md) · [источники данных](docs/DATA_SOURCES.md).
