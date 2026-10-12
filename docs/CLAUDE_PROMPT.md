@@ -57,7 +57,9 @@ After each step print one line: ✅ <step> — <evidence>.
    - Confirm in <userData>/live.log (on Windows usually %APPDATA%\Dota AI Coach) the lines "setup" and "windows".
    - If dota2.exe is running (tasklist), also confirm an "engine" line with state "seeing". If it isn't running, do not start the game; note in the report that the user should check it.
    - Close the app.
-6. Release files: build with his existing Windows build script.
+6. Release files:
+   - Hardening (one-time, build config only): in his electron-builder config make sure the Electron fuses RunAsNode and EnableNodeOptionsEnvironmentVariable are disabled (electron-builder `electronFuses` or an afterPack hook with @electron/fuses — use whichever his setup already supports; ask before adding a new dependency). Do not enable asar integrity validation: the in-app updater replaces app.asar.
+   - Build with his existing Windows build script.
    - Copy the produced resources/app.asar to release/app.asar.
    - Write release/app.asar.sha256 as "<sha256 hex>  app.asar".
    - Do NOT publish anything.
