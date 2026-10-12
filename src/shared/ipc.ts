@@ -81,7 +81,12 @@ export interface DotaCoachApi {
 export interface FindDotaResult {
   source: { id: string; name: string } | null;
   windows: string[];
+  /** Режим экрана Доты из video.txt; null — окно Доты не найдено (с 0.6.0) */
+  videoMode?: DotaVideoMode | null;
 }
+
+/** Режим экрана Доты: полноэкранный / без рамки / оконный / не удалось определить */
+export type DotaVideoMode = 'exclusive' | 'borderless' | 'windowed' | 'unknown';
 
 /** Короткий статус живого режима для main (значок поверх игры и журнал) */
 export interface LiveStatusReport {

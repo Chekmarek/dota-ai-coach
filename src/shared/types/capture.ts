@@ -66,6 +66,8 @@ export interface LiveInfo {
   errorMessage: string | null;
   /** Заголовки окон, которые видит коуч (для диагностики, пока ждём Доту) */
   seenWindows: string[];
+  /** Режим экрана Доты (с 0.6.0); null — ещё не известен. Старые статусы без поля тоже допустимы */
+  videoMode?: 'exclusive' | 'borderless' | 'windowed' | 'unknown' | null;
 }
 
 export interface CaptureStatus {

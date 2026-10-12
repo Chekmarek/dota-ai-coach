@@ -16,10 +16,18 @@ export function LiveGame({ onNavigate }: PageProps) {
   const s = live?.state ?? 'off';
   const hint = live?.reason ? LIVE_HINT[live.reason] : null;
   const showFrame = on && preview && (s === 'seeing' || s === 'no-image');
+  // Полноэкранный режим Доты: Windows рисует игру поверх всех окон, значок там не виден (0.6.0)
+  const exclusive = !!settings?.live.overlay && live?.videoMode === 'exclusive';
 
   return (
     <>
       <PageHeader title="Живая игра" subtitle="Коуч смотрит на окно Dota 2 в реальном времени. Только наблюдение: подсказки во время матча пока выключены." />
+      {exclusive && (
+        <div className="live-warning" role="alert" data-testid="live-exclusive-warning">
+          <strong>Дота в полноэкранном режиме — значок не может быть поверх игры.</strong>
+          <span> В Доте: Настройки → Видео → «Окно без рамок».</span>
+        </div>
+      )}
       <Card
         title="Статус"
         actions={

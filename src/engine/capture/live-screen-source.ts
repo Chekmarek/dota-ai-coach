@@ -1,4 +1,4 @@
-// Живой захват окна Dota 2 (движок). Перенесено из обновления 0.5.0 (engine-live.js), логика не менялась.
+// Живой захват окна Dota 2 (движок). Перенесено из обновлений 0.5.0–0.6.0 (engine-live.js), логика не менялась.
 // Источник кадров с тем же интерфейсом, что ImageFolderSource и VideoFileSource:
 // start(opts, events) / pause() / resume() / stop(). Дополнительно сообщает events.live(info).
 // Никогда не завершается фатальной ошибкой: если Доты нет — ждёт и переподключается сам.
@@ -9,6 +9,8 @@ import { fitWidth } from './rate';
 import { LIVE_DARK_LUMA, LIVE_RECONNECT_MS, computeLiveState, hashBytes, liveRetryDelay } from './live-state';
 
 const TICK_MS = 500;
+// Режим экрана Доты (exclusive / borderless / windowed) проверяется не чаще раза в 30 с (с 0.6.0)
+const LIVE_MODE_MS = 3e4;
 const SAMPLE_MS = 500;
 const SAMPLE_W = 64;
 const SAMPLE_H = 36;
@@ -54,6 +56,8 @@ export class LiveScreenSource implements FrameSource {
   private lastState: string | null = null;
   private seenWindows: string[] = [];
   private errorMessage: string | null = null;
+  private videoMode: LiveInfo['videoMode'] = null;
+  private modeCheckAt = -Infinity;
 
   /** api — из preload движка (window.dotacoachEngine) */
   constructor(private readonly api: DotaCoachEngineApi) {}
@@ -95,7 +99,20 @@ export class LiveScreenSource implements FrameSource {
       // Поток жив, но кадров давно нет (окно пересоздано или свёрнуто) — переподключаемся
       this.detach();
     }
+    this.checkVideoMode(now);
     this.emitLive(false);
+  }
+
+  /** Режим экрана Доты узнаём через main (он сам кэширует результат), пока источник запущен */
+  private checkVideoMode(now: number): void {
+    if (now - this.modeCheckAt < LIVE_MODE_MS) return;
+    this.modeCheckAt = now;
+    this.api
+      .findDota()
+      .then((res) => {
+        if (this.running) this.videoMode = res?.videoMode ?? null;
+      })
+      .catch(() => undefined);
   }
 
   private async connect(): Promise<void> {
@@ -104,6 +121,7 @@ export class LiveScreenSource implements FrameSource {
       const res = await this.api.findDota();
       if (!this.running) return;
       this.seenWindows = Array.isArray(res?.windows) ? res.windows : [];
+      this.videoMode = res?.videoMode ?? null;
       const src = res?.source ?? null;
       if (!src) {
         this.lastError = 'not-found';
@@ -304,13 +322,14 @@ export class LiveScreenSource implements FrameSource {
       latencyMs: this.latencyMs === null ? null : Math.round(this.latencyMs),
       errorMessage: state === 'waiting-dota' ? this.errorMessage : null,
       seenWindows: state === 'waiting-dota' ? this.seenWindows : [],
+      videoMode: this.running ? this.videoMode : null,
     };
   }
 
   private emitLive(force: boolean): void {
     if (!this.events) return;
     const info = this.info();
-    const key = `${info.state}|${info.reason}`;
+    const key = `${info.state}|${info.reason}|${info.videoMode}`;
     const changed = key !== this.lastState;
     this.lastState = key;
     this.events.live?.(info, force || changed);

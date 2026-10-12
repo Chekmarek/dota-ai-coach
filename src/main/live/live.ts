@@ -1,4 +1,4 @@
-// Живой захват окна Dota 2 (main-процесс). Перенесено из обновления 0.5.0 (out/main/live.js), логика не менялась.
+// Живой захват окна Dota 2 (main-процесс). Перенесено из обновлений 0.5.0–0.7.0 (out/main/live.js), логика не менялась.
 // Всё, что относится к живому режиму, собрано здесь: поиск окна игры, разрешение
 // захвата только для окна движка, приём статуса от движка и значок поверх игры.
 // Доступ к игре только на чтение: снимок окна средствами Windows, без чтения памяти
@@ -10,6 +10,7 @@ import { z } from 'zod';
 import { LIVE_IPC, type FindDotaResult } from '@shared/ipc';
 import type { OverlayCorner, Settings } from '@shared/schemas/settings';
 import type { LiveState } from '@shared/types/capture';
+import { detectDotaVideo, type DotaVideo } from './dota-video';
 
 const LIVE_STATES = ['off', 'waiting-dota', 'no-image', 'seeing'] as const;
 // Проверено на настоящей Доте: заголовок окна «Dota 2»; окна самого коуча пропускаются
@@ -63,9 +64,35 @@ export function allowLivePermission(contents: WebContents | null, permission: st
   return ok;
 }
 
+// Режим экрана Доты (exclusive / borderless / windowed / unknown) читаем не чаще раза в 30 с (с 0.6.0)
+const VIDEO_CHECK_MS = 30e3;
+let videoCache: DotaVideo | null = null;
+let videoAt = -Infinity;
+let videoPending: Promise<DotaVideo> | null = null;
+let lastVideoKey: string | null = null;
+async function dotaVideoMode(): Promise<DotaVideo> {
+  if (videoPending) return videoPending;
+  if (videoCache && Date.now() - videoAt < VIDEO_CHECK_MS) return videoCache;
+  videoPending = detectDotaVideo()
+    .then((res) => {
+      videoCache = res;
+      videoAt = Date.now();
+      const key = `${res.mode}|${res.file}|${JSON.stringify(res.raw)}`;
+      if (key !== lastVideoKey) {
+        lastVideoKey = key;
+        liveLog('dota-video', res);
+      }
+      return res;
+    })
+    .finally(() => {
+      videoPending = null;
+    });
+  return videoPending;
+}
+
 let lastWindowsKey: string | null = null;
-/** Ищет окно Доты; windows — заголовки всех найденных окон (для диагностики) */
-async function findDotaSource(): Promise<{ source: Electron.DesktopCapturerSource | null; windows: string[] }> {
+/** Ищет окно Доты; windows — заголовки всех найденных окон (для диагностики), videoMode — режим экрана */
+async function findDotaSource(): Promise<{ source: Electron.DesktopCapturerSource | null; windows: string[]; videoMode: DotaVideo['mode'] | null }> {
   const sources = await desktopCapturer.getSources({
     types: ['window'],
     thumbnailSize: { width: 0, height: 0 },
@@ -80,7 +107,9 @@ async function findDotaSource(): Promise<{ source: Electron.DesktopCapturerSourc
     lastWindowsKey = key;
     liveLog('windows', { found: source ? { id: source.id, name: source.name } : null, all: names.slice(0, 40) });
   }
-  return { source, windows: names.slice(0, 30) };
+  // Режим экрана проверяем только когда окно Доты найдено
+  const video = source ? await dotaVideoMode() : null;
+  return { source, windows: names.slice(0, 30), videoMode: video?.mode ?? null };
 }
 
 const liveStatusSchema = z.object({
@@ -90,8 +119,17 @@ const liveStatusSchema = z.object({
   error: z.string().max(400).nullable().optional(),
 });
 
-const OVERLAY_SIZE = { width: 172, height: 46 };
+// Окно чуть больше самого значка (172×46): запас под искры и угольки, он прозрачный и мышь пропускает
+const OVERLAY_SIZE = { width: 196, height: 62 };
 const OVERLAY_MARGIN = 12;
+// Сколько ждать, пока значок уйдёт анимацией, прежде чем спрятать окно
+const OVERLAY_FOLD_MS = 400;
+
+// Значок должен оставаться поверх окна Доты. Windows поднимает окно игры при фокусе,
+// поэтому z-порядок периодически восстанавливаем. Фокус значок не забирает никогда.
+const OVERLAY_ASSERT_MS = 1500;
+const OVERLAY_LEVEL = 'screen-saver' as const;
+const OVERLAY_RELATIVE_LEVEL = 1;
 
 export interface LiveDeps {
   settings: { get(): Settings };
@@ -109,6 +147,9 @@ interface OverlayStatus {
 class Overlay {
   private win: BrowserWindow | null = null;
   private last: OverlayStatus = { state: 'off', fps: 0 };
+  private assertTimer: ReturnType<typeof setInterval> | null = null;
+  private hideTimer: ReturnType<typeof setTimeout> | null = null;
+  private lastLogKey: string | null = null;
 
   constructor(private readonly deps: LiveDeps) {}
 
@@ -121,18 +162,80 @@ class Overlay {
     const live = this.deps.settings.get().live;
     const visible = live.overlay && (this.last.state === 'seeing' || this.last.state === 'no-image');
     if (!visible) {
-      if (this.win && !this.win.isDestroyed() && this.win.isVisible()) this.win.hide();
+      const win = this.win;
+      if (win && !win.isDestroyed() && win.isVisible()) {
+        // Сначала отправляем скрытое состояние: значок уходит анимацией, окно прячем позже
+        win.webContents.send(LIVE_IPC.overlayState, this.payload());
+        this.scheduleHide();
+      } else {
+        this.stopAssert();
+      }
+      this.logState(false, live.overlayCorner, null);
       return;
     }
+    this.cancelHide();
     const win = this.ensure();
-    win.setBounds(this.bounds(live.overlayCorner));
-    if (!win.isVisible()) win.showInactive();
-    win.webContents.send(LIVE_IPC.overlayState, this.last);
+    const bounds = this.bounds(live.overlayCorner);
+    win.setBounds(bounds);
+    if (!win.isVisible()) {
+      win.showInactive();
+      this.assertTop();
+    }
+    this.startAssert();
+    win.webContents.send(LIVE_IPC.overlayState, this.payload());
+    this.logState(true, live.overlayCorner, bounds);
   }
 
   hide(): void {
     this.last = { state: 'off', fps: 0 };
     this.refresh();
+  }
+
+  /** Состояние для значка и угол: от угла зависит, где прижат сам значок внутри окна */
+  private payload(): OverlayStatus & { corner: OverlayCorner } {
+    return { ...this.last, corner: this.deps.settings.get().live.overlayCorner };
+  }
+
+  private scheduleHide(): void {
+    if (this.hideTimer) return;
+    this.hideTimer = setTimeout(() => {
+      this.hideTimer = null;
+      const win = this.win;
+      if (win && !win.isDestroyed()) win.hide();
+      this.stopAssert();
+    }, OVERLAY_FOLD_MS);
+  }
+
+  private cancelHide(): void {
+    if (!this.hideTimer) return;
+    clearTimeout(this.hideTimer);
+    this.hideTimer = null;
+  }
+
+  /** Журнал только при изменении видимости, угла или положения */
+  private logState(visible: boolean, corner: OverlayCorner, bounds: Electron.Rectangle | null): void {
+    const key = `${visible}|${corner}|${bounds ? `${bounds.x},${bounds.y},${bounds.width},${bounds.height}` : '-'}`;
+    if (key === this.lastLogKey) return;
+    this.lastLogKey = key;
+    liveLog('overlay', { visible, corner, bounds });
+  }
+
+  /** Возвращает значок наверх, не активируя его */
+  private assertTop(): void {
+    const win = this.win;
+    if (!win || win.isDestroyed() || !win.isVisible()) return;
+    if (!win.isAlwaysOnTop()) win.setAlwaysOnTop(true, OVERLAY_LEVEL, OVERLAY_RELATIVE_LEVEL);
+    win.moveTop();
+  }
+
+  private startAssert(): void {
+    if (this.assertTimer) return;
+    this.assertTimer = setInterval(() => this.assertTop(), OVERLAY_ASSERT_MS);
+  }
+
+  private stopAssert(): void {
+    if (this.assertTimer) clearInterval(this.assertTimer);
+    this.assertTimer = null;
   }
 
   private bounds(corner: OverlayCorner): Electron.Rectangle {
@@ -174,11 +277,19 @@ class Overlay {
       },
     });
     this.deps.harden(win.webContents);
-    win.setAlwaysOnTop(true, 'screen-saver');
+    win.setAlwaysOnTop(true, OVERLAY_LEVEL, OVERLAY_RELATIVE_LEVEL);
     win.setIgnoreMouseEvents(true);
     win.setContentProtection(true);
     win.setVisibleOnAllWorkspaces(true);
-    win.webContents.on('did-finish-load', () => win.webContents.send(LIVE_IPC.overlayState, this.last));
+    win.on('always-on-top-changed', (_e, isOnTop) => {
+      if (!isOnTop) this.assertTop();
+    });
+    win.on('closed', () => {
+      this.stopAssert();
+      this.cancelHide();
+      if (this.win === win) this.win = null;
+    });
+    win.webContents.on('did-finish-load', () => win.webContents.send(LIVE_IPC.overlayState, this.payload()));
     const target = this.deps.pageUrl('overlay');
     if (target.url) void win.loadURL(target.url);
     else void win.loadFile(target.file!);
@@ -200,8 +311,8 @@ export function setupLive(deps: LiveDeps): void {
   ipcMain.handle(LIVE_IPC.findDota, async (e): Promise<FindDotaResult> => {
     if (!isLiveEngine(e.sender)) throw new Error('Untrusted IPC sender');
     try {
-      const { source, windows } = await findDotaSource();
-      return { source: source ? { id: source.id, name: source.name } : null, windows };
+      const { source, windows, videoMode } = await findDotaSource();
+      return { source: source ? { id: source.id, name: source.name } : null, windows, videoMode };
     } catch (err) {
       liveLog('getSources failed', String((err as Error)?.stack ?? err));
       throw err;

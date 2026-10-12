@@ -91,8 +91,8 @@ D:\DotaCoach\
 │  │  ├─ capture\       FrameSource: DesktopSource, VideoFileSource, ImageFolderSource
 │  │  └─ workers\       vision.worker.ts
 │  ├─ renderer\
-│  │  ├─ pages\         Dashboard, VisionDiagnostics, MatchState, History,
-│  │  │                 KnowledgeBase, VoiceSettings, AppSettings, ReplayMode
+│  │  ├─ pages\         Dashboard, LiveGame, ReplayMode, MatchState, History,
+│  │  │                 KnowledgeBase, VoiceSettings, Updates, AppSettings
 │  │  ├─ components\    общие компоненты (ConfidenceBadge, StaleMarker, ...)
 │  │  ├─ overlay\       окно субтитров
 │  │  └─ settings\      формы настроек

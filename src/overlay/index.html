@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="Content-Security-Policy" content="%CSP%" />
     <title>Dota AI Coach — индикатор</title>
-    <!-- Значок поверх игры. Перенесено из обновления 0.5.0 (out/renderer/overlay/index.html) без изменений вёрстки. -->
+    <!-- Значок поверх игры. Перенесено из обновления 0.7.0 (out/renderer/overlay/index.html) без изменений вёрстки. -->
     <style>
       :root {
         --gold-hi: #f3d891; --gold: #c9a35a; --gold-lo: #5e421b;
@@ -12,14 +12,23 @@
       }
       .seeing { --gem: #6fe07a; --gem-glow: rgba(111, 224, 122, 0.85); }
       .no-image { --gem: #ff5b3d; --gem-glow: rgba(255, 91, 61, 0.9); }
-      html, body { margin: 0; height: 100%; background: transparent; overflow: hidden; user-select: none; }
-      body { padding: 4px; box-sizing: border-box; }
+      html, body { margin: 0; width: 100%; height: 100%; background: transparent; overflow: hidden; user-select: none; }
+      /* Окно 196×62: сам значок 172×46 прижат к углу экрана, лишнее место — прозрачный запас для искр */
+      body { position: relative; }
 
-      /* Весь значок: в спокойном состоянии приглушается, при смене статуса — ярче */
-      .badge { height: 100%; position: relative; opacity: 1; transition: opacity 1.6s ease, transform 0.5s ease; transform: translateY(0); }
+      .badge { position: absolute; width: 172px; height: 46px; opacity: 1; transition: opacity 1.6s ease; }
+      body.top-left .badge { top: 0; left: 0; }
+      body.top-right .badge { top: 0; right: 0; }
+      body.bottom-left .badge { bottom: 0; left: 0; }
+      body.bottom-right .badge { bottom: 0; right: 0; }
+      /* В спокойном состоянии значок приглушён; проблемы остаются яркими */
       .badge.calm { opacity: 0.62; }
-      .badge.enter { animation: enter 0.6s cubic-bezier(0.2, 0.9, 0.3, 1.2) both; }
-      @keyframes enter { from { opacity: 0; transform: translateY(-6px) scale(0.96); } to { opacity: 1; transform: none; } }
+      .badge.shake { animation: shake 0.3s ease both; }
+      @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        20% { transform: translateX(-2px); } 40% { transform: translateX(2px); }
+        60% { transform: translateX(-1.5px); } 80% { transform: translateX(1px); }
+      }
 
       /* Кованая рамка со срезанными углами */
       .frame {
@@ -28,6 +37,17 @@
         clip-path: polygon(8px 0, calc(100% - 8px) 0, 100% 8px, 100% calc(100% - 8px), calc(100% - 8px) 100%, 8px 100%, 0 calc(100% - 8px), 0 8px);
         filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.75));
       }
+      /* Появление: рамка разворачивается от центра, затем текст */
+      .summon .frame { animation: unfold 0.45s cubic-bezier(0.2, 0.9, 0.3, 1) both; }
+      .summon .text { animation: fadeIn 0.35s ease 0.7s both; }
+      /* Уход: та же рамка, сворачивается к центру без искр */
+      .fold .frame { animation: fold 0.35s ease-in both; }
+      .fold .text { animation: fadeOut 0.2s ease both; }
+      @keyframes unfold { from { transform: scaleX(0.02); opacity: 0; } to { transform: none; opacity: 1; } }
+      @keyframes fold { from { transform: none; opacity: 1; } to { transform: scaleX(0.02); opacity: 0; } }
+      @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+      @keyframes fadeOut { to { opacity: 0; } }
+
       .panel {
         position: relative; height: 100%; box-sizing: border-box; display: flex; align-items: center; gap: 8px; padding: 0 12px 0 4px;
         background:
@@ -44,12 +64,27 @@
       }
       .no-image .panel::after { animation: none; }
       @keyframes sheen { 0%, 82% { left: -40%; } 100% { left: 120%; } }
+      /* Редкая вспышка: золотой блик по рамке */
+      .sweep { position: absolute; top: 0; bottom: 0; left: 0; width: 40%; opacity: 0; pointer-events: none;
+        background: linear-gradient(100deg, transparent, rgba(255, 226, 160, 0.5), transparent); }
+      .sweep-on .sweep { animation: sweep 1.1s ease-in-out both; }
+      @keyframes sweep {
+        0% { transform: translateX(-120%); opacity: 0; } 15% { opacity: 1; } 85% { opacity: 1; } 100% { transform: translateX(270%); opacity: 0; }
+      }
 
       /* Эмблема: око в рунном кольце */
       .emblem { position: relative; width: 30px; height: 30px; flex: none; }
       .emblem svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; overflow: visible; }
       .runes { animation: spin 28s linear infinite; transform-origin: 50% 50%; }
+      /* Появление: кольцо делает один быстрый оборот и останавливается, дальше медленно крутится */
+      .summon .runes { animation: runeTurn 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both, spin 28s linear 0.7s infinite; }
       @keyframes spin { to { transform: rotate(360deg); } }
+      @keyframes runeTurn { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+      /* Редкая вспышка (а): руны загораются одна за другой */
+      .rl { fill: #fff4cf; opacity: 0; }
+      .lit .rl { animation: rlit 1.1s ease both; animation-delay: calc(var(--i) * 0.2s); }
+      @keyframes rlit { 0% { opacity: 0; } 35% { opacity: 1; } 100% { opacity: 0; } }
+
       .glow { position: absolute; inset: 7px; border-radius: 50%; box-shadow: 0 0 9px 2px var(--gem-glow); opacity: 0.5; }
       .seeing .glow { animation: breathe 3.2s ease-in-out infinite; }
       .no-image .glow { animation: breathe 1.6s ease-in-out infinite; }
@@ -57,6 +92,41 @@
       .pupil { fill: var(--gem); transition: fill 0.6s ease; }
       .seeing .pupil { animation: look 7s ease-in-out infinite; }
       @keyframes look { 0%, 40%, 100% { transform: translateX(0); } 50%, 62% { transform: translateX(1.6px); } 72%, 84% { transform: translateX(-1.6px); } }
+
+      /* Око: моргание, полуприкрыто при отсутствии картинки, открывается после восстановления */
+      .eye { transform-box: fill-box; transform-origin: 50% 50%; }
+      .no-image .eye { transform: scaleY(0.5); animation: flicker 2.6s linear infinite; }
+      @keyframes flicker {
+        0%, 100% { transform: scaleY(0.5); } 9% { transform: scaleY(0.3); } 11% { transform: scaleY(0.5); }
+        47% { transform: scaleY(0.45); } 49% { transform: scaleY(0.5); } 78% { transform: scaleY(0.25); } 80% { transform: scaleY(0.5); }
+      }
+      .blink { animation: blink 0.16s ease-in-out; }
+      .blink2 { animation: blink2 0.38s ease-in-out; }
+      .eye-open { animation: eyeOpen 0.42s ease-out; }
+      @keyframes blink { 0%, 100% { transform: scaleY(1); } 50% { transform: scaleY(0.1); } }
+      @keyframes blink2 {
+        0%, 100% { transform: scaleY(1); } 21% { transform: scaleY(0.1); } 42% { transform: scaleY(1); }
+        58% { transform: scaleY(1); } 79% { transform: scaleY(0.1); }
+      }
+      @keyframes eyeOpen { from { transform: scaleY(0.2); } to { transform: scaleY(1); } }
+
+      /* Частицы и кольца: создаются при событиях и удаляются сами */
+      .fx { position: absolute; left: 0; top: 0; width: 0; height: 0; pointer-events: none; }
+      .fx > i { position: absolute; display: block; pointer-events: none; }
+      .spark, .ember { width: 3px; height: 3px; margin: -1.5px 0 0 -1.5px; border-radius: 50%;
+        background: radial-gradient(circle, #fff6d6, #f0c865 60%, rgba(240, 200, 101, 0)); }
+      .spark { animation: spark 0.7s ease-out both; animation-delay: var(--d, 0s); }
+      .ember { width: 4px; height: 4px; margin: -2px 0 0 -2px; animation: spark 0.95s ease-out both; animation-delay: var(--d, 0s); }
+      @keyframes spark {
+        0% { opacity: 0; transform: translate(0, 0) scale(0.6); }
+        20% { opacity: 1; }
+        100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(0.3); }
+      }
+      .ripple { width: 24px; height: 24px; margin: -12px 0 0 -12px; border-radius: 50%; border: 2px solid #6fe07a; animation: ripple 0.7s ease-out both; }
+      @keyframes ripple { 0% { transform: scale(0.3); opacity: 0.9; } 100% { transform: scale(2.4); opacity: 0; } }
+      .flash { width: 28px; height: 28px; margin: -14px 0 0 -14px; border-radius: 50%;
+        background: radial-gradient(circle, rgba(255, 91, 61, 0.95), rgba(255, 91, 61, 0) 70%); animation: flash 0.5s ease-out both; }
+      @keyframes flash { 0% { transform: scale(0.5); opacity: 1; } 100% { transform: scale(1.8); opacity: 0; } }
 
       .text { display: flex; flex-direction: column; line-height: 1.05; }
       .title {
@@ -69,16 +139,24 @@
       }
       .status.swap { opacity: 0; }
 
+      /* Встряска и вспышки отключены; остаются только затухания и мягкие подсветки */
       @media (prefers-reduced-motion: reduce) {
-        *, *::after { animation: none !important; transition: none !important; }
+        .runes, .panel::after, .pupil, .eye, .shake, .blink, .blink2, .eye-open, .sweep, .spark, .ember,
+        .summon .runes, .no-image .eye, .seeing .pupil { animation: none !important; transform: none !important; }
+        .no-image .eye { transform: scaleY(0.5) !important; }
+        .summon .frame { animation: fadeIn 0.4s ease both !important; }
+        .fold .frame { animation: fadeOut 0.3s ease both !important; }
+        .ripple, .flash { animation: fadeRing 0.6s ease-out both !important; }
       }
+      @keyframes fadeRing { 0% { opacity: 0; } 30% { opacity: 0.9; } 100% { opacity: 0; } }
     </style>
     <script type="module" src="./overlay.ts"></script>
   </head>
-  <body>
+  <body class="top-right">
     <div class="badge" id="badge">
-      <div class="frame">
+      <div class="frame" id="frame">
         <div class="panel">
+          <i class="sweep" aria-hidden="true"></i>
           <div class="emblem">
             <div class="glow"></div>
             <svg viewBox="0 0 30 30" aria-hidden="true">
@@ -92,12 +170,21 @@
               </defs>
               <g class="runes">
                 <circle cx="15" cy="15" r="14.2" fill="none" stroke="#c9a35a" stroke-opacity="0.55" stroke-width="0.9" stroke-dasharray="1.6 3.2" />
-                <path d="M15 0.2 L16.1 2 L15 3.8 L13.9 2 Z M15 26.2 L16.1 28 L15 29.8 L13.9 28 Z M0.2 15 L2 13.9 L3.8 15 L2 16.1 Z M26.2 15 L28 13.9 L29.8 15 L28 16.1 Z" fill="#e2c37a" />
+                <path d="M15 0.2 L16.1 2 L15 3.8 L13.9 2 Z" fill="#e2c37a" />
+                <path d="M26.2 15 L28 13.9 L29.8 15 L28 16.1 Z" fill="#e2c37a" />
+                <path d="M15 26.2 L16.1 28 L15 29.8 L13.9 28 Z" fill="#e2c37a" />
+                <path d="M0.2 15 L2 13.9 L3.8 15 L2 16.1 Z" fill="#e2c37a" />
+                <path class="rl" style="--i: 0" d="M15 0.2 L16.1 2 L15 3.8 L13.9 2 Z" />
+                <path class="rl" style="--i: 1" d="M26.2 15 L28 13.9 L29.8 15 L28 16.1 Z" />
+                <path class="rl" style="--i: 2" d="M15 26.2 L16.1 28 L15 29.8 L13.9 28 Z" />
+                <path class="rl" style="--i: 3" d="M0.2 15 L2 13.9 L3.8 15 L2 16.1 Z" />
               </g>
               <circle cx="15" cy="15" r="11.6" fill="url(#core)" stroke="url(#ring)" stroke-width="1.8" />
-              <path d="M6.2 15 Q15 7.2 23.8 15 Q15 22.8 6.2 15 Z" fill="#0a0605" stroke="#dcb867" stroke-width="1.1" />
-              <circle class="pupil" cx="15" cy="15" r="3.1" />
-              <circle cx="14" cy="14" r="0.85" fill="#fff" fill-opacity="0.75" />
+              <g class="eye" id="eye">
+                <path d="M6.2 15 Q15 7.2 23.8 15 Q15 22.8 6.2 15 Z" fill="#0a0605" stroke="#dcb867" stroke-width="1.1" />
+                <circle class="pupil" cx="15" cy="15" r="3.1" />
+                <circle cx="14" cy="14" r="0.85" fill="#fff" fill-opacity="0.75" />
+              </g>
             </svg>
           </div>
           <div class="text">
@@ -106,6 +193,7 @@
           </div>
         </div>
       </div>
+      <div class="fx" id="fx"></div>
     </div>
   </body>
 </html>

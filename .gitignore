@@ -22,3 +22,6 @@ DotaCoach-*-update/
 /locales/
 /resources/app.asar
 /resources/elevate.exe
+
+# Резервные копии перед правками
+*.bak-*
