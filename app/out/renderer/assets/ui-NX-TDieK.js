@@ -12596,6 +12596,7 @@ function Dashboard({ onNavigate }) {
   const stale = status?.state === "running" && !isLive(status) && age !== null && age > 3;
   return /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx(PageHeader, { title: "Обзор", subtitle: "Состояние всех модулей. Доступны разбор записей и живой захват окна Dota 2 (только наблюдение)." }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(UpdateBanner, { onOpen: () => onNavigate("updates") }),
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid-2", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs(Card, { title: "Захват кадров", actions: /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: () => onNavigate("replay"), children: "Открыть запись" }), children: [
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "row", children: [
@@ -12770,7 +12771,6 @@ function AppSettings() {
       error && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "error", children: error })
     ] }),
     /* @__PURE__ */ jsxRuntimeExports.jsx(LiveSettingsCard, { settings, update }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(UpdateCard, {}),
     /* @__PURE__ */ jsxRuntimeExports.jsx(Card, { title: "О программе", children: info && /* @__PURE__ */ jsxRuntimeExports.jsxs("dl", { className: "kv", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("dt", { children: "Версия" }),
       /* @__PURE__ */ jsxRuntimeExports.jsx("dd", { "data-testid": "app-version", children: info.version }),
@@ -13066,41 +13066,145 @@ function useUpdate() {
   }, []);
   return state;
 }
-const UPDATE_LABEL = {
-  idle: "Ещё не проверялось",
-  checking: "Проверяю…",
-  "up-to-date": "Установлена последняя версия",
-  available: "Доступна новая версия",
-  downloading: "Скачиваю…",
-  installing: "Устанавливаю — коуч перезапустится",
-  error: "Ошибка"
-};
-function UpdateCard() {
+function fmtDate(iso) {
+  if (!iso) return "";
+  try {
+    return new Date(iso).toLocaleDateString("ru-RU", { day: "numeric", month: "long", year: "numeric" });
+  } catch {
+    return "";
+  }
+}
+function fmtAgo(ms) {
+  if (!ms) return "ещё не проверялось";
+  const s = Math.max(0, Math.round((Date.now() - ms) / 1e3));
+  if (s < 60) return "только что";
+  if (s < 3600) return `${Math.round(s / 60)} мин назад`;
+  if (s < 86400) return `${Math.round(s / 3600)} ч назад`;
+  return fmtDate(new Date(ms).toISOString());
+}
+/** Заметки релиза: строки «- …» превращаются в список, остальное — абзацы */
+function ReleaseNotes({ text }) {
+  if (!text) return null;
+  const blocks = [];
+  let list = null;
+  for (const raw of text.split(/\r?\n/)) {
+    const line = raw.trim();
+    if (!line) {
+      list = null;
+      continue;
+    }
+    const m = /^[-*•]\s+(.*)$/.exec(line);
+    if (m) {
+      if (!list) {
+        list = [];
+        blocks.push({ list });
+      }
+      list.push(m[1]);
+    } else {
+      list = null;
+      blocks.push({ p: line.replace(/^#+\s*/, "") });
+    }
+  }
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "release-notes", children: blocks.map((b, i) => b.list ? /* @__PURE__ */ jsxRuntimeExports.jsx("ul", { children: b.list.map((x, j) => /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: x }, j)) }, i) : /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: b.p }, i)) });
+}
+function UpdatesPage() {
   const u = useUpdate();
-  if (!u) return null;
+  const [, tick] = reactExports.useState(0);
+  reactExports.useEffect(() => {
+    const t = setInterval(() => tick((x) => x + 1), 3e4);
+    return () => clearInterval(t);
+  }, []);
+  if (!u) return /* @__PURE__ */ jsxRuntimeExports.jsx(PageHeader, { title: "Обновления" });
   const busy = u.status === "checking" || u.status === "downloading" || u.status === "installing";
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs(Card, {
-    title: "Обновления",
-    actions: /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: () => void window.dotacoach.checkForUpdates(), disabled: busy, "data-testid": "update-check", children: "Проверить" }),
-      u.status === "available" && /* @__PURE__ */ jsxRuntimeExports.jsxs("button", { className: "primary", onClick: () => void window.dotacoach.installUpdate(), "data-testid": "update-install", children: ["⬆ Установить ", u.latest?.version] })
-    ] }),
-    children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "stats", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(Stat, { label: "Установлена", value: u.current }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(Stat, { label: "На GitHub", value: u.latest?.version ?? "—" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(Stat, { label: "Статус", value: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: u.status === "available" ? "update-new" : u.status === "error" ? "warn" : "", "data-testid": "update-status", children: UPDATE_LABEL[u.status] ?? u.status }) })
+  const available = u.status === "available" || u.status === "downloading" || u.status === "installing";
+  const older = (u.history ?? []).filter((h) => h.version !== u.latest?.version || !available);
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx(PageHeader, { title: "Обновления", subtitle: "Новые версии коуча приходят с GitHub. Коуч проверяет их сам при запуске и раз в 6 часов." }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: `card update-hero ${available ? "is-new" : u.status === "error" ? "is-error" : "is-ok"}`, "data-testid": "update-hero", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "update-hero-main", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "update-hero-icon", "aria-hidden": true, children: available ? "⬆" : u.status === "error" ? "!" : u.status === "checking" ? "…" : "✓" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "update-hero-text", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "update-hero-title", "data-testid": "update-status", children: available ? `Доступна версия ${u.latest?.version ?? ""}` : u.status === "checking" ? "Проверяю обновления…" : u.status === "error" ? "Не удалось проверить обновления" : "Установлена последняя версия" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "muted", children: [
+            "У вас ",
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("b", { children: ["v", u.current] }),
+            available && u.latest?.publishedAt ? ` · новая вышла ${fmtDate(u.latest.publishedAt)}` : "",
+            " · проверено ",
+            fmtAgo(u.checkedAt)
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "update-hero-actions", children: [
+          u.status === "available" && /* @__PURE__ */ jsxRuntimeExports.jsxs("button", { className: "primary", onClick: () => void window.dotacoach.installUpdate(), "data-testid": "update-install", children: ["Установить ", u.latest?.version] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: () => void window.dotacoach.checkForUpdates(), disabled: busy, "data-testid": "update-check", children: "Проверить сейчас" })
+        ] })
       ] }),
-      u.status === "downloading" && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "update-bar", children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { style: { width: `${u.progress ?? 0}%` } }) }),
-      u.error && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "error", children: u.error }),
-      u.status === "available" && u.latest?.notes && /* @__PURE__ */ jsxRuntimeExports.jsx("pre", { className: "update-notes", children: u.latest.notes }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "muted small", children: [
-        "Коуч сам проверяет обновления при запуске и раз в 6 часов",
-        u.repo ? ` (github.com/${u.repo})` : "",
-        ". В Program Files Windows попросит подтвердить установку."
+      u.status === "downloading" && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "update-progress", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "update-bar", children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { style: { width: `${u.progress ?? 0}%` } }) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "muted small", children: ["Скачиваю… ", u.progress ?? 0, "%"] })
+      ] }),
+      u.status === "installing" && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "muted", children: "Устанавливаю — коуч закроется и откроется уже новой версии. Windows может попросить подтверждение." }),
+      u.error && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "error", "data-testid": "update-error", children: u.error }),
+      available && u.latest?.notes && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "update-hero-notes", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "update-section-title", children: "Что нового" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(ReleaseNotes, { text: u.latest.notes })
       ] })
-    ]
+    ] }),
+    older.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsx(Card, { title: "История версий", children: /* @__PURE__ */ jsxRuntimeExports.jsx("ol", { className: "release-list", children: older.map((h) => /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { className: h.version === u.current ? "current" : "", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "release-head", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("b", { children: ["v", h.version] }),
+        h.version === u.current && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "pill pill-running", children: "установлена" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "muted small", children: fmtDate(h.publishedAt) })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(ReleaseNotes, { text: h.notes })
+    ] }, h.version)) }) }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "muted small", children: [
+      "Перед установкой коуч сохраняет прошлую версию, а скачанный файл сверяет по SHA-256.",
+      u.repo ? ` Источник: github.com/${u.repo}` : ""
+    ] })
+  ] });
+}
+/** Баннер на «Обзоре» */
+function UpdateBanner({ onOpen }) {
+  const u = useUpdate();
+  if (!u || u.status !== "available") return null;
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("button", { className: "update-banner", onClick: onOpen, "data-testid": "update-banner", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "update-banner-dot", "aria-hidden": true }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { children: [/* @__PURE__ */ jsxRuntimeExports.jsxs("b", { children: ["Вышла версия ", u.latest?.version] }), " — посмотрите, что нового, и установите в один клик"] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "update-banner-go", children: "Открыть →" })
+  ] });
+}
+/** Всплывающее уведомление — один раз на каждую новую версию */
+const TOAST_KEY = "dc.update.toast.seen";
+function UpdateToast({ onOpen }) {
+  const u = useUpdate();
+  const [seen, setSeen] = reactExports.useState(() => {
+    try {
+      return localStorage.getItem(TOAST_KEY);
+    } catch {
+      return null;
+    }
   });
+  const version = u?.status === "available" ? u.latest?.version : null;
+  const [leaving, setLeaving] = reactExports.useState(false);
+  if (!version || seen === version) return null;
+  const close = (open) => {
+    setLeaving(true);
+    try {
+      localStorage.setItem(TOAST_KEY, version);
+    } catch {
+    }
+    setTimeout(() => setSeen(version), 220);
+    if (open) onOpen();
+  };
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: `update-toast${leaving ? " leaving" : ""}`, role: "status", "data-testid": "update-toast", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "update-toast-icon", "aria-hidden": true, children: "⬆" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "update-toast-text", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("b", { children: "Доступно обновление" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "muted small", children: ["Dota AI Coach ", version] })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("button", { className: "primary", onClick: () => close(true), "data-testid": "update-toast-open", children: "Посмотреть" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("button", { className: "update-toast-close", onClick: () => close(false), "aria-label": "Закрыть", children: "×" })
+  ] });
 }
 function UpdateNotice({ onOpen }) {
   const u = useUpdate();
@@ -13117,6 +13221,7 @@ const PAGES = [
   { id: "history", label: "История советов", icon: "☰", Component: RecommendationHistory },
   { id: "kb", label: "База знаний", icon: "◆", Component: KnowledgeBase },
   { id: "voice", label: "Голос", icon: "♪", Component: VoiceSettings },
+  { id: "updates", label: "Обновления", icon: "⬆", Component: UpdatesPage },
   { id: "settings", label: "Настройки", icon: "⚙", Component: AppSettings }
 ];
 function App() {
@@ -13124,6 +13229,8 @@ function App() {
   const { status, connected } = useEngine();
   const { settings } = useSettings();
   useLiveAutoStart(status, connected, settings);
+  const upd = useUpdate();
+  const updateAvailable = upd?.status === "available";
   const liveOn = isLive(status);
   const Current = PAGES.find((p) => p.id === page).Component;
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "shell", children: [
@@ -13143,13 +13250,14 @@ function App() {
           "data-testid": `nav-${p.id}`,
           children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "nav-icon", "aria-hidden": true, children: p.icon }),
-            p.label
+            p.label,
+            p.id === "updates" && updateAvailable && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "nav-dot", "data-testid": "nav-update-dot", title: "Доступно обновление" })
           ]
         },
         p.id
       )) }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "sidebar-foot", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(UpdateNotice, { onOpen: () => setPage("settings") }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(UpdateNotice, { onOpen: () => setPage("updates") }),
         liveOn ? /* @__PURE__ */ jsxRuntimeExports.jsx(LivePill, { live: status.live }) : /* @__PURE__ */ jsxRuntimeExports.jsx(StatePill, { state: status?.state ?? null }),
         status && status.state === "running" && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "muted small", children: [
           status.measuredFps,
@@ -13159,7 +13267,8 @@ function App() {
         ] })
       ] })
     ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("main", { className: "content", "data-testid": `page-${page}`, children: /* @__PURE__ */ jsxRuntimeExports.jsx(Current, { onNavigate: setPage }) })
+    /* @__PURE__ */ jsxRuntimeExports.jsx("main", { className: "content", "data-testid": `page-${page}`, children: /* @__PURE__ */ jsxRuntimeExports.jsx(Current, { onNavigate: setPage }) }),
+    page !== "updates" && /* @__PURE__ */ jsxRuntimeExports.jsx(UpdateToast, { onOpen: () => setPage("updates") })
   ] });
 }
 clientExports.createRoot(document.getElementById("root")).render(

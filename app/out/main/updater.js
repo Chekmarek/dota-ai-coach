@@ -35,7 +35,7 @@ class Updater {
   constructor(deps) {
     this.deps = deps;
     this.repo = deps.repo ?? null;
-    this.state = { status: "idle", current: app.getVersion(), latest: null, progress: null, error: null, repo: this.repo };
+    this.state = { status: "idle", current: app.getVersion(), latest: null, history: [], checkedAt: null, progress: null, error: null, repo: this.repo };
   }
   deps;
   repo;
@@ -54,24 +54,32 @@ class Updater {
     if (["downloading", "installing"].includes(this.state.status)) return;
     this.set({ status: "checking", error: null });
     try {
-      const res = await net.fetch(`https://api.github.com/repos/${this.repo}/releases/latest`, {
+      // Список последних релизов: из него берём и новую версию, и историю изменений для вкладки «Обновления»
+      const res = await net.fetch(`https://api.github.com/repos/${this.repo}/releases?per_page=10`, {
         headers: { Accept: "application/vnd.github+json", "User-Agent": "DotaAICoach-Updater" }
       });
-      if (res.status === 404) return this.set({ status: "up-to-date", latest: null });
       if (!res.ok) throw new Error(`GitHub ответил ${res.status}`);
-      const rel = await res.json();
+      const list = (await res.json()).filter((r) => r && !r.draft && !r.prerelease);
+      const history = list.map((r) => ({
+        version: String(r.tag_name ?? "").replace(/^v/, ""),
+        notes: String(r.body ?? "").slice(0, 4e3),
+        publishedAt: r.published_at ?? null,
+        url: r.html_url ?? null
+      })).filter((r) => r.version);
+      const checkedAt = Date.now();
+      const rel = list.find((r) => r.assets?.some((a) => a.name === "app.asar") && r.assets?.some((a) => a.name === "app.asar.sha256"));
+      if (!rel) return this.set({ status: "up-to-date", latest: history[0] ?? null, history, checkedAt });
       const version = String(rel.tag_name ?? "").replace(/^v/, "");
-      const asar = rel.assets?.find((a) => a.name === "app.asar");
-      const sum = rel.assets?.find((a) => a.name === "app.asar.sha256");
-      const latest = { version, notes: String(rel.body ?? "").slice(0, 4e3), publishedAt: rel.published_at ?? null, url: rel.html_url ?? null };
-      if (!version || !asar || !sum) return this.set({ status: "up-to-date", latest });
+      const asar = rel.assets.find((a) => a.name === "app.asar");
+      const sum = rel.assets.find((a) => a.name === "app.asar.sha256");
+      const latest = history.find((h) => h.version === version) ?? null;
       this.release = { version, asarUrl: asar.browser_download_url, asarSize: asar.size, sumUrl: sum.browser_download_url };
       const newer = compareVersions(version, this.state.current) > 0;
-      this.set({ status: newer ? "available" : "up-to-date", latest });
+      this.set({ status: newer ? "available" : "up-to-date", latest, history, checkedAt });
       liveLog("update check", { current: this.state.current, latest: version, newer });
     } catch (err) {
       liveLog("update check failed", String(err?.message ?? err));
-      this.set({ status: "error", error: `Не удалось проверить обновления: ${err?.message ?? err}` });
+      this.set({ status: "error", checkedAt: Date.now(), error: `Не удалось проверить обновления: ${err?.message ?? err}` });
     }
   }
 
