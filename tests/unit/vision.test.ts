@@ -3,7 +3,8 @@ import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { otsu, frameAccessFromImage, type RgbaImage } from '../../src/core/vision/image.ts';
 import { components, segment } from '../../src/core/vision/segment.ts';
-import { PARSERS } from '../../src/core/vision/hud-fields.ts';
+import { PARSERS, formatClock } from '../../src/core/vision/hud-fields.ts';
+import { isPreHorn } from '../../src/core/vision/day-night.ts';
 import { recognizeHud } from '../../src/core/vision/recognize-hud.ts';
 import { layoutFits, scaleRect, type HudLayout } from '../../src/core/vision/hud-layout.ts';
 import type { GlyphModel } from '../../src/core/ocr/glyph-ocr.ts';
@@ -25,6 +26,16 @@ describe('разбор значений HUD', () => {
     expect(PARSERS.gameClock('4426')).toEqual({ ok: true, value: 2666 });
     expect(PARSERS.gameClock('44:75')).toEqual({ ok: false, reason: 'out-of-range' });
     expect(PARSERS.gameClock('4:4:1')).toEqual({ ok: false, reason: 'unparsed' });
+  });
+
+  it('отсчёт до горна: луна и время ≤ 1:30; вывод с минусом', () => {
+    expect(isPreHorn(79, 'night')).toBe(true);
+    expect(isPreHorn(79, 'day')).toBe(false);
+    expect(isPreHorn(305, 'night')).toBe(false);
+    expect(isPreHorn(79, null)).toBe(false);
+    expect(formatClock(-79)).toBe('-1:19');
+    expect(formatClock(-9)).toBe('-0:09');
+    expect(formatClock(2659)).toBe('44:19');
   });
 
   it('здоровье: текущее не больше максимума', () => {

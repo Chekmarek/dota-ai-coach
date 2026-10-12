@@ -12,6 +12,8 @@
     "gold": { "rect": [1638, 1037, 63, 25], "mode": "luma", "altModes": ["white"], "label": "Золото" },
     "health": { "rect": [800, 1019, 250, 24], "mode": "white-or-red", "label": "Здоровье" },
     "mana": { "rect": [800, 1047, 250, 23], "mode": "white-or-red", "label": "Мана" },
-    "level": { "rect": [458, 1038, 36, 36], "mode": "luma", "circleMask": true, "anchor": "barLeft", "label": "Уровень" }
+    "level": { "rect": [458, 1038, 36, 36], "mode": "luma", "circleMask": true, "anchor": "barLeft", "label": "Уровень" },
+    "kda": { "rect": [76, 62, 96, 18], "mode": "white", "label": "Убийства / смерти / помощь" },
+    "farm": { "rect": [76, 80, 96, 18], "mode": "white", "label": "Добивания / невсе" }
   }
 }

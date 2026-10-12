@@ -27,9 +27,28 @@ describe('режим экрана Доты (video.txt, только чтение
       if (f in files) return files[f]!;
       throw new Error('ENOENT');
     };
-    const res = await detectDotaVideo({ steamPath: 'C:\\Steam', read });
+    const noUsers = async () => [];
+    const res = await detectDotaVideo({ steamPath: 'C:\\Steam', activeUser: null, userFiles: noUsers, read });
     expect(res.mode).toBe('exclusive');
     expect(res.file).toContain('D:\\Lib');
     expect((await detectDotaVideo({ steamPath: null, read })).mode).toBe('unknown');
+  });
+
+  it('новая Дота: сначала video.txt активного аккаунта Steam, потом самый свежий из других', async () => {
+    const active = 'C:\\Steam\\userdata\\111\\570\\local\\cfg\\video.txt';
+    const other = 'C:\\Steam\\userdata\\222\\570\\local\\cfg\\video.txt';
+    const files: Record<string, string> = {
+      [active]: '"setting.fullscreen" "0"\n"setting.nowindowborder" "1"',
+      [other]: '"setting.fullscreen" "1"\n"setting.nowindowborder" "0"',
+    };
+    const read = async (f: string) => {
+      if (f in files) return files[f]!;
+      throw new Error('ENOENT');
+    };
+    const userFiles = async () => [other, active];
+    const withActive = await detectDotaVideo({ steamPath: 'C:\\Steam', activeUser: '111', userFiles, read });
+    expect(withActive).toMatchObject({ mode: 'borderless', file: active });
+    const noActive = await detectDotaVideo({ steamPath: 'C:\\Steam', activeUser: null, userFiles, read });
+    expect(noActive).toMatchObject({ mode: 'exclusive', file: other });
   });
 });

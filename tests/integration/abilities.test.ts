@@ -1,0 +1,56 @@
+import { describe, expect, it } from 'vitest';
+import { existsSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { decodePng } from '../../scripts/png.mjs';
+import { frameAccessFromImage } from '../../src/core/vision/image.ts';
+import { recognizeHud } from '../../src/core/vision/recognize-hud.ts';
+import { abilitySlotCount, readCooldown } from '../../src/core/vision/abilities.ts';
+import type { HudLayout } from '../../src/core/vision/hud-layout.ts';
+import type { GlyphModel } from '../../src/core/ocr/glyph-ocr.ts';
+
+const ROOT = join(import.meta.dirname, '../..');
+const json = (f: string) => JSON.parse(readFileSync(join(ROOT, f), 'utf8'));
+const layout: HudLayout = json('src/data/hud-layouts/dota2-default-16x9.json');
+const model: GlyphModel = json('src/data/hud-layouts/glyphs-default.json');
+const cooldownModel: GlyphModel = json('src/data/hud-layouts/glyphs-cooldown.json');
+const CD = join(ROOT, 'tests/fixtures/cooldown');
+const HUD = join(ROOT, 'tests/fixtures/hud');
+
+describe('способности', () => {
+  it('число ячеек зависит от ширины панели (ступень 29 px)', () => {
+    expect(abilitySlotCount(667, 1920)).toBe(6);
+    expect(abilitySlotCount(696, 1920)).toBe(5);
+    expect(abilitySlotCount(638, 1920)).toBe(7);
+  });
+
+  it('секунды перезарядки: все подписанные иконки, ни одной ошибки', () => {
+    const labels: { frames: { file: string; cooldown: string; split: string }[] } = json('tests/fixtures/cooldown/labels.json');
+    const errors: string[] = [];
+    let ok = 0;
+    for (const fr of labels.frames) {
+      const r = readCooldown(decodePng(readFileSync(join(CD, fr.file))), cooldownModel);
+      if (r.value === null) continue;
+      if (String(r.value) === fr.cooldown) ok++;
+      else errors.push(`${fr.file}: ${r.value} ≠ ${fr.cooldown}`);
+    }
+    expect(errors).toEqual([]);
+    expect(ok / labels.frames.length).toBeGreaterThanOrEqual(0.95);
+  });
+
+  const states = (file: string) => {
+    const r = recognizeHud(frameAccessFromImage(decodePng(readFileSync(join(HUD, file)))), layout, model, 0, { cooldownModel });
+    return r.abilities?.map((a) => `${a.state}${a.cooldown !== null ? `:${a.cooldown}` : ''}/${a.level}`);
+  };
+
+  it.skipIf(!existsSync(join(HUD, 'game4/v5-t030.png')))('Shadow Fiend 20:02: D на перезарядке 4 с, у R две точки уровня', () => {
+    expect(states('game4/v5-t030.png')).toEqual(['ready/4', 'ready/4', 'ready/4', 'cooldown:4/4', 'ready/4', 'ready/2']);
+  });
+
+  it.skipIf(!existsSync(join(HUD, 'v1-t01.png')))('Kez: яркая иконка с белыми бликами — не перезарядка', () => {
+    expect(states('v1-t01.png')).toEqual(['cooldown:10/4', 'cooldown:7/4', 'ready/4', 'ready/0', 'unlearned/0', 'cooldown:27/3']);
+  });
+
+  it.skipIf(!existsSync(join(HUD, 'v3-t01.png')))('Monkey King: бирюзовая иконка — не «нет маны»', () => {
+    expect(states('v3-t01.png')?.every((s) => s.startsWith('ready'))).toBe(true);
+  });
+});

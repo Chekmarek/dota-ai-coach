@@ -4,7 +4,7 @@ import { join } from 'node:path';
 import { decodePng } from '../../scripts/png.mjs';
 import { frameAccessFromImage } from '../../src/core/vision/image.ts';
 import { recognizeHud } from '../../src/core/vision/recognize-hud.ts';
-import { HUD_FIELDS } from '../../src/core/vision/hud-fields.ts';
+import { HUD_FIELDS, formatHudLabel, type HudFieldId } from '../../src/core/vision/hud-fields.ts';
 import type { HudLayout } from '../../src/core/vision/hud-layout.ts';
 import type { GlyphModel } from '../../src/core/ocr/glyph-ocr.ts';
 
@@ -19,17 +19,7 @@ const labels = (HAS_FIX ? JSON.parse(readFileSync(join(FIX, 'labels.json'), 'utf
 };
 
 /** Приводит распознанное значение к строке в формате разметки */
-function asLabel(id: string, v: unknown): string {
-  if (id === 'gameClock') {
-    const s = v as number;
-    return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
-  }
-  if (id === 'health' || id === 'mana') {
-    const p = v as { current: number; max: number };
-    return `${p.current}/${p.max}`;
-  }
-  return String(v);
-}
+const asLabel = (id: string, v: unknown) => formatHudLabel(id as HudFieldId, v);
 
 function evaluate(split: 'train' | 'test') {
   let ok = 0, wrong = 0, missing = 0, confidentWrong = 0;
@@ -43,6 +33,7 @@ function evaluate(split: 'train' | 'test') {
       errors.push(`${fr.file} selectedUnit: ${r.selectedUnit.value} ≠ ${fr.selectedUnit}`);
     }
     for (const id of HUD_FIELDS) {
+      if (fr.fields[id] === undefined) continue; // кадр подписан частично (например, только время)
       const o = r.fields[id];
       if (o.value === null) {
         missing++;
@@ -67,6 +58,34 @@ describe.skipIf(!HAS_FIX)('распознавание HUD на кадрах из
     // и уровень сознательно не читается — лучше пропуск, чем значение не из той области
     expect(r.ok / r.total).toBeGreaterThanOrEqual(0.95);
   });
+
+  it('день/ночь по значку над часами и отсчёт до горна (игра 4)', () => {
+    const errors: string[] = [];
+    let checked = 0, unknown = 0;
+    for (const fr of labels.frames.filter((f) => f.file.startsWith('game4/'))) {
+      const r = recognizeHud(frameAccessFromImage(decodePng(readFileSync(join(FIX, fr.file)))), layout, model, 0);
+      const label = fr.fields.gameClock;
+      if ((fr as { preHorn?: boolean }).preHorn) {
+        // До горна: луна, а прочитанное время — отрицательное
+        if (r.dayNight.value !== 'night') errors.push(`${fr.file}: до горна ожидалась ночь, получено ${r.dayNight.value}`);
+        if (r.fields.gameClock.value !== null && r.fields.gameClock.value >= 0) errors.push(`${fr.file}: до горна время ${r.fields.gameClock.value} ≥ 0`);
+        checked++;
+        continue;
+      }
+      if (!label) continue;
+      const [m, s] = label.split(':').map(Number);
+      const sec = m! * 60 + s!;
+      if (sec % 300 < 3 || sec % 300 > 297) continue; // на границе смены дня и ночи значок меняется не мгновенно
+      const expected = Math.floor(sec / 300) % 2 === 0 ? 'day' : 'night';
+      // «Не знаю» допустимо (значок перекрыт), неверный ответ — нет
+      if (r.dayNight.value === null) unknown++;
+      else if (r.dayNight.value !== expected) errors.push(`${fr.file} (${label}): ${r.dayNight.value} ≠ ${expected}`);
+      checked++;
+    }
+    expect(errors).toEqual([]);
+    expect(checked).toBeGreaterThan(50);
+    expect(unknown / checked).toBeLessThanOrEqual(0.05);
+  }, 60_000);
 
   it('новые кадры (запись 2, не участвовали в обучении): ни одного неверного значения, ≥ 85 % распознано', () => {
     const r = evaluate('test');

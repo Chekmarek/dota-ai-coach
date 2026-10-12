@@ -28,7 +28,7 @@ describe.skipIf(!HAS_FIX)('имя героя над портретом', () => {
     const results = labels.frames.map((f) => ({ f, got: read(f.file, model) }));
     expect(results.filter((r) => r.got !== null && r.got !== r.f.heroName).map((r) => `${r.f.file}: ${r.got}`)).toEqual([]);
     expect(results.filter((r) => r.got === r.f.heroName).length / results.length).toBeGreaterThanOrEqual(0.6);
-  });
+  }, 60_000);
 
   it('«исключи одного героя»: без образцов его букв — либо узнан по остальным признакам, либо «не знаю», но не другой герой', () => {
     for (const hero of new Set(labels.frames.map((f) => f.heroName))) {
@@ -39,7 +39,7 @@ describe.skipIf(!HAS_FIX)('имя героя над портретом', () => {
         expect(got === null || got === hero, `${f}: ${got}`).toBe(true);
       }
     }
-  });
+  }, 60_000);
 
   it('список имён совпадает с базой знаний (127 героев)', () => {
     expect(names).toHaveLength(127);

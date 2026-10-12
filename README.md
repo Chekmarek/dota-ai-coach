@@ -48,6 +48,16 @@ npm run dist                 # установщик + zip в release\<верси
 npm run fixtures             # пересоздать синтетические тестовые кадры и иконку
 npm run train:glyphs         # пересобрать шаблоны символов HUD из tests\fixtures\hud (+ отчёт точности)
 npm run kb:import            # обновить базу знаний после нового патча (Valve + OpenDota)
+node scripts/train-cooldown.ts          # шаблоны крупных цифр перезарядки способностей (tests\fixtures\cooldown)
+```
+
+Иконки предметов (после нового патча — после `kb:import`). Сами картинки Valve лежат только в `.cache\icons`
+и в репозиторий не попадают; в проект идут только сжатые шаблоны `src\data\item-templates.json`:
+
+```powershell
+node scripts/download-icons.mjs                                         # иконки предметов, способностей, героев
+node_modules\electron\dist\electron.exe scripts\icons-to-rgba\main.cjs D:\DotaCoach\.cache\icons\7.41f D:\DotaCoach\.cache\icons\7.41f-rgba
+node scripts/make-item-templates.ts                                     # шаблоны 12×9 для инвентаря
 ```
 
 Проверка собранной портативной версии:

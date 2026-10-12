@@ -1,7 +1,7 @@
 // Распознавание HUD (бывшая страница «Диагностика зрения»). В обновлении 0.5.0 команда убрала отдельную вкладку —
 // содержимое перенесено в «Живую игру» (вместо заглушки этапа C) и в «Разбор записи».
 import type { Validity } from '@shared/types/observation';
-import { HUD_FIELDS, formatClock, type HudFieldId, type Pool } from '@core/vision/hud-fields.ts';
+import { HUD_FIELDS, formatClock, formatHudLabel, type HudFieldId, type Pool } from '@core/vision/hud-fields.ts';
 import type { HudReading } from '@core/vision/recognize-hud.ts';
 import layoutJson from '../../data/hud-layouts/dota2-default-16x9.json';
 import { useAge, useEngine } from '../hooks/useEngine';
@@ -26,12 +26,15 @@ export function formatHudValue(id: HudFieldId, v: unknown): string {
     const p = v as Pool;
     return `${p.current} / ${p.max}`;
   }
+  if (id === 'kda' || id === 'farm') return formatHudLabel(id, v).replace(/\//g, ' / ');
   return String(v);
 }
 
+const ABILITY_LABEL = { ready: 'готова', cooldown: 'перезарядка', 'no-mana': 'нет маны', unlearned: 'не изучена' } as const;
+
 const NOT_YET = [
-  'Способности и их перезарядка',
-  'Инвентарь',
+  'Какие именно способности (названия)',
+  'Нейтральный предмет и свиток телепорта',
   'Индикаторы карты',
   'Видимые противники',
   'Открытые меню (магазин, таблица)',
@@ -142,6 +145,47 @@ export function HudRecognition() {
           <span className="muted">Пока нет данных — запустите живой захват или запись.</span>
         )}
       </Card>
+
+      {reading && (
+        <Card title="Способности и время суток">
+          <div className="stat" data-testid="day-night">
+            <div className="stat-label">Время суток</div>
+            <div className="stat-value">
+              {reading.dayNight.value === 'day' ? '☀ день' : reading.dayNight.value === 'night' ? '☾ ночь' : <span className="muted">не определено</span>}
+              {reading.fields.gameClock.value !== null && reading.fields.gameClock.value < 0 && <span className="muted"> · до горна</span>}
+            </div>
+          </div>
+          {reading.abilities ? (
+            <>
+              {reading.selectedUnit.value !== 'ally' && <p className="warn">Способности на панели — выбранного юнита, не обязательно ваши.</p>}
+              <div className="ability-row" data-testid="abilities">
+                {reading.abilities.map((a) => (
+                  <div key={a.index} className={`ability ability-${a.state}`} title={`уверенность ${a.confidence.toFixed(2)}`}>
+                    <div className="ability-state">{ABILITY_LABEL[a.state]}</div>
+                    <div className="ability-cd mono">{a.state === 'cooldown' ? (a.cooldown !== null ? `${a.cooldown} с` : '…') : ' '}</div>
+                    <div className="ability-level">{'●'.repeat(a.level) || '—'}</div>
+                  </div>
+                ))}
+              </div>
+            </>
+          ) : (
+            <span className="muted">Панель способностей не найдена</span>
+          )}
+        </Card>
+      )}
+
+      {reading?.items && (
+        <Card title="Инвентарь">
+          <div className="item-grid" data-testid="items">
+            {reading.items.map((i) => (
+              <div key={i.slot} className={`item-cell${i.slot.startsWith('bp') ? ' item-bp' : ''}`} title={i.distance !== null ? `расстояние ${i.distance}` : 'пусто'}>
+                {i.empty ? <span className="muted">пусто</span> : i.item ? i.item.name : <span className="muted">не узнан</span>}
+              </div>
+            ))}
+          </div>
+          <p className="muted small">Нижний ряд — рюкзак. Предметы на перезарядке и активированные иногда не узнаются — это лучше, чем неверный ответ.</p>
+        </Card>
+      )}
 
       <NotImplemented stage="этап C, продолжение">
         Ещё не распознаются: {NOT_YET.join(', ')}. Для этих элементов нужны шаблоны иконок — будут добавлены следующим шагом.

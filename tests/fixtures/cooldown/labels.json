@@ -1,0 +1,655 @@
+{
+ "description": "Иконки способностей на перезарядке (игра 4, Shadow Fiend, 1920×1080): область 48×45 как в src/core/vision/abilities.ts; секунды подписаны вручную",
+ "frames": [
+  {
+   "file": "g4-v1-t150-s1.png",
+   "cooldown": "9",
+   "split": "train"
+  },
+  {
+   "file": "g4-v1-t150-s2.png",
+   "cooldown": "8",
+   "split": "test"
+  },
+  {
+   "file": "g4-v1-t160-s0.png",
+   "cooldown": "1",
+   "split": "train"
+  },
+  {
+   "file": "g4-v1-t170-s2.png",
+   "cooldown": "2",
+   "split": "test"
+  },
+  {
+   "file": "g4-v1-t210-s1.png",
+   "cooldown": "3",
+   "split": "train"
+  },
+  {
+   "file": "g4-v1-t210-s2.png",
+   "cooldown": "1",
+   "split": "test"
+  },
+  {
+   "file": "g4-v1-t230-s2.png",
+   "cooldown": "7",
+   "split": "train"
+  },
+  {
+   "file": "g4-v1-t260-s1.png",
+   "cooldown": "8",
+   "split": "test"
+  },
+  {
+   "file": "g4-v1-t290-s1.png",
+   "cooldown": "4",
+   "split": "train"
+  },
+  {
+   "file": "g4-v1-t290-s2.png",
+   "cooldown": "2",
+   "split": "test"
+  },
+  {
+   "file": "g4-v1-t310-s1.png",
+   "cooldown": "6",
+   "split": "train"
+  },
+  {
+   "file": "g4-v1-t310-s2.png",
+   "cooldown": "4",
+   "split": "test"
+  },
+  {
+   "file": "g4-v2-t30-s1.png",
+   "cooldown": "6",
+   "split": "train"
+  },
+  {
+   "file": "g4-v2-t30-s2.png",
+   "cooldown": "8",
+   "split": "test"
+  },
+  {
+   "file": "g4-v2-t70-s1.png",
+   "cooldown": "5",
+   "split": "train"
+  },
+  {
+   "file": "g4-v2-t70-s2.png",
+   "cooldown": "2",
+   "split": "test"
+  },
+  {
+   "file": "g4-v2-t80-s2.png",
+   "cooldown": "4",
+   "split": "train"
+  },
+  {
+   "file": "g4-v2-t180-s2.png",
+   "cooldown": "5",
+   "split": "test"
+  },
+  {
+   "file": "g4-v2-t190-s1.png",
+   "cooldown": "1",
+   "split": "train"
+  },
+  {
+   "file": "g4-v2-t190-s2.png",
+   "cooldown": "6",
+   "split": "test"
+  },
+  {
+   "file": "g4-v2-t220-s1.png",
+   "cooldown": "3",
+   "split": "train"
+  },
+  {
+   "file": "g4-v2-t220-s2.png",
+   "cooldown": "4",
+   "split": "test"
+  },
+  {
+   "file": "g4-v2-t270-s1.png",
+   "cooldown": "7",
+   "split": "train"
+  },
+  {
+   "file": "g4-v2-t280-s2.png",
+   "cooldown": "8",
+   "split": "test"
+  },
+  {
+   "file": "g4-v2-t290-s1.png",
+   "cooldown": "1",
+   "split": "train"
+  },
+  {
+   "file": "g4-v3-t30-s0.png",
+   "cooldown": "7",
+   "split": "test"
+  },
+  {
+   "file": "g4-v3-t30-s1.png",
+   "cooldown": "9",
+   "split": "train"
+  },
+  {
+   "file": "g4-v3-t70-s0.png",
+   "cooldown": "6",
+   "split": "test"
+  },
+  {
+   "file": "g4-v3-t80-s1.png",
+   "cooldown": "1",
+   "split": "train"
+  },
+  {
+   "file": "g4-v3-t80-s2.png",
+   "cooldown": "2",
+   "split": "test"
+  },
+  {
+   "file": "g4-v3-t100-s1.png",
+   "cooldown": "2",
+   "split": "train"
+  },
+  {
+   "file": "g4-v3-t160-s1.png",
+   "cooldown": "2",
+   "split": "test"
+  },
+  {
+   "file": "g4-v3-t160-s2.png",
+   "cooldown": "3",
+   "split": "train"
+  },
+  {
+   "file": "g4-v3-t180-s0.png",
+   "cooldown": "5",
+   "split": "test"
+  },
+  {
+   "file": "g4-v3-t200-s2.png",
+   "cooldown": "6",
+   "split": "train"
+  },
+  {
+   "file": "g4-v3-t230-s0.png",
+   "cooldown": "4",
+   "split": "test"
+  },
+  {
+   "file": "g4-v3-t230-s2.png",
+   "cooldown": "8",
+   "split": "train"
+  },
+  {
+   "file": "g4-v3-t270-s1.png",
+   "cooldown": "9",
+   "split": "test"
+  },
+  {
+   "file": "g4-v3-t270-s2.png",
+   "cooldown": "2",
+   "split": "train"
+  },
+  {
+   "file": "g4-v3-t270-s3.png",
+   "cooldown": "16",
+   "split": "test"
+  },
+  {
+   "file": "g4-v3-t280-s3.png",
+   "cooldown": "6",
+   "split": "train"
+  },
+  {
+   "file": "g4-v3-t300-s0.png",
+   "cooldown": "6",
+   "split": "test"
+  },
+  {
+   "file": "g4-v3-t310-s1.png",
+   "cooldown": "2",
+   "split": "train"
+  },
+  {
+   "file": "g4-v3-t310-s2.png",
+   "cooldown": "3",
+   "split": "test"
+  },
+  {
+   "file": "g4-v3-t320-s2.png",
+   "cooldown": "7",
+   "split": "train"
+  },
+  {
+   "file": "g4-v3-t330-s3.png",
+   "cooldown": "14",
+   "split": "test"
+  },
+  {
+   "file": "g4-v4-t20-s1.png",
+   "cooldown": "7",
+   "split": "train"
+  },
+  {
+   "file": "g4-v4-t20-s2.png",
+   "cooldown": "6",
+   "split": "test"
+  },
+  {
+   "file": "g4-v4-t30-s3.png",
+   "cooldown": "12",
+   "split": "train"
+  },
+  {
+   "file": "g4-v4-t40-s3.png",
+   "cooldown": "2",
+   "split": "test"
+  },
+  {
+   "file": "g4-v4-t50-s0.png",
+   "cooldown": "4",
+   "split": "train"
+  },
+  {
+   "file": "g4-v4-t50-s1.png",
+   "cooldown": "5",
+   "split": "test"
+  },
+  {
+   "file": "g4-v4-t50-s2.png",
+   "cooldown": "5",
+   "split": "train"
+  },
+  {
+   "file": "g4-v4-t100-s2.png",
+   "cooldown": "6",
+   "split": "test"
+  },
+  {
+   "file": "g4-v4-t100-s3.png",
+   "cooldown": "21",
+   "split": "train"
+  },
+  {
+   "file": "g4-v4-t110-s3.png",
+   "cooldown": "11",
+   "split": "test"
+  },
+  {
+   "file": "g4-v4-t120-s3.png",
+   "cooldown": "1",
+   "split": "train"
+  },
+  {
+   "file": "g4-v4-t160-s1.png",
+   "cooldown": "7",
+   "split": "test"
+  },
+  {
+   "file": "g4-v4-t160-s2.png",
+   "cooldown": "6",
+   "split": "train"
+  },
+  {
+   "file": "g4-v4-t180-s2.png",
+   "cooldown": "3",
+   "split": "test"
+  },
+  {
+   "file": "g4-v4-t180-s3.png",
+   "cooldown": "2",
+   "split": "train"
+  },
+  {
+   "file": "g4-v4-t200-s3.png",
+   "cooldown": "5",
+   "split": "test"
+  },
+  {
+   "file": "g4-v4-t230-s2.png",
+   "cooldown": "1",
+   "split": "train"
+  },
+  {
+   "file": "g4-v5-t10-s2.png",
+   "cooldown": "3",
+   "split": "test"
+  },
+  {
+   "file": "g4-v5-t30-s3.png",
+   "cooldown": "4",
+   "split": "train"
+  },
+  {
+   "file": "g4-v5-t50-s2.png",
+   "cooldown": "2",
+   "split": "test"
+  },
+  {
+   "file": "g4-v5-t80-s5.png",
+   "cooldown": "102",
+   "split": "train"
+  },
+  {
+   "file": "g4-v5-t90-s5.png",
+   "cooldown": "92",
+   "split": "test"
+  },
+  {
+   "file": "g4-v5-t100-s5.png",
+   "cooldown": "82",
+   "split": "train"
+  },
+  {
+   "file": "g4-v5-t110-s5.png",
+   "cooldown": "72",
+   "split": "test"
+  },
+  {
+   "file": "g4-v5-t120-s1.png",
+   "cooldown": "1",
+   "split": "train"
+  },
+  {
+   "file": "g4-v5-t120-s2.png",
+   "cooldown": "2",
+   "split": "test"
+  },
+  {
+   "file": "g4-v5-t120-s5.png",
+   "cooldown": "62",
+   "split": "train"
+  },
+  {
+   "file": "g4-v5-t130-s5.png",
+   "cooldown": "52",
+   "split": "test"
+  },
+  {
+   "file": "g4-v5-t140-s5.png",
+   "cooldown": "41",
+   "split": "train"
+  },
+  {
+   "file": "g4-v5-t160-s2.png",
+   "cooldown": "8",
+   "split": "test"
+  },
+  {
+   "file": "g4-v5-t160-s3.png",
+   "cooldown": "8",
+   "split": "train"
+  },
+  {
+   "file": "g4-v5-t160-s5.png",
+   "cooldown": "22",
+   "split": "test"
+  },
+  {
+   "file": "g4-v5-t170-s5.png",
+   "cooldown": "12",
+   "split": "train"
+  },
+  {
+   "file": "g4-v5-t180-s0.png",
+   "cooldown": "6",
+   "split": "test"
+  },
+  {
+   "file": "g4-v5-t180-s2.png",
+   "cooldown": "3",
+   "split": "train"
+  },
+  {
+   "file": "g4-v5-t180-s5.png",
+   "cooldown": "2",
+   "split": "test"
+  },
+  {
+   "file": "g4-v5-t190-s2.png",
+   "cooldown": "6",
+   "split": "train"
+  },
+  {
+   "file": "g4-v5-t210-s2.png",
+   "cooldown": "8",
+   "split": "test"
+  },
+  {
+   "file": "g4-v5-t210-s5.png",
+   "cooldown": "108",
+   "split": "train"
+  },
+  {
+   "file": "g4-v5-t220-s0.png",
+   "cooldown": "2",
+   "split": "test"
+  },
+  {
+   "file": "g4-v5-t220-s5.png",
+   "cooldown": "98",
+   "split": "train"
+  },
+  {
+   "file": "g4-v5-t230-s5.png",
+   "cooldown": "88",
+   "split": "test"
+  },
+  {
+   "file": "g4-v5-t240-s5.png",
+   "cooldown": "78",
+   "split": "train"
+  },
+  {
+   "file": "g4-v5-t250-s5.png",
+   "cooldown": "68",
+   "split": "test"
+  },
+  {
+   "file": "g4-v5-t260-s5.png",
+   "cooldown": "58",
+   "split": "train"
+  },
+  {
+   "file": "g4-v5-t270-s5.png",
+   "cooldown": "48",
+   "split": "test"
+  },
+  {
+   "file": "g4-v5-t280-s5.png",
+   "cooldown": "38",
+   "split": "train"
+  },
+  {
+   "file": "g4-v5-t290-s3.png",
+   "cooldown": "14",
+   "split": "test"
+  },
+  {
+   "file": "g4-v5-t290-s5.png",
+   "cooldown": "28",
+   "split": "train"
+  },
+  {
+   "file": "g4-v5-t300-s3.png",
+   "cooldown": "4",
+   "split": "test"
+  },
+  {
+   "file": "g4-v5-t300-s5.png",
+   "cooldown": "18",
+   "split": "train"
+  },
+  {
+   "file": "g4-v5-t310-s3.png",
+   "cooldown": "21",
+   "split": "test"
+  },
+  {
+   "file": "g4-v5-t310-s5.png",
+   "cooldown": "8",
+   "split": "train"
+  },
+  {
+   "file": "g4-v5-t320-s3.png",
+   "cooldown": "11",
+   "split": "test"
+  },
+  {
+   "file": "g4-v5-t350-s3.png",
+   "cooldown": "2",
+   "split": "train"
+  },
+  {
+   "file": "g4-v5-t360-s2.png",
+   "cooldown": "6",
+   "split": "test"
+  },
+  {
+   "file": "g4-v5-t380-s1.png",
+   "cooldown": "7",
+   "split": "train"
+  },
+  {
+   "file": "g4-v5-t380-s2.png",
+   "cooldown": "4",
+   "split": "test"
+  },
+  {
+   "file": "g4-v5-t400-s2.png",
+   "cooldown": "2",
+   "split": "train"
+  },
+  {
+   "file": "g4-v5-t400-s3.png",
+   "cooldown": "11",
+   "split": "test"
+  },
+  {
+   "file": "g4-v5-t410-s3.png",
+   "cooldown": "1",
+   "split": "train"
+  },
+  {
+   "file": "g4-v5-t470-s3.png",
+   "cooldown": "8",
+   "split": "test"
+  },
+  {
+   "file": "g4-v6-t20-s1.png",
+   "cooldown": "1",
+   "split": "train"
+  },
+  {
+   "file": "g4-v6-t70-s3.png",
+   "cooldown": "9",
+   "split": "test"
+  },
+  {
+   "file": "g4-v6-t80-s5.png",
+   "cooldown": "94",
+   "split": "train"
+  },
+  {
+   "file": "g4-v6-t90-s5.png",
+   "cooldown": "83",
+   "split": "test"
+  },
+  {
+   "file": "g4-v6-t100-s5.png",
+   "cooldown": "73",
+   "split": "train"
+  },
+  {
+   "file": "g4-v6-t110-s1.png",
+   "cooldown": "6",
+   "split": "test"
+  },
+  {
+   "file": "g4-v6-t110-s5.png",
+   "cooldown": "63",
+   "split": "train"
+  },
+  {
+   "file": "g4-v6-t120-s5.png",
+   "cooldown": "54",
+   "split": "test"
+  },
+  {
+   "file": "g4-v6-t130-s5.png",
+   "cooldown": "43",
+   "split": "train"
+  },
+  {
+   "file": "g4-v6-t140-s3.png",
+   "cooldown": "16",
+   "split": "test"
+  },
+  {
+   "file": "g4-v6-t140-s5.png",
+   "cooldown": "34",
+   "split": "train"
+  },
+  {
+   "file": "g4-v6-t150-s3.png",
+   "cooldown": "6",
+   "split": "test"
+  },
+  {
+   "file": "g4-v6-t150-s5.png",
+   "cooldown": "23",
+   "split": "train"
+  },
+  {
+   "file": "g4-v6-t160-s5.png",
+   "cooldown": "14",
+   "split": "test"
+  },
+  {
+   "file": "g4-v6-t240-s1.png",
+   "cooldown": "3",
+   "split": "train"
+  },
+  {
+   "file": "g4-v6-t240-s2.png",
+   "cooldown": "1",
+   "split": "test"
+  },
+  {
+   "file": "g4-v6-t270-s0.png",
+   "cooldown": "2",
+   "split": "train"
+  },
+  {
+   "file": "g4-v6-t270-s1.png",
+   "cooldown": "1",
+   "split": "test"
+  },
+  {
+   "file": "g4-v6-t280-s2.png",
+   "cooldown": "9",
+   "split": "train"
+  },
+  {
+   "file": "g4-v6-t290-s1.png",
+   "cooldown": "7",
+   "split": "test"
+  },
+  {
+   "file": "g4-v6-t300-s2.png",
+   "cooldown": "1",
+   "split": "train"
+  },
+  {
+   "file": "g4-v7-t20-s3.png",
+   "cooldown": "8",
+   "split": "test"
+  }
+ ]
+}

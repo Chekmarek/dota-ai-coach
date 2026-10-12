@@ -8,14 +8,7 @@ import { crop, frameAccessFromImage, type RgbaImage } from '../src/core/vision/i
 import { segment } from '../src/core/vision/segment.ts';
 import { GLYPH_H, GLYPH_W } from '../src/core/vision/segment.ts';
 import { scaleRect, type HudLayout } from '../src/core/vision/hud-layout.ts';
-import { HUD_FIELDS, formatClock, type Pool } from '../src/core/vision/hud-fields.ts';
-
-/** Значение в формате разметки */
-function asLabel(id: string, v: unknown): string {
-  if (id === 'gameClock') return formatClock(v as number);
-  if (id === 'health' || id === 'mana') return `${(v as Pool).current}/${(v as Pool).max}`;
-  return String(v);
-}
+import { HUD_FIELDS, formatHudLabel as asLabel } from '../src/core/vision/hud-fields.ts';
 import { recognizeHud } from '../src/core/vision/recognize-hud.ts';
 import { glyphDistance, type GlyphModel, type GlyphSample } from '../src/core/ocr/glyph-ocr.ts';
 
@@ -23,7 +16,7 @@ const root = join(import.meta.dirname, '..');
 const fixtures = join(root, 'tests/fixtures/hud');
 const layout: HudLayout = JSON.parse(readFileSync(join(root, 'src/data/hud-layouts/dota2-default-16x9.json'), 'utf8'));
 const labels = JSON.parse(readFileSync(join(fixtures, 'labels.json'), 'utf8'));
-const MAX_PER_CHAR = 24;
+const MAX_PER_CHAR = 48;
 
 const images = new Map<string, RgbaImage>();
 const load = (f: string) => {
@@ -36,10 +29,13 @@ let mismatches = 0;
 for (const fr of labels.frames.filter((f: { split: string }) => f.split === 'train')) {
   const img = load(fr.file);
   for (const id of HUD_FIELDS) {
-    const truth: string = fr.fields[id].replace(/\s/g, '');
+    if (fr.fields[id] === undefined) continue; // кадр подписан частично (например, только время)
+    let truth: string = fr.fields[id].replace(/\s/g, '');
     const def = layout.regions[id]!;
     const region = crop(img, scaleRect(layout, def, img.width, img.height));
     const seg = segment(region, { mode: def.mode, dropBorder: def.dropBorder, circleMask: def.circleMask, firstRun: def.firstRun });
+    // Бледное двоеточие часов часто не выделяется — тогда сопоставляем только цифры
+    if (id === 'gameClock' && seg.glyphs.length === truth.length - 1) truth = truth.replace(':', '');
     if (seg.glyphs.length !== truth.length) {
       mismatches++;
       console.warn(`  ! ${fr.file} ${id}: символов ${seg.glyphs.length}, ожидалось ${truth.length} («${truth}»), разделение ${seg.separation.toFixed(0)}`);
@@ -78,6 +74,7 @@ for (const fr of labels.frames) {
   const r = recognizeHud(frameAccessFromImage(img), layout, model, 0);
   const line: string[] = [];
   for (const id of HUD_FIELDS) {
+    if (fr.fields[id] === undefined) continue;
     const o = r.fields[id];
     const truth: string = fr.fields[id];
     const st = stats[fr.split as 'train' | 'test'];
@@ -109,6 +106,7 @@ if (process.env.ANALYZE) {
   for (const fr of labels.frames) {
     const img = load(fr.file);
     for (const id of HUD_FIELDS) {
+      if (fr.fields[id] === undefined) continue;
       const truth: string = fr.fields[id].replace(/\s/g, '');
       const def = layout.regions[id]!;
       const seg = segment(crop(img, scaleRect(layout, def, img.width, img.height)), { mode: def.mode, dropBorder: def.dropBorder, circleMask: def.circleMask, firstRun: def.firstRun });

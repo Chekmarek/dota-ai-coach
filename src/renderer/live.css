@@ -69,3 +69,21 @@
 .live-warning { display: flex; flex-direction: column; gap: 4px; padding: 12px 16px; border-radius: var(--radius); border: 1px solid #5a4a1f; background: #2a2412; color: var(--warn); }
 .live-warning strong { font-weight: 700; }
 .live-warning span { color: var(--text); }
+
+/* Способности на панели: состояние, секунды перезарядки, уровень */
+.ability-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+.ability { min-width: 92px; padding: 8px 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--panel-2); display: flex; flex-direction: column; gap: 2px; }
+.ability-state { font-size: 12px; font-weight: 600; }
+.ability-cd { font-size: 16px; min-height: 20px; }
+.ability-level { font-size: 10px; letter-spacing: 2px; color: var(--muted); }
+.ability-ready { border-color: #2f6b3a; }
+.ability-ready .ability-state { color: #6fe07a; }
+.ability-cooldown .ability-state { color: var(--warn); }
+.ability-no-mana { border-color: #2b4a7a; }
+.ability-no-mana .ability-state { color: #7aa7ff; }
+.ability-unlearned { opacity: 0.55; }
+
+/* Инвентарь: 2 ряда по 3 ячейки + рюкзак */
+.item-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 160px)); gap: 6px; margin-top: 6px; }
+.item-cell { padding: 8px 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--panel-2); font-size: 13px; min-height: 20px; }
+.item-bp { opacity: 0.75; font-size: 12px; }

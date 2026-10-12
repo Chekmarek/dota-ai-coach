@@ -95,7 +95,7 @@ export function segment(img: RgbaImage, opts: SegmentOptions): Segmentation {
   if (opts.circleMask) {
     // Всё вне внутреннего круга считаем фоном: кольцо вокруг цифр проходит по ~0.94 радиуса области
     // (внутренний край ~0.87), цифры занимают до ~0.8 радиуса от центра
-    const cx = (w - 1) / 2, cy = (h - 1) / 2, r = (Math.min(w, h) / 2) * 0.85;
+    const cx = (w - 1) / 2, cy = (h - 1) / 2, r = (Math.min(w, h) / 2) * 0.66;
     for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) if ((x - cx) ** 2 + (y - cy) ** 2 > r * r) values[y * w + x] = 0;
   }
   const { threshold, separation } = otsu(opts.circleMask ? values.filter((v) => v > 0) : values);

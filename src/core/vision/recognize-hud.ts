@@ -5,6 +5,9 @@ import { layoutFits, scaleRect, type HudLayout } from './hud-layout.ts';
 import { HUD_FIELDS, PARSERS, type HudFieldId, type HudValues, type ParseResult } from './hud-fields.ts';
 import { findBarAnchor, selectedUnitRelation, type UnitRelation } from './hud-anchors.ts';
 import { readHeroName, type HeroIdentity, type HeroNameEntry } from './hero-name.ts';
+import { isPreHorn, readDayNight, type DayNight } from './day-night.ts';
+import { readAbilities, type AbilitySlot } from './abilities.ts';
+import { readItems, type ItemSlot, type ItemTemplates } from './items.ts';
 
 /** Ниже этой уверенности распознанное значение не принимается (value = null) */
 export const MIN_CONFIDENCE = 0.5;
@@ -23,6 +26,12 @@ export interface HudReading {
   selectedUnit: Observed<UnitRelation>;
   /** Имя героя над портретом нижней панели (того юнита, что выбран) */
   heroName: Observed<HeroIdentity>;
+  /** День или ночь — по значку над часами. Ночь при времени ≤ 1:30 — отсчёт до горна, gameClock < 0 */
+  dayNight: Observed<DayNight>;
+  /** Способности выбранного юнита (null — панель не найдена). Чьи они — см. selectedUnit и heroName */
+  abilities: AbilitySlot[] | null;
+  /** Инвентарь выбранного юнита: 6 ячеек и рюкзак (null — панель не найдена или нет шаблонов) */
+  items: ItemSlot[] | null;
   /** Лучшие кандидаты на имя — для диагностики */
   heroNameCandidates: { name: string; cost: number }[];
   durationMs: number;
@@ -31,6 +40,10 @@ export interface HudReading {
 export interface RecognizeOptions {
   /** Модель букв имени героя и список имён; без них имя не распознаётся */
   heroName?: { model: GlyphModel; names: HeroNameEntry[] };
+  /** Шаблоны крупных цифр перезарядки способностей; без них состояние определяется, а секунды — нет */
+  cooldownModel?: GlyphModel;
+  /** Шаблоны иконок предметов; без них инвентарь не распознаётся */
+  itemTemplates?: ItemTemplates;
   now?: () => number;
 }
 
@@ -114,6 +127,20 @@ export function recognizeHud(
     selectedUnit = { ...relBase, value: rel.value, confidence: rel.confidence, validity: rel.value ? 'valid' : 'absent', raw: rel.value ?? '' };
   }
 
+  // День/ночь по значку над часами; до горна часы идут обратным отсчётом без минуса — ставим его сами
+  const dn = supported ? readDayNight(frame) : { value: null, confidence: 0, rect: { x: 0, y: 0, w: 0, h: 0 } };
+  const dayNight: Observed<DayNight> = {
+    observedAt,
+    sourceRegion: { layoutId: layout.id, regionId: 'dayNight', rect: dn.rect, frameSize },
+    schemaVersion: layout.schemaVersion,
+    value: dn.value,
+    confidence: dn.confidence,
+    validity: !supported ? 'unsupported' : dn.value ? 'valid' : 'absent',
+    raw: dn.value ?? '',
+  };
+  const clock = fields.gameClock as Observed<number>;
+  if (clock.value !== null && isPreHorn(clock.value, dn.value)) fields.gameClock = { ...clock, value: -clock.value };
+
   // Имя героя над портретом (позиция тоже зависит от ширины панели)
   const name =
     supported && opts.heroName
@@ -139,6 +166,9 @@ export function recognizeHud(
     selectedUnit,
     heroName: name.observed,
     heroNameCandidates: name.candidates,
+    dayNight,
+    abilities: supported && anchor.barLeft !== null ? readAbilities(frame, anchor.barLeft, opts.cooldownModel ?? null) : null,
+    items: supported && anchor.barLeft !== null && opts.itemTemplates ? readItems(frame, anchor.barLeft, opts.itemTemplates) : null,
     durationMs: now() - t0,
   };
 }

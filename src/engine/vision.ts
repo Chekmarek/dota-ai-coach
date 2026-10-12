@@ -7,12 +7,18 @@ import layoutJson from '../data/hud-layouts/dota2-default-16x9.json';
 import modelJson from '../data/hud-layouts/glyphs-default.json';
 
 import nameModelJson from '../data/hud-layouts/glyphs-heroname.json';
+import cooldownModelJson from '../data/hud-layouts/glyphs-cooldown.json';
+import itemTemplatesJson from '../data/item-templates.json';
+import type { ItemTemplates } from '@core/vision/items.ts';
 import heroNamesJson from '../data/hero-names.json';
 import type { HeroNameEntry } from '@core/vision/hero-name.ts';
+import { DAY_NIGHT_RECT } from '@core/vision/day-night.ts';
 
 const layout = layoutJson as unknown as HudLayout;
 const model = modelJson as unknown as GlyphModel;
 const nameModel = nameModelJson as unknown as GlyphModel;
+const cooldownModel = cooldownModelJson as unknown as GlyphModel;
+const itemTemplates = itemTemplatesJson as unknown as ItemTemplates;
 const heroNames = heroNamesJson.names as HeroNameEntry[];
 
 /** Полоса с именем героя над портретом: её положение зависит от ширины панели, берём с запасом (при 1920×1080) */
@@ -45,7 +51,7 @@ export class VisionStage {
         return this.copy(bitmap, r); // область вне полос — отдельная копия
       },
     };
-    return recognizeHud(access, layout, model, observedAt, { heroName: { model: nameModel, names: heroNames } });
+    return recognizeHud(access, layout, model, observedAt, { heroName: { model: nameModel, names: heroNames }, cooldownModel, itemTemplates });
   }
 
   private bandsCache: { key: string; bands: Rect[] } | null = null;
@@ -59,6 +65,8 @@ export class VisionStage {
       ...Object.values(layout.regions).map((d) => scaleRect(layout, d, w, h)),
       // имя героя и сдвигаемые от опоры элементы — тоже в нижнюю полосу, чтобы не делать лишних копий
       { x: Math.round(NAME_BAND.x * s), y: Math.round(NAME_BAND.y * sy), w: Math.round(NAME_BAND.w * s), h: Math.round(NAME_BAND.h * sy) },
+      // значок дня/ночи над часами — в верхнюю полосу (ячейки способностей и так внутри нижней)
+      { x: Math.round(DAY_NIGHT_RECT.x * s), y: Math.round(DAY_NIGHT_RECT.y * sy), w: Math.round(DAY_NIGHT_RECT.w * s), h: Math.round(DAY_NIGHT_RECT.h * sy) },
     ];
     const bands = [rects.filter((r) => r.y < h / 2), rects.filter((r) => r.y >= h / 2)]
       .filter((g) => g.length)
