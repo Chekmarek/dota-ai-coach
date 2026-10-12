@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'" />
+    <title>Dota AI Coach — индикатор</title>
+    <style>
+      :root {
+        --gold-hi: #f3d891; --gold: #c9a35a; --gold-lo: #5e421b;
+        --gem: #8b7f6a; --gem-glow: rgba(139, 127, 106, 0);
+      }
+      .seeing { --gem: #6fe07a; --gem-glow: rgba(111, 224, 122, 0.85); }
+      .no-image { --gem: #ff5b3d; --gem-glow: rgba(255, 91, 61, 0.9); }
+      html, body { margin: 0; height: 100%; background: transparent; overflow: hidden; user-select: none; }
+      body { padding: 4px; box-sizing: border-box; }
+
+      /* Весь значок: в спокойном состоянии приглушается, при смене статуса — ярче */
+      .badge { height: 100%; position: relative; opacity: 1; transition: opacity 1.6s ease, transform 0.5s ease; transform: translateY(0); }
+      .badge.calm { opacity: 0.62; }
+      .badge.enter { animation: enter 0.6s cubic-bezier(0.2, 0.9, 0.3, 1.2) both; }
+      @keyframes enter { from { opacity: 0; transform: translateY(-6px) scale(0.96); } to { opacity: 1; transform: none; } }
+
+      /* Кованая рамка со срезанными углами */
+      .frame {
+        position: absolute; inset: 0; padding: 1.5px;
+        background: linear-gradient(180deg, var(--gold-hi), var(--gold) 30%, var(--gold-lo) 72%, var(--gold) 100%);
+        clip-path: polygon(8px 0, calc(100% - 8px) 0, 100% 8px, 100% calc(100% - 8px), calc(100% - 8px) 100%, 8px 100%, 0 calc(100% - 8px), 0 8px);
+        filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.75));
+      }
+      .panel {
+        position: relative; height: 100%; box-sizing: border-box; display: flex; align-items: center; gap: 8px; padding: 0 12px 0 4px;
+        background:
+          linear-gradient(180deg, rgba(255, 222, 160, 0.10), rgba(255, 222, 160, 0) 45%),
+          radial-gradient(130% 160% at 0% 50%, #3b1610 0%, #190f0c 48%, #0b0908 100%);
+        clip-path: polygon(7px 0, calc(100% - 7px) 0, 100% 7px, 100% calc(100% - 7px), calc(100% - 7px) 100%, 7px 100%, 0 calc(100% - 7px), 0 7px);
+        overflow: hidden;
+      }
+      /* Блик, медленно проходящий по панели раз в ~9 с */
+      .panel::after {
+        content: ""; position: absolute; top: 0; bottom: 0; left: -40%; width: 30%;
+        background: linear-gradient(100deg, transparent, rgba(255, 226, 160, 0.13), transparent);
+        transform: skewX(-18deg); animation: sheen 9s ease-in-out infinite; animation-delay: 2s;
+      }
+      .no-image .panel::after { animation: none; }
+      @keyframes sheen { 0%, 82% { left: -40%; } 100% { left: 120%; } }
+
+      /* Эмблема: око в рунном кольце */
+      .emblem { position: relative; width: 30px; height: 30px; flex: none; }
+      .emblem svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; overflow: visible; }
+      .runes { animation: spin 28s linear infinite; transform-origin: 50% 50%; }
+      @keyframes spin { to { transform: rotate(360deg); } }
+      .glow { position: absolute; inset: 7px; border-radius: 50%; box-shadow: 0 0 9px 2px var(--gem-glow); opacity: 0.5; }
+      .seeing .glow { animation: breathe 3.2s ease-in-out infinite; }
+      .no-image .glow { animation: breathe 1.6s ease-in-out infinite; }
+      @keyframes breathe { 0%, 100% { opacity: 0.35; } 50% { opacity: 1; } }
+      .pupil { fill: var(--gem); transition: fill 0.6s ease; }
+      .seeing .pupil { animation: look 7s ease-in-out infinite; }
+      @keyframes look { 0%, 40%, 100% { transform: translateX(0); } 50%, 62% { transform: translateX(1.6px); } 72%, 84% { transform: translateX(-1.6px); } }
+
+      .text { display: flex; flex-direction: column; line-height: 1.05; }
+      .title {
+        font: 700 9.5px 'Palatino Linotype', 'Book Antiqua', Georgia, serif; letter-spacing: 0.26em; text-transform: uppercase;
+        color: var(--gold); text-shadow: 0 1px 0 #000;
+      }
+      .status {
+        font: 600 12.5px 'Segoe UI Variable', 'Segoe UI', system-ui, sans-serif; color: #eee4cf; white-space: nowrap;
+        text-shadow: 0 1px 2px #000; margin-top: 2px; transition: opacity 0.3s ease;
+      }
+      .status.swap { opacity: 0; }
+
+      @media (prefers-reduced-motion: reduce) {
+        *, *::after { animation: none !important; transition: none !important; }
+      }
+    </style>
+    <script type="module" src="./overlay.js"></script>
+  </head>
+  <body>
+    <div class="badge" id="badge">
+      <div class="frame">
+        <div class="panel">
+          <div class="emblem">
+            <div class="glow"></div>
+            <svg viewBox="0 0 30 30" aria-hidden="true">
+              <defs>
+                <linearGradient id="ring" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0" stop-color="#f3d891" /><stop offset="0.5" stop-color="#b08a45" /><stop offset="1" stop-color="#5e421b" />
+                </linearGradient>
+                <radialGradient id="core" cx="0.5" cy="0.42" r="0.62">
+                  <stop offset="0" stop-color="#5c1d14" /><stop offset="1" stop-color="#140a08" />
+                </radialGradient>
+              </defs>
+              <g class="runes">
+                <circle cx="15" cy="15" r="14.2" fill="none" stroke="#c9a35a" stroke-opacity="0.55" stroke-width="0.9" stroke-dasharray="1.6 3.2" />
+                <path d="M15 0.2 L16.1 2 L15 3.8 L13.9 2 Z M15 26.2 L16.1 28 L15 29.8 L13.9 28 Z M0.2 15 L2 13.9 L3.8 15 L2 16.1 Z M26.2 15 L28 13.9 L29.8 15 L28 16.1 Z" fill="#e2c37a" />
+              </g>
+              <circle cx="15" cy="15" r="11.6" fill="url(#core)" stroke="url(#ring)" stroke-width="1.8" />
+              <path d="M6.2 15 Q15 7.2 23.8 15 Q15 22.8 6.2 15 Z" fill="#0a0605" stroke="#dcb867" stroke-width="1.1" />
+              <circle class="pupil" cx="15" cy="15" r="3.1" />
+              <circle cx="14" cy="14" r="0.85" fill="#fff" fill-opacity="0.75" />
+            </svg>
+          </div>
+          <div class="text">
+            <span class="title">Коуч</span>
+            <span class="status" id="status">подключение…</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
