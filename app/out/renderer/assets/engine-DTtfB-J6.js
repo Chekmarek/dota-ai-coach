@@ -3424,6 +3424,7 @@ const uiToEngineSchema = discriminatedUnion("type", [
     })
   }),
   object({ type: literal("live:stop") }),
+  object({ type: literal("ui:visibility"), visible: boolean() }),
   object({ type: literal("status:request") })
 ]);
 class FpsMeter {
@@ -3701,6 +3702,7 @@ class Pipeline {
   previewIntervalMs = 500;
   lastPreviewAt = -Infinity;
   previewBusy = false;
+  uiVisible = true;
   canvas = null;
   statusTimer;
   live = null;
@@ -3802,7 +3804,7 @@ class Pipeline {
     }
   }
   maybePreview(f, now) {
-    if (this.previewBusy || now - this.lastPreviewAt < this.previewIntervalMs * 0.9) {
+    if (!this.uiVisible || this.previewBusy || now - this.lastPreviewAt < this.previewIntervalMs * 0.9) {
       f.bitmap.close();
       return;
     }
@@ -3910,6 +3912,9 @@ async function handle(raw) {
       break;
     case "live:stop":
       if (pipeline.source?.kind === LIVE_KIND) await pipeline.stop("stopped");
+      break;
+    case "ui:visibility":
+      pipeline.uiVisible = msg.visible;
       break;
     case "status:request":
       pipeline.publishStatus();

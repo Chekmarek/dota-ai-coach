@@ -12465,8 +12465,13 @@ class EngineClient {
       this.port.start();
       this.connected = true;
       this.send({ type: "status:request" });
+      this.sendVisibility();
       this.emit();
     });
+    document.addEventListener("visibilitychange", () => this.sendVisibility());
+  }
+  sendVisibility() {
+    this.send({ type: "ui:visibility", visible: document.visibilityState !== "hidden" });
   }
   send(msg) {
     this.port?.postMessage(msg);
@@ -12989,7 +12994,7 @@ function LiveGame({ onNavigate }) {
         /* @__PURE__ */ jsxRuntimeExports.jsx(Stat, { label: "Кадров с окна, к/с", value: live?.captureFps ?? 0, testId: "live-capture-fps", hint: "Сколько кадров отдаёт Windows" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(Stat, { label: "Обработка, к/с", value: on ? status.processingFps : 0 }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(Stat, { label: "Задержка кадра", value: live?.latencyMs != null ? `${live.latencyMs} мс` : "—", hint: "Время от получения кадра до передачи в обработку" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(Stat, { label: "Размер окна", value: live?.width ? `${live.width}×${live.height}` : "—" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(Stat, { label: "Размер кадра", value: live?.width ? `${live.width}×${live.height}` : "—" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(Stat, { label: "Отброшено лимитом", value: on ? status.framesDropped : 0 }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(Stat, { label: "Кадров разобрано", value: on ? status.framesProcessed : 0 })
       ] }) })

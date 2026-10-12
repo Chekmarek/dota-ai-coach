@@ -86,3 +86,22 @@
 - **Новая частота захвата применяется сразу,** если живой режим включён: `LiveSettingsCard` перезапускает живой захват (`startLive`).
 - **Переключатель `ui.showRegions`** («Подсвечивать области HUD») перенесён в раздел «Живая игра». Работать он начнёт на этапе C.
 - **`ui-live.css`:** стили `.settings-*`.
+
+## 0.5.0
+
+Три правки производительности, интерфейс почти не менялся. Дифф: `git diff v0.4.0 v0.5.0 -- app/`.
+
+- **Нет превью, пока окно UI не видно.**
+  - UI, `EngineClient`: новый метод `sendVisibility()` шлёт `{ type: "ui:visibility", visible }`. Вызывается при подключении порта (после `status:request`) и на `document` `visibilitychange`; `visible = document.visibilityState !== "hidden"`.
+  - Движок: в `uiToEngineSchema` добавлен вариант `{ type: literal("ui:visibility"), visible: boolean() }`, в `handle()` — `case "ui:visibility": pipeline.uiVisible = msg.visible`.
+  - `Pipeline`: поле `uiVisible = true`. `maybePreview()` при `!this.uiVisible` сразу закрывает bitmap и не кодирует JPEG. Счётчики и обработка кадров не меняются.
+- **Уменьшение при захвате** (`engine-live.js`, `LiveScreenSource.open()`):
+  - в `getUserMedia` mandatory теперь `maxWidth: opts.maxWidth`, `maxHeight: Math.ceil(opts.maxWidth * 0.75)` вместо 3840×2160;
+  - в запасном `getDisplayMedia` добавлены `width: { ideal: maxWidth }` и `height: { ideal: ceil(maxWidth * 0.75) }`;
+  - `fitWidth` в `onSourceFrame` остаётся как страховка.
+- **Реже ищем Доту, когда её нет** (`engine-live.js`):
+  - новые константы `LIVE_RETRY_SLOW_MS = 10000` и `LIVE_RETRY_SLOW_AFTER_MS = 60000`;
+  - новая чистая функция `liveRetryDelay(waitedMs)`;
+  - поле `waitingSince`: в `tick()` ставится, пока нет потока, и сбрасывается при потоке, в `attach()` и в `start()` (там же `lastAttemptAt = -Infinity`);
+  - `computeLiveState` не менялся.
+- UI `LiveGame`: подпись плитки «Размер окна» → «Размер кадра».

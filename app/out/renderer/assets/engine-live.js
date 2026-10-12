@@ -5,6 +5,8 @@
 
 export const LIVE_KIND = "live-screen";
 export const LIVE_RETRY_MS = 3e3;
+export const LIVE_RETRY_SLOW_MS = 1e4;
+export const LIVE_RETRY_SLOW_AFTER_MS = 6e4;
 export const LIVE_NO_FRAME_MS = 2e3;
 export const LIVE_DARK_MS = 3e3;
 export const LIVE_FROZEN_MS = 1e4;
@@ -28,6 +30,11 @@ export function computeLiveState(f) {
   if (f.darkSince !== null && f.now - f.darkSince >= LIVE_DARK_MS) return { state: "no-image", reason: "dark" };
   if (f.frozenSince !== null && f.now - f.frozenSince >= LIVE_FROZEN_MS) return { state: "no-image", reason: "frozen" };
   return { state: "seeing", reason: null };
+}
+
+/** Чистая функция: пауза между попытками найти Доту — 3 с первые 60 с ожидания, затем 10 с */
+export function liveRetryDelay(waitedMs) {
+  return waitedMs < LIVE_RETRY_SLOW_AFTER_MS ? LIVE_RETRY_MS : LIVE_RETRY_SLOW_MS;
 }
 
 function fitWidth(width, height, maxWidth) {
@@ -73,6 +80,7 @@ export class LiveScreenSource {
   srcSize = null;
   streamStartedAt = 0;
   lastAttemptAt = -Infinity;
+  waitingSince = null;
   lastFrameAt = null;
   lastEmitAt = -Infinity;
   busy = false;
@@ -93,6 +101,8 @@ export class LiveScreenSource {
     this.opts = opts;
     this.events = events;
     this.running = true;
+    this.waitingSince = null;
+    this.lastAttemptAt = -Infinity;
     this.tickTimer = setInterval(() => this.tick(), TICK_MS);
     this.tick();
   }
@@ -116,7 +126,10 @@ export class LiveScreenSource {
   tick() {
     if (!this.running) return;
     const now = performance.now();
-    if (!this.stream && !this.connecting && now - this.lastAttemptAt >= LIVE_RETRY_MS) void this.connect();
+    if (this.stream) this.waitingSince = null;
+    else this.waitingSince ??= now;
+    const retryMs = liveRetryDelay(this.waitingSince === null ? 0 : now - this.waitingSince);
+    if (!this.stream && !this.connecting && now - this.lastAttemptAt >= retryMs) void this.connect();
     if (this.stream && now - (this.lastFrameAt ?? this.streamStartedAt) > LIVE_RECONNECT_MS) {
       // Поток жив, но кадров давно нет (окно пересоздано или свёрнуто) — переподключаемся
       this.detach();
@@ -162,8 +175,8 @@ export class LiveScreenSource {
             chromeMediaSource: "desktop",
             chromeMediaSourceId: sourceId,
             maxFrameRate: this.opts.fps,
-            maxWidth: 3840,
-            maxHeight: 2160
+            maxWidth: this.opts.maxWidth,
+            maxHeight: Math.ceil(this.opts.maxWidth * 0.75)
           }
         }
       });
@@ -172,7 +185,11 @@ export class LiveScreenSource {
       try {
         return await navigator.mediaDevices.getDisplayMedia({
           audio: false,
-          video: { frameRate: { ideal: this.opts.fps, max: this.opts.fps } }
+          video: {
+            frameRate: { ideal: this.opts.fps, max: this.opts.fps },
+            width: { ideal: this.opts.maxWidth },
+            height: { ideal: Math.ceil(this.opts.maxWidth * 0.75) }
+          }
         });
       } catch {
         throw first;
@@ -188,6 +205,7 @@ export class LiveScreenSource {
     }
     const gen = ++this.gen;
     this.stream = stream;
+    this.waitingSince = null;
     this.streamStartedAt = performance.now();
     this.lastFrameAt = null;
     this.darkSince = null;
