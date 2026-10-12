@@ -1,0 +1,17 @@
+{
+  "id": "dota2-default-16x9",
+  "schemaVersion": "1",
+  "description": "Стандартный HUD Dota 2, соотношение 16:9. Координаты даны для 1920×1080 и масштабируются пропорционально. Размечено по записям пользователя 2026-10-11 (патч 7.41e, русский клиент).",
+  "reference": { "w": 1920, "h": 1080 },
+  "aspectTolerance": 0.02,
+  "anchors": { "barLeft": 667 },
+  "regions": {
+    "gameClock": { "rect": [930, 22, 62, 16], "mode": "white", "label": "Игровое время" },
+    "scoreRadiant": { "rect": [862, 8, 50, 24], "mode": "white", "label": "Счёт Сил Света" },
+    "scoreDire": { "rect": [1008, 8, 50, 24], "mode": "white", "label": "Счёт Сил Тьмы" },
+    "gold": { "rect": [1638, 1037, 63, 25], "mode": "luma", "altModes": ["white"], "label": "Золото" },
+    "health": { "rect": [800, 1019, 250, 24], "mode": "white-or-red", "label": "Здоровье" },
+    "mana": { "rect": [800, 1047, 250, 23], "mode": "white-or-red", "label": "Мана" },
+    "level": { "rect": [458, 1038, 36, 36], "mode": "luma", "circleMask": true, "anchor": "barLeft", "label": "Уровень" }
+  }
+}

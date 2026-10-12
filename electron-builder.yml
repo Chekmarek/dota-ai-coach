@@ -1,0 +1,39 @@
+# Сборка дистрибутивов: установщик (NSIS) и портативный zip
+appId: app.dotacoach.desktop
+productName: Dota AI Coach
+executableName: DotaCoach
+copyright: DotaCoach
+directories:
+  output: release/${version}
+  buildResources: resources
+files:
+  - out/**
+  - package.json
+  - '!**/*.map'
+# База знаний (JSON по патчам) — отдельными файлами, чтобы её можно было обновлять без пересборки кода
+extraResources:
+  - from: resources/data
+    to: data
+asar: true
+# Защита (из обновления 0.5.0): exe нельзя запустить как «голый» Node.js и подсунуть ему NODE_OPTIONS
+electronFuses:
+  runAsNode: false
+  enableNodeOptionsEnvironmentVariable: false
+win:
+  icon: resources/icon.png
+  # Имя для zip (у установщика своё — в разделе nsis)
+  artifactName: DotaCoach-${version}-win-x64-portable.${ext}
+  target:
+    - target: nsis
+      arch: [x64]
+    - target: zip
+      arch: [x64]
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: Dota AI Coach
+  artifactName: DotaCoach-Setup-${version}.${ext}
+  deleteAppDataOnUninstall: false

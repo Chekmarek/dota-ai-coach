@@ -1,0 +1,39 @@
+{
+  "patch": "7.41f",
+  "patchDate": "2026-09-15",
+  "generatedAt": "2026-10-11T15:43:12.488Z",
+  "verification": "imported-unverified",
+  "note": "Данные импортированы автоматически и не сверены вручную с патч-ноутами. Для точных расчётов использовать только после проверки.",
+  "sources": [
+    {
+      "name": "Valve datafeed (dota2.com)",
+      "url": "https://www.dota2.com/datafeed",
+      "retrievedAt": "2026-10-11T15:43:12.488Z",
+      "covers": [
+        "patch",
+        "heroes",
+        "abilities",
+        "descRu"
+      ]
+    },
+    {
+      "name": "OpenDota dotaconstants",
+      "url": "https://github.com/odota/dotaconstants",
+      "license": "MIT",
+      "commit": {
+        "sha": "6a7588e9c12f34077384b7e52f4a77ea68056709",
+        "date": "2026-10-10T04:51:09Z"
+      },
+      "retrievedAt": "2026-10-11T15:43:12.488Z",
+      "covers": [
+        "items",
+        "hero roles"
+      ]
+    }
+  ],
+  "counts": {
+    "heroes": 127,
+    "items": 409,
+    "abilities": 734
+  }
+}

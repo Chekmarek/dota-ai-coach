@@ -1,0 +1,47 @@
+{
+  "name": "dota-coach",
+  "productName": "Dota AI Coach",
+  "version": "0.5.0",
+  "description": "Анализ записей Dota 2 по изображению и голосовые рекомендации",
+  "author": "DotaCoach",
+  "license": "UNLICENSED",
+  "private": true,
+  "main": "out/main/index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "electron-vite dev",
+    "build": "electron-vite build",
+    "typecheck": "tsc -p tsconfig.node.json --noEmit && tsc -p tsconfig.web.json --noEmit",
+    "test": "vitest run",
+    "test:e2e": "electron-vite build && playwright test",
+    "fixtures": "node scripts/make-fixtures.mjs",
+    "train:glyphs": "node scripts/train-glyphs.ts",
+    "kb:import": "node scripts/import-kb.mjs && node scripts/make-hero-names.mjs",
+    "train:names": "node scripts/train-names.ts",
+    "dist": "electron-vite build && node scripts/dist.mjs"
+  },
+  "dependencies": {
+    "zod": "4.1.12"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.64.0",
+    "@types/node": "24.10.1",
+    "@types/react": "19.2.2",
+    "@types/react-dom": "19.2.2",
+    "@vitejs/plugin-react": "5.2.0",
+    "electron": "44.4.5",
+    "electron-builder": "26.16.1",
+    "electron-vite": "5.0.0",
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "typescript": "5.9.3",
+    "vite": "7.3.7",
+    "vitest": "5.0.3"
+  },
+  "allowScripts": {
+    "esbuild@0.25.12": true,
+    "esbuild@0.28.2": true,
+    "electron-winstaller": false
+  },
+  "updateRepo": "Chekmarek/dota-ai-coach"
+}
