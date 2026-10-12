@@ -1,0 +1,41 @@
+# Автовыпуск: при каждом push в main проверяет версию в app/package.json.
+# Если релиза vX.Y.Z ещё нет — собирает app.asar, app.asar.sha256, архив установки и публикует релиз.
+# Коуч у всех увидит обновление сам.
+name: auto-release
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Версия
+        id: v
+        run: echo "tag=v$(python -c "import json;print(json.load(open('app/package.json', encoding='utf-8'))['version'])")" >> "$GITHUB_OUTPUT"
+      - name: Релиз уже есть?
+        id: exists
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view "${{ steps.v.outputs.tag }}" >/dev/null 2>&1; then echo "yes=1" >> "$GITHUB_OUTPUT"; else echo "yes=0" >> "$GITHUB_OUTPUT"; fi
+      - name: Сборка файлов релиза
+        if: steps.exists.outputs.yes == '0'
+        run: python tools/make_release.py
+      - name: Публикация релиза
+        if: steps.exists.outputs.yes == '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="${{ steps.v.outputs.tag }}"
+          NOTES="docs/release-notes/$TAG.md"
+          [ -f "$NOTES" ] || echo "Обновление $TAG" > "$NOTES"
+          EXTRA=""
+          if [ -d "release-extras/$TAG" ]; then EXTRA=$(ls -d release-extras/$TAG/*); fi
+          gh release create "$TAG" dist/* $EXTRA --target "$GITHUB_SHA" --title "$TAG" --notes-file "$NOTES"
