@@ -20,14 +20,14 @@ jobs:
     defaults:
       run:
         shell: pwsh
-    env:
-      # .npmrc проекта указывает кэш на диск разработчика — в CI кэш во временной папке
-      npm_config_cache: ${{ runner.temp }}\npm-cache
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: "24"
+      # .npmrc проекта указывает кэш на диск разработчика — в CI кэш во временной папке
+      - name: Кэш npm во временной папке
+        run: '"npm_config_cache=$env:RUNNER_TEMP\npm-cache" >> $env:GITHUB_ENV'
       - name: Версия
         id: v
         run: |
