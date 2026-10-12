@@ -12638,15 +12638,6 @@ const MODE_LABEL = {
   "live-coach-unranked": "Подсказки в обычных матчах",
   "live-coach-ranked": "Подсказки в рейтинговых матчах"
 };
-function VisionDiagnostics() {
-  const { preview, status } = useEngine();
-  const live = status?.state === "running" || status?.state === "paused";
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx(PageHeader, { title: "Диагностика зрения", subtitle: "Области HUD, результаты OCR и уверенность распознавания." }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(NotImplemented, { stage: "этап C", children: "Распознавание HUD (время, золото, уровень, здоровье, мана, способности, инвентарь) ещё не реализовано. Ниже показан только входной кадр — без найденных элементов." }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(Card, { title: "Входной кадр", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "preview", children: preview && live ? /* @__PURE__ */ jsxRuntimeExports.jsx("img", { src: preview.url, alt: "Кадр" }) : /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "muted", children: "Включите «Живую игру» или запустите запись в «Разборе записи»" }) }) })
-  ] });
-}
 function MatchState() {
   return /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx(PageHeader, { title: "Состояние матча", subtitle: "Распознанные факты, ранее наблюдавшиеся значения, выводы и неизвестные." }),
@@ -12720,72 +12711,80 @@ function VoiceSettings() {
     ] })
   ] });
 }
-const CAPTURE_FIELDS = [
-  { key: "targetFps", label: "Частота кадров источника, к/с", min: 0.2, max: 30, step: 0.1, hint: "Сколько кадров в секунду брать из записи" },
-  { key: "processingFpsCap", label: "Лимит обработки, к/с", min: 0.2, max: 30, step: 0.1, hint: "Лишние кадры отбрасываются — защита процессора" },
-  { key: "maxWidth", label: "Максимальная ширина кадра, px", min: 320, max: 3840, step: 1, hint: "Большие кадры уменьшаются до этой ширины" },
-  { key: "previewFps", label: "Частота превью, к/с", min: 0.2, max: 10, step: 0.1, hint: "Как часто обновлять картинку в интерфейсе" }
-];
-function AppSettings() {
+/** Числовое поле настройки: сохраняется при уходе с поля, неверное значение откатывается */
+function NumberSetting({ label, hint, value, min, max, step, testId, onSave }) {
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { title: hint, children: [
+    label,
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
+      "input",
+      {
+        type: "number",
+        min,
+        max,
+        step,
+        defaultValue: value,
+        "data-testid": testId,
+        onBlur: (e) => {
+          const n = Number(e.target.value);
+          if (Number.isFinite(n) && n >= min && n <= max) {
+            if (n !== value) onSave(n);
+          } else e.target.value = String(value);
+        }
+      },
+      value
+    ),
+    hint && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "muted small", children: hint })
+  ] });
+}
+function SettingsSection({ icon, title, subtitle, children }) {
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: "card settings-section", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("header", { className: "settings-head", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "settings-icon", "aria-hidden": true, children: icon }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { children: title }),
+        subtitle && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "muted small", children: subtitle })
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "form", children })
+  ] });
+}
+function AppSettings({ onNavigate }) {
   const { settings, update, error } = useSettings();
   const info = useAppInfo();
+  const upd = useUpdate();
   if (!settings) return null;
+  const c = settings.capture;
   return /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx(PageHeader, { title: "Настройки", subtitle: "Изменения сохраняются сразу и применяются при следующем запуске записи." }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs(Card, { title: "Захват и обработка", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "form", children: [
-        CAPTURE_FIELDS.map((f) => /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { title: f.hint, children: [
-          f.label,
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
-            "input",
-            {
-              type: "number",
-              min: f.min,
-              max: f.max,
-              step: f.step,
-              defaultValue: settings.capture[f.key],
-              "data-testid": `setting-${f.key}`,
-              onBlur: (e) => {
-                const n = Number(e.target.value);
-                if (Number.isFinite(n) && n >= f.min && n <= f.max) void update({ capture: { [f.key]: n } });
-                else e.target.value = String(settings.capture[f.key]);
-              }
-            },
-            settings.capture[f.key]
-          ),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "muted small", children: f.hint })
-        ] }, f.key)),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { className: "check", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
-            "input",
-            {
-              type: "checkbox",
-              checked: settings.replay.loop,
-              onChange: (e) => void update({ replay: { loop: e.target.checked } }),
-              "data-testid": "setting-loop"
-            }
-          ),
-          "Повторять запись по кругу"
-        ] })
-      ] }),
-      error && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "error", children: error })
-    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(PageHeader, { title: "Настройки", subtitle: "Всё сохраняется сразу." }),
+    error && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "error", children: error }),
     /* @__PURE__ */ jsxRuntimeExports.jsx(LiveSettingsCard, { settings, update }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(Card, { title: "О программе", children: info && /* @__PURE__ */ jsxRuntimeExports.jsxs("dl", { className: "kv", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("dt", { children: "Версия" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("dd", { "data-testid": "app-version", children: info.version }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("dt", { children: "Вариант" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("dd", { children: { dev: "разработка", installed: "установленная", portable: "портативная" }[info.distribution] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("dt", { children: "Папка данных" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("dd", { className: "mono", children: info.dataDir }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("dt", { children: "Electron / Chromium / Node" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("dd", { className: "mono", children: [
-        info.electron,
-        " / ",
-        info.chrome,
-        " / ",
-        info.node
+    /* @__PURE__ */ jsxRuntimeExports.jsxs(SettingsSection, { icon: "▶", title: "Разбор записей", subtitle: "Для папки с кадрами и видеофайлов. Применяется при следующем запуске записи.", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(NumberSetting, { label: "Кадров в секунду из записи", hint: "Сколько кадров в секунду брать из видео или папки", value: c.targetFps, min: 0.2, max: 30, step: 0.1, testId: "setting-targetFps", onSave: (n) => void update({ capture: { targetFps: n } }) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(NumberSetting, { label: "Частота превью записи, к/с", hint: "Как часто обновлять картинку на странице «Разбор записи»", value: c.previewFps, min: 0.2, max: 10, step: 0.1, testId: "setting-previewFps", onSave: (n) => void update({ capture: { previewFps: n } }) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { className: "check", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("input", { type: "checkbox", checked: settings.replay.loop, onChange: (e) => void update({ replay: { loop: e.target.checked } }), "data-testid": "setting-loop" }),
+        "Повторять запись по кругу"
       ] })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs(SettingsSection, { icon: "⚡", title: "Производительность", subtitle: "Общее для живой игры и записей. Если коуч грузит компьютер — уменьшите эти значения.", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(NumberSetting, { label: "Лимит обработки, кадров/с", hint: "Сколько кадров в секунду коуч разбирает. Лишние отбрасываются", value: c.processingFpsCap, min: 0.2, max: 30, step: 0.1, testId: "setting-processingFpsCap", onSave: (n) => void update({ capture: { processingFpsCap: n } }) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(NumberSetting, { label: "Максимальная ширина кадра, px", hint: "Большие кадры уменьшаются до этой ширины перед разбором", value: c.maxWidth, min: 320, max: 3840, step: 1, testId: "setting-maxWidth", onSave: (n) => void update({ capture: { maxWidth: n } }) })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(SettingsSection, { icon: "ℹ", title: "О программе", children: info && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("dl", { className: "kv", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("dt", { children: "Версия" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("dd", { "data-testid": "app-version", children: [
+          info.version,
+          upd?.status === "available" ? /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "update-new", children: [" · доступна ", upd.latest?.version] }) : upd?.status === "up-to-date" ? /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "muted", children: " · последняя" }) : null
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("dt", { children: "Вариант" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("dd", { children: { dev: "разработка", installed: "установленная", portable: "портативная" }[info.distribution] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("dt", { children: "Папка данных" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("dd", { className: "mono", children: info.dataDir }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("dt", { children: "Electron / Chromium / Node" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("dd", { className: "mono", children: [info.electron, " / ", info.chrome, " / ", info.node] })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { children: /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: () => onNavigate?.("updates"), "data-testid": "settings-open-updates", children: "Обновления →" }) })
     ] }) })
   ] });
 }
@@ -12947,7 +12946,7 @@ function useLiveAutoStart(status, connected, settings) {
     if (!status.sourceKind) startLive(settings);
   }, [status, connected, settings]);
 }
-function LiveGame() {
+function LiveGame({ onNavigate }) {
   const { status, preview } = useEngine();
   const { settings } = useSettings();
   const on = isLive(status);
@@ -12963,7 +12962,8 @@ function LiveGame() {
         title: "Статус",
         actions: /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx("button", { className: "primary", onClick: () => startLive(settings), disabled: on || !settings, "data-testid": "live-start", children: "▶ Включить" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: () => engine.send({ type: "live:stop" }), disabled: !on, "data-testid": "live-stop", children: "■ Выключить" })
+          /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: () => engine.send({ type: "live:stop" }), disabled: !on, "data-testid": "live-stop", children: "■ Выключить" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: () => onNavigate?.("settings"), title: "Настройки живой игры", "data-testid": "live-settings", children: "⚙" })
         ] }),
         children: [
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "row", children: [
@@ -12991,44 +12991,31 @@ function LiveGame() {
         /* @__PURE__ */ jsxRuntimeExports.jsx(Stat, { label: "Задержка кадра", value: live?.latencyMs != null ? `${live.latencyMs} мс` : "—", hint: "Время от получения кадра до передачи в обработку" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(Stat, { label: "Размер окна", value: live?.width ? `${live.width}×${live.height}` : "—" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(Stat, { label: "Отброшено лимитом", value: on ? status.framesDropped : 0 }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(Stat, { label: "Распознавание", value: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "warn", children: "не реализовано (этап C)" }) })
+        /* @__PURE__ */ jsxRuntimeExports.jsx(Stat, { label: "Кадров разобрано", value: on ? status.framesProcessed : 0 })
       ] }) })
-    ] })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(Card, { title: "Распознавание HUD", children: /* @__PURE__ */ jsxRuntimeExports.jsx(NotImplemented, { stage: "этап C", children: "Коуч уже видит картинку, но пока не понимает её. На этапе C он начнёт читать время, золото, уровень, здоровье, ману, способности и инвентарь — найденные области будут подсвечены прямо на картинке выше, рядом с уверенностью распознавания." }) })
   ] });
 }
 function LiveSettingsCard({ settings, update }) {
   const l = settings.live;
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(Card, { title: "Живой захват", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "form", children: [
+  const { status } = useEngine();
+  // Новая частота захвата применяется сразу, если коуч уже смотрит игру
+  const saveFps = async (n) => {
+    await update({ live: { fps: n } });
+    if (isLive(status)) startLive({ ...settings, live: { ...l, fps: n } });
+  };
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(SettingsSection, { icon: "●", title: "Живая игра", subtitle: "Как коуч смотрит на окно Dota 2 и что показывает поверх игры.", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { className: "check", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("input", { type: "checkbox", checked: l.autoStart, onChange: (e) => void update({ live: { autoStart: e.target.checked } }), "data-testid": "setting-live-autostart" }),
       "Включать захват сам при запуске коуча"
     ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { title: "Сколько кадров в секунду брать с окна игры", children: [
-      "Частота захвата окна, к/с",
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
-        "input",
-        {
-          type: "number",
-          min: 1,
-          max: 30,
-          step: 1,
-          defaultValue: l.fps,
-          "data-testid": "setting-live-fps",
-          onBlur: (e) => {
-            const n = Number(e.target.value);
-            if (Number.isFinite(n) && n >= 1 && n <= 30) void update({ live: { fps: n } });
-            else e.target.value = String(l.fps);
-          }
-        },
-        l.fps
-      ),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "muted small", children: "Применяется при следующем включении. Обработку ограничивает «Лимит обработки» выше." })
-    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(NumberSetting, { label: "Кадров в секунду с окна игры", hint: "10 — хороший баланс. Больше — плавнее, но выше нагрузка", value: l.fps, min: 1, max: 30, step: 1, testId: "setting-live-fps", onSave: (n) => void saveFps(n) }),
     /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { className: "check", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("input", { type: "checkbox", checked: l.overlay, onChange: (e) => void update({ live: { overlay: e.target.checked } }), "data-testid": "setting-live-overlay" }),
       "Показывать значок «Коуч» поверх игры"
     ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { children: [
+    l.overlay && /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { children: [
       "Угол значка",
       /* @__PURE__ */ jsxRuntimeExports.jsxs("select", { value: l.overlayCorner, onChange: (e) => void update({ live: { overlayCorner: e.target.value } }), "data-testid": "setting-live-corner", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "top-right", children: "Справа сверху" }),
@@ -13036,8 +13023,12 @@ function LiveSettingsCard({ settings, update }) {
         /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "bottom-right", children: "Справа снизу" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "bottom-left", children: "Слева снизу" })
       ] })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { className: "check", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("input", { type: "checkbox", checked: settings.ui.showRegions, onChange: (e) => void update({ ui: { showRegions: e.target.checked } }), "data-testid": "setting-show-regions" }),
+      "Подсвечивать распознанные области HUD на картинке (с этапа C)"
     ] })
-  ] }) });
+  ] });
 }
 // ===== Живой захват: конец =====
 // ===== Обновления: начало =====
@@ -13216,7 +13207,6 @@ const PAGES = [
   { id: "dashboard", label: "Обзор", icon: "◈", Component: Dashboard },
   { id: "live", label: "Живая игра", icon: "●", Component: LiveGame },
   { id: "replay", label: "Разбор записи", icon: "▶", Component: ReplayMode },
-  { id: "vision", label: "Диагностика зрения", icon: "◎", Component: VisionDiagnostics },
   { id: "match", label: "Состояние матча", icon: "▦", Component: MatchState },
   { id: "history", label: "История советов", icon: "☰", Component: RecommendationHistory },
   { id: "kb", label: "База знаний", icon: "◆", Component: KnowledgeBase },

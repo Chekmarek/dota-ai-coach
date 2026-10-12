@@ -17,7 +17,7 @@
 
 1. Внесите изменения в `app/` и поднимите `version` в `app/package.json` (например, `0.2.0` → `0.3.0`).
 2. Напишите, что нового, в `docs/release-notes/v0.3.0.md`. Коуч покажет этот текст в «Настройки → Обновления».
-3. Если к релизу нужно приложить дополнительные файлы, положите их в `release-extras/v0.3.0/`.
+3. Соберите пакет для переноса в исходники: `python tools/make_friend_kit.py`. Он положит `DotaCoach-<версия>-update-for-friend.zip` (промт для Claude Code, описание изменений, эталонные сборки, diff) в `release-extras/v<версия>/`, и workflow приложит его к релизу. Другие файлы для релиза кладите туда же.
 4. Отправьте изменения в `main` (`git push`). Workflow `auto-release` (`.github/workflows/auto-release.yml`) увидит новую версию, сам соберёт `app.asar`, `app.asar.sha256` и `DotaCoach-<версия>-update.zip` и опубликует релиз `v<версия>`. После этого коуч у всех предложит обновиться. Если версия в `package.json` не поменялась, релиз не создаётся.
 
 Собрать файлы локально можно так: `python tools/make_release.py` (результат в `dist/`).
@@ -33,7 +33,10 @@
 | `app/out/renderer/overlay/` | Значок «Коуч» поверх игры |
 | `tools/` | Сборка `app.asar` и релиза (Python 3, без зависимостей) |
 | `installer/` | `install.bat` и `rollback.bat` для ручной установки |
-| `docs/PORTING.md` | Как перенести изменения в исходники на TypeScript |
+| `docs/PORTING.md` | Что меняется в каждой версии и как перенести это в исходники на TypeScript |
+| `docs/CLAUDE_PROMPT.md` | Шаблон промта для Claude Code, который переносит обновление в исходники |
+| `reference/baseline-0.1.0/` | Исходная сборка 0.1.0, от неё считаются изменения в пакете для друга |
+| `tools/make_friend_kit.py` | Сборка пакета для друга |
 
 ## Исходники
 

@@ -57,3 +57,10 @@
 .update-toast-text { display: flex; flex-direction: column; gap: 2px; margin-right: 4px; }
 .update-toast-close { background: transparent; border-color: transparent; color: var(--muted); font-size: 18px; padding: 2px 8px; }
 @media (prefers-reduced-motion: reduce) { .nav-dot, .update-banner-dot, .update-toast { animation: none; } }
+/* Настройки: разделы */
+.settings-head { display: flex; align-items: flex-start; gap: 12px; }
+.settings-head h3 { margin: 0; font-size: 15px; }
+.settings-head p { margin: 3px 0 0; }
+.settings-icon { width: 30px; height: 30px; border-radius: 8px; display: grid; place-items: center; flex: none; font-size: 14px;
+  background: var(--panel-2); border: 1px solid var(--line); color: var(--accent-2); }
+.settings-section .form { padding-left: 42px; }
