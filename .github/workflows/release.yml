@@ -1,0 +1,32 @@
+# Выпуск релиза: достаточно запушить тег vX.Y.Z (версия должна совпадать с app/package.json).
+# Собирает app.asar, app.asar.sha256 и архив для ручной установки и публикует релиз,
+# который коуч подхватит через встроенное обновление.
+name: release
+on:
+  push:
+    tags: ["v*"]
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Версия в package.json совпадает с тегом
+        run: |
+          V=$(python -c "import json;print(json.load(open('app/package.json', encoding='utf-8'))['version'])")
+          if [ "v$V" != "$GITHUB_REF_NAME" ]; then echo "Тег $GITHUB_REF_NAME, а в app/package.json версия $V"; exit 1; fi
+      - name: Сборка файлов релиза
+        run: python tools/make_release.py
+      - name: Публикация релиза
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          NOTES="docs/release-notes/$GITHUB_REF_NAME.md"
+          [ -f "$NOTES" ] || echo "Обновление $GITHUB_REF_NAME" > "$NOTES"
+          EXTRA=""
+          if [ -d "release-extras/$GITHUB_REF_NAME" ]; then EXTRA=$(ls -d release-extras/$GITHUB_REF_NAME/*); fi
+          gh release create "$GITHUB_REF_NAME" dist/* $EXTRA --title "$GITHUB_REF_NAME" --notes-file "$NOTES"
