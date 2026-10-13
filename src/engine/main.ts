@@ -10,6 +10,8 @@ function send(msg: EngineToUi, transfer: Transferable[] = []): void {
 }
 
 const pipeline = new Pipeline(send);
+// Данные из игры (GSI): main присылает проверенные тела запросов
+window.dotacoachEngine?.onGsi((msg) => pipeline.ingestGsi(msg));
 
 window.addEventListener('message', (event) => {
   if (event.source !== window || event.data !== ENGINE_PORT_MESSAGE || !event.ports[0]) return;

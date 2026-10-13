@@ -1,6 +1,7 @@
 import { test, expect, _electron as electron, type ElectronApplication, type Page } from '@playwright/test';
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
+import { parseSession, replaySession } from '../../scripts/gsi-replay.mjs';
 
 const ROOT = resolve(import.meta.dirname, '../..');
 const FRAMES = join(ROOT, 'tests/fixtures/frames/synthetic');
@@ -63,7 +64,7 @@ test('приложение запускается, все 9 экранов от�
   }
 });
 
-test('безопасность: в интерфейсе нет доступа к Node.js, ranked-режим выключен', async () => {
+test('безопасность: в интерфейсе нет доступа к Node.js и к секрету GSI; режимы по решению владельца', async () => {
   const { app, ui } = await launch(tmp());
   try {
     const exposure = await ui.evaluate(() => ({
@@ -75,19 +76,29 @@ test('безопасность: в интерфейсе нет доступа к
     expect(exposure.process).toBe('undefined');
     expect(exposure.api).toEqual([
       'checkForUpdates',
+      'connectGsi',
+      'copyGsiLaunchOption',
+      'disconnectGsi',
       'getAppInfo',
+      'getGsiState',
       'getKnowledgeBase',
       'getSettings',
       'getUpdateState',
       'installUpdate',
+      'onGsiState',
       'onUpdateState',
+      'pickDotaFolder',
       'pickReplayFolder',
       'pickReplayVideo',
       'updateSettings',
     ]);
     const info = await ui.evaluate(() => window.dotacoach.getAppInfo());
-    // Живой захват — только наблюдение; подсказки во время матчей выключены
-    expect(info.policy.modes.filter((m) => m.allowed).map((m) => m.mode)).toEqual(['replay', 'live-observe']);
+    // Решение владельца 2026-10-13: подсказки разрешены, включает их пользователь переключателями
+    expect(info.policy.modes.filter((m) => m.allowed).map((m) => m.mode)).toEqual(['replay', 'live-observe', 'live-coach-unranked', 'live-coach-ranked']);
+    // Секрет GSI создан в main и в интерфейс не попадает
+    const s = await ui.evaluate(() => window.dotacoach.getSettings());
+    expect(s.gsi.token).toBe('');
+    await expect(ui.evaluate(() => window.dotacoach.updateSettings({ gsi: { token: 'f'.repeat(64) } } as never))).rejects.toThrow();
     // Недопустимые настройки отклоняются main-процессом
     await expect(ui.evaluate(() => window.dotacoach.updateSettings({ capture: { targetFps: 1000 } }))).rejects.toThrow();
   } finally {
@@ -307,6 +318,80 @@ test('База знаний: герои и предметы текущего п�
     await ui.click('[data-testid="kb-tab-items"]');
     await expect(ui.locator('[data-testid="kb-items"]')).toContainText('4050');
     await ui.screenshot({ path: join(ROOT, 'test-results/kb.png') });
+  } finally {
+    await app.close();
+  }
+});
+// ---------- Данные из игры (GSI) ----------
+
+const GSI_TOKEN = 'e2e0'.repeat(16);
+
+/** Настройки для теста GSI: свой порт и секрет, папка Dota — временная (настоящую Dota тесты не трогают) */
+function gsiSettings(dataDir: string, port: number, dotaDir?: string): void {
+  writeFileSync(join(dataDir, 'settings.json'), JSON.stringify({ live: { autoStart: false }, gsi: { port, token: GSI_TOKEN, record: true, dotaDir: dotaDir ?? null } }));
+}
+
+test('GSI: карточка, подтверждение с путём, файл пишется и удаляется только во временной папке Dota', async () => {
+  const dataDir = tmp();
+  const dota = join(tmp(), 'dota 2 beta');
+  mkdirSync(dota, { recursive: true });
+  gsiSettings(dataDir, 54121, dota);
+  const { app, ui } = await launch(dataDir);
+  try {
+    await ui.click('[data-testid="nav-settings"]');
+    await expect(ui.locator('[data-testid="setting-gsi-port"]')).toHaveValue('54121');
+    await expect(ui.locator('[data-testid="setting-gsi-record"]')).toBeChecked();
+    await ui.click('[data-testid="nav-live"]');
+    await expect(ui.locator('[data-testid="gsi-status"]')).toHaveText('не подключено');
+    await expect(ui.locator('[data-testid="gsi-launch-option"]')).toHaveText('-gamestateintegration');
+    await ui.click('[data-testid="gsi-connect"]');
+    const cfg = join(dota, 'game', 'dota', 'cfg', 'gamestate_integration', 'gamestate_integration_dotacoach.cfg');
+    await expect(ui.locator('[data-testid="gsi-confirm-path"]')).toHaveText(cfg);
+    expect(existsSync(cfg)).toBe(false); // до подтверждения ничего не пишется
+    await ui.click('[data-testid="gsi-confirm-yes"]');
+    await expect(ui.locator('[data-testid="gsi-status"]')).toHaveText('файл установлен, ждём Dota');
+    const text = readFileSync(cfg, 'utf8');
+    expect(text).toContain('"uri"           "http://127.0.0.1:54121/"');
+    expect(text).toContain(GSI_TOKEN);
+    await ui.screenshot({ path: join(ROOT, 'test-results/gsi-card.png') });
+    await ui.click('[data-testid="gsi-disconnect"]');
+    await ui.click('[data-testid="gsi-confirm-yes"]');
+    await expect(ui.locator('[data-testid="gsi-status"]')).toHaveText('не подключено');
+    expect(existsSync(cfg)).toBe(false);
+  } finally {
+    await app.close();
+  }
+});
+
+test('GSI: записанная сессия → «Состояние матча» заполняется из игры без захвата экрана', async () => {
+  const dataDir = tmp();
+  const port = 54122;
+  gsiSettings(dataDir, port);
+  const { app, ui } = await launch(dataDir);
+  try {
+    await ui.click('[data-testid="nav-match"]');
+    await expect(ui.locator('[data-testid="match-empty"]')).toBeVisible();
+    const entries = parseSession(readFileSync(join(ROOT, 'tests/fixtures/gsi/session.jsonl'), 'utf8'));
+    const r = await replaySession(entries, { url: `http://127.0.0.1:${port}/`, token: GSI_TOKEN });
+    expect(r.failed).toBe(0);
+    const t0 = Date.now();
+    const hero = ui.locator('[data-testid="hero-identity"]');
+    await expect(ui.locator('[data-testid="hero-identity-value"]')).toHaveText('Shadow Fiend', { timeout: 3000 });
+    await expect(ui.locator('[data-testid="hero-level-value"]')).toHaveText('7', { timeout: 3000 });
+    await expect(ui.locator('[data-testid="match-clock-value"]')).toHaveText(/^8:0\d/, { timeout: 3000 });
+    expect(Date.now() - t0).toBeLessThan(3000);
+    await expect(hero.locator('[data-testid="source-chip"]')).toHaveText('из игры');
+    await expect(ui.locator('[data-testid="hero-level"] [data-testid="source-chip"]')).toHaveText('из игры');
+    await expect(ui.locator('[data-testid="match-clock"] [data-testid="source-chip"]')).toHaveText('из игры');
+    await expect(ui.locator('[data-testid="item-inv1-value"]')).toHaveText('Bottle');
+    await expect(ui.locator('[data-testid="sidebar-gsi"]')).toBeVisible();
+    await ui.screenshot({ path: join(ROOT, 'test-results/gsi-match.png') });
+    // Сессия записана без ников и steamid
+    const sessions = join(dataDir, 'gsi-sessions');
+    await expect.poll(() => (existsSync(sessions) ? readdirSync(sessions).length : 0)).toBe(1);
+    const rec = readFileSync(join(sessions, readdirSync(sessions)[0]!), 'utf8');
+    expect(parseSession(rec).length).toBeGreaterThanOrEqual(20);
+    expect(rec).not.toContain(GSI_TOKEN);
   } finally {
     await app.close();
   }

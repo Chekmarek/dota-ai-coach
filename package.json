@@ -15,6 +15,7 @@
     "test": "vitest run",
     "test:e2e": "electron-vite build && playwright test",
     "fixtures": "node scripts/make-fixtures.mjs",
+    "gsi:replay": "node scripts/gsi-replay.mjs",
     "train:glyphs": "node scripts/train-glyphs.ts",
     "kb:import": "node scripts/import-kb.mjs && node scripts/make-hero-names.mjs",
     "train:names": "node scripts/train-names.ts",

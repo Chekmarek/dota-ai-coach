@@ -18,6 +18,17 @@ const api: DotaCoachApi = {
     ipcRenderer.on(IPC.updateState, listener);
     return () => ipcRenderer.removeListener(IPC.updateState, listener);
   },
+  // Данные из игры (Valve GSI)
+  getGsiState: () => ipcRenderer.invoke(IPC.gsiGet),
+  connectGsi: () => ipcRenderer.invoke(IPC.gsiConnect),
+  disconnectGsi: () => ipcRenderer.invoke(IPC.gsiDisconnect),
+  pickDotaFolder: () => ipcRenderer.invoke(IPC.gsiPickDota),
+  copyGsiLaunchOption: () => ipcRenderer.invoke(IPC.gsiCopyLaunchOption),
+  onGsiState: (fn) => {
+    const listener = (_e: Electron.IpcRendererEvent, state: Parameters<typeof fn>[0]) => fn(state);
+    ipcRenderer.on(IPC.gsiState, listener);
+    return () => ipcRenderer.removeListener(IPC.gsiState, listener);
+  },
 };
 
 contextBridge.exposeInMainWorld('dotacoach', api);

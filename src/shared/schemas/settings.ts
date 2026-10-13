@@ -7,6 +7,9 @@ import { z } from 'zod';
 
 export const SETTINGS_SCHEMA_VERSION = 1;
 
+/** Порт приёмника GSI по умолчанию */
+export const GSI_DEFAULT_PORT = 53790;
+
 const DEFAULTS = {
   capture: { targetFps: 2, maxWidth: 1920, processingFpsCap: 10, previewFps: 2 },
   replay: { loop: false },
@@ -15,6 +18,8 @@ const DEFAULTS = {
   live: { autoStart: true, fps: 10, overlay: true, overlayCorner: 'top-right' as OverlayCorner },
   // Решение владельца 2026-10-13 (docs/POLICY.md): подсказки включены по умолчанию, в рейтинге — тоже; решает пользователь
   hints: { enabled: true, ranked: true },
+  // Valve Game State Integration: локальный приёмник на 127.0.0.1 (этап 2 GSI)
+  gsi: { port: GSI_DEFAULT_PORT, token: '', record: true, dotaDir: null as string | null },
 };
 
 export type OverlayCorner = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
@@ -57,6 +62,19 @@ const fields = {
     /** Подсказки и в рейтинговых матчах — решает пользователь (риск для аккаунта, см. docs/POLICY.md) */
     ranked: z.boolean(),
   },
+  gsi: {
+    /** Порт приёмника на 127.0.0.1; если занят — показываем это, другой порт сами не выбираем */
+    port: z.number().int().min(1024).max(65535),
+    /**
+     * Секрет для auth.token в файле Dota: 32 случайных байта (64 hex-символа), создаётся один раз в main.
+     * Пустая строка — ещё не создан. Из интерфейса не меняется (нет в схеме патча).
+     */
+    token: z.union([z.literal(''), z.string().regex(/^[0-9a-f]{64}$/)]),
+    /** Записывать сессии GSI (без ников и steamid) в <папка данных>/gsi-sessions */
+    record: z.boolean(),
+    /** Папка «dota 2 beta», если коуч не нашёл её сам; null — искать через Steam */
+    dotaDir: z.string().min(3).max(1000).nullable(),
+  },
 };
 
 type Sections = typeof fields;
@@ -78,6 +96,7 @@ export const settingsSchema = z.object({
   ui: tolerant('ui'),
   live: tolerant('live'),
   hints: tolerant('hints'),
+  gsi: tolerant('gsi'),
 });
 
 export type Settings = z.infer<typeof settingsSchema>;
@@ -95,6 +114,8 @@ export const settingsPatchSchema = z
     ui: z.object(fields.ui).partial().strict().optional(),
     live: z.object(fields.live).partial().strict().optional(),
     hints: z.object(fields.hints).partial().strict().optional(),
+    // token — только main-процесс (SettingsStore.setGsiToken), dotaDir — через диалог выбора папки
+    gsi: z.object({ port: fields.gsi.port, record: fields.gsi.record }).partial().strict().optional(),
   })
   .strict();
 
@@ -109,5 +130,11 @@ export function applySettingsPatch(current: Settings, patch: SettingsPatch): Set
     ui: { ...current.ui, ...patch.ui },
     live: { ...current.live, ...patch.live },
     hints: { ...current.hints, ...patch.hints },
+    gsi: { ...current.gsi, ...patch.gsi },
   });
+}
+
+/** Изменение настроек, недоступное интерфейсу: секрет GSI и папка Dota (из диалога main-процесса) */
+export function applyInternalGsi(current: Settings, gsi: Partial<Settings['gsi']>): Settings {
+  return settingsSchema.parse({ ...current, gsi: { ...current.gsi, ...gsi } });
 }

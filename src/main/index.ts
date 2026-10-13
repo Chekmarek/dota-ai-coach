@@ -10,6 +10,7 @@ import { EngineLink } from './lifecycle/engine-link';
 import { handleMediaProtocol, registerMediaScheme } from './media/media-protocol';
 import { onLiveSettingsChanged, setupLive } from './live/live';
 import { setupUpdater } from './live/updater';
+import { setupGsi } from './gsi';
 
 // Данные (настройки, кэш Chromium) — в одной папке: для портативной версии это ./data рядом с exe
 const { dataDir, distribution } = resolveDataDir();
@@ -45,13 +46,18 @@ if (!app.requestSingleInstanceLock()) {
     const isTrustedSender = (e: Electron.IpcMainInvokeEvent) => !!ui && !ui.isDestroyed() && e.sender.id === ui.webContents.id;
 
     ui = createUiWindow();
+    // Данные из игры (Valve GSI): приёмник на 127.0.0.1, тела — в движок
+    const gsi = setupGsi({ settings, dataDir, getUi: () => ui, isTrustedSender, forward: (body, wallMs) => engine?.sendGsi(body, wallMs) });
     registerIpc({
       settings,
       kb: new KbStore(),
       dataDir,
       distribution,
       isTrustedSender,
-      onSettingsChanged: () => onLiveSettingsChanged(),
+      onSettingsChanged: (next) => {
+        onLiveSettingsChanged();
+        gsi.onSettingsChanged(next);
+      },
     });
     // Живой захват окна Dota 2 (только наблюдение) и проверка обновлений
     setupLive({ settings, preloadDir, pageUrl, harden });
@@ -62,6 +68,7 @@ if (!app.requestSingleInstanceLock()) {
     engine.start();
 
     ui.on('closed', () => {
+      void gsi.dispose();
       engine?.dispose();
       engine = null;
       ui = null;

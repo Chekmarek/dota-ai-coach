@@ -105,6 +105,22 @@ export function AppSettings({ onNavigate }: PageProps) {
       <SettingsSection icon="💬" title="Live-подсказки" subtitle="Советы коуча во время матча — в отдельном окне, не поверх игры. Решаете вы.">
         <HintsToggles settings={settings} update={update} />
       </SettingsSection>
+      <SettingsSection icon="◆" title="Данные из игры (GSI)" subtitle="Dota присылает коучу данные о вашем герое на этот компьютер (127.0.0.1). Подключение — на странице «Живая игра».">
+        <NumberSetting
+          label="Порт приёмника"
+          hint="Если порт занят другой программой — укажите другой (1024–65535). Файл в папке Dota обновится сам"
+          value={settings.gsi.port}
+          min={1024}
+          max={65535}
+          step={1}
+          testId="setting-gsi-port"
+          onSave={(n) => void update({ gsi: { port: Math.round(n) } })}
+        />
+        <label className="check">
+          <input type="checkbox" checked={settings.gsi.record} onChange={(e) => void update({ gsi: { record: e.target.checked } })} data-testid="setting-gsi-record" />
+          Записывать сессии (без ников и steamid; последние 20 дней — в папке данных, gsi-sessions)
+        </label>
+      </SettingsSection>
       <SettingsSection icon="▶" title="Разбор записей" subtitle="Для папки с кадрами и видеофайлов. Применяется при следующем запуске записи.">
         <NumberSetting label="Кадров в секунду из записи" hint="Сколько кадров в секунду брать из видео или папки" value={c.targetFps} min={0.2} max={30} step={0.1} testId="setting-targetFps" onSave={(n) => void update({ capture: { targetFps: n } })} />
         <NumberSetting label="Частота превью записи, к/с" hint="Как часто обновлять картинку на странице «Разбор записи»" value={c.previewFps} min={0.2} max={10} step={0.1} testId="setting-previewFps" onSave={(n) => void update({ capture: { previewFps: n } })} />

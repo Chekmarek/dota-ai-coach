@@ -2,6 +2,7 @@ import { z } from 'zod';
 import type { CaptureStatus } from '../types/capture';
 import type { HudReading } from '../../core/vision/recognize-hud.ts';
 import type { MatchState } from '../../core/match-state/index.ts';
+import type { AgreementReport } from '../../core/gsi/agreement.ts';
 
 // Протокол между окном интерфейса и скрытым окном движка (через MessagePort).
 // Кадры целиком по нему НЕ ходят — только статус и сжатые превью с ограниченной частотой.
@@ -75,6 +76,8 @@ export interface VisionMessage {
 export interface MatchMessage {
   type: 'match';
   state: MatchState;
+  /** Сверка зрения с GSI за сессию (пусто, пока нет обоих источников) */
+  agreement: AgreementReport;
 }
 
 export type EngineToUi = { type: 'status'; status: CaptureStatus } | PreviewMessage | VisionMessage | MatchMessage;

@@ -3,6 +3,7 @@ import { ENGINE_PORT_MESSAGE } from '@shared/ipc';
 import type { EngineToUi, UiToEngine, VisionMessage } from '@shared/events/engine-protocol';
 import type { CaptureStatus } from '@shared/types/capture';
 import type { MatchState } from '@core/match-state/index.ts';
+import type { AgreementReport } from '@core/gsi/agreement.ts';
 
 export interface PreviewFrame {
   url: string;
@@ -28,6 +29,8 @@ class EngineClient {
   visionAt: number | null = null;
   /** Последнее состояние матча от движка (этап D) */
   match: MatchState | null = null;
+  /** Сверка зрения с GSI */
+  agreement: AgreementReport = {};
   connected = false;
 
   constructor() {
@@ -74,6 +77,7 @@ class EngineClient {
       this.visionAt = Date.now();
     } else if (msg.type === 'match') {
       this.match = msg.state;
+      this.agreement = msg.agreement;
     } else if (msg.type === 'preview') {
       const url = URL.createObjectURL(new Blob([msg.jpeg], { type: 'image/jpeg' }));
       if (this.preview) URL.revokeObjectURL(this.preview.url);
@@ -99,10 +103,19 @@ export function useEngine(): {
   vision: VisionMessage | null;
   visionAt: number | null;
   match: MatchState | null;
+  agreement: AgreementReport;
   connected: boolean;
 } {
   useSyncExternalStore(engine.subscribe, engine.getVersion);
-  return { status: engine.status, preview: engine.preview, vision: engine.vision, visionAt: engine.visionAt, match: engine.match, connected: engine.connected };
+  return {
+    status: engine.status,
+    preview: engine.preview,
+    vision: engine.vision,
+    visionAt: engine.visionAt,
+    match: engine.match,
+    agreement: engine.agreement,
+    connected: engine.connected,
+  };
 }
 
 /** Секунды с момента события — для пометки устаревших данных */

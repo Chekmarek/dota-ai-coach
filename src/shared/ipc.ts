@@ -17,6 +17,14 @@ export const IPC = {
   updateInstall: 'update:install',
   /** событие main → UI */
   updateState: 'update:state',
+  // Данные из игры (Valve GSI)
+  gsiGet: 'gsi:get',
+  gsiConnect: 'gsi:connect',
+  gsiDisconnect: 'gsi:disconnect',
+  gsiPickDota: 'gsi:pick-dota',
+  gsiCopyLaunchOption: 'gsi:copy-launch-option',
+  /** событие main → UI */
+  gsiState: 'gsi:state',
 } as const;
 
 /**
@@ -26,6 +34,8 @@ export const IPC = {
 export const LIVE_IPC = {
   findDota: 'engine:find-dota',
   liveStatus: 'engine:live-status',
+  /** событие main → движок: проверенное тело запроса GSI */
+  gsiBody: 'engine:gsi',
   /** событие main → значок поверх игры */
   overlayState: 'overlay:state',
 } as const;
@@ -63,6 +73,37 @@ export interface UpdateState {
   repo: string | null;
 }
 
+/** Состояние приёмника GSI и файла в папке Dota (main → UI) */
+export interface GsiState {
+  server: 'off' | 'starting' | 'listening' | 'port-busy' | 'error';
+  port: number;
+  error: string | null;
+  dota: {
+    /** Папка «dota 2 beta»; null — не найдена */
+    dir: string | null;
+    how: 'override' | 'library' | 'not-found';
+    /** Полный путь файла коуча (для подтверждения перед записью); null — папка не найдена */
+    cfgPath: string | null;
+    /** Файл коуча лежит в папке Dota */
+    installed: boolean;
+    /** Файл совпадает с текущими портом и секретом (иначе — «Подключить» его обновит) */
+    current: boolean;
+  };
+  /** Когда пришёл последний принятый запрос (Date.now в main); null — ещё не было */
+  lastBodyAt: number | null;
+  accepted: number;
+  rejected: number;
+  recording: boolean;
+  /** Параметр запуска Dota 2 */
+  launchOption: string;
+}
+
+/** Тело GSI для движка */
+export interface GsiBodyMessage {
+  body: Record<string, unknown>;
+  wallMs: number;
+}
+
 /** API, которое preload выдаёт интерфейсу как window.dotacoach */
 export interface DotaCoachApi {
   getSettings(): Promise<Settings>;
@@ -75,6 +116,12 @@ export interface DotaCoachApi {
   checkForUpdates(): Promise<UpdateState>;
   installUpdate(): Promise<UpdateState>;
   onUpdateState(fn: (state: UpdateState) => void): () => void;
+  getGsiState(): Promise<GsiState>;
+  connectGsi(): Promise<GsiState>;
+  disconnectGsi(): Promise<GsiState>;
+  pickDotaFolder(): Promise<GsiState>;
+  copyGsiLaunchOption(): Promise<void>;
+  onGsiState(fn: (state: GsiState) => void): () => void;
 }
 
 /** Найденное окно Доты: source — для захвата, windows — заголовки всех окон (диагностика) */
@@ -100,4 +147,6 @@ export interface LiveStatusReport {
 export interface DotaCoachEngineApi {
   findDota(): Promise<FindDotaResult>;
   reportLive(status: LiveStatusReport): void;
+  /** Подписка на тела GSI от main */
+  onGsi(fn: (msg: GsiBodyMessage) => void): void;
 }

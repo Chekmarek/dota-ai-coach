@@ -7,7 +7,10 @@ import { ImageFolderSource } from './capture/image-folder-source';
 import { VideoFileSource } from './capture/video-file-source';
 import { LiveScreenSource } from './capture/live-screen-source';
 import { VisionStage } from './vision';
-import { MatchStateModel } from '@core/match-state/index.ts';
+import { GSI_LIVE_MS, MatchStateModel } from '@core/match-state/index.ts';
+import { AgreementTracker } from '@core/gsi/index.ts';
+import type { GsiBodyMessage } from '@shared/ipc';
+import { readGsi } from './gsi';
 
 declare global {
   interface Window {
@@ -22,6 +25,8 @@ const STATUS_INTERVAL_MS = 500;
 const VISION_UI_FPS = 5;
 /** Состояние матча — не чаще стольких раз в секунду (плюс сразу при новом событии) */
 const MATCH_UI_FPS = 4;
+/** Состояние матча публикуется, пока идёт источник кадров или GSI был не раньше этого (мс) */
+const GSI_PUBLISH_MS = 60_000;
 
 /**
  * Конвейер движка: источник → ограничитель частоты → распознавание HUD → превью для UI.
@@ -48,8 +53,15 @@ export class Pipeline {
   private readonly vision = new VisionStage();
   private visionMsAvg: number | null = null;
   private lastVisionSentAt = -Infinity;
-  /** Модель состояния матча: одна на конвейер, сбрасывается при каждом запуске и остановке источника */
+  /**
+   * Модель состояния матча: одна на конвейер. Сбрасывается при запуске и остановке источника кадров,
+   * но не пока идёт GSI: тогда матч продолжается и без захвата экрана.
+   */
   private readonly match = new MatchStateModel();
+  /** Сверка зрения с GSI (только кадры живого захвата — это тот же матч) */
+  private readonly agreement = new AgreementTracker();
+  private lastGsiAt: number | null = null;
+  private gsiMatchId: string | null = null;
   private lastMatchSentAt = -Infinity;
   private sentEventSeq = -1;
   /** Окно интерфейса видно? Если скрыто — превью не кодируем (обработка кадров продолжается) */
@@ -65,6 +77,31 @@ export class Pipeline {
 
   constructor(private send: (msg: EngineToUi, transfer?: Transferable[]) => void) {
     this.statusTimer = setInterval(() => this.publishStatus(), STATUS_INTERVAL_MS);
+  }
+
+  /** GSI присылал данные в последние GSI_LIVE_MS */
+  private gsiLive(now = Date.now()): boolean {
+    return this.lastGsiAt !== null && now - this.lastGsiAt < GSI_LIVE_MS;
+  }
+
+  /** Тело GSI из main (приёмник на 127.0.0.1). Время — часы движка, как у кадров */
+  ingestGsi(msg: GsiBodyMessage): void {
+    const now = Date.now();
+    const reading = readGsi(msg.body);
+    // Меню или наблюдение — матча своего героя нет; heartbeat всё равно значит, что GSI работает
+    this.lastGsiAt = now;
+    if (!reading) return;
+    if (reading.matchId !== null && reading.matchId !== this.gsiMatchId) {
+      if (this.gsiMatchId !== null) this.agreement.reset();
+      this.gsiMatchId = reading.matchId;
+    }
+    try {
+      this.match.ingestGsi(reading, now);
+      this.agreement.addGsi(reading, now);
+    } catch (err) {
+      this.lastError = { code: 'internal', message: `Ошибка данных GSI: ${(err as Error).message}`, fatal: false, at: now };
+    }
+    this.publishMatch(false);
   }
 
   setSender(send: (msg: EngineToUi, transfer?: Transferable[]) => void): void {
@@ -134,7 +171,7 @@ export class Pipeline {
     this.send({ type: 'status', status: this.status() });
     this.reportLive();
     // Новых кадров может не быть (пауза записи, Дота свёрнута) — метки «видно сейчас/видели раньше» всё равно стареют
-    if (this.source) this.publishMatch(false);
+    if (this.source || (this.lastGsiAt !== null && Date.now() - this.lastGsiAt < GSI_PUBLISH_MS)) this.publishMatch(false);
   }
 
   /** Отправляет состояние матча: не чаще MATCH_UI_FPS раз в секунду, а при новом событии — сразу */
@@ -144,12 +181,15 @@ export class Pipeline {
     if (!force && !newEvent && now - this.lastMatchSentAt < 1000 / MATCH_UI_FPS) return;
     this.lastMatchSentAt = now;
     this.sentEventSeq = this.match.eventSeq;
-    this.send({ type: 'match', state: this.match.snapshot(Date.now()) });
+    const wallMs = Date.now();
+    this.send({ type: 'match', state: this.match.snapshot(wallMs), agreement: this.agreement.report(wallMs) });
   }
 
-  /** Новый источник или остановка — состояние прошлого матча больше не относится к делу */
+  /** Новый источник или остановка — состояние прошлого матча больше не относится к делу (кроме матча из GSI) */
   private resetMatch(): void {
+    if (this.gsiLive()) return;
     this.match.reset(Date.now());
+    this.agreement.reset();
     this.publishMatch(true);
   }
 
@@ -193,8 +233,13 @@ export class Pipeline {
         this.lastVisionSentAt = now;
         this.send({ type: 'vision', reading, frameIndex: f.index, sourceTimeMs: f.sourceTimeMs });
       }
-      this.match.ingest(reading, Date.now());
-      this.publishMatch(false);
+      // Пока идёт GSI, кадры записи — другой матч: в модель идут только кадры живого захвата
+      const wallMs = Date.now();
+      if (this.isLive() || !this.gsiLive(wallMs)) {
+        this.match.ingest(reading, wallMs);
+        if (this.isLive()) this.agreement.addScreen(reading, wallMs);
+        this.publishMatch(false);
+      }
     } catch (err) {
       this.lastError = { code: 'internal', message: `Ошибка распознавания: ${(err as Error).message}`, fatal: false, at: Date.now() };
     } finally {
