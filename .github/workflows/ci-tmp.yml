@@ -1,0 +1,43 @@
+# Временная проверка (ветка ci-tmp-*): типы и unit-тесты на Windows. Ветка удаляется после проверки.
+name: ci-tmp
+on:
+  push:
+    branches: ['ci-tmp-*']
+jobs:
+  check:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Кэш npm во временной папке
+        run: '"npm_config_cache=$env:RUNNER_TEMP\npm-cache" >> $env:GITHUB_ENV'
+      - name: Зависимости
+        run: |
+          npm ci
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+      - name: Типы
+        run: |
+          npm run typecheck 2>&1 | Tee-Object typecheck.txt
+          $code = $LASTEXITCODE
+          Get-Content typecheck.txt | Select-String "error TS" | ForEach-Object { "::error::$_" }
+          exit $code
+      - name: Тесты
+        if: always()
+        run: |
+          npx vitest run --reporter=default --reporter=json --outputFile=vitest.json 2>&1 | Tee-Object test.txt
+          $code = $LASTEXITCODE
+          $j = Get-Content vitest.json -Raw | ConvertFrom-Json
+          "::notice::tests total=$($j.numTotalTests) passed=$($j.numPassedTests) failed=$($j.numFailedTests) skipped=$($j.numPendingTests) suites=$($j.numTotalTestSuites)"
+          foreach ($f in $j.testResults) { foreach ($a in $f.assertionResults) { if ($a.status -eq 'failed') { $m = ($a.failureMessages -join ' ') -replace "`r?`n", ' '; "::error::$($a.fullName) :: $($m.Substring(0, [Math]::Min(600, $m.Length)))" } } }
+          foreach ($line in (Get-Content test.txt | Select-String "perf-gsi")) { "::notice::$line" }
+          exit $code
+      - name: Изоляция ядра
+        if: always()
+        run: |
+          $hits = Get-ChildItem -Recurse src/core -Include *.ts | Select-String -Pattern "from '(electron|node:|fs|path|http|https|net|child_process)|from \"(electron|node:)|\b(window|document|fetch|XMLHttpRequest|WebSocket)\b\s*[\.\(]"
+          if ($hits) { foreach ($h in $hits) { "::warning::core-import $h" } } else { "::notice::core-import clean" }
