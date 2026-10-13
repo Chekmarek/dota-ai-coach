@@ -1,5 +1,5 @@
 // Стабилизация одного поля: покадровые чтения шумят, принимаем значение только когда оно подтвердилось.
-import type { Tracked, TrackedTag } from './types.ts';
+import type { Tracked, TrackedSource, TrackedTag } from './types.ts';
 
 /** Чтение старше этого — уже не «видно сейчас», а «видели раньше» */
 export const VISIBLE_MS = 1500;
@@ -29,6 +29,8 @@ export class StableField<T> {
   confidence = 0;
   firstSeenWallMs: number | null = null;
   lastSeenWallMs: number | null = null;
+  /** Источник последнего подтверждения значения */
+  source: TrackedSource = null;
   private recent: T[] = [];
   /** Меньшее значение монотонного поля, которое ждёт подтверждения временем */
   private lower: { value: T; since: number } | null = null;
@@ -49,6 +51,7 @@ export class StableField<T> {
       this.lastSeenWallMs = wallMs;
       this.confidence = Math.max(confidence, this.confidence);
       this.lower = null;
+      this.source = 'screen';
       return null;
     }
     // Меньшее значение пропало из последних чтений — это был шум
@@ -70,6 +73,25 @@ export class StableField<T> {
     return this.accept(value, confidence, wallMs);
   }
 
+  /**
+   * Точное значение из GSI: принимается сразу, без повторов и без проверки монотонности.
+   * Возвращает изменение, если значение новое; совпадающее значение только обновляет время.
+   */
+  force(value: T, wallMs: number): FieldChange<T> | null {
+    // Буфер чтений с экрана сравнивался со старым значением — начинаем его заново
+    this.recent = [];
+    this.lower = null;
+    if (this.value !== null && this.opts.equals(value, this.value)) {
+      this.lastSeenWallMs = wallMs;
+      this.confidence = 1;
+      this.source = 'gsi';
+      return null;
+    }
+    const change = this.accept(value, 1, wallMs);
+    this.source = 'gsi';
+    return change;
+  }
+
   private accept(value: T, confidence: number, wallMs: number): FieldChange<T> {
     const prev = this.value;
     this.value = value;
@@ -77,6 +99,7 @@ export class StableField<T> {
     this.firstSeenWallMs = wallMs;
     this.lastSeenWallMs = wallMs;
     this.lower = null;
+    this.source = 'screen';
     return { prev, next: value };
   }
 
@@ -90,6 +113,7 @@ export class StableField<T> {
       tag,
       lastSeenWallMs: this.lastSeenWallMs,
       firstSeenWallMs: this.firstSeenWallMs,
+      source: tag === 'unknown' ? null : this.source,
     };
   }
 }
@@ -100,5 +124,5 @@ export function tagFor(ageMs: number, ttlMs: number): TrackedTag {
 }
 
 export function unknownTracked<T>(): Tracked<T> {
-  return { value: null, confidence: 0, tag: 'unknown', lastSeenWallMs: null, firstSeenWallMs: null };
+  return { value: null, confidence: 0, tag: 'unknown', lastSeenWallMs: null, firstSeenWallMs: null, source: null };
 }

@@ -1,6 +1,10 @@
 // Модель состояния матча: собирает шумные покадровые чтения HUD в устойчивое состояние с метками и событиями.
+// С этапа «GSI» второй источник — Valve Game State Integration (ingestGsi): точные значения, главный источник.
+// Пока GSI «живое» (последнее чтение моложе GSI_LIVE_MS), зрение не трогает поля, которые даёт GSI,
+// и лишь дополняет недостающие. Когда GSI замолкает — поведение в точности как на этапе D.
 // Чистое ядро: ни Electron, ни DOM, ни часов — время всегда передаётся в ingest/snapshot.
 import type { HudReading } from '../vision/recognize-hud.ts';
+import type { GsiPhase, GsiReading } from '../gsi/map.ts';
 import type { Observed } from '../../shared/types/observation.ts';
 import { ClockTracker } from './clock.ts';
 import { StableField, VISIBLE_MS, unknownTracked } from './stable-field.ts';
@@ -30,6 +34,13 @@ export const LOCK_READINGS = 8;
 export const LOCK_WINDOW_MS = 30_000;
 /** Чтение без имени ещё считается чтением игрока, если прошлое было не раньше этого */
 export const NAMELESS_GRACE_MS = 3000;
+/** GSI «живое», пока последнее чтение моложе этого (мс). Dota шлёт GSI при изменениях и по heartbeat */
+export const GSI_LIVE_MS = 5000;
+/** Зрение «живое», пока последний поддерживаемый кадр моложе этого (мс) */
+export const SCREEN_LIVE_MS = 5000;
+
+/** Поля, которые может дать GSI; пока GSI живое, зрение их не перезаписывает */
+type GsiField = 'clock' | 'scoreRadiant' | 'scoreDire' | 'dayNight' | 'kda' | 'farm' | 'identity' | 'level' | 'gold' | 'health' | 'mana' | 'abilities' | 'items';
 
 const MATCH_LONG = Number.POSITIVE_INFINITY;
 /** Сколько помнить значение после последнего чтения, потом — «неизвестно» */
@@ -61,6 +72,8 @@ const lessFarm = (p: Farm, n: Farm) => n.lastHits < p.lastHits || n.denies < p.d
 const isValid = <T>(o: Observed<T>) => o.validity === 'valid' && o.value !== null;
 
 interface AbilityTrack {
+  /** Ключ способности — только из GSI */
+  key: string | null;
   state: StableField<AbilityState>;
   level: StableField<number>;
   /** Перезарядка хранится как момент готовности (мс): так соседние чтения сравнимы, хотя секунды убывают */
@@ -88,6 +101,14 @@ class HeroTrack {
 }
 
 export class MatchStateModel {
+  /** Состояние GSI живёт вне clear(): сброс матча не забывает, что GSI работает */
+  private gsi = {
+    lastWallMs: null as number | null,
+    provided: new Set<GsiField>(),
+    matchId: null as string | null,
+    phase: null as GsiPhase | null,
+  };
+  private lastScreenMs: number | null = null;
   private clock = new ClockTracker();
   private scoreRadiant = new StableField<number>({ equals: same, decreases: lessNum });
   private scoreDire = new StableField<number>({ equals: same, decreases: lessNum });
@@ -101,12 +122,25 @@ export class MatchStateModel {
     return this.seq;
   }
 
+  /** GSI живое на момент wallMs */
+  private gsiLive(wallMs: number): boolean {
+    const t = this.gsi.lastWallMs;
+    return t !== null && wallMs - t < GSI_LIVE_MS;
+  }
+
+  /** Поле сейчас приходит из GSI — чтение с экрана его не трогает */
+  private fromGsi(field: GsiField, wallMs: number): boolean {
+    return this.gsi.provided.has(field) && this.gsiLive(wallMs);
+  }
+
   /** Одно чтение HUD (один кадр). wallMs — время получения кадра */
   ingest(reading: HudReading, wallMs: number): void {
     const f = reading.fields;
+    if (reading.supported) this.lastScreenMs = wallMs;
+    const gsi = (field: GsiField) => this.fromGsi(field, wallMs);
 
     // 1. Время — первым: по нему узнаём новый матч
-    for (const ev of this.clock.ingest(f.gameClock.value, f.gameClock.confidence, isValid(f.gameClock), wallMs)) {
+    if (!gsi('clock')) for (const ev of this.clock.ingest(f.gameClock.value, f.gameClock.confidence, isValid(f.gameClock), wallMs)) {
       if (ev.type === 'pause' || ev.type === 'unpause') this.emit(ev.type, wallMs, {});
       else if (ev.type === 'match-reset') {
         // Новый матч: всё забываем, кроме только что принятого времени
@@ -118,24 +152,137 @@ export class MatchStateModel {
     }
 
     // 2. Счёт и время суток — общие для матча
-    this.scoreRadiant.ingest(f.scoreRadiant.value, f.scoreRadiant.confidence, isValid(f.scoreRadiant), wallMs);
-    this.scoreDire.ingest(f.scoreDire.value, f.scoreDire.confidence, isValid(f.scoreDire), wallMs);
-    const dn = this.dayNight.ingest(reading.dayNight.value, reading.dayNight.confidence, isValid(reading.dayNight), wallMs);
-    if (dn && dn.prev !== null) this.emit('day-night', wallMs, { from: dn.prev, to: dn.next });
+    if (!gsi('scoreRadiant')) this.scoreRadiant.ingest(f.scoreRadiant.value, f.scoreRadiant.confidence, isValid(f.scoreRadiant), wallMs);
+    if (!gsi('scoreDire')) this.scoreDire.ingest(f.scoreDire.value, f.scoreDire.confidence, isValid(f.scoreDire), wallMs);
+    if (!gsi('dayNight')) {
+      const dn = this.dayNight.ingest(reading.dayNight.value, reading.dayNight.confidence, isValid(reading.dayNight), wallMs);
+      if (dn && dn.prev !== null) this.emit('day-night', wallMs, { from: dn.prev, to: dn.next });
+    }
 
     // 3. У/С/П и ДК/НО — блок слева вверху, всегда свой игрок (не зависит от выбранного юнита)
-    const kda = this.hero.kda.ingest(f.kda.value, f.kda.confidence, isValid(f.kda), wallMs);
-    if (kda?.prev) {
-      const p = kda.prev, n = kda.next;
-      if (n.kills > p.kills) this.emit('kill', wallMs, { from: p.kills, to: n.kills });
-      if (n.deaths > p.deaths) this.emit('death', wallMs, { from: p.deaths, to: n.deaths });
-      if (n.assists > p.assists) this.emit('assist', wallMs, { from: p.assists, to: n.assists });
-    }
-    this.hero.farm.ingest(f.farm.value, f.farm.confidence, isValid(f.farm), wallMs);
+    if (!gsi('kda')) this.kdaEvents(this.hero.kda.ingest(f.kda.value, f.kda.confidence, isValid(f.kda), wallMs), wallMs);
+    if (!gsi('farm')) this.hero.farm.ingest(f.farm.value, f.farm.confidence, isValid(f.farm), wallMs);
 
-    // 4. Нижняя панель — только если на ней герой игрока
+    // 4. Нижняя панель — только если на ней герой игрока (после GSI герой известен сразу, чужая панель отсекается)
     this.trackIdentity(reading, wallMs);
     if (this.isPlayerReading(reading, wallMs)) this.ingestHero(reading, wallMs);
+  }
+
+  /**
+   * Одно чтение GSI. Значения точные: принимаются сразу (уверенность 1, метка «видно сейчас», источник gsi),
+   * герой игрока определяется с первого чтения. Сброс матча — при смене matchid или возврате из игры в подготовку.
+   * Первое чтение после тишины GSI только сверяет состояние: расхождения со зрением — исправления, а не события.
+   */
+  ingestGsi(reading: GsiReading, wallMs: number): void {
+    const g = this.gsi;
+    if (reading.matchId !== null && g.matchId !== null && reading.matchId !== g.matchId) {
+      this.clear();
+      this.emit('match-reset', wallMs, { reason: 'gsi-match-id', from: g.matchId, to: reading.matchId });
+    } else if (g.phase === 'in-progress' && reading.phase === 'pre-game') {
+      this.clear();
+      this.emit('match-reset', wallMs, { reason: 'gsi-pre-game', gameState: reading.gameState });
+    }
+    const sync = !this.gsiLive(wallMs);
+    const provided = new Set<GsiField>();
+    g.lastWallMs = wallMs;
+    if (reading.matchId !== null) g.matchId = reading.matchId;
+    if (reading.phase !== null) g.phase = reading.phase;
+    g.provided = provided;
+    /** Изменение — событие, если прежнее значение было и это не сверка после тишины GSI */
+    const real = <T>(ch: { prev: T | null; next: T } | null): ch is { prev: T; next: T } => ch !== null && ch.prev !== null && !sync;
+
+    // Время и пауза
+    if (reading.clock !== null) {
+      provided.add('clock');
+      for (const ev of this.clock.force(reading.clock, reading.paused, wallMs)) this.emit(ev.type as 'pause' | 'unpause', wallMs, {});
+    }
+    if (reading.scoreRadiant !== null) {
+      provided.add('scoreRadiant');
+      this.scoreRadiant.force(reading.scoreRadiant, wallMs);
+    }
+    if (reading.scoreDire !== null) {
+      provided.add('scoreDire');
+      this.scoreDire.force(reading.scoreDire, wallMs);
+    }
+    if (reading.dayNight !== null) {
+      provided.add('dayNight');
+      const dn = this.dayNight.force(reading.dayNight, wallMs);
+      if (real(dn)) this.emit('day-night', wallMs, { from: dn.prev, to: dn.next });
+    }
+
+    const h = this.hero;
+    if (reading.kda !== null) {
+      provided.add('kda');
+      const ch = h.kda.force(reading.kda, wallMs);
+      if (!sync) this.kdaEvents(ch, wallMs);
+    }
+    if (reading.farm !== null) {
+      provided.add('farm');
+      h.farm.force(reading.farm, wallMs);
+    }
+    if (reading.gold !== null) {
+      provided.add('gold');
+      h.gold.force(reading.gold, wallMs);
+    }
+
+    // Герой игрока: GSI сообщает именно его — фиксируется сразу
+    const hero = reading.hero;
+    if (hero.id !== null) {
+      provided.add('identity');
+      const prevName = h.identity.value?.id === hero.id ? h.identity.value.name : null;
+      const identity: HeroIdentity = { id: hero.id, name: hero.name ?? prevName ?? hero.key };
+      if (h.locked?.id !== hero.id || h.locked.name !== identity.name) h.locked = identity;
+      h.sightings = [];
+      h.identity.force(identity, wallMs);
+    }
+    if (hero.level !== null) {
+      provided.add('level');
+      const lvl = h.level.force(hero.level, wallMs);
+      if (real(lvl) && lvl.next > lvl.prev) this.emit('level-up', wallMs, { from: lvl.prev, to: lvl.next });
+    }
+    if (hero.health !== null) {
+      provided.add('health');
+      h.health.force(hero.health, wallMs);
+    }
+    if (hero.mana !== null) {
+      provided.add('mana');
+      h.mana.force(hero.mana, wallMs);
+    }
+
+    // Способности — по номеру ячейки на панели (как у зрения); служебные (slot = null) пропускаются
+    const onBar = reading.abilities.filter((a) => a.slot !== null);
+    if (onBar.length > 0) {
+      provided.add('abilities');
+      for (const a of onBar) {
+        const t = this.abilityTrack(a.slot!);
+        t.key = a.key;
+        if (a.level !== null) {
+          const lvl = t.level.force(a.level, wallMs);
+          if (real(lvl) && lvl.next > lvl.prev) this.emit('ability-learned', wallMs, { index: a.slot, from: lvl.prev, to: lvl.next });
+        }
+        if (a.state !== null) t.state.force(a.state, wallMs);
+        if (a.state === 'cooldown' && a.cooldownSec !== null) t.readyAt.force(wallMs + a.cooldownSec * 1000, wallMs);
+        else if (a.cooldownSec === 0 || a.state === 'ready') t.readyAt.force(wallMs, wallMs);
+      }
+    }
+
+    // Инвентарь: 6 ячеек и рюкзак (тайник, телепорт и нейтральный предмет модель пока не хранит)
+    if (reading.items !== null) {
+      provided.add('items');
+      const before: Item[] = [];
+      const after: Item[] = [];
+      for (const it of reading.items) {
+        const field = h.items.get(it.slot);
+        if (!field) continue;
+        const content: SlotContent = { item: it.key === null ? null : { key: it.key, name: it.name ?? it.key } };
+        const ch = field.force(content, wallMs);
+        if (real(ch)) {
+          if (ch.prev.item) before.push(ch.prev.item);
+          if (ch.next.item) after.push(ch.next.item);
+        }
+      }
+      this.itemEvents(before, after, wallMs);
+    }
   }
 
   /** Состояние на момент wallMs */
@@ -145,6 +292,7 @@ export class MatchStateModel {
       .sort((a, b) => a[0] - b[0])
       .map(([index, t]) => ({
         index,
+        key: t.key,
         state: t.state.tracked(wallMs, TTL_MS.abilityState),
         level: t.level.tracked(wallMs, TTL_MS.level),
         cooldown: cooldownTracked(t.readyAt, wallMs),
@@ -152,6 +300,10 @@ export class MatchStateModel {
     const items: TrackedItemSlot[] = SLOTS.map((slot) => ({ slot, ...h.items.get(slot)!.tracked(wallMs, TTL_MS.items) }));
     return {
       wallMs,
+      sources: {
+        gsi: this.gsiLive(wallMs),
+        screen: this.lastScreenMs !== null && wallMs - this.lastScreenMs < SCREEN_LIVE_MS,
+      },
       match: {
         clock: this.clock.tracked(wallMs),
         paused: this.clock.paused,
@@ -230,30 +382,55 @@ export class MatchStateModel {
   private ingestHero(r: HudReading, wallMs: number): void {
     const h = this.hero;
     const f = r.fields;
+    const gsi = (field: GsiField) => this.fromGsi(field, wallMs);
     h.lastPlayerReadingMs = wallMs;
-    if (isValid(r.heroName)) h.identity.ingest(r.heroName.value, 1, true, wallMs);
-    else if (h.identity.value === null) h.identity.ingest(h.locked, 1, true, wallMs);
+    if (!gsi('identity')) {
+      if (isValid(r.heroName)) h.identity.ingest(r.heroName.value, 1, true, wallMs);
+      else if (h.identity.value === null) h.identity.ingest(h.locked, 1, true, wallMs);
+    }
 
-    const lvl = h.level.ingest(f.level.value, f.level.confidence, isValid(f.level), wallMs);
-    if (lvl && lvl.prev !== null && lvl.next > lvl.prev) this.emit('level-up', wallMs, { from: lvl.prev, to: lvl.next });
-    h.gold.ingest(f.gold.value, f.gold.confidence, isValid(f.gold), wallMs);
-    h.health.ingest(f.health.value, f.health.confidence, isValid(f.health), wallMs);
-    h.mana.ingest(f.mana.value, f.mana.confidence, isValid(f.mana), wallMs);
+    if (!gsi('level')) {
+      const lvl = h.level.ingest(f.level.value, f.level.confidence, isValid(f.level), wallMs);
+      if (lvl && lvl.prev !== null && lvl.next > lvl.prev) this.emit('level-up', wallMs, { from: lvl.prev, to: lvl.next });
+    }
+    if (!gsi('gold')) h.gold.ingest(f.gold.value, f.gold.confidence, isValid(f.gold), wallMs);
+    if (!gsi('health')) h.health.ingest(f.health.value, f.health.confidence, isValid(f.health), wallMs);
+    if (!gsi('mana')) h.mana.ingest(f.mana.value, f.mana.confidence, isValid(f.mana), wallMs);
 
-    for (const slot of r.abilities ?? []) this.ingestAbility(slot, wallMs);
-    if (r.items) this.ingestItems(r.items, wallMs);
+    if (!gsi('abilities')) for (const slot of r.abilities ?? []) this.ingestAbility(slot, wallMs);
+    if (r.items && !gsi('items')) this.ingestItems(r.items, wallMs);
   }
 
-  private ingestAbility(slot: NonNullable<HudReading['abilities']>[number], wallMs: number): void {
-    let t = this.hero.abilities.get(slot.index);
+  private abilityTrack(index: number): AbilityTrack {
+    let t = this.hero.abilities.get(index);
     if (!t) {
       t = {
+        key: null,
         state: new StableField<AbilityState>({ equals: same }),
         level: new StableField<number>({ equals: same, decreases: lessNum }),
         readyAt: new StableField<number>({ equals: (a, b) => Math.abs(a - b) < READY_TOLERANCE_MS }),
       };
-      this.hero.abilities.set(slot.index, t);
+      this.hero.abilities.set(index, t);
     }
+    return t;
+  }
+
+  private kdaEvents(kda: { prev: Kda | null; next: Kda } | null, wallMs: number): void {
+    if (!kda?.prev) return;
+    const p = kda.prev, n = kda.next;
+    if (n.kills > p.kills) this.emit('kill', wallMs, { from: p.kills, to: n.kills });
+    if (n.deaths > p.deaths) this.emit('death', wallMs, { from: p.deaths, to: n.deaths });
+    if (n.assists > p.assists) this.emit('assist', wallMs, { from: p.assists, to: n.assists });
+  }
+
+  /** Перекладывание между ячейками — не покупка и не потеря: сравниваем наборы предметов до и после */
+  private itemEvents(before: Item[], after: Item[], wallMs: number): void {
+    for (const it of diff(after, before)) this.emit('item-gained', wallMs, { key: it.key, name: it.name });
+    for (const it of diff(before, after)) this.emit('item-lost', wallMs, { key: it.key, name: it.name });
+  }
+
+  private ingestAbility(slot: NonNullable<HudReading['abilities']>[number], wallMs: number): void {
+    const t = this.abilityTrack(slot.index);
     const ok = slot.confidence >= MIN_SLOT_CONFIDENCE;
     t.state.ingest(slot.state, slot.confidence, ok, wallMs);
     const lvl = t.level.ingest(slot.level, slot.confidence, ok, wallMs);
@@ -282,9 +459,7 @@ export class MatchStateModel {
       }
     }
     if (!changed) return;
-    // Перекладывание между ячейками — не покупка и не потеря: сравниваем наборы предметов до и после
-    for (const it of diff(after, before)) this.emit('item-gained', wallMs, { key: it.key, name: it.name });
-    for (const it of diff(before, after)) this.emit('item-lost', wallMs, { key: it.key, name: it.name });
+    this.itemEvents(before, after, wallMs);
   }
 }
 
@@ -312,5 +487,6 @@ function cooldownTracked(readyAt: StableField<number>, wallMs: number): Tracked<
     tag: fresh ? 'visible' : 'inferred',
     lastSeenWallMs: readyAt.lastSeenWallMs,
     firstSeenWallMs: readyAt.firstSeenWallMs,
+    source: readyAt.source,
   };
 }

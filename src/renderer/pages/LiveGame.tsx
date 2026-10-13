@@ -5,12 +5,13 @@ import { useSettings } from '../hooks/useSettings';
 import { Card, PageHeader, Stat } from '../components/ui';
 import { HudRecognition, RegionOverlay } from '../components/HudRecognition';
 import { LIVE_HINT, LivePill, isLive, startLive } from '../components/live';
+import { HintsToggles } from '../components/hints';
 import { engine } from '../hooks/useEngine';
 import type { PageProps } from './types';
 
 export function LiveGame({ onNavigate }: PageProps) {
   const { status, preview, vision } = useEngine();
-  const { settings } = useSettings();
+  const { settings, update } = useSettings();
   const on = isLive(status);
   const live = on ? status.live : null;
   const s = live?.state ?? 'off';
@@ -21,7 +22,7 @@ export function LiveGame({ onNavigate }: PageProps) {
 
   return (
     <>
-      <PageHeader title="Живая игра" subtitle="Коуч смотрит на окно Dota 2 в реальном времени. Только наблюдение: подсказки во время матча пока выключены." />
+      <PageHeader title="Живая игра" subtitle="Коуч смотрит на окно Dota 2 в реальном времени. Подсказки во время матча появятся на следующих этапах; включить их заранее можно ниже." />
       {exclusive && (
         <div className="live-warning" role="alert" data-testid="live-exclusive-warning">
           <strong>Дота в полноэкранном режиме — значок не может быть поверх игры.</strong>
@@ -75,6 +76,14 @@ export function LiveGame({ onNavigate }: PageProps) {
           </p>
         )}
       </Card>
+
+      {settings && (
+        <Card title="Live-подсказки">
+          <div className="form">
+            <HintsToggles settings={settings} update={update} testIdPrefix="live-hints" />
+          </div>
+        </Card>
+      )}
 
       <div className="grid-preview">
         <Card title="Что видит коуч">

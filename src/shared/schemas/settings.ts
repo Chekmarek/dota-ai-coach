@@ -13,6 +13,8 @@ const DEFAULTS = {
   voice: { enabled: false, voiceId: null as string | null, rate: 1, volume: 0.8 },
   ui: { showRegions: true },
   live: { autoStart: true, fps: 10, overlay: true, overlayCorner: 'top-right' as OverlayCorner },
+  // Решение владельца 2026-10-13 (docs/POLICY.md): подсказки включены по умолчанию, в рейтинге — тоже; решает пользователь
+  hints: { enabled: true, ranked: true },
 };
 
 export type OverlayCorner = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
@@ -49,6 +51,12 @@ const fields = {
     overlay: z.boolean(),
     overlayCorner: z.enum(['top-left', 'top-right', 'bottom-left', 'bottom-right']),
   },
+  hints: {
+    /** Live-подсказки во время матча (в отдельном окне коуча, не поверх игры) */
+    enabled: z.boolean(),
+    /** Подсказки и в рейтинговых матчах — решает пользователь (риск для аккаунта, см. docs/POLICY.md) */
+    ranked: z.boolean(),
+  },
 };
 
 type Sections = typeof fields;
@@ -69,6 +77,7 @@ export const settingsSchema = z.object({
   voice: tolerant('voice'),
   ui: tolerant('ui'),
   live: tolerant('live'),
+  hints: tolerant('hints'),
 });
 
 export type Settings = z.infer<typeof settingsSchema>;
@@ -85,6 +94,7 @@ export const settingsPatchSchema = z
     voice: z.object(fields.voice).partial().strict().optional(),
     ui: z.object(fields.ui).partial().strict().optional(),
     live: z.object(fields.live).partial().strict().optional(),
+    hints: z.object(fields.hints).partial().strict().optional(),
   })
   .strict();
 
@@ -98,5 +108,6 @@ export function applySettingsPatch(current: Settings, patch: SettingsPatch): Set
     voice: { ...current.voice, ...patch.voice },
     ui: { ...current.ui, ...patch.ui },
     live: { ...current.live, ...patch.live },
+    hints: { ...current.hints, ...patch.hints },
   });
 }

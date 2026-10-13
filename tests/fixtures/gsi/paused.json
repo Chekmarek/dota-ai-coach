@@ -1,0 +1,228 @@
+{
+ "provider": {
+  "name": "Dota 2",
+  "appid": 570,
+  "version": 47,
+  "timestamp": 1760340000
+ },
+ "map": {
+  "name": "start",
+  "matchid": "8123456789",
+  "game_time": 780,
+  "clock_time": 690,
+  "daytime": true,
+  "nightstalker_night": false,
+  "radiant_score": 5,
+  "dire_score": 4,
+  "game_state": "DOTA_GAMERULES_STATE_GAME_IN_PROGRESS",
+  "paused": true,
+  "win_team": "none",
+  "customgamename": "",
+  "ward_purchase_cooldown": 0
+ },
+ "player": {
+  "steamid": "76561190000000001",
+  "accountid": "39734273",
+  "name": "Игрок",
+  "activity": "playing",
+  "kills": 3,
+  "deaths": 1,
+  "assists": 2,
+  "last_hits": 70,
+  "denies": 11,
+  "kill_streak": 0,
+  "commands_issued": 0,
+  "kill_list": {},
+  "team_name": "radiant",
+  "gold": 1880,
+  "gold_reliable": 520,
+  "gold_unreliable": 1360,
+  "gold_from_hero_kills": 0,
+  "gold_from_creep_kills": 0,
+  "gold_from_income": 0,
+  "gold_from_shared": 0,
+  "gpm": 0,
+  "xpm": 0
+ },
+ "hero": {
+  "xpos": -6700,
+  "ypos": -6200,
+  "id": 11,
+  "name": "npc_dota_hero_nevermore",
+  "level": 9,
+  "xp": 0,
+  "alive": true,
+  "respawn_seconds": 0,
+  "buyback_cost": 231,
+  "buyback_cooldown": 0,
+  "health": 1004,
+  "max_health": 1004,
+  "health_percent": 100,
+  "mana": 480,
+  "max_mana": 480,
+  "mana_percent": 100,
+  "silenced": false,
+  "stunned": false,
+  "disarmed": false,
+  "magicimmune": false,
+  "hexed": false,
+  "muted": false,
+  "break": false,
+  "aghanims_scepter": false,
+  "aghanims_shard": false,
+  "smoked": false,
+  "has_debuff": false,
+  "talent_1": false,
+  "talent_2": false,
+  "talent_3": false,
+  "talent_4": false,
+  "talent_5": false,
+  "talent_6": false,
+  "talent_7": false,
+  "talent_8": false
+ },
+ "abilities": {
+  "ability0": {
+   "name": "nevermore_shadowraze1",
+   "level": 4,
+   "can_cast": true,
+   "passive": false,
+   "ability_active": true,
+   "cooldown": 0,
+   "ultimate": false
+  },
+  "ability1": {
+   "name": "nevermore_shadowraze2",
+   "level": 4,
+   "can_cast": true,
+   "passive": false,
+   "ability_active": true,
+   "cooldown": 0,
+   "ultimate": false
+  },
+  "ability2": {
+   "name": "nevermore_shadowraze3",
+   "level": 4,
+   "can_cast": true,
+   "passive": false,
+   "ability_active": true,
+   "cooldown": 0,
+   "ultimate": false
+  },
+  "ability3": {
+   "name": "nevermore_necromastery",
+   "level": 1,
+   "can_cast": false,
+   "passive": true,
+   "ability_active": true,
+   "cooldown": 0,
+   "ultimate": false
+  },
+  "ability4": {
+   "name": "nevermore_dark_lord",
+   "level": 0,
+   "can_cast": false,
+   "passive": true,
+   "ability_active": true,
+   "cooldown": 0,
+   "ultimate": false
+  },
+  "ability5": {
+   "name": "nevermore_requiem",
+   "level": 0,
+   "can_cast": false,
+   "passive": false,
+   "ability_active": true,
+   "cooldown": 0,
+   "ultimate": true
+  },
+  "ability6": {
+   "name": "plus_high_five",
+   "level": 1,
+   "can_cast": true,
+   "passive": false,
+   "ability_active": true,
+   "cooldown": 0,
+   "ultimate": false
+  },
+  "attributes": {
+   "level": 0
+  }
+ },
+ "items": {
+  "slot0": {
+   "name": "item_bottle",
+   "purchaser": 0,
+   "can_cast": true,
+   "passive": false,
+   "charges": 3
+  },
+  "slot1": {
+   "name": "item_power_treads",
+   "purchaser": 0,
+   "can_cast": false,
+   "passive": true
+  },
+  "slot2": {
+   "name": "item_wraith_band",
+   "purchaser": 0,
+   "can_cast": false,
+   "passive": true
+  },
+  "slot3": {
+   "name": "item_wraith_band",
+   "purchaser": 0,
+   "can_cast": false,
+   "passive": true
+  },
+  "slot4": {
+   "name": "item_ogre_axe",
+   "purchaser": 0,
+   "can_cast": false,
+   "passive": true
+  },
+  "slot5": {
+   "name": "item_magic_wand",
+   "purchaser": 0,
+   "can_cast": true,
+   "passive": false,
+   "charges": 12
+  },
+  "slot6": {
+   "name": "empty"
+  },
+  "slot7": {
+   "name": "empty"
+  },
+  "slot8": {
+   "name": "empty"
+  },
+  "stash0": {
+   "name": "empty"
+  },
+  "stash1": {
+   "name": "empty"
+  },
+  "stash2": {
+   "name": "empty"
+  },
+  "stash3": {
+   "name": "empty"
+  },
+  "stash4": {
+   "name": "empty"
+  },
+  "stash5": {
+   "name": "empty"
+  },
+  "teleport0": {
+   "name": "empty"
+  },
+  "neutral0": {
+   "name": "empty"
+  }
+ },
+ "auth": {
+  "token": "dotacoach-test-token"
+ }
+}

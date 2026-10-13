@@ -12,16 +12,21 @@ export type { DayNight, HeroIdentity, Farm, Kda, Pool, AbilityState };
  */
 export type TrackedTag = 'visible' | 'remembered' | 'inferred' | 'unknown';
 
+/** Откуда последнее подтверждение: gsi — Game State Integration Valve, screen — зрение по кадру, null — неизвестно */
+export type TrackedSource = 'gsi' | 'screen' | null;
+
 /** Значение с уверенностью, меткой и временем наблюдения (мс «настенного» времени, переданного в ingest/snapshot) */
 export interface Tracked<T> {
   /** null — неизвестно (ещё не видели или истёк срок памяти) */
   value: T | null;
   confidence: number;
   tag: TrackedTag;
-  /** Когда значение последний раз подтвердилось чтением с экрана */
+  /** Когда значение последний раз подтвердилось (чтением с экрана или из GSI) */
   lastSeenWallMs: number | null;
   /** Когда текущее значение было принято впервые */
   firstSeenWallMs: number | null;
+  /** Источник последнего подтверждения значения */
+  source: TrackedSource;
 }
 
 /** Содержимое ячейки инвентаря: item = null — ячейка пустая */
@@ -36,6 +41,8 @@ export interface TrackedItemSlot extends Tracked<SlotContent> {
 
 export interface TrackedAbility {
   index: number;
+  /** Ключ способности из GSI (без имени героя не угадывается по картинке); null — не известен */
+  key: string | null;
   state: Tracked<AbilityState>;
   level: Tracked<number>;
   /** Секунд до готовности: последнее прочитанное значение минус прошедшее время, не меньше 0 */
@@ -65,6 +72,8 @@ export interface MatchEvent {
 
 export interface MatchState {
   wallMs: number;
+  /** Какие источники сейчас дают данные: gsi — свежее GSI (моложе GSI_LIVE_MS), screen — свежий кадр */
+  sources: { gsi: boolean; screen: boolean };
   match: {
     /** Секунды игрового времени; между чтениями — экстраполяция (inferred) */
     clock: Tracked<number>;
