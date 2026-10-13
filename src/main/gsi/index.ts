@@ -56,10 +56,12 @@ class GsiService {
   }
 
   async start(): Promise<void> {
+    // Приёмник — сразу: Dota может уже присылать данные, а поиск папки Steam (PowerShell) занимает 1–2 с
+    await this.startServer();
     this.steamPath = await steamPathFromRegistry();
     this.relocate();
     this.refreshStale('при запуске');
-    await this.startServer();
+    this.push(true);
   }
 
   /**
