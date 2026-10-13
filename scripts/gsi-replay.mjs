@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 // Повтор записанной сессии GSI в работающий коуч — в реальном времени, без Dota.
 //   npm run gsi:replay -- <файл.jsonl> [--speed 2] [--port 53790] [--token <секрет>] [--data-dir <папка данных>]
 // Порт и секрет по умолчанию берутся из settings.json коуча (папка данных: --data-dir, DOTACOACH_DATA_DIR
