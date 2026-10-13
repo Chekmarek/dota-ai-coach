@@ -1,0 +1,41 @@
+# Временная сборка app.asar для проверки на ПК (ветка ci-tmp-*). Результат кладётся в ветку ci-tmp-build-out.
+name: ci-tmp-build
+on:
+  push:
+    branches: ['ci-tmp-build']
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Кэш npm во временной папке
+        run: '"npm_config_cache=$env:RUNNER_TEMP\npm-cache" >> $env:GITHUB_ENV'
+      - name: Сборка
+        run: |
+          npm ci
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          node node_modules/electron/install.js
+          npm run dist
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+      - name: В ветку
+        run: |
+          $ver = node -p "require('./package.json').version"
+          $asar = "release/$ver/win-unpacked/resources/app.asar"
+          $hash = (Get-FileHash $asar -Algorithm SHA256).Hash.ToLower()
+          "::notice::sha256 $hash size $((Get-Item $asar).Length)"
+          $out = "$env:RUNNER_TEMP\out"
+          New-Item -ItemType Directory -Force $out | Out-Null
+          Copy-Item $asar "$out\app.asar"
+          Set-Location $out
+          git init -q -b ci-tmp-build-out
+          git config user.name "ci"; git config user.email "ci@users.noreply.github.com"
+          git add app.asar; git commit -qm "app.asar $env:GITHUB_SHA"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}" ci-tmp-build-out
