@@ -73,7 +73,8 @@ $env:DOTACOACH_PACKAGED_EXE = "D:\DotaCoach\.tmp\portable-check\DotaCoach.exe"; 
 
 1. Поднять версию: `npm version 0.7.1 --no-git-tag-version` (меняет `package.json` и `package-lock.json`).
 2. Написать, что нового, в `docs/release-notes/v0.7.1.md` (2–5 пунктов по-русски) — коуч покажет это во вкладке «Обновления».
-3. Проверить локально: `npm run typecheck`, `npm test`, `npm run test:e2e`.
+3. Проверить локально: `npm run typecheck`, `npm test`, `npm run test:e2e`. Выпускать, только когда последний прогон
+   `checks` (Actions: типы, unit-тесты и e2e на Windows при каждом push в `sources`) зелёный.
 4. Закоммитить и запушить в `sources`. GitHub сам проверит типы и тесты, соберёт установщик, zip, `app.asar`
    и `app.asar.sha256` и опубликует релиз `v0.7.1`. Коуч у всех предложит «Установить».
 
