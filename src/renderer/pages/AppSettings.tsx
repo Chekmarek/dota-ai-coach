@@ -118,7 +118,7 @@ export function AppSettings({ onNavigate }: PageProps) {
         />
         <label className="check">
           <input type="checkbox" checked={settings.gsi.record} onChange={(e) => void update({ gsi: { record: e.target.checked } })} data-testid="setting-gsi-record" />
-          Записывать сессии (без ников и steamid; последние 20 дней — в папке данных, gsi-sessions)
+          Записывать сессии (без ников и steamid; последние 20 дней, не больше 500 МБ — в папке данных, gsi-sessions)
         </label>
       </SettingsSection>
       <SettingsSection icon="▶" title="Разбор записей" subtitle="Для папки с кадрами и видеофайлов. Применяется при следующем запуске записи.">

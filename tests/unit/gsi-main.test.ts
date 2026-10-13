@@ -4,8 +4,10 @@ import { request } from 'node:http';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { GSI_MAX_BODY, GsiServer, sameToken } from '../../src/main/gsi/server';
-import { GSI_CFG_NAME, cfgPath, cfgStatus, gsiCfgText, installCfg, locateDota, parseLibraryFolders, parseVdf, refreshCfg, removeCfg } from '../../src/main/gsi/setup';
-import { KEEP_FILES, SessionRecorder, sanitizeGsiBody } from '../../src/main/gsi/recorder';
+import { GSI_CFG_NAME, cfgPath, cfgStatus, gsiCfgText, installCfg, locateDota, parseLibraryFolders, parsePowershellSteamPath, parseRegSteamPath, parseVdf, refreshCfg, removeCfg, steamPathFromRegistry } from '../../src/main/gsi/setup';
+import { execFileSync } from 'node:child_process';
+import { SerialRestarter } from '../../src/main/gsi/restart';
+import { KEEP_FILES, MAX_TOTAL_BYTES, SessionRecorder, sanitizeGsiBody } from '../../src/main/gsi/recorder';
 import { parseSession, readCoachSettings, replaySession } from '../../scripts/gsi-replay.mjs';
 import { applyInternalGsi, defaultSettings, settingsPatchSchema, settingsSchema } from '../../src/shared/schemas/settings';
 
@@ -258,6 +260,142 @@ describe('запись сессий', () => {
     expect(files.at(-1)).toBe('2026-11-25.jsonl');
     expect(existsSync(join(dir, '2026-10-13.jsonl'))).toBe(false);
   });
+});
+
+describe('запись сессий: общий предел размера', () => {
+  it('предел по умолчанию — 500 МБ', () => {
+    expect(MAX_TOTAL_BYTES).toBe(500 * 1024 * 1024);
+  });
+
+  it('сверх предела удаляются самые старые дни; файл текущего дня — никогда', () => {
+    const dir = tmp();
+    const day = (d: number) => `2026-10-${String(d).padStart(2, '0')}.jsonl`;
+    for (let d = 1; d <= 5; d++) writeFileSync(join(dir, day(d)), 'x'.repeat(400));
+    writeFileSync(join(dir, 'чужой.txt'), 'y'.repeat(5000)); // посторонние файлы не трогаются и не считаются
+    // Предел 1500 байт; текущий день — 13 октября
+    const r = new SessionRecorder(dir, () => undefined, 1500);
+    r.record({ map: { name: 'start' } }, new Date(2026, 9, 13, 12).getTime());
+    const left = readdirSync(dir).sort();
+    // 5 × 400 + текущий > 1500: удаляются 01, 02 (остаются 03, 04, 05 и текущий: 1200 + ~40 ≤ 1500)
+    expect(left).toEqual([day(3), day(4), day(5), day(13), 'чужой.txt']);
+    // Текущий день сам больше предела — не удаляется, удаляется всё более старое
+    writeFileSync(join(dir, day(13)), 'z'.repeat(3000));
+    r.prune();
+    expect(readdirSync(dir).sort()).toEqual([day(13), 'чужой.txt']);
+  });
+
+  it('предел проверяется и в течение одного дня (без смены файла)', () => {
+    const dir = tmp();
+    writeFileSync(join(dir, '2026-10-01.jsonl'), 'x'.repeat(2000));
+    const r = new SessionRecorder(dir, () => undefined, 1_000_000);
+    const t = new Date(2026, 9, 13, 12).getTime();
+    r.record({ map: { name: 'start' } }, t);
+    expect(existsSync(join(dir, '2026-10-01.jsonl'))).toBe(true);
+    // Предел 30 КБ: при открытии файла дня всё ещё в пределе, за 1000 записей текущий день его превышает —
+    // старый день удаляется сам, без смены файла
+    const small = new SessionRecorder(dir, () => undefined, 30_000);
+    small.record({ map: { name: 'start' } }, t);
+    expect(existsSync(join(dir, '2026-10-01.jsonl'))).toBe(true);
+    for (let i = 0; i < 1000; i++) small.record({ map: { name: 'start', i } }, t + i);
+    expect(existsSync(join(dir, '2026-10-01.jsonl'))).toBe(false);
+    expect(existsSync(join(dir, '2026-10-13.jsonl'))).toBe(true);
+  });
+});
+
+describe('перезапуск приёмника по одному', () => {
+  /** Поддельный приёмник: «слушает» между start и stop; start и stop занимают время */
+  function fakes() {
+    const listening = new Set<number>();
+    const log: string[] = [];
+    let seq = 0;
+    const tick = () => new Promise((r) => setTimeout(r, 5));
+    const create = (port: number) => {
+      const id = ++seq;
+      return {
+        id,
+        port,
+        async start() {
+          await tick();
+          listening.add(id);
+          log.push(`start ${port}`);
+        },
+        async stop() {
+          await tick();
+          listening.delete(id);
+          log.push(`stop ${port}`);
+        },
+      };
+    };
+    return { listening, log, r: new SerialRestarter(create, (s) => s.start()) };
+  }
+
+  it('несколько смен порта подряд — слушает один приёмник, на последнем порту', async () => {
+    const { listening, log, r } = fakes();
+    await r.restart(53790);
+    const a = r.restart(53791);
+    const b = r.restart(53792);
+    const c = r.restart(53793);
+    await Promise.all([a, b, c]);
+    expect(listening.size).toBe(1);
+    expect(r.server?.port).toBe(53793);
+    // Прежний всегда остановлен до запуска следующего
+    for (let i = 1; i < log.length; i++) if (log[i]!.startsWith('start')) expect(log[i - 1]!.startsWith('stop') || i === 0).toBe(true);
+    expect(log[0]).toBe('start 53790');
+  });
+
+  it('stop во время перезапуска — ничего не слушает', async () => {
+    const { listening, r } = fakes();
+    void r.restart(53790);
+    void r.restart(53791);
+    await r.stop();
+    expect(listening.size).toBe(0);
+    expect(r.server).toBeNull();
+  });
+
+  it('с настоящим приёмником: два перезапуска подряд не оставляют второй сервер', async () => {
+    const created: GsiServer[] = [];
+    const r = new SerialRestarter(
+      (port) => {
+        const s = new GsiServer({ port, token: TOKEN, onBody: () => undefined });
+        created.push(s);
+        servers.push(s);
+        return s;
+      },
+      (s) => s.start(),
+    );
+    await Promise.all([r.restart(0), r.restart(0), r.restart(0)]);
+    expect(created.filter((s) => s.boundPort !== null)).toHaveLength(1);
+    expect(r.server?.status.state).toBe('listening');
+    await r.stop();
+    expect(created.every((s) => s.boundPort === null)).toBe(true);
+  });
+});
+
+describe('путь Steam из реестра', () => {
+  it('вывод PowerShell (UTF-8): кириллица, пробелы, прямые слеши и BOM', () => {
+    expect(parsePowershellSteamPath('\uFEFFD:/Игры/Steam Library\r\n')).toBe('D:\\Игры\\Steam Library');
+    expect(parsePowershellSteamPath('\r\nc:/program files (x86)/steam\r\n')).toBe('c:\\program files (x86)\\steam');
+    expect(parsePowershellSteamPath('')).toBeNull();
+    expect(parsePowershellSteamPath('\r\n  \r\n')).toBeNull();
+  });
+
+  it('вывод reg query (запасной путь)', () => {
+    const out = '\r\nHKEY_CURRENT_USER\\Software\\Valve\\Steam\r\n    SteamPath    REG_SZ    d:/Игры/Steam Library\r\n\r\n';
+    expect(parseRegSteamPath(out)).toBe('d:\\Игры\\Steam Library');
+    expect(parseRegSteamPath('ERROR: The system was unable to find the specified registry key or value.')).toBeNull();
+  });
+
+  // Только в CI на Windows: пишем временный ключ HKCU и читаем его так же, как коуч читает ключ Steam
+  it.skipIf(process.platform !== 'win32' || !process.env.CI)('Windows: путь с кириллицей и пробелами читается без искажений', async () => {
+    const key = 'HKCU\\Software\\DotaCoachTest';
+    const value = 'D:\\Игры\\Steam Library';
+    execFileSync('reg', ['add', key, '/v', 'SteamPath', '/t', 'REG_SZ', '/d', value, '/f'], { windowsHide: true });
+    try {
+      expect(await steamPathFromRegistry(key)).toBe(value);
+    } finally {
+      execFileSync('reg', ['delete', key, '/f'], { windowsHide: true });
+    }
+  }, 20_000);
 });
 
 describe('npm run gsi:replay', () => {

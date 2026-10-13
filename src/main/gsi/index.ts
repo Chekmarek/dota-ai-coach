@@ -10,6 +10,7 @@ import { liveLog } from '../live/live';
 import { GsiServer } from './server';
 import { GSI_LAUNCH_OPTION, cfgPath, cfgStatus, installCfg, locateDota, refreshCfg, removeCfg, steamPathFromRegistry, type DotaLocation } from './setup';
 import { SessionRecorder } from './recorder';
+import { SerialRestarter } from './restart';
 
 /** Состояние в интерфейс — не чаще раза в секунду (плюс сразу при изменениях) */
 const PUSH_MS = 1000;
@@ -24,7 +25,17 @@ interface Deps {
 }
 
 class GsiService {
-  private server: GsiServer | null = null;
+  /** Приёмник перезапускается строго по одному: два изменения порта подряд не оставят второй слушающий сервер */
+  private readonly servers = new SerialRestarter<GsiServer>(
+    (port) =>
+      new GsiServer({
+        port,
+        token: this.deps.settings.get().gsi.token,
+        log: liveLog,
+        onBody: (body, wallMs) => this.onBody(body, wallMs),
+      }),
+    (server) => server.start(),
+  );
   private location: DotaLocation = { dotaDir: null, steamPath: null, how: 'not-found', libraries: [] };
   private steamPath: string | null = null;
   private recorder: SessionRecorder;
@@ -70,8 +81,7 @@ class GsiService {
   }
 
   async stop(): Promise<void> {
-    await this.server?.stop();
-    this.server = null;
+    await this.servers.stop();
   }
 
   private relocate(): void {
@@ -81,16 +91,9 @@ class GsiService {
   }
 
   private async startServer(): Promise<void> {
-    await this.server?.stop();
-    const s = this.deps.settings.get().gsi;
-    this.port = s.port;
-    this.server = new GsiServer({
-      port: s.port,
-      token: s.token,
-      log: liveLog,
-      onBody: (body, wallMs) => this.onBody(body, wallMs),
-    });
-    await this.server.start();
+    // Порт запоминается сразу (до ожидания): следующее изменение настроек сравнивается уже с ним
+    this.port = this.deps.settings.get().gsi.port;
+    await this.servers.restart(this.port);
     this.push(true);
   }
 
@@ -111,7 +114,7 @@ class GsiService {
 
   state(): GsiState {
     const s = this.deps.settings.get().gsi;
-    const st = this.server?.status;
+    const st = this.servers.server?.status;
     const dir = this.location.dotaDir;
     const cfg = dir ? cfgStatus(dir, s.port, s.token) : null;
     return {

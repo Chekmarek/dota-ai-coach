@@ -95,15 +95,49 @@ export function parseLibraryFolders(text: string): SteamLibrary[] {
   return out;
 }
 
-/** Папка Steam из реестра (HKCU\Software\Valve\Steam, SteamPath); null — не Windows или ключа нет */
-export function steamPathFromRegistry(): Promise<string | null> {
+/** Ответ `reg query … /v SteamPath` → путь; null — значения нет */
+export function parseRegSteamPath(stdout: string): string | null {
+  const m = /SteamPath\s+REG_\w+\s+(.+)/i.exec(stdout);
+  return m ? normalizeSteamPath(m[1]!) : null;
+}
+
+/** Вывод PowerShell (одна строка — значение SteamPath) → путь; null — пусто */
+export function parsePowershellSteamPath(stdout: string): string | null {
+  const line = stdout.replace(/^\uFEFF/, '').split(/\r?\n/).map((l) => l.trim()).find((l) => l.length > 0);
+  return line ? normalizeSteamPath(line) : null;
+}
+
+/** Steam пишет путь с прямыми слешами («d:/игры/steam») — приводим к виду Windows */
+function normalizeSteamPath(p: string): string | null {
+  const v = p.trim().replace(/\//g, '\\');
+  return v.length > 0 ? v : null;
+}
+
+/** Ключ реестра Steam (HKCU) */
+export const STEAM_REG_KEY = 'HKCU\\Software\\Valve\\Steam';
+
+/** Команда PowerShell: печатает SteamPath в UTF-8, так что путь с кириллицей не искажается */
+function psSteamPath(key: string): string {
+  const psKey = key.replace(/^HKCU\\/i, 'HKCU:\\').replace(/'/g, "''");
+  return `[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; (Get-ItemProperty -LiteralPath '${psKey}' -Name SteamPath -ErrorAction Stop).SteamPath`;
+}
+
+/**
+ * Папка Steam из реестра (HKCU\Software\Valve\Steam, SteamPath); null — не Windows или ключа нет.
+ * reg.exe пишет в кодировке консоли (не UTF-8), и путь вроде «D:\Игры\Steam» приходил искажённым — поэтому
+ * сначала PowerShell с выводом в UTF-8, а reg.exe — запасной путь (латинские пути он отдаёт верно).
+ */
+export function steamPathFromRegistry(key: string = STEAM_REG_KEY): Promise<string | null> {
   if (process.platform !== 'win32') return Promise.resolve(null);
-  return new Promise((resolve) => {
-    execFile('reg', ['query', 'HKCU\\Software\\Valve\\Steam', '/v', 'SteamPath'], { windowsHide: true, timeout: 5000 }, (err, stdout) => {
-      if (err) return resolve(null);
-      const m = /SteamPath\s+REG_\w+\s+(.+)/i.exec(String(stdout));
-      resolve(m ? m[1]!.trim().replace(/\//g, '\\') : null);
+  const run = (file: string, args: string[]) =>
+    new Promise<string | null>((resolve) => {
+      execFile(file, args, { windowsHide: true, timeout: 8000, encoding: 'utf8' }, (err, stdout) => resolve(err ? null : String(stdout)));
     });
+  return run('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command', psSteamPath(key)]).then(async (out) => {
+    const fromPs = out === null ? null : parsePowershellSteamPath(out);
+    if (fromPs) return fromPs;
+    const reg = await run('reg', ['query', key, '/v', 'SteamPath']);
+    return reg === null ? null : parseRegSteamPath(reg);
   });
 }
 

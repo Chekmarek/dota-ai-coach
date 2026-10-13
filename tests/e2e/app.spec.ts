@@ -396,3 +396,42 @@ test('GSI: записанная сессия → «Состояние матча
     await app.close();
   }
 });
+
+test('GSI: настоящая запись Hero Demo → Anti-Mage «из игры» за 3 с, уровни и способность — по одному событию', async () => {
+  const dataDir = tmp();
+  const port = 54123;
+  gsiSettings(dataDir, port);
+  // Настоящая запись (tests/fixtures/gsi/recorded): часть A — меню и выбор героя до первого тела с героем,
+  // часть B — дальше до изучения первой способности (≈ 390 строк). Токен подставляет replaySession.
+  const all = parseSession(readFileSync(join(ROOT, 'tests/fixtures/gsi/recorded/demo-antimage.jsonl'), 'utf8'));
+  const heroAt = all.findIndex((e) => (e.body as any).hero?.name === 'npc_dota_hero_antimage');
+  const learnedAt = all.findIndex((e) => ((e.body as any).abilities?.ability0?.level ?? 0) >= 1);
+  expect(heroAt).toBeGreaterThan(0);
+  expect(learnedAt).toBeGreaterThan(heroAt);
+  const partA = all.slice(0, heroAt + 1);
+  const partB = all.slice(heroAt + 1, learnedAt + 1);
+  const url = `http://127.0.0.1:${port}/`;
+  const { app, ui } = await launch(dataDir);
+  try {
+    await ui.click('[data-testid="nav-match"]');
+    await expect(ui.locator('[data-testid="match-empty"]')).toBeVisible();
+
+    expect((await replaySession(partA, { url, token: GSI_TOKEN, speed: 100 })).failed).toBe(0);
+    const t0 = Date.now();
+    await expect(ui.locator('[data-testid="hero-identity-value"]')).toHaveText('Anti-Mage', { timeout: 3000 });
+    await expect(ui.locator('[data-testid="hero-identity"] [data-testid="source-chip"]')).toHaveText('из игры', { timeout: Math.max(100, 3000 - (Date.now() - t0)) });
+    expect(Date.now() - t0).toBeLessThan(3000);
+
+    expect((await replaySession(partB, { url, token: GSI_TOKEN, speed: 20 })).failed).toBe(0);
+    await expect(ui.locator('[data-testid="hero-level-value"]')).toHaveText('3', { timeout: 3000 });
+    const events = ui.locator('[data-testid="match-events"] li');
+    await expect.poll(async () => (await events.allTextContents()).filter((t) => t.includes('Способность 1:')).length, { timeout: 3000 }).toBe(1);
+    const texts = await events.allTextContents();
+    expect(texts.filter((t) => t.includes('Уровень '))).toHaveLength(2);
+    expect(texts.some((t) => t.includes('Наступил день') || t.includes('Наступила ночь'))).toBe(false);
+    await expect(ui.locator('[data-testid="sidebar-gsi"]')).toHaveText('Данные из игры');
+    await ui.screenshot({ path: join(ROOT, 'test-results/gsi-recorded.png') });
+  } finally {
+    await app.close();
+  }
+});

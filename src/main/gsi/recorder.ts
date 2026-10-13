@@ -1,11 +1,16 @@
 // Запись сессий GSI: <папка данных>/gsi-sessions/<ГГГГ-ММ-ДД>.jsonl, по строке на запрос:
 // {"t": <мс Unix>, "body": {...}}. Ники, steamid/accountid, блоки provider и auth вырезаются.
-// Хранятся последние KEEP_FILES файлов. Нужны для разбора матчей и тестов без Dota (npm run gsi:replay).
+// Хранятся последние KEEP_FILES файлов, но вместе не больше MAX_TOTAL_BYTES (час игры — около 40 МБ): сверх лимита
+// удаляются самые старые дни, файл текущего дня — никогда. Нужны для разбора матчей и тестов без Dota (npm run gsi:replay).
 // Без Electron — модуль проверяется unit-тестами.
-import { appendFileSync, mkdirSync, readdirSync, rmSync } from 'node:fs';
-import { join } from 'node:path';
+import { appendFileSync, mkdirSync, readdirSync, rmSync, statSync } from 'node:fs';
+import { basename, join } from 'node:path';
 
 export const KEEP_FILES = 20;
+/** Общий предел папки gsi-sessions */
+export const MAX_TOTAL_BYTES = 500 * 1024 * 1024;
+/** Как часто проверять предел в течение дня (число записанных запросов; ≈ раз в 2 минуты при 10 запросах в секунду) */
+const PRUNE_EVERY = 1000;
 const FILE_RE = /^\d{4}-\d{2}-\d{2}\.jsonl$/;
 /** Ключи, которые удаляются на любом уровне: идентификаторы аккаунтов */
 const ID_KEYS = new Set(['steamid', 'accountid', 'account_id', 'personaname']);
@@ -39,10 +44,12 @@ function dayStamp(ms: number): string {
 export class SessionRecorder {
   private currentFile: string | null = null;
   private failed = false;
+  private sincePrune = 0;
 
   constructor(
     private readonly dir: string,
     private readonly log: (line: string) => void = () => undefined,
+    private readonly maxTotalBytes = MAX_TOTAL_BYTES,
   ) {}
 
   /** Дописывает запрос в файл текущего дня (локальное время) */
@@ -57,6 +64,8 @@ export class SessionRecorder {
       }
       appendFileSync(file, `${JSON.stringify({ t: wallMs, body: sanitizeGsiBody(body) })}\n`, 'utf8');
       this.failed = false;
+      // Длинный игровой день: предел проверяется и без смены файла
+      if (++this.sincePrune >= PRUNE_EVERY) this.prune();
     } catch (err) {
       // Запись не должна мешать коучу; в журнал — один раз до следующей удачной записи
       if (!this.failed) this.log(`gsi запись сессии не удалась: ${(err as Error).message}`);
@@ -64,14 +73,42 @@ export class SessionRecorder {
     }
   }
 
-  /** Оставляет последние KEEP_FILES файлов (по дате в имени) */
+  /**
+   * Оставляет последние KEEP_FILES файлов (по дате в имени), а если вместе они больше maxTotalBytes —
+   * удаляет самые старые, пока не уложится. Файл текущего дня не удаляется, даже если он один больше предела.
+   */
   prune(): void {
+    this.sincePrune = 0;
     let files: string[];
     try {
       files = readdirSync(this.dir).filter((f) => FILE_RE.test(f)).sort();
     } catch {
       return;
     }
-    for (const f of files.slice(0, Math.max(0, files.length - KEEP_FILES))) rmSync(join(this.dir, f), { force: true });
+    const remove = (f: string) => {
+      try {
+        rmSync(join(this.dir, f), { force: true });
+      } catch {
+        /* файл занят — попробуем в следующий раз */
+      }
+    };
+    const extra = Math.max(0, files.length - KEEP_FILES);
+    for (const f of files.slice(0, extra)) remove(f);
+    files = files.slice(extra);
+    const size = (f: string) => {
+      try {
+        return statSync(join(this.dir, f)).size;
+      } catch {
+        return 0;
+      }
+    };
+    let total = files.reduce((n, f) => n + size(f), 0);
+    const current = this.currentFile ? basename(this.currentFile) : null;
+    for (const f of files) {
+      if (total <= this.maxTotalBytes) break;
+      if (f === current) continue;
+      total -= size(f);
+      remove(f);
+    }
   }
 }
