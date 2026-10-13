@@ -1,9 +1,11 @@
 // Страница «Состояние матча» (этап D): устойчивое состояние из модели движка.
 // Каждое значение — с пометкой (видно сейчас / видели раньше / вывод / неизвестно), возрастом и уверенностью.
 // Неизвестное показывается прочерком: ничего не додумываем. Советов здесь нет (это этап F).
+// С этапа GSI у каждого значения — источник: «из игры» (Valve GSI) или «с экрана» (зрение), и карточка «Точность зрения».
 import { useEffect, useState, type ReactNode } from 'react';
 import { formatClock } from '@core/vision/hud-fields.ts';
-import type { AbilityState, MatchEvent, MatchState as MatchSnapshot, Tracked, TrackedTag } from '@core/match-state/index.ts';
+import type { AbilityState, MatchEvent, MatchState as MatchSnapshot, Tracked, TrackedSource, TrackedTag } from '@core/match-state/index.ts';
+import type { AgreementField, AgreementReport } from '@core/gsi/agreement.ts';
 import { useEngine } from '../hooks/useEngine';
 import { Card, PageHeader } from '../components/ui';
 
@@ -48,7 +50,18 @@ export function TagChip({ tag }: { tag: TrackedTag }) {
   );
 }
 
-/** Одно значение: подпись, значение (или «—»), метка, возраст, уверенность */
+const SOURCE_LABEL: Record<Exclude<TrackedSource, null>, string> = { gsi: 'из игры', screen: 'с экрана' };
+
+export function SourceChip({ source }: { source: TrackedSource }) {
+  if (!source) return null;
+  return (
+    <span className={`src-chip src-${source}`} data-source={source} data-testid="source-chip">
+      {SOURCE_LABEL[source]}
+    </span>
+  );
+}
+
+/** Одно значение: подпись, значение (или «—»), метка, источник, возраст, уверенность */
 function Fact<T>({ label, t, format, now, testId, suffix }: { label: string; t: Tracked<T>; format: (v: T) => ReactNode; now: number; testId: string; suffix?: ReactNode }) {
   const known = t.value !== null && t.tag !== 'unknown';
   return (
@@ -60,6 +73,7 @@ function Fact<T>({ label, t, format, now, testId, suffix }: { label: string; t: 
       </div>
       <div className="fact-meta">
         <TagChip tag={known ? t.tag : 'unknown'} />
+        {known && <SourceChip source={t.source} />}
         {known && (
           <span className="muted">
             {ago(now, t.lastSeenWallMs)} · {Math.round(t.confidence * 100)}%
@@ -94,26 +108,35 @@ function eventText(e: MatchEvent): string {
     case 'unpause':
       return 'Игра продолжилась';
     case 'match-reset':
-      return d.reason === 'manual' ? 'Начато новое наблюдение' : 'Новый матч (время ушло назад)';
+      return d.reason === 'manual'
+        ? 'Начато новое наблюдение'
+        : d.reason === 'gsi-match-id' || d.reason === 'gsi-pre-game'
+          ? 'Новый матч (по данным игры)'
+          : 'Новый матч (время ушло назад)';
   }
 }
 
 export function MatchState() {
-  const { status, match } = useEngine();
+  const { status, match, agreement } = useEngine();
   const now = useNow();
   const running = status?.state === 'starting' || status?.state === 'running' || status?.state === 'paused';
+  // Данные из игры (GSI) заполняют страницу и без захвата экрана
+  const gsi = !!match?.sources.gsi;
 
   return (
     <>
-      <PageHeader title="Состояние матча" subtitle="Что коуч знает о матче: видно сейчас, видели раньше, вывод или неизвестно. Только наблюдение, без советов." />
-      {!running || !match ? (
+      <PageHeader title="Состояние матча" subtitle="Что коуч знает о матче: видно сейчас, видели раньше, вывод или неизвестно; из игры или с экрана. Только наблюдение, без советов." />
+      {(!running && !gsi) || !match ? (
         <Card>
           <p className="muted match-empty" data-testid="match-empty">
             Запустите живую игру или разбор записи
           </p>
         </Card>
       ) : (
-        <MatchView s={match} now={now} />
+        <>
+          <MatchView s={match} now={now} />
+          <AgreementCard report={agreement} />
+        </>
       )}
     </>
   );
@@ -139,12 +162,15 @@ function MatchView({ s, now }: { s: MatchSnapshot; now: number }) {
           <Fact label="Счёт Сил Тьмы" t={m.scoreDire} format={String} now={now} testId="match-score-dire" />
           <Fact label="Время суток" t={m.dayNight} format={(v) => (v === 'day' ? 'день' : 'ночь')} now={now} testId="match-daynight" />
         </div>
+        <p className="muted small" data-testid="match-sources">
+          Источники: {s.sources.gsi ? 'данные из игры' : 'данных из игры нет'} · {s.sources.screen ? 'экран' : 'экран не используется'}
+        </p>
       </Card>
 
       <Card title="Мой герой">
         {!h.locked && (
           <p className="muted match-hint" data-testid="hero-not-locked">
-            Герой игрока ещё не определён: коуч ждёт, пока на нижней панели несколько секунд будет ваш герой.
+            Герой игрока ещё не определён: коуч ждёт данных из игры или пока на нижней панели несколько секунд будет ваш герой.
           </p>
         )}
         <div className="facts">
@@ -218,5 +244,68 @@ function MatchView({ s, now }: { s: MatchSnapshot; now: number }) {
         )}
       </Card>
     </div>
+  );
+}
+
+const AGREE_LABEL: Record<AgreementField, string> = {
+  clock: 'Время',
+  scoreRadiant: 'Счёт Сил Света',
+  scoreDire: 'Счёт Сил Тьмы',
+  dayNight: 'Время суток',
+  kda: 'У / С / П',
+  farm: 'ДК / НО',
+  heroName: 'Имя героя',
+  level: 'Уровень',
+  gold: 'Золото',
+  health: 'Здоровье',
+  mana: 'Мана',
+  abilityState: 'Состояние способностей',
+  abilityLevel: 'Уровни способностей',
+  items: 'Предметы',
+};
+
+const show = (v: unknown): string => {
+  if (v === null || v === undefined) return '—';
+  if (typeof v === 'object') return Object.values(v as Record<string, unknown>).join('/');
+  return String(v);
+};
+
+/** Точность зрения: насколько чтения с экрана совпадают с данными из игры (одни и те же моменты, окно 1.5 с) */
+function AgreementCard({ report }: { report: AgreementReport }) {
+  const rows = (Object.keys(AGREE_LABEL) as AgreementField[]).filter((f) => report[f] && report[f]!.samples > 0);
+  return (
+    <Card title="Точность зрения">
+      {rows.length === 0 ? (
+        <p className="muted" data-testid="agreement-empty">
+          Появится, когда одновременно идут данные из игры и живой захват экрана: коуч сравнивает, что прочитал с экрана, с тем, что прислала
+          Dota.
+        </p>
+      ) : (
+        <table className="table" data-testid="agreement-table">
+          <thead>
+            <tr>
+              <th>Поле</th>
+              <th>Сравнений</th>
+              <th>Совпало</th>
+              <th>Последнее расхождение (игра / экран)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((f) => {
+              const a = report[f]!;
+              const pct = a.agreePct ?? 0;
+              return (
+                <tr key={f} data-testid={`agreement-${f}`}>
+                  <td>{AGREE_LABEL[f]}</td>
+                  <td className="mono">{a.samples}</td>
+                  <td className={`mono agree-pct ${pct >= 95 ? 'hi' : pct >= 80 ? 'mid' : 'lo'}`}>{a.agreePct === null ? '—' : `${a.agreePct}%`}</td>
+                  <td className="mono">{a.lastMismatch ? `${show(a.lastMismatch.gsi)} / ${show(a.lastMismatch.screen)}` : '—'}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      )}
+    </Card>
   );
 }

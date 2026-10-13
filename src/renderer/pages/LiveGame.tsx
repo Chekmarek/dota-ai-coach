@@ -6,6 +6,7 @@ import { Card, PageHeader, Stat } from '../components/ui';
 import { HudRecognition, RegionOverlay } from '../components/HudRecognition';
 import { LIVE_HINT, LivePill, isLive, startLive } from '../components/live';
 import { HintsToggles } from '../components/hints';
+import { GsiCard } from '../components/gsi';
 import { engine } from '../hooks/useEngine';
 import type { PageProps } from './types';
 
@@ -76,6 +77,8 @@ export function LiveGame({ onNavigate }: PageProps) {
           </p>
         )}
       </Card>
+
+      <GsiCard />
 
       {settings && (
         <Card title="Live-подсказки">

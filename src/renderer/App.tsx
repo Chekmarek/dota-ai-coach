@@ -4,6 +4,7 @@ import { useSettings } from './hooks/useSettings';
 import { useUpdate } from './hooks/useUpdate';
 import { StatePill } from './components/ui';
 import { LivePill, isLive, useLiveAutoStart } from './components/live';
+import { GsiSidebarPill } from './components/gsi';
 import { Dashboard } from './pages/Dashboard';
 import { LiveGame } from './pages/LiveGame';
 import { RecommendationHistory } from './pages/Placeholders';
@@ -63,6 +64,7 @@ export function App() {
         <div className="sidebar-foot">
           <UpdateNotice onOpen={() => setPage('updates')} />
           {liveOn ? <LivePill live={status.live} /> : <StatePill state={status?.state ?? null} />}
+          <GsiSidebarPill />
           {status && status.state === 'running' && (
             <div className="muted small">
               {status.measuredFps} к/с · обработка {status.processingFps} к/с

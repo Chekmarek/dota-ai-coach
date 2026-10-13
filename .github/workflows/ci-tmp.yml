@@ -1,0 +1,82 @@
+# Временная проверка (ветка ci-tmp-*): типы, unit- и e2e-тесты на Windows. Ветка удаляется после проверки.
+name: ci-tmp
+on:
+  push:
+    branches: ['ci-tmp-*']
+jobs:
+  check:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Кэш npm во временной папке
+        run: '"npm_config_cache=$env:RUNNER_TEMP\npm-cache" >> $env:GITHUB_ENV'
+      - name: Зависимости
+        run: |
+          npm ci
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          node node_modules/electron/install.js
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+      - name: Типы
+        run: |
+          npm run typecheck 2>&1 | Tee-Object typecheck.txt
+          $code = $LASTEXITCODE
+          Get-Content typecheck.txt | Select-String "error TS" | Select-Object -First 9 | ForEach-Object { "::error::$_" }
+          exit $code
+      - name: Unit
+        if: always()
+        run: |
+          npx vitest run --reporter=default --reporter=json --outputFile=vitest.json 2>&1 | Tee-Object test.txt
+          $code = $LASTEXITCODE
+          $j = Get-Content vitest.json -Raw | ConvertFrom-Json
+          "::notice::unit total=$($j.numTotalTests) passed=$($j.numPassedTests) failed=$($j.numFailedTests) skipped=$($j.numPendingTests)"
+          $n = 0
+          foreach ($f in $j.testResults) { foreach ($a in $f.assertionResults) { if ($a.status -eq 'failed' -and $n -lt 9) { $n++; $m = ($a.failureMessages -join ' ') -replace "`r?`n", ' '; "::error::$($a.fullName) :: $($m.Substring(0, [Math]::Min(700, $m.Length)))" } } }
+          exit $code
+      - name: E2E
+        if: always()
+        env:
+          PLAYWRIGHT_JSON_OUTPUT_NAME: e2e.json
+        run: |
+          npm run build
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          npx playwright test --reporter=list,json 2>&1 | Tee-Object e2e.txt
+          $code = $LASTEXITCODE
+          $j = Get-Content e2e.json -Raw | ConvertFrom-Json
+          "::notice::e2e expected=$($j.stats.expected) unexpected=$($j.stats.unexpected) skipped=$($j.stats.skipped) flaky=$($j.stats.flaky)"
+          $n = 0
+          function Walk($suite) {
+            foreach ($sp in $suite.specs) { foreach ($t in $sp.tests) { foreach ($r in $t.results) { if ($r.status -ne 'passed' -and $r.status -ne 'skipped' -and $script:n -lt 9) { $script:n++; $m = (($r.errors | ForEach-Object { $_.message }) -join ' ') -replace "`r?`n", ' ' -replace '\x1b\[[0-9;]*m', ''; "::error::$($sp.title) :: $($m.Substring(0, [Math]::Min(900, $m.Length)))" } } } }
+            foreach ($s in $suite.suites) { Walk $s }
+          }
+          foreach ($s in $j.suites) { Walk $s }
+          exit $code
+      - name: Скриншоты
+        if: always()
+        run: |
+          Add-Type -AssemblyName System.Drawing
+          foreach ($name in @('gsi-match', 'gsi-card')) {
+            $p = "test-results/$name.png"
+            if (-not (Test-Path $p)) { "::warning::нет $p"; continue }
+            $img = [System.Drawing.Image]::FromFile((Resolve-Path $p))
+            $w = 900; $h = [int]($img.Height * $w / $img.Width)
+            $bmp = New-Object System.Drawing.Bitmap $w, $h
+            $g = [System.Drawing.Graphics]::FromImage($bmp); $g.InterpolationMode = 'HighQualityBicubic'; $g.DrawImage($img, 0, 0, $w, $h)
+            $codec = [System.Drawing.Imaging.ImageCodecInfo]::GetImageEncoders() | Where-Object { $_.MimeType -eq 'image/jpeg' }
+            $ep = New-Object System.Drawing.Imaging.EncoderParameters 1
+            $ep.Param[0] = New-Object System.Drawing.Imaging.EncoderParameter ([System.Drawing.Imaging.Encoder]::Quality), 55L
+            $ms = New-Object System.IO.MemoryStream; $bmp.Save($ms, $codec, $ep)
+            $b64 = [Convert]::ToBase64String($ms.ToArray())
+            $size = 60000; $parts = [Math]::Ceiling($b64.Length / $size)
+            for ($i = 0; $i -lt $parts; $i++) { "::notice title=IMG $name $($i+1)/$parts::$($b64.Substring($i * $size, [Math]::Min($size, $b64.Length - $i * $size)))" }
+          }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: e2e-screenshots
+          path: test-results/*.png

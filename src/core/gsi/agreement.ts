@@ -82,8 +82,13 @@ export class AgreementTracker {
   }
 
   /** Итог по полям; незавершённые кадры (окно ещё открыто) сравниваются с тем, что уже есть */
-  report(): AgreementReport {
-    this.settle(Number.POSITIVE_INFINITY, true);
+  /**
+   * nowMs не задан — итог: незавершённые кадры сравниваются с тем, что уже есть.
+   * nowMs задан (живой режим) — сравниваются только кадры, окно которых уже закрыто: отчёт можно брать часто.
+   */
+  report(nowMs?: number): AgreementReport {
+    if (nowMs === undefined) this.settle(Number.POSITIVE_INFINITY, true);
+    else this.settle(nowMs, false);
     const out: AgreementReport = {};
     for (const [field, s] of this.stats) {
       out[field] = { samples: s.samples, agreePct: s.samples ? Math.round((s.agree / s.samples) * 1000) / 10 : null, lastMismatch: s.lastMismatch };

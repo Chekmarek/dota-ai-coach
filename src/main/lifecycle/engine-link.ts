@@ -1,4 +1,5 @@
 import { MessageChannelMain, type BrowserWindow } from 'electron';
+import { LIVE_IPC, type GsiBodyMessage } from '@shared/ipc';
 import { createEngineWindow } from '../application/windows';
 import { onLiveEngineGone, setLiveEngine } from '../live/live';
 
@@ -25,6 +26,13 @@ export class EngineLink {
 
   start(): void {
     this.spawn();
+  }
+
+  /** Тело GSI — в движок (если движок готов; иначе пропускаем: следующее придёт через 0.1–30 с) */
+  sendGsi(body: Record<string, unknown>, wallMs: number): void {
+    if (!this.engineReady || !this.engine || this.engine.isDestroyed()) return;
+    const msg: GsiBodyMessage = { body, wallMs };
+    this.engine.webContents.send(LIVE_IPC.gsiBody, msg);
   }
 
   dispose(): void {

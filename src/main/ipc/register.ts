@@ -28,6 +28,11 @@ interface Deps {
   onSettingsChanged?: (settings: Settings) => void;
 }
 
+/** Секрет GSI интерфейсу не нужен — не отдаём его из main */
+function forUi(s: Settings): Settings {
+  return { ...s, gsi: { ...s.gsi, token: '' } };
+}
+
 export function registerIpc(deps: Deps): void {
   const handle = <T>(channel: string, fn: (e: IpcMainInvokeEvent, arg: unknown) => T | Promise<T>) => {
     ipcMain.handle(channel, (e, arg: unknown) => {
@@ -36,7 +41,7 @@ export function registerIpc(deps: Deps): void {
     });
   };
 
-  handle(IPC.settingsGet, () => deps.settings.get());
+  handle(IPC.settingsGet, () => forUi(deps.settings.get()));
 
   handle(IPC.kbGet, () => deps.kb.get());
 
@@ -44,7 +49,7 @@ export function registerIpc(deps: Deps): void {
     const patch = settingsPatchSchema.parse(arg);
     const next = deps.settings.update(patch);
     deps.onSettingsChanged?.(next);
-    return next;
+    return forUi(next);
   });
 
   handle(IPC.appInfo, (): AppInfo => ({

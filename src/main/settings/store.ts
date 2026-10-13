@@ -1,6 +1,7 @@
 import { existsSync, readFileSync, renameSync, writeFileSync, copyFileSync } from 'node:fs';
 import { join } from 'node:path';
 import {
+  applyInternalGsi,
   applySettingsPatch,
   defaultSettings,
   settingsSchema,
@@ -27,6 +28,13 @@ export class SettingsStore {
 
   update(patch: SettingsPatch): Settings {
     this.current = applySettingsPatch(this.current, patch);
+    this.save();
+    return this.get();
+  }
+
+  /** Только для main: секрет GSI и папка Dota (интерфейс их не задаёт) */
+  updateGsiInternal(gsi: Partial<Settings['gsi']>): Settings {
+    this.current = applyInternalGsi(this.current, gsi);
     this.save();
     return this.get();
   }
