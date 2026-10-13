@@ -36,6 +36,7 @@ jobs:
           $j = Get-Content vitest.json -Raw | ConvertFrom-Json
           "::notice::unit total=$($j.numTotalTests) passed=$($j.numPassedTests) failed=$($j.numFailedTests) skipped=$($j.numPendingTests)"
           $n = 0
+          foreach ($f in $j.testResults) { if ($f.status -eq 'failed' -and $f.message) { $m = $f.message -replace "`r?`n", ' '; "::error::FILE $($f.name) :: $($m.Substring(0, [Math]::Min(700, $m.Length)))" } }
           foreach ($f in $j.testResults) { foreach ($a in $f.assertionResults) { if ($a.status -eq 'failed' -and $n -lt 9) { $n++; $m = ($a.failureMessages -join ' ') -replace "`r?`n", ' '; "::error::$($a.fullName) :: $($m.Substring(0, [Math]::Min(700, $m.Length)))" } } }
           exit $code
       - name: E2E

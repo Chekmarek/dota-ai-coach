@@ -7,6 +7,9 @@ import { z } from 'zod';
 
 export const SETTINGS_SCHEMA_VERSION = 1;
 
+/** Порт приёмника GSI по умолчанию */
+export const GSI_DEFAULT_PORT = 53790;
+
 const DEFAULTS = {
   capture: { targetFps: 2, maxWidth: 1920, processingFpsCap: 10, previewFps: 2 },
   replay: { loop: false },
@@ -18,9 +21,6 @@ const DEFAULTS = {
   // Valve Game State Integration: локальный приёмник на 127.0.0.1 (этап 2 GSI)
   gsi: { port: GSI_DEFAULT_PORT, token: '', record: true, dotaDir: null as string | null },
 };
-
-/** Порт приёмника GSI по умолчанию */
-export const GSI_DEFAULT_PORT = 53790;
 
 export type OverlayCorner = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
 
