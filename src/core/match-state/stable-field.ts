@@ -92,6 +92,11 @@ export class StableField<T> {
     return change;
   }
 
+  /** Значение совпадает с принятым (по правилу сравнения поля) */
+  matches(value: T | null): boolean {
+    return value !== null && this.value !== null && this.opts.equals(value, this.value);
+  }
+
   private accept(value: T, confidence: number, wallMs: number): FieldChange<T> {
     const prev = this.value;
     this.value = value;

@@ -371,8 +371,9 @@ describe('события', () => {
   it('журнал хранит только последние 100 событий', () => {
     const m = new MatchStateModel();
     let t = 0;
+    // День/ночь с экрана учитывается только вместе с часами матча (часы идут вместе со временем — без паузы)
     for (let i = 0; i < 130; i++) {
-      t = feed(m, t, 1, () => reading({ dayNight: i % 2 ? 'night' : 'day' }));
+      t = feed(m, t, 1, () => reading({ clock: 600 + Math.floor(i / 10), dayNight: i % 2 ? 'night' : 'day' }));
     }
     const evs = m.snapshot(t).events;
     expect(evs).toHaveLength(EVENT_LIMIT);

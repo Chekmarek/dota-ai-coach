@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "capture": {
+    "targetFps": 4,
+    "maxWidth": 1600,
+    "processingFpsCap": 12,
+    "previewFps": 3
+  },
+  "replay": {
+    "loop": true
+  },
+  "voice": {
+    "enabled": true,
+    "voiceId": "Microsoft Irina - Russian (Russia)",
+    "rate": 1.2,
+    "volume": 0.6
+  },
+  "ui": {
+    "showRegions": false
+  },
+  "live": {
+    "autoStart": false,
+    "fps": 15,
+    "overlay": false,
+    "overlayCorner": "bottom-left"
+  }
+}

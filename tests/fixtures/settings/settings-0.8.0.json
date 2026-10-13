@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "capture": {
+    "targetFps": 3,
+    "maxWidth": 1920,
+    "processingFpsCap": 10,
+    "previewFps": 2
+  },
+  "replay": {
+    "loop": false
+  },
+  "voice": {
+    "enabled": false,
+    "voiceId": null,
+    "rate": 1,
+    "volume": 0.8
+  },
+  "ui": {
+    "showRegions": true
+  },
+  "live": {
+    "autoStart": true,
+    "fps": 12,
+    "overlay": true,
+    "overlayCorner": "top-left"
+  }
+}

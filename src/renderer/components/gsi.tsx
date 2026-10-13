@@ -4,7 +4,11 @@ import type { GsiState } from '@shared/ipc';
 import { setGsiState, useGsi } from '../hooks/useGsi';
 import { Card } from './ui';
 
-/** Данные «идут», если последний запрос был не раньше этого: в меню Dota шлёт heartbeat раз в 30 с */
+/**
+ * Данные «идут», если последний запрос был не раньше этого. Настоящая Dota (проверка 2026-10-13) в меню присылает
+ * один запрос при запуске и молчит, пока не загрузится матч или Hero Demo; в матче — при изменениях и не реже
+ * heartbeat (30 с). Поэтому в меню статус «файл установлен, ждём Dota» — это норма.
+ */
 export const GSI_FLOW_MS = 35_000;
 
 export type GsiStatusKey = 'port-busy' | 'error' | 'flowing' | 'waiting' | 'off';
@@ -71,13 +75,24 @@ export function GsiCard() {
 
   const dota = st?.dota;
   const outdated = dota?.installed && !dota.current;
+  const upToDate = !!(dota?.installed && dota.current);
+  // Коуч сам переписал устаревший файл — Dota подхватит его после перезапуска (пока данные не пошли снова)
+  const refreshedAt = dota?.refreshedAt ?? null;
+  const lastBodyAt = st?.lastBodyAt ?? null;
+  const refreshed = refreshedAt !== null && (lastBodyAt === null || lastBodyAt < refreshedAt);
   return (
     <Card
       title="Данные из игры (GSI)"
       actions={
         <>
-          <button className="primary" onClick={() => setConfirm('connect')} disabled={!st || !dota?.cfgPath} data-testid="gsi-connect">
-            {outdated ? 'Обновить файл' : 'Подключить'}
+          <button
+            className="primary"
+            onClick={() => setConfirm('connect')}
+            disabled={!st || !dota?.cfgPath || upToDate}
+            title={upToDate ? 'Файл коуча уже в папке Dota и совпадает с текущими настройками' : undefined}
+            data-testid="gsi-connect"
+          >
+            {upToDate ? 'Файл установлен' : outdated ? 'Обновить файл' : 'Подключить'}
           </button>
           <button onClick={() => setConfirm('disconnect')} disabled={!dota?.installed} data-testid="gsi-disconnect">
             Отключить
@@ -108,6 +123,16 @@ export function GsiCard() {
       )}
       {st?.error && <p className="error">Ошибка приёмника: {st.error}</p>}
       {outdated && <p className="warn">Файл в папке Dota от старых настроек — нажмите «Обновить файл».</p>}
+      {refreshed && !outdated && (
+        <p className="warn" data-testid="gsi-refreshed">
+          Файл обновлён — перезапустите Dota, чтобы она его подхватила.
+        </p>
+      )}
+      {s.key === 'waiting' && !refreshed && (
+        <p className="muted small" data-testid="gsi-waiting-hint">
+          В меню Dota данных не присылает — это нормально. Данные пойдут, когда загрузится матч или Hero Demo.
+        </p>
+      )}
       {dota && !dota.dir && (
         <p className="warn" data-testid="gsi-no-dota">
           Папка Dota 2 не найдена.{' '}
@@ -157,7 +182,7 @@ export function GsiCard() {
             {copied ? 'Скопировано' : 'Копировать'}
           </button>
         </li>
-        <li>Перезапустите Dota 2. Статус сменится на «данные идут».</li>
+        <li>Перезапустите Dota 2. Статус сменится на «данные идут», когда загрузится матч или Hero Demo (в меню Dota молчит).</li>
       </ol>
     </Card>
   );

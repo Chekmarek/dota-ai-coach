@@ -8,7 +8,7 @@ import type { Settings } from '@shared/schemas/settings';
 import type { SettingsStore } from '../settings/store';
 import { liveLog } from '../live/live';
 import { GsiServer } from './server';
-import { GSI_LAUNCH_OPTION, cfgPath, cfgStatus, installCfg, locateDota, removeCfg, steamPathFromRegistry, type DotaLocation } from './setup';
+import { GSI_LAUNCH_OPTION, cfgPath, cfgStatus, installCfg, locateDota, refreshCfg, removeCfg, steamPathFromRegistry, type DotaLocation } from './setup';
 import { SessionRecorder } from './recorder';
 
 /** Состояние в интерфейс — не чаще раза в секунду (плюс сразу при изменениях) */
@@ -31,6 +31,8 @@ class GsiService {
   private pushTimer: ReturnType<typeof setTimeout> | null = null;
   private lastPushAt = 0;
   private port: number;
+  /** Когда коуч сам переписал устаревший файл в папке Dota (Dota подхватит его после перезапуска); null — не переписывал */
+  private refreshedAt: number | null = null;
 
   constructor(private readonly deps: Deps) {
     this.recorder = new SessionRecorder(join(deps.dataDir, 'gsi-sessions'), liveLog);
@@ -45,7 +47,26 @@ class GsiService {
   async start(): Promise<void> {
     this.steamPath = await steamPathFromRegistry();
     this.relocate();
+    this.refreshStale('при запуске');
     await this.startServer();
+  }
+
+  /**
+   * Свой файл в папке Dota устарел (другой порт, секрет или формат) — переписываем его.
+   * Файла нет — не создаём: подключение остаётся решением пользователя.
+   */
+  private refreshStale(why: string): void {
+    const dir = this.location.dotaDir;
+    if (!dir) return;
+    const s = this.deps.settings.get().gsi;
+    try {
+      if (refreshCfg(dir, s.port, s.token) === 'rewritten') {
+        this.refreshedAt = Date.now();
+        liveLog(`gsi файл в папке Dota устарел и переписан (${why}); Dota подхватит его после перезапуска`, cfgPath(dir));
+      }
+    } catch (err) {
+      liveLog('gsi не удалось обновить файл в папке Dota', String((err as Error)?.message ?? err));
+    }
   }
 
   async stop(): Promise<void> {
@@ -83,11 +104,7 @@ class GsiService {
   async onSettingsChanged(next: Settings): Promise<void> {
     if (next.gsi.port !== this.port) {
       await this.startServer();
-      const dir = this.location.dotaDir;
-      if (dir && cfgStatus(dir, next.gsi.port, next.gsi.token).installed) {
-        installCfg(dir, next.gsi.port, next.gsi.token);
-        liveLog('gsi файл обновлён под новый порт', next.gsi.port);
-      }
+      this.refreshStale(`новый порт ${next.gsi.port}`);
     }
     this.push(true);
   }
@@ -101,7 +118,14 @@ class GsiService {
       server: st?.state ?? 'off',
       port: s.port,
       error: st?.error ?? null,
-      dota: { dir, how: this.location.how, cfgPath: cfg?.path ?? null, installed: cfg?.installed ?? false, current: cfg?.current ?? false },
+      dota: {
+        dir,
+        how: this.location.how,
+        cfgPath: cfg?.path ?? null,
+        installed: cfg?.installed ?? false,
+        current: cfg?.current ?? false,
+        refreshedAt: cfg?.installed ? this.refreshedAt : null,
+      },
       lastBodyAt: st?.lastBodyAt ?? null,
       accepted: st?.accepted ?? 0,
       rejected: st?.rejected ?? 0,
@@ -116,6 +140,7 @@ class GsiService {
     if (!dir) throw new Error('Папка Dota 2 не найдена. Укажите её вручную кнопкой «Указать папку Dota».');
     const s = this.deps.settings.get().gsi;
     const path = installCfg(dir, s.port, s.token);
+    this.refreshedAt = null;
     liveLog('gsi подключено: записан файл', path);
     return this.pushNow();
   }
@@ -123,6 +148,7 @@ class GsiService {
   disconnect(): GsiState {
     const dir = this.location.dotaDir;
     if (dir && removeCfg(dir)) liveLog('gsi отключено: удалён файл', cfgPath(dir));
+    this.refreshedAt = null;
     return this.pushNow();
   }
 
@@ -135,6 +161,7 @@ class GsiService {
       this.deps.settings.updateGsiInternal({ dotaDir: dir });
       this.relocate();
       if (!this.location.dotaDir) throw new Error('Это не папка Dota 2');
+      this.refreshStale('выбрана папка Dota');
     }
     return this.pushNow();
   }

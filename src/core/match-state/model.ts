@@ -7,7 +7,8 @@ import type { HudReading } from '../vision/recognize-hud.ts';
 import type { GsiPhase, GsiReading } from '../gsi/map.ts';
 import type { Observed } from '../../shared/types/observation.ts';
 import { ClockTracker } from './clock.ts';
-import { StableField, VISIBLE_MS, unknownTracked } from './stable-field.ts';
+import { StableField, VISIBLE_MS, unknownTracked, type FieldChange } from './stable-field.ts';
+import { SourceEventGate } from './source-events.ts';
 import type {
   AbilityState,
   DayNight,
@@ -59,6 +60,13 @@ export const TTL_MS = {
 } as const;
 
 const SLOTS = ['inv1', 'inv2', 'inv3', 'inv4', 'inv5', 'inv6', 'bp1', 'bp2', 'bp3'];
+/** Ячейки только из GSI (экран их не читает) */
+export const EXTRA_SLOTS = ['stash1', 'stash2', 'stash3', 'stash4', 'stash5', 'stash6', 'tp', 'neutral', 'neutral2'];
+/** Ключ свитка телепорта: его появление и исчезновение — не события */
+const TP_KEY = 'tpscroll';
+/** Предмет, ушедший из тайника, считается «на курьере» столько секунд игрового времени */
+export const COURIER_SEC = 120;
+const COURIER_LIMIT = 30;
 
 const same = <T>(a: T, b: T) => a === b;
 const samePool = (a: Pool, b: Pool) => a.current === b.current && a.max === b.max;
@@ -95,6 +103,10 @@ class HeroTrack {
   abilities = new Map<number, AbilityTrack>();
   // Смена содержимого ячейки должна продержаться 2 чтения — без приёма с первого чтения
   items = new Map(SLOTS.map((s) => [s, new StableField<SlotContent>({ equals: sameSlot, fastConfidence: null })]));
+  /** Ячейки, которые даёт только GSI: тайник, телепорт, нейтральный предмет, зачарование */
+  extra = new Map(EXTRA_SLOTS.map((s) => [s, new StableField<SlotContent>({ equals: sameSlot, fastConfidence: null })]));
+  /** Ушли из тайника — возможно, едут на курьере */
+  courier: { key: string; clock: number | null; wallMs: number }[] = [];
   /** Чтения «свой юнит + имя» для определения героя игрока */
   sightings: { id: number; identity: HeroIdentity; wallMs: number }[] = [];
   lastPlayerReadingMs: number | null = null;
@@ -107,6 +119,8 @@ export class MatchStateModel {
     provided: new Set<GsiField>(),
     matchId: null as string | null,
     phase: null as GsiPhase | null,
+    /** Герой из последнего чтения GSI: другой герой — другая игра, даже без matchid (Hero Demo, лобби: matchid "0") */
+    heroId: null as number | null,
   };
   private lastScreenMs: number | null = null;
   private clock = new ClockTracker();
@@ -116,6 +130,8 @@ export class MatchStateModel {
   private hero = new HeroTrack();
   private events: MatchEvent[] = [];
   private seq = 0;
+  /** Какое значение каждого поля последним подтвердил каждый источник — события только по своим изменениям */
+  private gate = new SourceEventGate();
 
   /** Растёт с каждым новым событием (и при сбросе) — по нему видно, что появилось событие */
   get eventSeq(): number {
@@ -154,13 +170,21 @@ export class MatchStateModel {
     // 2. Счёт и время суток — общие для матча
     if (!gsi('scoreRadiant')) this.scoreRadiant.ingest(f.scoreRadiant.value, f.scoreRadiant.confidence, isValid(f.scoreRadiant), wallMs);
     if (!gsi('scoreDire')) this.scoreDire.ingest(f.scoreDire.value, f.scoreDire.confidence, isValid(f.scoreDire), wallMs);
-    if (!gsi('dayNight')) {
-      const dn = this.dayNight.ingest(reading.dayNight.value, reading.dayNight.confidence, isValid(reading.dayNight), wallMs);
-      if (dn && dn.prev !== null) this.emit('day-night', wallMs, { from: dn.prev, to: dn.next });
+    // Значок над часами — день/ночь, только если на том же кадре прочитаны часы матча (не меньше 0:00):
+    // до горна Dota показывает луну, хотя это не ночь, а в меню и на загрузке на месте значка может быть что угодно
+    if (!gsi('dayNight') && isValid(f.gameClock) && f.gameClock.value! >= 0) {
+      const ok = isValid(reading.dayNight);
+      const dn = this.dayNight.ingest(reading.dayNight.value, reading.dayNight.confidence, ok, wallMs);
+      const ev = this.screenTransition('dayNight', this.dayNight, dn, reading.dayNight.value, ok, wallMs);
+      if (ev) this.emit('day-night', wallMs, { from: ev.prev, to: ev.next });
     }
 
     // 3. У/С/П и ДК/НО — блок слева вверху, всегда свой игрок (не зависит от выбранного юнита)
-    if (!gsi('kda')) this.kdaEvents(this.hero.kda.ingest(f.kda.value, f.kda.confidence, isValid(f.kda), wallMs), wallMs);
+    if (!gsi('kda')) {
+      const ok = isValid(f.kda);
+      const ch = this.hero.kda.ingest(f.kda.value, f.kda.confidence, ok, wallMs);
+      this.kdaEvents(this.screenTransition('kda', this.hero.kda, ch, f.kda.value, ok, wallMs), wallMs);
+    }
     if (!gsi('farm')) this.hero.farm.ingest(f.farm.value, f.farm.confidence, isValid(f.farm), wallMs);
 
     // 4. Нижняя панель — только если на ней герой игрока (после GSI герой известен сразу, чужая панель отсекается)
@@ -181,15 +205,21 @@ export class MatchStateModel {
     } else if (g.phase === 'in-progress' && reading.phase === 'pre-game') {
       this.clear();
       this.emit('match-reset', wallMs, { reason: 'gsi-pre-game', gameState: reading.gameState });
+    } else if (reading.hero.id !== null && g.heroId !== null && reading.hero.id !== g.heroId) {
+      this.clear();
+      this.emit('match-reset', wallMs, { reason: 'gsi-hero', from: g.heroId, to: reading.hero.id });
     }
+    if (reading.hero.id !== null) g.heroId = reading.hero.id;
     const sync = !this.gsiLive(wallMs);
+    // Первое чтение после тишины GSI — сверка: прежние значения GSI больше не «свои» для событий
+    if (sync) this.gate.forget('gsi');
     const provided = new Set<GsiField>();
     g.lastWallMs = wallMs;
     if (reading.matchId !== null) g.matchId = reading.matchId;
     if (reading.phase !== null) g.phase = reading.phase;
     g.provided = provided;
-    /** Изменение — событие, если прежнее значение было и это не сверка после тишины GSI */
-    const real = <T>(ch: { prev: T | null; next: T } | null): ch is { prev: T; next: T } => ch !== null && ch.prev !== null && !sync;
+    /** Изменение — событие по правилам source-events.ts; сверка после тишины GSI событием не бывает */
+    const real = <T>(key: string, ch: FieldChange<T> | null, value: T) => this.gsiTransition(key, ch, value, sync, wallMs);
 
     // Время и пауза
     if (reading.clock !== null) {
@@ -206,15 +236,14 @@ export class MatchStateModel {
     }
     if (reading.dayNight !== null) {
       provided.add('dayNight');
-      const dn = this.dayNight.force(reading.dayNight, wallMs);
-      if (real(dn)) this.emit('day-night', wallMs, { from: dn.prev, to: dn.next });
+      const ev = real('dayNight', this.dayNight.force(reading.dayNight, wallMs), reading.dayNight);
+      if (ev) this.emit('day-night', wallMs, { from: ev.prev, to: ev.next });
     }
 
     const h = this.hero;
     if (reading.kda !== null) {
       provided.add('kda');
-      const ch = h.kda.force(reading.kda, wallMs);
-      if (!sync) this.kdaEvents(ch, wallMs);
+      this.kdaEvents(real('kda', h.kda.force(reading.kda, wallMs), reading.kda), wallMs);
     }
     if (reading.farm !== null) {
       provided.add('farm');
@@ -237,8 +266,8 @@ export class MatchStateModel {
     }
     if (hero.level !== null) {
       provided.add('level');
-      const lvl = h.level.force(hero.level, wallMs);
-      if (real(lvl) && lvl.next > lvl.prev) this.emit('level-up', wallMs, { from: lvl.prev, to: lvl.next });
+      const lvl = real('level', h.level.force(hero.level, wallMs), hero.level);
+      if (lvl && lvl.next > lvl.prev) this.emit('level-up', wallMs, { from: lvl.prev, to: lvl.next });
     }
     if (hero.health !== null) {
       provided.add('health');
@@ -257,8 +286,8 @@ export class MatchStateModel {
         const t = this.abilityTrack(a.slot!);
         t.key = a.key;
         if (a.level !== null) {
-          const lvl = t.level.force(a.level, wallMs);
-          if (real(lvl) && lvl.next > lvl.prev) this.emit('ability-learned', wallMs, { index: a.slot, from: lvl.prev, to: lvl.next });
+          const lvl = real(`ability:${a.slot}`, t.level.force(a.level, wallMs), a.level);
+          if (lvl && lvl.next > lvl.prev) this.emit('ability-learned', wallMs, { index: a.slot, from: lvl.prev, to: lvl.next });
         }
         if (a.state !== null) t.state.force(a.state, wallMs);
         if (a.state === 'cooldown' && a.cooldownSec !== null) t.readyAt.force(wallMs + a.cooldownSec * 1000, wallMs);
@@ -266,22 +295,61 @@ export class MatchStateModel {
       }
     }
 
-    // Инвентарь: 6 ячеек и рюкзак (тайник, телепорт и нейтральный предмет модель пока не хранит)
+    // Предметы: 6 ячеек и рюкзак, а также только из GSI — тайник, телепорт, нейтральный предмет и зачарование
     if (reading.items !== null) {
       provided.add('items');
-      const before: Item[] = [];
-      const after: Item[] = [];
+      const before: Placed[] = [];
+      const after: Placed[] = [];
       for (const it of reading.items) {
-        const field = h.items.get(it.slot);
+        const field = h.items.get(it.slot) ?? h.extra.get(it.slot);
         if (!field) continue;
         const content: SlotContent = { item: it.key === null ? null : { key: it.key, name: it.name ?? it.key } };
-        const ch = field.force(content, wallMs);
-        if (real(ch)) {
-          if (ch.prev.item) before.push(ch.prev.item);
-          if (ch.next.item) after.push(ch.next.item);
-        }
+        // Сравниваем только со своим прежним значением GSI: ячейка, которую GSI видит впервые
+        // (или которую до этого вёл экран), — знакомство или расхождение, а не покупка и не потеря
+        const prev = field.source === 'gsi' ? field.value : null;
+        field.force(content, wallMs);
+        if (prev === null) continue;
+        if (prev.item) before.push({ ...prev.item, slot: it.slot });
+        if (content.item) after.push({ ...content.item, slot: it.slot });
       }
-      this.itemEvents(before, after, wallMs);
+      if (!sync) this.gsiItemEvents(before, after, wallMs);
+    }
+  }
+
+  /**
+   * События предметов по GSI — по всем ячейкам героя вместе (инвентарь, рюкзак, тайник, нейтральные):
+   * перекладывание между ячейками — не событие. Телепорт событий не даёт никогда (заряды, пустая ячейка, новый свиток).
+   * Ушедшее из тайника может ехать на курьере (GSI курьера не показывает): это не потеря, а если тот же предмет
+   * появится у героя в течение COURIER_SEC игрового времени — и не новый предмет.
+   * Сборка: в одном запросе пропали предметы и появился новый — сообщаем только о новом.
+   */
+  private gsiItemEvents(before: Placed[], after: Placed[], wallMs: number): void {
+    const h = this.hero;
+    const counted = (x: Placed) => x.slot !== 'tp' && x.key !== TP_KEY;
+    const b = before.filter(counted);
+    const a = after.filter(counted);
+    const gained = diff(a, b);
+    const lost = diff(b, a);
+    const clock = this.clock.at(wallMs);
+    h.courier = h.courier.filter((c) => !courierExpired(c, clock, wallMs));
+    for (const it of gained) {
+      const i = h.courier.findIndex((c) => c.key === it.key);
+      if (i >= 0) h.courier.splice(i, 1); // приехал курьером — куплен раньше
+      else this.emit('item-gained', wallMs, { key: it.key, name: it.name });
+    }
+    // Компоненты ушли в собранный предмет — это не потеря
+    if (gained.length > 0 && lost.length > 0) return;
+    // Сколько экземпляров каждого предмета ушло из тайника и не появилось в других ячейках
+    const fromStash = new Map<string, number>();
+    const stashCount = (list: Placed[], key: string) => list.filter((x) => x.slot.startsWith('stash') && x.key === key).length;
+    for (const it of lost) if (!fromStash.has(it.key)) fromStash.set(it.key, Math.max(0, stashCount(b, it.key) - stashCount(a, it.key)));
+    for (const it of lost) {
+      const left = fromStash.get(it.key) ?? 0;
+      if (left > 0) {
+        fromStash.set(it.key, left - 1);
+        h.courier.push({ key: it.key, clock, wallMs });
+        if (h.courier.length > COURIER_LIMIT) h.courier.shift();
+      } else this.emit('item-lost', wallMs, { key: it.key, name: it.name });
     }
   }
 
@@ -298,6 +366,11 @@ export class MatchStateModel {
         cooldown: cooldownTracked(t.readyAt, wallMs),
       }));
     const items: TrackedItemSlot[] = SLOTS.map((slot) => ({ slot, ...h.items.get(slot)!.tracked(wallMs, TTL_MS.items) }));
+    // Тайник, телепорт и нейтральные — только ячейки, которые GSI уже присылал
+    const extraItems: TrackedItemSlot[] = EXTRA_SLOTS.filter((slot) => h.extra.get(slot)!.value !== null).map((slot) => ({
+      slot,
+      ...h.extra.get(slot)!.tracked(wallMs, TTL_MS.items),
+    }));
     return {
       wallMs,
       sources: {
@@ -322,6 +395,7 @@ export class MatchStateModel {
         farm: h.farm.tracked(wallMs, TTL_MS.farm),
         abilities,
         items,
+        ...(extraItems.length > 0 ? { extraItems } : {}),
       },
       events: [...this.events],
     };
@@ -340,6 +414,27 @@ export class MatchStateModel {
     this.dayNight = new StableField<DayNight>({ equals: same });
     this.hero = new HeroTrack();
     this.events = [];
+    this.gate.reset();
+  }
+
+  /**
+   * Чтение с экрана подтвердило значение поля (приняло новое или совпало с принятым). Событие — только если
+   * изменилось прежнее значение САМОГО экрана и GSI не сообщил тот же переход только что (source-events.ts).
+   */
+  private screenTransition<T>(key: string, field: StableField<T>, ch: FieldChange<T> | null, value: T | null, valid: boolean, wallMs: number): { prev: T; next: T } | null {
+    const seen = ch ? ch.next : valid && field.matches(value) ? field.value : null;
+    if (seen === null) return null;
+    const changed = this.gate.observe('screen', key, seen);
+    if (!ch || ch.prev === null || !changed) return null;
+    return this.gate.allow('screen', key, ch.next, this.clock.at(wallMs), wallMs) ? { prev: ch.prev, next: ch.next } : null;
+  }
+
+  /** Значение поля из GSI. Пока поле ведёт GSI, экран его не трогает — его следующее значение снова будет «первым» */
+  private gsiTransition<T>(key: string, ch: FieldChange<T> | null, value: T, sync: boolean, wallMs: number): { prev: T; next: T } | null {
+    const changed = this.gate.observe('gsi', key, value);
+    this.gate.forget('screen', key);
+    if (sync || !ch || ch.prev === null || !changed) return null;
+    return this.gate.allow('gsi', key, ch.next, this.clock.at(wallMs), wallMs) ? { prev: ch.prev, next: ch.next } : null;
   }
 
   private emit(type: MatchEventType, wallMs: number, data: Record<string, unknown>): void {
@@ -390,8 +485,9 @@ export class MatchStateModel {
     }
 
     if (!gsi('level')) {
-      const lvl = h.level.ingest(f.level.value, f.level.confidence, isValid(f.level), wallMs);
-      if (lvl && lvl.prev !== null && lvl.next > lvl.prev) this.emit('level-up', wallMs, { from: lvl.prev, to: lvl.next });
+      const ok = isValid(f.level);
+      const lvl = this.screenTransition('level', h.level, h.level.ingest(f.level.value, f.level.confidence, ok, wallMs), f.level.value, ok, wallMs);
+      if (lvl && lvl.next > lvl.prev) this.emit('level-up', wallMs, { from: lvl.prev, to: lvl.next });
     }
     if (!gsi('gold')) h.gold.ingest(f.gold.value, f.gold.confidence, isValid(f.gold), wallMs);
     if (!gsi('health')) h.health.ingest(f.health.value, f.health.confidence, isValid(f.health), wallMs);
@@ -415,8 +511,8 @@ export class MatchStateModel {
     return t;
   }
 
-  private kdaEvents(kda: { prev: Kda | null; next: Kda } | null, wallMs: number): void {
-    if (!kda?.prev) return;
+  private kdaEvents(kda: { prev: Kda; next: Kda } | null, wallMs: number): void {
+    if (!kda) return;
     const p = kda.prev, n = kda.next;
     if (n.kills > p.kills) this.emit('kill', wallMs, { from: p.kills, to: n.kills });
     if (n.deaths > p.deaths) this.emit('death', wallMs, { from: p.deaths, to: n.deaths });
@@ -433,8 +529,8 @@ export class MatchStateModel {
     const t = this.abilityTrack(slot.index);
     const ok = slot.confidence >= MIN_SLOT_CONFIDENCE;
     t.state.ingest(slot.state, slot.confidence, ok, wallMs);
-    const lvl = t.level.ingest(slot.level, slot.confidence, ok, wallMs);
-    if (lvl && lvl.prev !== null && lvl.next > lvl.prev) this.emit('ability-learned', wallMs, { index: slot.index, from: lvl.prev, to: lvl.next });
+    const lvl = this.screenTransition(`ability:${slot.index}`, t.level, t.level.ingest(slot.level, slot.confidence, ok, wallMs), slot.level, ok, wallMs);
+    if (lvl && lvl.next > lvl.prev) this.emit('ability-learned', wallMs, { index: slot.index, from: lvl.prev, to: lvl.next });
     if (ok && slot.state === 'cooldown' && slot.cooldown !== null) t.readyAt.ingest(wallMs + slot.cooldown * 1000, slot.confidence, true, wallMs);
     // Способность готова — перезарядка закончилась
     else if (ok && slot.state === 'ready') t.readyAt.ingest(wallMs, slot.confidence, true, wallMs);
@@ -464,11 +560,19 @@ export class MatchStateModel {
 }
 
 type Item = { key: string; name: string };
+/** Предмет и ячейка, где он лежит */
+type Placed = Item & { slot: string };
+
+/** Срок «на курьере» вышел: по игровому времени, если оно известно в оба момента, иначе по «настенному» */
+function courierExpired(c: { clock: number | null; wallMs: number }, clock: number | null, wallMs: number): boolean {
+  if (c.clock !== null && clock !== null) return clock - c.clock > COURIER_SEC || clock < c.clock - 1;
+  return wallMs - c.wallMs > COURIER_SEC * 1000;
+}
 
 /** Элементы a, которых нет в b (с учётом повторов) */
-function diff(a: Item[], b: Item[]): Item[] {
+function diff<T extends Item>(a: T[], b: T[]): T[] {
   const rest = b.map((x) => x.key);
-  const out: Item[] = [];
+  const out: T[] = [];
   for (const x of a) {
     const i = rest.indexOf(x.key);
     if (i >= 0) rest.splice(i, 1);

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { AgreementTracker, labelFromGsi, mapGsi, parseGsiBody, type GsiReading } from '../../src/core/gsi/index.ts';
-import { GSI_LIVE_MS, MatchStateModel } from '../../src/core/match-state/index.ts';
+import { COURIER_SEC, CROSS_SOURCE_WINDOW_SEC, GSI_LIVE_MS, MatchStateModel, SourceEventGate } from '../../src/core/match-state/index.ts';
 import type { HudReading } from '../../src/core/vision/recognize-hud.ts';
 import type { AbilitySlot } from '../../src/core/vision/abilities.ts';
 import type { ItemSlot } from '../../src/core/vision/items.ts';
@@ -377,6 +377,32 @@ describe('GSI в модели состояния', () => {
     expect(m.snapshot(1000).events[0]!.data).toMatchObject({ reason: 'gsi-pre-game' });
   });
 
+  it('другой герой по GSI без нового matchid (Hero Demo, matchid "0") — новый матч, старые события и способности не остаются', () => {
+    const m = new MatchStateModel();
+    const demo = (patch?: (b: Record<string, any>) => void) =>
+      read('laning', (b) => {
+        b.map.matchid = '0';
+        patch?.(b);
+      });
+    m.ingestGsi(demo(), 0);
+    m.ingestGsi(demo((b) => (b.hero.level = 8)), 500);
+    expect(types(m, 500)).toEqual(['level-up']);
+    // Вышел из демо и зашёл другим героем (Kez, 1 уровень, одна способность)
+    const kez = read('new-match', (b) => {
+      b.map.matchid = '0';
+      b.abilities = { ability0: b.abilities.ability0 };
+    });
+    m.ingestGsi(kez, 1000);
+    const s = m.snapshot(1000);
+    expect(s.events.map((e) => e.type)).toEqual(['match-reset']);
+    expect(s.events[0]!.data).toMatchObject({ reason: 'gsi-hero', from: 11, to: 145 });
+    expect(s.hero.identity.value?.id).toBe(145);
+    expect(s.hero.abilities).toHaveLength(1);
+    // Тот же герой дальше — без сбросов
+    m.ingestGsi(kez, 1500);
+    expect(types(m, 1500)).toEqual(['match-reset']);
+  });
+
   it('события — по одному на настоящее изменение, даже если оба источника его видят', () => {
     const m = new MatchStateModel();
     m.ingestGsi(read('laning'), 0);
@@ -430,6 +456,218 @@ describe('GSI в модели состояния', () => {
     const perCall = (performance.now() - t0) / N;
     console.log(`perf-gsi: ${(perCall * 1000).toFixed(1)} мкс на тело`);
     expect(perCall).toBeLessThan(0.5);
+  });
+});
+
+// ---------- события по источникам (день/ночь после проверки на Доте 2026-10-13) ----------
+
+describe('события по источникам: день и ночь', () => {
+  const dn = (m: MatchStateModel, t: number) => m.snapshot(t).events.filter((e) => e.type === 'day-night');
+  const gsiDay = (day: boolean, clock = 300) =>
+    read('laning', (b) => {
+      b.map.daytime = day;
+      b.map.clock_time = clock;
+    });
+
+  it('причина ложного «Наступил день»: луна до горна и значок в меню — не ночь', () => {
+    const m = new MatchStateModel();
+    // Меню/загрузка: часов нет, на месте значка что-то «лунное»
+    let t = feed(m, 0, 10, () => screen({ conf: 0.95, clock: null, dayNight: 'night' }));
+    // До горна: часы идут обратным отсчётом (зрение ставит минус), значок — луна
+    t = feed(m, t, 10, (i) => screen({ conf: 0.95, clock: -30 + Math.floor(i / 10), dayNight: 'night' }));
+    // Горн: 0:00, солнце
+    t = feed(m, t, 20, (i) => screen({ conf: 0.95, clock: Math.floor(i / 10), dayNight: 'day' }));
+    expect(dn(m, t)).toEqual([]);
+    expect(m.snapshot(t).match.dayNight.value).toBe('day');
+  });
+
+  it('экран первым, потом GSI с другим значением — события нет', () => {
+    const m = new MatchStateModel();
+    let t = feed(m, 0, 10, (i) => screen({ conf: 0.95, clock: 300 + Math.floor(i / 10), dayNight: 'night' }));
+    expect(m.snapshot(t).match.dayNight.value).toBe('night');
+    for (let k = 0; k < 5; k++) m.ingestGsi(gsiDay(true, 301 + k), t + k * 500);
+    t = feed(m, t + 2500, 10, (i) => screen({ conf: 0.95, clock: 303 + Math.floor(i / 10), dayNight: 'night' }));
+    expect(m.snapshot(t).match.dayNight).toMatchObject({ value: 'day', source: 'gsi' });
+    expect(dn(m, t)).toEqual([]);
+  });
+
+  it('GSI первым, потом экран с другим значением — события нет, и после тишины GSI тоже', () => {
+    const m = new MatchStateModel();
+    m.ingestGsi(gsiDay(true, 300), 0);
+    m.ingestGsi(gsiDay(true, 300), 500);
+    // Пока GSI живое, экран поле не трогает
+    let t = feed(m, 600, 10, (i) => screen({ conf: 0.95, clock: 300 + Math.floor(i / 10), dayNight: 'night' }));
+    // GSI замолчало — экран снова ведёт поле, но его первое значение (расхождение с GSI) — не событие
+    t = feed(m, 500 + GSI_LIVE_MS + 1, 10, (i) => screen({ conf: 0.95, clock: 305 + Math.floor(i / 10), dayNight: 'night' }));
+    expect(m.snapshot(t).match.dayNight).toMatchObject({ value: 'night', source: 'screen' });
+    expect(dn(m, t)).toEqual([]);
+  });
+
+  it('оба источника видят один настоящий переход — ровно одно событие (GSI первым)', () => {
+    const m = new MatchStateModel();
+    m.ingestGsi(gsiDay(true, 300), 0);
+    m.ingestGsi(gsiDay(false, 301), 1000);
+    expect(dn(m, 1000)).toHaveLength(1);
+    // GSI замолкает, экран видит ту же ночь
+    const t = feed(m, 1000 + GSI_LIVE_MS + 1, 20, (i) => screen({ conf: 0.95, clock: 306 + Math.floor(i / 10), dayNight: 'night' }));
+    expect(dn(m, t).map((e) => e.data)).toEqual([{ from: 'day', to: 'night' }]);
+  });
+
+  it('оба источника видят один настоящий переход — ровно одно событие (экран первым)', () => {
+    const m = new MatchStateModel();
+    let t = feed(m, 0, 10, (i) => screen({ conf: 0.95, clock: 300 + Math.floor(i / 10), dayNight: 'day' }));
+    t = feed(m, t, 10, (i) => screen({ conf: 0.95, clock: 301 + Math.floor(i / 10), dayNight: 'night' }));
+    expect(dn(m, t)).toHaveLength(1);
+    m.ingestGsi(gsiDay(false, 302), t);
+    m.ingestGsi(gsiDay(false, 303), t + 1000);
+    expect(dn(m, t + 1000).map((e) => e.data)).toEqual([{ from: 'day', to: 'night' }]);
+  });
+
+  it('повтор того же перехода вторым источником в пределах 5 с игрового времени отбрасывается', () => {
+    const g = new SourceEventGate();
+    expect(g.observe('gsi', 'dayNight', 'day')).toBe(false); // первое значение — не событие
+    expect(g.observe('gsi', 'dayNight', 'night')).toBe(true);
+    expect(g.allow('gsi', 'dayNight', 'night', 100, 0)).toBe(true);
+    expect(g.allow('screen', 'dayNight', 'night', 100 + CROSS_SOURCE_WINDOW_SEC - 1, 4000)).toBe(false);
+    expect(g.allow('screen', 'dayNight', 'night', 100 + CROSS_SOURCE_WINDOW_SEC + 1, 6000)).toBe(true);
+    // Порядок ключей объекта не важен
+    expect(g.allow('gsi', 'kda', { kills: 1, deaths: 0, assists: 0 }, 200, 100_000)).toBe(true);
+    expect(g.allow('screen', 'kda', { assists: 0, deaths: 0, kills: 1 }, 201, 101_000)).toBe(false);
+    // Свой источник может повторить переход (например, ночь → день → ночь)
+    expect(g.allow('gsi', 'dayNight', 'night', 102, 2000)).toBe(true);
+  });
+});
+
+// ---------- тайник, телепорт, нейтральные (только GSI) ----------
+
+describe('GSI: тайник, телепорт, нейтральный предмет', () => {
+  /** Модель после первого чтения laning (знакомство — без событий) и шаг GSI: +step мс и +step/1000 с игрового времени */
+  function setup() {
+    const m = new MatchStateModel();
+    let t = 0;
+    m.ingestGsi(read('laning'), t);
+    const step = (patch: (b: Record<string, any>) => void = () => undefined, ms = 500) => {
+      t += ms;
+      m.ingestGsi(
+        read('laning', (b) => {
+          b.map.clock_time = 485 + Math.floor(t / 1000);
+          patch(b);
+        }),
+        t,
+      );
+    };
+    const evs = () => m.snapshot(t).events.map((e) => ({ type: e.type, key: e.data.key }));
+    return { m, step, evs, now: () => t };
+  }
+  const empty = { name: 'empty' };
+
+  it('ячейки GSI в состоянии: тайник, телепорт, нейтральный предмет', () => {
+    const { m, step, now } = setup();
+    const x = m.snapshot(now()).hero.extraItems!;
+    expect(x.map((s) => s.slot)).toEqual(['stash1', 'stash2', 'stash3', 'stash4', 'stash5', 'stash6', 'tp', 'neutral']);
+    expect(x.find((s) => s.slot === 'stash1')!.value?.item?.key).toBe('blades_of_attack');
+    expect(x.find((s) => s.slot === 'tp')!).toMatchObject({ source: 'gsi', tag: 'visible', value: { item: { key: 'tpscroll' } } });
+    expect(x.find((s) => s.slot === 'neutral')!.value?.item?.key).toBe('occult_bracelet');
+    // Зачарование (neutral1 → neutral2) впервые — знакомство, а не событие
+    step((b) => (b.items.neutral1 = { name: 'item_enchantment_alert' }));
+    expect(m.snapshot(now()).hero.extraItems!.at(-1)).toMatchObject({ slot: 'neutral2', value: { item: { key: 'enchantment_alert' } } });
+    expect(m.snapshot(now()).events).toEqual([]);
+    // Только экран — ячеек GSI нет
+    expect(new MatchStateModel().snapshot(0).hero.extraItems).toBeUndefined();
+  });
+
+  it('тайник → инвентарь в одном запросе — не событие', () => {
+    const { step, evs } = setup();
+    step((b) => {
+      b.items.stash0 = empty;
+      b.items.slot4 = { name: 'item_blades_of_attack' };
+    });
+    expect(evs()).toEqual([]);
+  });
+
+  it('тайник → курьер → инвентарь в пределах 120 с — не событие; позже — новый предмет', () => {
+    const { step, evs } = setup();
+    step((b) => (b.items.stash0 = empty)); // уехал на курьере — не потеря
+    expect(evs()).toEqual([]);
+    for (let i = 0; i < 6; i++) step((b) => (b.items.stash0 = empty), 10_000); // ~60 с в пути
+    step((b) => {
+      b.items.stash0 = empty;
+      b.items.slot4 = { name: 'item_blades_of_attack' };
+    });
+    expect(evs()).toEqual([]);
+
+    // Второй раз курьер «едет» дольше COURIER_SEC — появление считается новым предметом
+    const s2 = setup();
+    s2.step((b) => (b.items.stash0 = empty));
+    s2.step((b) => (b.items.stash0 = empty), (COURIER_SEC + 10) * 1000);
+    s2.step((b) => {
+      b.items.stash0 = empty;
+      b.items.slot4 = { name: 'item_blades_of_attack' };
+    });
+    expect(s2.evs()).toEqual([{ type: 'item-gained', key: 'blades_of_attack' }]);
+  });
+
+  it('настоящая покупка в инвентарь и настоящая продажа', () => {
+    const { step, evs } = setup();
+    step((b) => (b.items.slot4 = { name: 'item_ogre_axe' }));
+    expect(evs()).toEqual([{ type: 'item-gained', key: 'ogre_axe' }]);
+    step((b) => {
+      b.items.slot4 = { name: 'item_ogre_axe' };
+      b.items.slot5 = empty; // продал палочку
+    });
+    expect(evs()).toEqual([
+      { type: 'item-gained', key: 'ogre_axe' },
+      { type: 'item-lost', key: 'magic_wand' },
+    ]);
+  });
+
+  it('покупка в тайник — новый предмет', () => {
+    const { step, evs } = setup();
+    step((b) => (b.items.stash1 = { name: 'item_quelling_blade' }));
+    expect(evs()).toEqual([{ type: 'item-gained', key: 'quelling_blade' }]);
+  });
+
+  it('телепорт израсходован и куплен снова — без событий', () => {
+    const { step, evs } = setup();
+    step((b) => (b.items.teleport0 = empty));
+    step((b) => (b.items.teleport0 = { name: 'item_tpscroll', charges: 1 }));
+    step((b) => (b.items.teleport0 = { name: 'item_tpscroll', charges: 3 }));
+    step((b) => (b.items.teleport0 = empty));
+    expect(evs()).toEqual([]);
+  });
+
+  it('сборка: пропали компоненты, появился новый предмет — одно item-gained, без item-lost', () => {
+    const { step, evs } = setup();
+    // Ботинки (ячейка 2) и клинки (тайник) → Phase Boots
+    step((b) => {
+      b.items.slot1 = { name: 'item_phase_boots' };
+      b.items.stash0 = empty;
+    });
+    expect(evs()).toEqual([{ type: 'item-gained', key: 'phase_boots' }]);
+    // Компонент из тайника ушёл в сборку, а не на курьер: такая же покупка потом — новый предмет
+    step((b) => {
+      b.items.slot1 = { name: 'item_phase_boots' };
+      b.items.stash0 = empty;
+      b.items.slot4 = { name: 'item_blades_of_attack' };
+    });
+    expect(evs()).toEqual([
+      { type: 'item-gained', key: 'phase_boots' },
+      { type: 'item-gained', key: 'blades_of_attack' },
+    ]);
+  });
+
+  it('перекладывание между инвентарём, рюкзаком и тайником — не событие', () => {
+    const { step, evs } = setup();
+    step((b) => {
+      b.items.slot0 = { name: 'item_branches' };
+      b.items.slot7 = { name: 'item_bottle', charges: 2 };
+    });
+    step((b) => {
+      b.items.slot0 = { name: 'item_branches' };
+      b.items.slot7 = empty;
+      b.items.stash2 = { name: 'item_bottle' };
+    });
+    expect(evs()).toEqual([]);
   });
 });
 

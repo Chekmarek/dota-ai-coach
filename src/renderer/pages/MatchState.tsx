@@ -110,9 +110,11 @@ function eventText(e: MatchEvent): string {
     case 'match-reset':
       return d.reason === 'manual'
         ? 'Начато новое наблюдение'
-        : d.reason === 'gsi-match-id' || d.reason === 'gsi-pre-game'
-          ? 'Новый матч (по данным игры)'
-          : 'Новый матч (время ушло назад)';
+        : d.reason === 'gsi-hero'
+          ? 'Другой герой — новая игра (по данным игры)'
+          : d.reason === 'gsi-match-id' || d.reason === 'gsi-pre-game'
+            ? 'Новый матч (по данным игры)'
+            : 'Новый матч (время ушло назад)';
   }
 }
 
@@ -146,6 +148,11 @@ function MatchView({ s, now }: { s: MatchSnapshot; now: number }) {
   const m = s.match;
   const h = s.hero;
   const events = s.events.slice(-EVENTS_SHOWN).reverse();
+  // Ячейки только из GSI: телепорт и нейтральные — всегда, тайник — только занятые ячейки (шесть пустых — шум)
+  const extraAll = h.extraItems ?? [];
+  const isStash = (slot: string) => slot.startsWith('stash');
+  const extra = extraAll.filter((it) => !isStash(it.slot) || (it.tag !== 'unknown' && it.value?.item));
+  const stashEmpty = extraAll.some((it) => isStash(it.slot)) && !extra.some((it) => isStash(it.slot));
   return (
     <div className="match-page">
       <Card title="Матч">
@@ -217,16 +224,24 @@ function MatchView({ s, now }: { s: MatchSnapshot; now: number }) {
       <Card title="Инвентарь">
         <div className="match-items" data-testid="match-items">
           {h.items.map((it) => (
-            <Fact
-              key={it.slot}
-              label={it.slot.startsWith('bp') ? `Рюкзак ${it.slot.slice(2)}` : `Ячейка ${it.slot.slice(3)}`}
-              t={it}
-              format={(v) => (v.item ? v.item.name : 'пусто')}
-              now={now}
-              testId={`item-${it.slot}`}
-            />
+            <Fact key={it.slot} label={slotLabel(it.slot)} t={it} format={itemText} now={now} testId={`item-${it.slot}`} />
           ))}
         </div>
+        {extra.length > 0 && (
+          <>
+            <p className="muted small">Только из игры (GSI): телепорт, нейтральный предмет и тайник</p>
+            <div className="match-items" data-testid="match-items-extra">
+              {extra.map((it) => (
+                <Fact key={it.slot} label={slotLabel(it.slot)} t={it} format={itemText} now={now} testId={`item-${it.slot}`} />
+              ))}
+            </div>
+            {stashEmpty && (
+              <p className="muted small" data-testid="item-stash-empty">
+                Тайник: пусто
+              </p>
+            )}
+          </>
+        )}
       </Card>
 
       <Card title="События">
@@ -246,6 +261,19 @@ function MatchView({ s, now }: { s: MatchSnapshot; now: number }) {
     </div>
   );
 }
+
+/** Подпись ячейки предмета */
+function slotLabel(slot: string): string {
+  if (slot.startsWith('inv')) return `Ячейка ${slot.slice(3)}`;
+  if (slot.startsWith('bp')) return `Рюкзак ${slot.slice(2)}`;
+  if (slot.startsWith('stash')) return `Тайник ${slot.slice(5)}`;
+  if (slot === 'tp') return 'Телепорт';
+  if (slot === 'neutral') return 'Нейтральный предмет';
+  if (slot === 'neutral2') return 'Зачарование';
+  return slot;
+}
+
+const itemText = (v: { item: { name: string } | null }) => (v.item ? v.item.name : 'пусто');
 
 const AGREE_LABEL: Record<AgreementField, string> = {
   clock: 'Время',

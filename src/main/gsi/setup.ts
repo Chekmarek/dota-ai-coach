@@ -216,6 +216,20 @@ export function installCfg(dotaDir: string, port: number, token: string): string
   return path;
 }
 
+/**
+ * Проверка при запуске: свой файл есть, но отличается от того, что коуч записал бы сейчас (порт, секрет или
+ * формат — например, набор блоков data в новой версии), — переписываем. Файла нет — НЕ создаём:
+ * подключение остаётся решением пользователя. Другие файлы в папке не трогаются.
+ * rewritten — файл обновлён (Dota подхватит его только после перезапуска).
+ */
+export function refreshCfg(dotaDir: string, port: number, token: string): 'rewritten' | 'current' | 'absent' {
+  const st = cfgStatus(dotaDir, port, token);
+  if (!st.installed) return 'absent';
+  if (st.current) return 'current';
+  installCfg(dotaDir, port, token);
+  return 'rewritten';
+}
+
 /** «Отключить»: удаляет только свой файл (папку gamestate_integration не трогаем — там могут быть чужие файлы) */
 export function removeCfg(dotaDir: string): boolean {
   const path = cfgPath(dotaDir);

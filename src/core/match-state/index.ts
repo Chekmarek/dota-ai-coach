@@ -10,7 +10,10 @@ export {
   MIN_SLOT_CONFIDENCE,
   GSI_LIVE_MS,
   SCREEN_LIVE_MS,
+  EXTRA_SLOTS,
+  COURIER_SEC,
 } from './model.ts';
+export { SourceEventGate, CROSS_SOURCE_WINDOW_SEC, type EventSource } from './source-events.ts';
 export { CLOCK_TOLERANCE_SEC, CLOCK_JUMP_READINGS, PAUSE_AFTER_MS, RESET_BACK_SEC } from './clock.ts';
 export { VISIBLE_MS, FAST_CONFIDENCE, CORRECTION_MS } from './stable-field.ts';
 export type {

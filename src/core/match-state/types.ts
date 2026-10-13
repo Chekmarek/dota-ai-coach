@@ -35,7 +35,7 @@ export interface SlotContent {
 }
 
 export interface TrackedItemSlot extends Tracked<SlotContent> {
-  /** 'inv1'…'inv6', 'bp1'…'bp3' */
+  /** 'inv1'…'inv6', 'bp1'…'bp3'; в extraItems — 'stash1'…'stash6', 'tp', 'neutral', 'neutral2' */
   slot: string;
 }
 
@@ -93,7 +93,13 @@ export interface MatchState {
     kda: Tracked<Kda>;
     farm: Tracked<Farm>;
     abilities: TrackedAbility[];
+    /** 6 ячеек и рюкзак (экран и GSI) */
     items: TrackedItemSlot[];
+    /**
+     * Только из GSI: тайник (stash1…6), телепорт (tp), нейтральный предмет (neutral) и зачарование (neutral2).
+     * Нет поля — GSI таких ячеек ещё не присылал. В списке только ячейки, которые GSI уже присылал.
+     */
+    extraItems?: TrackedItemSlot[];
   };
   /** Последние события (не больше EVENT_LIMIT), от старых к новым */
   events: MatchEvent[];

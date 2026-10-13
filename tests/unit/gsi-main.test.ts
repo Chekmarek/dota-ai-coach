@@ -1,10 +1,10 @@
 import { afterEach, describe, expect, it } from 'vitest';
-import { mkdtempSync, mkdirSync, readFileSync, readdirSync, existsSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, readFileSync, readdirSync, existsSync, statSync, utimesSync, writeFileSync } from 'node:fs';
 import { request } from 'node:http';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { GSI_MAX_BODY, GsiServer, sameToken } from '../../src/main/gsi/server';
-import { GSI_CFG_NAME, cfgPath, cfgStatus, gsiCfgText, installCfg, locateDota, parseLibraryFolders, parseVdf, removeCfg } from '../../src/main/gsi/setup';
+import { GSI_CFG_NAME, cfgPath, cfgStatus, gsiCfgText, installCfg, locateDota, parseLibraryFolders, parseVdf, refreshCfg, removeCfg } from '../../src/main/gsi/setup';
 import { KEEP_FILES, SessionRecorder, sanitizeGsiBody } from '../../src/main/gsi/recorder';
 import { parseSession, readCoachSettings, replaySession } from '../../scripts/gsi-replay.mjs';
 import { applyInternalGsi, defaultSettings, settingsPatchSchema, settingsSchema } from '../../src/shared/schemas/settings';
@@ -178,6 +178,62 @@ describe('настройка Dota (во временной папке)', () => {
     // Без папки Dota ничего не создаётся
     expect(() => installCfg(join(tmp(), 'нет'), 53790, TOKEN)).toThrow();
     expect(() => gsiCfgText(53790, '')).toThrow();
+  });
+});
+
+describe('устаревший файл в папке Dota (при запуске)', () => {
+  const setup = () => {
+    const dota = join(tmp(), 'dota 2 beta');
+    const dir = join(dota, 'game', 'dota', 'cfg', 'gamestate_integration');
+    mkdirSync(dir, { recursive: true });
+    writeFileSync(join(dir, 'gamestate_integration_other.cfg'), 'чужой файл');
+    return { dota, dir };
+  };
+
+  it('старый порт, старый секрет или старый формат → файл переписывается; чужие файлы не трогаются', () => {
+    const { dota, dir } = setup();
+    installCfg(dota, 53790, TOKEN);
+    expect(refreshCfg(dota, 54000, TOKEN)).toBe('rewritten');
+    expect(readFileSync(cfgPath(dota), 'utf8')).toBe(gsiCfgText(54000, TOKEN));
+    expect(refreshCfg(dota, 54000, 'b'.repeat(64))).toBe('rewritten');
+    expect(readFileSync(cfgPath(dota), 'utf8')).toBe(gsiCfgText(54000, 'b'.repeat(64)));
+    // Формат прошлой версии: тот же порт и секрет, но другой набор блоков data
+    writeFileSync(cfgPath(dota), gsiCfgText(54000, TOKEN).replace('    "abilities"   "1"\r\n', ''), 'utf8');
+    expect(cfgStatus(dota, 54000, TOKEN)).toMatchObject({ installed: true, current: false });
+    expect(refreshCfg(dota, 54000, TOKEN)).toBe('rewritten');
+    expect(cfgStatus(dota, 54000, TOKEN)).toMatchObject({ installed: true, current: true });
+    expect(readdirSync(dir).sort()).toEqual([GSI_CFG_NAME, 'gamestate_integration_other.cfg']);
+    expect(readFileSync(join(dir, 'gamestate_integration_other.cfg'), 'utf8')).toBe('чужой файл');
+    expect(readdirSync(dir).some((f) => f.endsWith('.tmp'))).toBe(false);
+  });
+
+  it('актуальный файл не трогается', () => {
+    const { dota } = setup();
+    installCfg(dota, 53790, TOKEN);
+    const old = new Date(2020, 0, 1);
+    utimesSync(cfgPath(dota), old, old);
+    expect(refreshCfg(dota, 53790, TOKEN)).toBe('current');
+    expect(statSync(cfgPath(dota)).mtimeMs).toBe(old.getTime());
+  });
+
+  it('файла нет → не создаётся (подключение — решение пользователя)', () => {
+    const { dota, dir } = setup();
+    expect(refreshCfg(dota, 53790, TOKEN)).toBe('absent');
+    expect(existsSync(cfgPath(dota))).toBe(false);
+    expect(readdirSync(dir)).toEqual(['gamestate_integration_other.cfg']);
+    // И папки Dota без cfg-папки — тоже ничего не создаётся
+    const bare = join(tmp(), 'dota 2 beta');
+    mkdirSync(bare);
+    expect(refreshCfg(bare, 53790, TOKEN)).toBe('absent');
+    expect(readdirSync(bare)).toEqual([]);
+  });
+
+  it('путь с пробелами и кириллицей', () => {
+    const dota = join(tmp(), 'Игры Steam', 'dota 2 beta');
+    mkdirSync(dota, { recursive: true });
+    installCfg(dota, 53790, TOKEN);
+    expect(refreshCfg(dota, 53791, TOKEN)).toBe('rewritten');
+    expect(cfgStatus(dota, 53791, TOKEN)).toMatchObject({ installed: true, current: true, path: cfgPath(dota) });
   });
 });
 
