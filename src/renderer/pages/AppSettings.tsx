@@ -6,6 +6,7 @@ import { useEngine } from '../hooks/useEngine';
 import { useUpdate } from '../hooks/useUpdate';
 import { PageHeader } from '../components/ui';
 import { isLive, startLive } from '../components/live';
+import { HintsToggles } from '../components/hints';
 import type { PageProps } from './types';
 
 /** Числовое поле настройки: сохраняется при уходе с поля, неверное значение откатывается */
@@ -101,6 +102,9 @@ export function AppSettings({ onNavigate }: PageProps) {
       <PageHeader title="Настройки" subtitle="Всё сохраняется сразу." />
       {error && <p className="error">{error}</p>}
       <LiveSettingsCard settings={settings} update={update} />
+      <SettingsSection icon="💬" title="Live-подсказки" subtitle="Советы коуча во время матча — в отдельном окне, не поверх игры. Решаете вы.">
+        <HintsToggles settings={settings} update={update} />
+      </SettingsSection>
       <SettingsSection icon="▶" title="Разбор записей" subtitle="Для папки с кадрами и видеофайлов. Применяется при следующем запуске записи.">
         <NumberSetting label="Кадров в секунду из записи" hint="Сколько кадров в секунду брать из видео или папки" value={c.targetFps} min={0.2} max={30} step={0.1} testId="setting-targetFps" onSave={(n) => void update({ capture: { targetFps: n } })} />
         <NumberSetting label="Частота превью записи, к/с" hint="Как часто обновлять картинку на странице «Разбор записи»" value={c.previewFps} min={0.2} max={10} step={0.1} testId="setting-previewFps" onSave={(n) => void update({ capture: { previewFps: n } })} />

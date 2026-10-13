@@ -1,0 +1,16 @@
+{
+ "provider": {
+  "name": "Dota 2",
+  "appid": 570,
+  "version": 47,
+  "timestamp": 1760340000
+ },
+ "player": {
+  "steamid": "76561190000000001",
+  "name": "Игрок",
+  "activity": "menu"
+ },
+ "auth": {
+  "token": "dotacoach-test-token"
+ }
+}

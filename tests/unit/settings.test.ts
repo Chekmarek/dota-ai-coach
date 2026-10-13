@@ -22,6 +22,16 @@ describe('настройки', () => {
     expect(settingsPatchSchema.safeParse({ unknownSection: {} }).success).toBe(false);
   });
 
+  it('live-подсказки: по умолчанию включены и в рейтинге; переключатель рейтинга меняется отдельно', () => {
+    const d = defaultSettings();
+    expect(d.hints).toEqual({ enabled: true, ranked: true });
+    const s = applySettingsPatch(d, { hints: { ranked: false } });
+    expect(s.hints).toEqual({ enabled: true, ranked: false });
+    expect(settingsPatchSchema.safeParse({ hints: { ranked: 'да' } }).success).toBe(false);
+    // Старый settings.json без раздела hints читается с значениями по умолчанию
+    expect(settingsSchema.parse({ live: { fps: 5 } }).hints).toEqual({ enabled: true, ranked: true });
+  });
+
   it('патч сливается с текущими настройками', () => {
     const s = applySettingsPatch(defaultSettings(), { capture: { targetFps: 5 }, replay: { loop: true } });
     expect(s.capture.targetFps).toBe(5);

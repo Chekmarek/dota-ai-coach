@@ -1,6 +1,6 @@
 // Игровое время: экстраполяция между чтениями, пауза, скачки и признак нового матча.
 import { FAST_CONFIDENCE, VISIBLE_MS } from './stable-field.ts';
-import type { Tracked } from './types.ts';
+import type { Tracked, TrackedSource } from './types.ts';
 
 /** Чтение согласуется с ожидаемым временем, если отличается не больше чем на столько секунд */
 export const CLOCK_TOLERANCE_SEC = 3;
@@ -20,6 +20,8 @@ export class ClockTracker {
   confidence = 0;
   firstSeenWallMs: number | null = null;
   lastSeenWallMs: number | null = null;
+  /** Источник последнего подтверждения времени */
+  source: TrackedSource = null;
   /** Последнее прочитанное значение и с какого момента оно не меняется (для паузы) */
   private same: { sec: number; since: number } | null = null;
   /** Чтения, не согласованные с текущим временем, — кандидаты на скачок */
@@ -52,6 +54,7 @@ export class ClockTracker {
     if (Math.abs(sec - expected) <= CLOCK_TOLERANCE_SEC) {
       this.jump = [];
       this.lastSeenWallMs = wallMs;
+      this.source = 'screen';
       this.confidence = Math.max(this.confidence, confidence);
       // Пауза: прочитанное время не меняется дольше PAUSE_AFTER_MS
       if (this.same && this.same.sec === sec) {
@@ -117,13 +120,38 @@ export class ClockTracker {
     this.confidence = confidence;
     this.firstSeenWallMs = wallMs;
     this.lastSeenWallMs = wallMs;
+    this.source = 'screen';
     this.jump = [];
+  }
+
+  /**
+   * Точное время из GSI (clock_time, целые секунды) и признак паузы из GSI.
+   * Принимается сразу; пауза и её снятие — по флагу GSI, а не по «стоящим» часам.
+   * paused = null — GSI паузу не сообщил: состояние паузы не меняется.
+   */
+  force(sec: number, paused: boolean | null, wallMs: number): ClockEvent[] {
+    const events: ClockEvent[] = [];
+    const nowPaused = paused ?? this.paused;
+    if (nowPaused && !this.paused) events.push({ type: 'pause' });
+    if (!nowPaused && this.paused) events.push({ type: 'unpause' });
+    this.paused = nowPaused;
+    const expected = this.at(wallMs);
+    // Опору двигаем, только если целая секунда разошлась (GSI шлёт целые секунды) — экстраполяция остаётся плавной
+    if (expected === null || nowPaused || events.length > 0 || Math.floor(expected) !== sec) this.anchor = { sec, wallMs };
+    if (this.firstSeenWallMs === null) this.firstSeenWallMs = wallMs;
+    this.lastSeenWallMs = wallMs;
+    this.confidence = 1;
+    this.source = 'gsi';
+    this.jump = [];
+    // Для обнаружения паузы по экрану после пропадания GSI: отсчёт «стоящих» часов начинается заново
+    this.same = { sec, since: wallMs };
+    return events;
   }
 
   tracked(wallMs: number): Tracked<number> {
     const value = this.at(wallMs);
     if (value === null || this.lastSeenWallMs === null) {
-      return { value: null, confidence: 0, tag: 'unknown', lastSeenWallMs: null, firstSeenWallMs: null };
+      return { value: null, confidence: 0, tag: 'unknown', lastSeenWallMs: null, firstSeenWallMs: null, source: null };
     }
     const fresh = wallMs - this.lastSeenWallMs < VISIBLE_MS;
     return {
@@ -133,6 +161,7 @@ export class ClockTracker {
       tag: fresh ? 'visible' : 'inferred',
       lastSeenWallMs: this.lastSeenWallMs,
       firstSeenWallMs: this.firstSeenWallMs,
+      source: this.source,
     };
   }
 }

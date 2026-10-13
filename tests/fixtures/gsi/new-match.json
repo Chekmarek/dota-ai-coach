@@ -1,0 +1,200 @@
+{
+ "provider": {
+  "name": "Dota 2",
+  "appid": 570,
+  "version": 47,
+  "timestamp": 1760340000
+ },
+ "map": {
+  "name": "start",
+  "matchid": "8123499999",
+  "game_time": 95,
+  "clock_time": 5,
+  "daytime": true,
+  "nightstalker_night": false,
+  "radiant_score": 0,
+  "dire_score": 0,
+  "game_state": "DOTA_GAMERULES_STATE_GAME_IN_PROGRESS",
+  "paused": false,
+  "win_team": "none",
+  "customgamename": "",
+  "ward_purchase_cooldown": 0
+ },
+ "player": {
+  "steamid": "76561190000000001",
+  "accountid": "39734273",
+  "name": "Игрок",
+  "activity": "playing",
+  "kills": 0,
+  "deaths": 0,
+  "assists": 0,
+  "last_hits": 0,
+  "denies": 0,
+  "kill_streak": 0,
+  "commands_issued": 0,
+  "kill_list": {},
+  "team_name": "dire",
+  "gold": 420,
+  "gold_reliable": 0,
+  "gold_unreliable": 420,
+  "gold_from_hero_kills": 0,
+  "gold_from_creep_kills": 0,
+  "gold_from_income": 0,
+  "gold_from_shared": 0,
+  "gpm": 0,
+  "xpm": 0
+ },
+ "hero": {
+  "xpos": -6700,
+  "ypos": -6200,
+  "id": 145,
+  "name": "npc_dota_hero_kez",
+  "level": 1,
+  "xp": 0,
+  "alive": true,
+  "respawn_seconds": 0,
+  "buyback_cost": 231,
+  "buyback_cooldown": 0,
+  "health": 640,
+  "max_health": 640,
+  "health_percent": 100,
+  "mana": 267,
+  "max_mana": 267,
+  "mana_percent": 100,
+  "silenced": false,
+  "stunned": false,
+  "disarmed": false,
+  "magicimmune": false,
+  "hexed": false,
+  "muted": false,
+  "break": false,
+  "aghanims_scepter": false,
+  "aghanims_shard": false,
+  "smoked": false,
+  "has_debuff": false,
+  "talent_1": false,
+  "talent_2": false,
+  "talent_3": false,
+  "talent_4": false,
+  "talent_5": false,
+  "talent_6": false,
+  "talent_7": false,
+  "talent_8": false
+ },
+ "abilities": {
+  "ability0": {
+   "name": "kez_echo_slash",
+   "level": 1,
+   "can_cast": true,
+   "passive": false,
+   "ability_active": true,
+   "cooldown": 0,
+   "ultimate": false
+  },
+  "ability1": {
+   "name": "kez_grappling_claw",
+   "level": 0,
+   "can_cast": false,
+   "passive": false,
+   "ability_active": true,
+   "cooldown": 0,
+   "ultimate": false
+  },
+  "ability2": {
+   "name": "kez_kazurai_katana",
+   "level": 0,
+   "can_cast": false,
+   "passive": true,
+   "ability_active": true,
+   "cooldown": 0,
+   "ultimate": false
+  },
+  "ability3": {
+   "name": "kez_switch_weapons",
+   "level": 1,
+   "can_cast": true,
+   "passive": false,
+   "ability_active": true,
+   "cooldown": 0,
+   "ultimate": false
+  },
+  "ability4": {
+   "name": "kez_raptor_dance",
+   "level": 0,
+   "can_cast": false,
+   "passive": false,
+   "ability_active": true,
+   "cooldown": 0,
+   "ultimate": true
+  }
+ },
+ "items": {
+  "slot0": {
+   "name": "item_quelling_blade",
+   "purchaser": 0,
+   "can_cast": false,
+   "passive": true
+  },
+  "slot1": {
+   "name": "item_tango",
+   "purchaser": 0,
+   "can_cast": true,
+   "passive": false,
+   "charges": 3
+  },
+  "slot2": {
+   "name": "item_slippers",
+   "purchaser": 0,
+   "can_cast": false,
+   "passive": true
+  },
+  "slot3": {
+   "name": "item_circlet",
+   "purchaser": 0,
+   "can_cast": false,
+   "passive": true
+  },
+  "slot4": {
+   "name": "empty"
+  },
+  "slot5": {
+   "name": "empty"
+  },
+  "slot6": {
+   "name": "empty"
+  },
+  "slot7": {
+   "name": "empty"
+  },
+  "slot8": {
+   "name": "empty"
+  },
+  "stash0": {
+   "name": "empty"
+  },
+  "stash1": {
+   "name": "empty"
+  },
+  "stash2": {
+   "name": "empty"
+  },
+  "stash3": {
+   "name": "empty"
+  },
+  "stash4": {
+   "name": "empty"
+  },
+  "stash5": {
+   "name": "empty"
+  },
+  "teleport0": {
+   "name": "empty"
+  },
+  "neutral0": {
+   "name": "empty"
+  }
+ },
+ "auth": {
+  "token": "dotacoach-test-token"
+ }
+}

@@ -21,12 +21,13 @@ describe('протокол UI → движок', () => {
 });
 
 describe('PolicyGate', () => {
-  it('разрешены разбор записей и наблюдение за живой игрой; подсказки во время матчей выключены', () => {
+  it('разрешены разбор записей, наблюдение и подсказки — подсказки включает сам пользователь в настройках', () => {
     expect(isModeAllowed('replay')).toBe(true);
     // с 0.5.0: живой захват окна Доты — только наблюдение
     expect(isModeAllowed('live-observe')).toBe(true);
-    expect(isModeAllowed('live-coach-unranked')).toBe(false);
-    expect(isModeAllowed('live-coach-ranked')).toBe(false);
+    // решение владельца 2026-10-13: разрешены, а включены ли — settings.hints (по умолчанию да)
+    expect(isModeAllowed('live-coach-unranked')).toBe(true);
+    expect(isModeAllowed('live-coach-ranked')).toBe(true);
     expect(getPolicyState().activeMode).toBe('replay');
   });
 });
