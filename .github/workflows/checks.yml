@@ -1,0 +1,55 @@
+# Проверки на каждый push в sources: типы, unit-тесты, e2e (Electron) и чистота ядра.
+# Релиз здесь не выпускается — этим занимается release-sources.yml.
+name: checks
+on:
+  push:
+    branches: [sources]
+  pull_request:
+    branches: [sources]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: checks-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  checks:
+    runs-on: windows-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      # .npmrc проекта указывает кэш на диск разработчика — в CI кэш во временной папке
+      - name: Кэш npm во временной папке
+        run: '"npm_config_cache=$env:RUNNER_TEMP\npm-cache" >> $env:GITHUB_ENV'
+      - name: Зависимости
+        run: |
+          npm ci
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          node node_modules/electron/install.js
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+      - name: Ядро без Electron, node:, fs, path, http
+        shell: bash
+        run: |
+          if grep -rnE "from ['\"](electron|node:|fs|path|http)" src/core; then
+            echo "src/core импортирует запрещённые модули"; exit 1
+          fi
+      - name: Типы
+        run: npm run typecheck
+      - name: Unit-тесты
+        run: npm test
+      - name: E2E (Electron)
+        run: npm run test:e2e
+      - name: Скриншоты и отчёты e2e
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-results
+          path: test-results/
+          if-no-files-found: ignore
+          retention-days: 7
