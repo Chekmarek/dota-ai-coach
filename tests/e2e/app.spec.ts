@@ -51,10 +51,13 @@ test('приложение запускается, все 9 экранов от�
       await ui.click(`[data-testid="nav-${id}"]`);
       await expect(ui.locator(`[data-testid="page-${id}"]`)).toBeVisible();
     }
-    for (const id of ['match', 'history', 'voice']) {
+    for (const id of ['history', 'voice']) {
       await ui.click(`[data-testid="nav-${id}"]`);
       await expect(ui.locator('[data-testid="not-implemented"]').first()).toBeVisible();
     }
+    // «Состояние матча» (этап D) реализовано: без источника — пустое состояние, без выдуманных значений
+    await ui.click('[data-testid="nav-match"]');
+    await expect(ui.locator('[data-testid="match-empty"]')).toHaveText('Запустите живую игру или разбор записи');
   } finally {
     await app.close();
   }
@@ -219,6 +222,10 @@ test('Зрение: на записи матча распознаются вре
     // Время распознавания одного кадра (показатель обновляется раз в 0.5 с)
     await expect.poll(async () => parseFloat(await ui.locator('[data-testid="vision-ms"]').innerText()), { timeout: 5_000 }).toBeLessThan(50);
     await ui.screenshot({ path: join(ROOT, 'test-results/vision-diagnostics.png') });
+    // Состояние матча (этап D): модель приняла время с записи — не прочерк
+    await ui.click('[data-testid="nav-match"]');
+    await expect(ui.locator('[data-testid="match-clock-value"]')).toHaveText(/^44:\d\d/, { timeout: 10_000 });
+    await ui.screenshot({ path: join(ROOT, 'test-results/match-state.png') });
   } finally {
     await app.close();
   }

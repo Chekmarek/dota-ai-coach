@@ -87,3 +87,28 @@
 .item-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 160px)); gap: 6px; margin-top: 6px; }
 .item-cell { padding: 8px 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--panel-2); font-size: 13px; min-height: 20px; }
 .item-bp { opacity: 0.75; font-size: 12px; }
+
+/* Состояние матча (этап D): значения с пометкой, возрастом и уверенностью */
+.match-page { display: flex; flex-direction: column; gap: 16px; }
+.match-empty { margin: 0; font-size: 15px; }
+.match-hint { margin: 0; }
+.facts { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 10px; }
+.fact { background: var(--panel-2); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.fact-label { color: var(--muted); font-size: 12px; }
+.fact-value { font-size: 18px; font-weight: 600; overflow-wrap: anywhere; }
+.fact-unknown .fact-value { color: var(--muted); font-weight: 400; }
+.fact-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 11px; }
+.tag-chip { display: inline-block; padding: 1px 8px; border-radius: 999px; font-size: 11px; font-weight: 600; border: 1px solid var(--line); white-space: nowrap; }
+.tag-visible { color: #6fe07a; background: rgba(63, 185, 80, 0.12); border-color: #2a5a35; }
+.tag-remembered { color: #7aa7ff; background: rgba(88, 140, 255, 0.12); border-color: #2b4a7a; }
+.tag-inferred { color: #e0b65a; background: rgba(210, 153, 34, 0.12); border-color: #5a4a1f; }
+.tag-unknown { color: var(--muted); background: transparent; border-style: dashed; }
+.paused-mark { color: var(--warn); }
+.ability-fact { display: flex; flex-direction: column; gap: 4px; }
+.ability-fact .ability-level { font-size: 11px; letter-spacing: 2px; color: var(--muted); font-weight: 400; }
+.match-items { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.match-items .fact-value { font-size: 14px; }
+.match-events { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+.match-events li { display: flex; gap: 12px; padding: 4px 0; border-bottom: 1px solid var(--line); }
+.match-events li:last-child { border-bottom: none; }
+.match-event-time { color: var(--muted); min-width: 48px; }

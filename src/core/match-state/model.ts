@@ -94,6 +94,12 @@ export class MatchStateModel {
   private dayNight = new StableField<DayNight>({ equals: same });
   private hero = new HeroTrack();
   private events: MatchEvent[] = [];
+  private seq = 0;
+
+  /** Растёт с каждым новым событием (и при сбросе) — по нему видно, что появилось событие */
+  get eventSeq(): number {
+    return this.seq;
+  }
 
   /** Одно чтение HUD (один кадр). wallMs — время получения кадра */
   ingest(reading: HudReading, wallMs: number): void {
@@ -185,6 +191,7 @@ export class MatchStateModel {
   }
 
   private emit(type: MatchEventType, wallMs: number, data: Record<string, unknown>): void {
+    this.seq++;
     this.events.push({ type, wallMs, clock: this.clock.at(wallMs), data });
     if (this.events.length > EVENT_LIMIT) this.events.splice(0, this.events.length - EVENT_LIMIT);
   }

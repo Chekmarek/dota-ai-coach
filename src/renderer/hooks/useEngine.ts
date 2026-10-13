@@ -2,6 +2,7 @@ import { useEffect, useState, useSyncExternalStore } from 'react';
 import { ENGINE_PORT_MESSAGE } from '@shared/ipc';
 import type { EngineToUi, UiToEngine, VisionMessage } from '@shared/events/engine-protocol';
 import type { CaptureStatus } from '@shared/types/capture';
+import type { MatchState } from '@core/match-state/index.ts';
 
 export interface PreviewFrame {
   url: string;
@@ -25,6 +26,8 @@ class EngineClient {
   vision: VisionMessage | null = null;
   /** Когда пришёл последний результат распознавания (Date.now) */
   visionAt: number | null = null;
+  /** Последнее состояние матча от движка (этап D) */
+  match: MatchState | null = null;
   connected = false;
 
   constructor() {
@@ -69,6 +72,8 @@ class EngineClient {
     } else if (msg.type === 'vision') {
       this.vision = msg;
       this.visionAt = Date.now();
+    } else if (msg.type === 'match') {
+      this.match = msg.state;
     } else if (msg.type === 'preview') {
       const url = URL.createObjectURL(new Blob([msg.jpeg], { type: 'image/jpeg' }));
       if (this.preview) URL.revokeObjectURL(this.preview.url);
@@ -88,9 +93,16 @@ class EngineClient {
 
 export const engine = new EngineClient();
 
-export function useEngine(): { status: CaptureStatus | null; preview: PreviewFrame | null; vision: VisionMessage | null; visionAt: number | null; connected: boolean } {
+export function useEngine(): {
+  status: CaptureStatus | null;
+  preview: PreviewFrame | null;
+  vision: VisionMessage | null;
+  visionAt: number | null;
+  match: MatchState | null;
+  connected: boolean;
+} {
   useSyncExternalStore(engine.subscribe, engine.getVersion);
-  return { status: engine.status, preview: engine.preview, vision: engine.vision, visionAt: engine.visionAt, connected: engine.connected };
+  return { status: engine.status, preview: engine.preview, vision: engine.vision, visionAt: engine.visionAt, match: engine.match, connected: engine.connected };
 }
 
 /** Секунды с момента события — для пометки устаревших данных */

@@ -1,17 +1,5 @@
 import { NotImplemented, PageHeader } from '../components/ui';
 
-export function MatchState() {
-  return (
-    <>
-      <PageHeader title="Состояние матча" subtitle="Распознанные факты, ранее наблюдавшиеся значения, выводы и неизвестные." />
-      <NotImplemented stage="этап D">
-        Модель состояния матча ещё не создана. Здесь каждое значение будет показано с уверенностью, временем наблюдения и
-        пометкой: «видно сейчас», «видели раньше», «вывод» или «неизвестно».
-      </NotImplemented>
-    </>
-  );
-}
-
 export function RecommendationHistory() {
   return (
     <>

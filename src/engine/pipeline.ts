@@ -7,6 +7,7 @@ import { ImageFolderSource } from './capture/image-folder-source';
 import { VideoFileSource } from './capture/video-file-source';
 import { LiveScreenSource } from './capture/live-screen-source';
 import { VisionStage } from './vision';
+import { MatchStateModel } from '@core/match-state/index.ts';
 
 declare global {
   interface Window {
@@ -19,6 +20,8 @@ const PREVIEW_MAX_WIDTH = 960;
 const STATUS_INTERVAL_MS = 500;
 /** Не чаще стольких результатов распознавания в секунду отправляем в интерфейс */
 const VISION_UI_FPS = 5;
+/** Состояние матча — не чаще стольких раз в секунду (плюс сразу при новом событии) */
+const MATCH_UI_FPS = 4;
 
 /**
  * Конвейер движка: источник → ограничитель частоты → распознавание HUD → превью для UI.
@@ -45,6 +48,10 @@ export class Pipeline {
   private readonly vision = new VisionStage();
   private visionMsAvg: number | null = null;
   private lastVisionSentAt = -Infinity;
+  /** Модель состояния матча: одна на конвейер, сбрасывается при каждом запуске и остановке источника */
+  private readonly match = new MatchStateModel();
+  private lastMatchSentAt = -Infinity;
+  private sentEventSeq = -1;
   /** Окно интерфейса видно? Если скрыто — превью не кодируем (обработка кадров продолжается) */
   uiVisible = true;
   private live: LiveInfo | null = null;
@@ -119,12 +126,31 @@ export class Pipeline {
     this.source = null;
     if (src) await src.stop();
     this.gate.reset();
+    this.resetMatch();
     if (src || this.state !== 'idle') this.setState(finalState);
   }
 
   publishStatus(): void {
     this.send({ type: 'status', status: this.status() });
     this.reportLive();
+    // Новых кадров может не быть (пауза записи, Дота свёрнута) — метки «видно сейчас/видели раньше» всё равно стареют
+    if (this.source) this.publishMatch(false);
+  }
+
+  /** Отправляет состояние матча: не чаще MATCH_UI_FPS раз в секунду, а при новом событии — сразу */
+  private publishMatch(force: boolean): void {
+    const now = performance.now();
+    const newEvent = this.match.eventSeq !== this.sentEventSeq;
+    if (!force && !newEvent && now - this.lastMatchSentAt < 1000 / MATCH_UI_FPS) return;
+    this.lastMatchSentAt = now;
+    this.sentEventSeq = this.match.eventSeq;
+    this.send({ type: 'match', state: this.match.snapshot(Date.now()) });
+  }
+
+  /** Новый источник или остановка — состояние прошлого матча больше не относится к делу */
+  private resetMatch(): void {
+    this.match.reset(Date.now());
+    this.publishMatch(true);
   }
 
   /** Короткий статус живого режима для main (значок поверх игры и журнал live.log) */
@@ -167,6 +193,8 @@ export class Pipeline {
         this.lastVisionSentAt = now;
         this.send({ type: 'vision', reading, frameIndex: f.index, sourceTimeMs: f.sourceTimeMs });
       }
+      this.match.ingest(reading, Date.now());
+      this.publishMatch(false);
     } catch (err) {
       this.lastError = { code: 'internal', message: `Ошибка распознавания: ${(err as Error).message}`, fatal: false, at: Date.now() };
     } finally {

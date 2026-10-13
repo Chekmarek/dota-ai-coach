@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import type { CaptureStatus } from '../types/capture';
 import type { HudReading } from '../../core/vision/recognize-hud.ts';
+import type { MatchState } from '../../core/match-state/index.ts';
 
 // Протокол между окном интерфейса и скрытым окном движка (через MessagePort).
 // Кадры целиком по нему НЕ ходят — только статус и сжатые превью с ограниченной частотой.
@@ -70,4 +71,10 @@ export interface VisionMessage {
   sourceTimeMs: number | null;
 }
 
-export type EngineToUi = { type: 'status'; status: CaptureStatus } | PreviewMessage | VisionMessage;
+/** Состояние матча (этап D): не чаще 4 раз в секунду и сразу при новом событии */
+export interface MatchMessage {
+  type: 'match';
+  state: MatchState;
+}
+
+export type EngineToUi = { type: 'status'; status: CaptureStatus } | PreviewMessage | VisionMessage | MatchMessage;
