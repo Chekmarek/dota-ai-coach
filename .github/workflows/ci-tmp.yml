@@ -36,8 +36,3 @@ jobs:
           foreach ($f in $j.testResults) { foreach ($a in $f.assertionResults) { if ($a.status -eq 'failed') { $m = ($a.failureMessages -join ' ') -replace "`r?`n", ' '; "::error::$($a.fullName) :: $($m.Substring(0, [Math]::Min(600, $m.Length)))" } } }
           foreach ($line in (Get-Content test.txt | Select-String "perf-gsi")) { "::notice::$line" }
           exit $code
-      - name: Изоляция ядра
-        if: always()
-        run: |
-          $hits = Get-ChildItem -Recurse src/core -Include *.ts | Select-String -Pattern "from '(electron|node:|fs|path|http|https|net|child_process)|from \"(electron|node:)|\b(window|document|fetch|XMLHttpRequest|WebSocket)\b\s*[\.\(]"
-          if ($hits) { foreach ($h in $hits) { "::warning::core-import $h" } } else { "::notice::core-import clean" }

@@ -130,7 +130,7 @@
   "ability5": {
    "name": "nevermore_requiem",
    "level": 1,
-   "can_cast": true,
+   "can_cast": false,
    "passive": false,
    "ability_active": true,
    "cooldown": 0,
