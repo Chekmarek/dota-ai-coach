@@ -1,5 +1,6 @@
 import type { TopBarReading } from './top-bar.ts';
 import type { MinimapReading } from './minimap.ts';
+import type { HealthBarsReading } from './health-bars.ts';
 import type { Observed } from '../../shared/types/observation.ts';
 import { readText, type GlyphModel } from '../ocr/glyph-ocr.ts';
 import type { FrameAccess } from './image.ts';
@@ -40,6 +41,8 @@ export interface HudReading {
   topBar?: TopBarReading;
   /** Мини-карта (src/core/vision/minimap.ts): добавляет движок; нет поля — не читалась */
   minimap?: MinimapReading;
+  /** Полоски здоровья героев в 3D-виде (src/core/vision/health-bars.ts): добавляет движок; нет поля — не читались */
+  healthBars?: HealthBarsReading;
   durationMs: number;
 }
 

@@ -198,6 +198,8 @@ export class MatchStateModel {
     if (reading.topBar) this.players.ingest(reading.topBar, this.clock.at(wallMs), wallMs);
     // 6. Мини-карта: где герои и кто пропал
     if (reading.minimap) this.players.ingestMinimap(reading.minimap, wallMs);
+    // 7. Полоски здоровья героев на экране (к игроку — только несомненная привязка по уровню)
+    if (reading.healthBars) this.players.ingestHealthBars(reading.healthBars, wallMs);
   }
 
   /**
@@ -220,6 +222,8 @@ export class MatchStateModel {
     if (reading.hero.id !== null) g.heroId = reading.hero.id;
     // Своя команда — для союзников и врагов на верхней панели (после возможного сброса матча)
     this.players.setOurTeam(reading.team);
+    // Уровень своего героя — чтобы узнать его полоску здоровья на экране
+    if (reading.slot !== null && reading.hero.level !== null) this.players.setLevel(reading.slot, reading.hero.level, wallMs);
     const sync = !this.gsiLive(wallMs);
     // Первое чтение после тишины GSI — сверка: прежние значения GSI больше не «свои» для событий
     if (sync) this.gate.forget('gsi');

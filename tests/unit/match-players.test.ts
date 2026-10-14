@@ -142,3 +142,47 @@ describe('мини-карта в модели: позиция и «пропал�
     expect(p.snapshot(20000).players.every((x) => x.missing === null)).toBe(true);
   });
 });
+
+describe('полоски здоровья в модели: привязка к игроку только несомненная', () => {
+  const hb = (bars: { color: 'green' | 'red'; hpPercent: number; level: number | null }[]) => ({
+    supported: true,
+    durationMs: 1,
+    bars: bars.map((b, k) => ({ ...b, levelConfidence: b.level === null ? 0 : 0.8, x: 100 * k, y: 300, length: 99, confidence: 1 })),
+  });
+
+  it('своя полоска (зелёная, уровень как у своего героя из GSI) — здоровье игрока; чужие не привязываются', () => {
+    const p = new PlayersTrack();
+    p.setOurTeam('dire');
+    p.setLevel(7, 12, 1000);
+    p.ingestHealthBars(hb([{ color: 'green', hpPercent: 64, level: 12 }, { color: 'red', hpPercent: 30, level: 12 }, { color: 'green', hpPercent: 90, level: null }]), 1000);
+    const s = p.snapshot(1200);
+    expect(s.players[7]!.hpPercent).toMatchObject({ value: 64, tag: 'visible', source: 'screen' });
+    expect(s.players.filter((q) => q.hpPercent.value !== null).map((q) => q.slot)).toEqual([7]);
+    expect(s.healthBars.map((b) => [b.side, b.slot])).toEqual([
+      ['ally', 7],
+      ['enemy', null],
+      ['ally', null],
+    ]);
+    // Через 1,5 с — «видели раньше», через 10 с — неизвестно; полоски на экране — только свежие
+    expect(p.snapshot(3000).players[7]!.hpPercent.tag).toBe('remembered');
+    expect(p.snapshot(3000).healthBars).toEqual([]);
+    expect(p.snapshot(11_500).players[7]!.hpPercent.value).toBeNull();
+  });
+
+  it('две зелёные полоски с тем же уровнем (иллюзия) — не привязываем ни одну', () => {
+    const p = new PlayersTrack();
+    p.setOurTeam('radiant');
+    p.setLevel(2, 9, 1000);
+    p.ingestHealthBars(hb([{ color: 'green', hpPercent: 80, level: 9 }, { color: 'green', hpPercent: 40, level: 9 }]), 1000);
+    expect(p.snapshot(1100).players[2]!.hpPercent.value).toBeNull();
+  });
+
+  it('наблюдатель: команда по цвету (зелёные — Силы Света), без уровней игроков никто не назван', () => {
+    const p = new PlayersTrack();
+    p.ingestHealthBars(hb([{ color: 'green', hpPercent: 50, level: 3 }, { color: 'red', hpPercent: 20, level: 4 }]), 1000);
+    expect(p.snapshot(1100).healthBars.map((b) => [b.team, b.side, b.slot])).toEqual([
+      ['radiant', null, null],
+      ['dire', null, null],
+    ]);
+  });
+});

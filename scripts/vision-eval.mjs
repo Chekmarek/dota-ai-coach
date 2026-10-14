@@ -1,16 +1,18 @@
 // Проверка зрения на наборе кадров (docs/VISION_DATASET.md):
-//   node scripts/vision-eval.mjs <папка> [--limit N] [--per-frame]
+//   node scripts/vision-eval.mjs <папка> [--limit N] [--per-frame] [--matches a,b] [--step N] [--labeled-only]
+// --labeled-only — только кадры с ручной разметкой полосок здоровья (tests/fixtures/healthbars/labels-*.json).
 // Папка обходится рекурсивно. Кадр с соседним .json (формат 1, есть разметка GSI наблюдателя) — «размеченный»:
 // для него считается точность по каждому полю. Кадр без разметки (например, из видео «Разбора записи») —
 // только проверка здравого смысла: что прочитано, не меняется ли герой туда-сюда, нет ли падений, сколько мс.
 // Читатели этапов 1–3 (верхняя панель, мини-карта, полоски здоровья) подключаются в READERS по мере появления.
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
-import { join, relative } from 'node:path';
+import { basename, join, relative } from 'node:path';
 import { decodePng } from './png.mjs';
 import { frameAccessFromImage } from '../src/core/vision/image.ts';
 import { recognizeHud } from '../src/core/vision/recognize-hud.ts';
 import { readTopBar } from '../src/core/vision/top-bar.ts';
 import { decodeMinimapBackground, readMinimap } from '../src/core/vision/minimap.ts';
+import { barTeam, readHealthBars } from '../src/core/vision/health-bars.ts';
 
 const root = join(import.meta.dirname, '..');
 const data = (f) => JSON.parse(readFileSync(join(root, 'src/data', f), 'utf8'));
@@ -139,9 +141,17 @@ const READERS = [
       },
     ],
   },
-  // Этап 2: мини-карта (minimap.ts), этап 3: полоски здоровья (health-bars.ts) — пока не написаны.
+  // Этап 2: мини-карта (minimap.ts) и этап 3: полоски здоровья (health-bars.ts) — свои разделы ниже.
 ];
-const PENDING = ['полоски здоровья (этап 3)'];
+
+// --- Полоски здоровья (этап 3) ---
+// Полнота и ложные — по ручной разметке (tests/fixtures/healthbars/labels-*.json: каждая полоска героя проверена глазом).
+// Ошибка HP — по GSI: полоска сравнивается с героем, если её команда и прочитанный уровень совпадают ровно с одним
+// живым героем, а других полосок того же цвета и уровня на кадре нет (иначе не ясно, чья она).
+const hbLabels = new Map();
+for (const f of readdirSync(join(root, 'tests/fixtures/healthbars')).filter((n) => /^labels-.*.json$/.test(n)))
+  for (const fr of JSON.parse(readFileSync(join(root, 'tests/fixtures/healthbars', f), 'utf8')).frames) hbLabels.set(fr.file, fr.bars);
+const hbStat = { frames: 0, ms: [], bars: 0, levelRead: 0, levelFits: 0, hpErr: [], labeled: 0, tp: 0, fn: 0, fp: 0 };
 
 // --- Мини-карта (этап 2): своя оценка — «виден ли значок» проверяется по пикселям кадра у позиции GSI ---
 const mmLayout = hudCtx.layout.minimap;
@@ -209,7 +219,11 @@ const matchOf = (png) => {
     return null;
   }
 };
-const frames = (onlyMatches ? files.filter((f) => onlyMatches.has(matchOf(f))) : files).filter((_, i) => i % step === 0).slice(0, limit);
+const labeledOnly = args.includes('--labeled-only');
+const frames = (onlyMatches ? files.filter((f) => onlyMatches.has(matchOf(f))) : files)
+  .filter((f) => !labeledOnly || hbLabels.has(basename(f)))
+  .filter((_, i) => i % step === 0)
+  .slice(0, limit);
 
 const stats = new Map(); // readerId.fieldId → { withTruth, read, correct, readNoTruth }
 const st = (key) => stats.get(key) ?? (stats.set(key, { withTruth: 0, read: 0, correct: 0, readAny: 0, total: 0 }), stats.get(key));
@@ -241,6 +255,38 @@ for (const file of frames) {
     continue;
   }
   const row = [relative(dir, file)];
+  if (hudCtx.layout.healthBars && meta?.spectator) {
+    try {
+      const r = readHealthBars(frame, hudCtx.layout, hudCtx.model);
+      hbStat.frames++;
+      hbStat.ms.push(r.durationMs);
+      hbStat.bars += r.bars.length;
+      const alive = meta.spectator.heroes.filter((h) => h.alive);
+      for (const b of r.bars) {
+        if (b.level === null) continue;
+        hbStat.levelRead++;
+        const team = barTeam(b.color, null);
+        const cands = alive.filter((h) => h.team === team && h.level === b.level);
+        if (cands.length) hbStat.levelFits++;
+        const twins = r.bars.filter((o) => o.color === b.color && o.level === b.level).length;
+        if (cands.length === 1 && twins === 1 && cands[0].maxHealth > 0) hbStat.hpErr.push(Math.abs(b.hpPercent - (100 * cands[0].health) / cands[0].maxHealth));
+      }
+      const truth = frame.width === 1920 ? hbLabels.get(basename(file)) : undefined;
+      if (truth) {
+        hbStat.labeled++;
+        const used = new Set();
+        for (const t of truth) {
+          const k = r.bars.findIndex((b, i) => !used.has(i) && b.color === t.color && Math.abs(b.x - t.x) <= 6 && Math.abs(b.y - t.y) <= 6);
+          if (k >= 0) (hbStat.tp++, used.add(k));
+          else hbStat.fn++;
+        }
+        hbStat.fp += r.bars.length - used.size;
+      }
+    } catch (err) {
+      crashes++;
+      if (crashSamples.length < 5) crashSamples.push(`${relative(dir, file)}: health-bars: ${err.message}`);
+    }
+  }
   if (mmLayout && meta?.spectator) {
     try {
       const r = readMinimap(frame, mmLayout, mmCal, { background: mmBg });
@@ -357,5 +403,16 @@ if (mmStat.frames) {
   console.log(`  подмен героя (значок на месте другого), окно 10 с ${mmStat.swaps}`);
   console.log(`  неоднозначных (иллюзии/клоны) ${mmStat.ambiguous}, из них далеко от героя ${mmStat.ambiguousOff}`);
 }
-console.log(`\nЕщё не написаны: ${PENDING.join(', ')}.`);
+if (hbStat.frames) {
+  const m = hbStat.ms.reduce((a, b) => a + b, 0) / hbStat.ms.length;
+  const e = hbStat.hpErr;
+  console.log(`\nПолоски здоровья (этап 3): ${m.toFixed(1)} мс в среднем; кадров с GSI ${hbStat.frames}, полосок ${hbStat.bars}`);
+  if (hbStat.labeled) {
+    console.log(`  ручная разметка: кадров ${hbStat.labeled}, найдено ${hbStat.tp}/${hbStat.tp + hbStat.fn} (${pct(hbStat.tp, hbStat.tp + hbStat.fn)})`);
+    console.log(`  ложных полосок                                 ${hbStat.fp} (${((100 * hbStat.fp) / hbStat.labeled).toFixed(1)} на 100 кадров)`);
+  } else console.log('  ручной разметки для этих кадров нет — полноту и ложные не посчитать');
+  console.log(`  HP ≤ 5 п.п. от GSI (полоска узнана по уровню)  ${e.filter((x) => x <= 5).length}/${e.length} (${pct(e.filter((x) => x <= 5).length, e.length)}), медиана ${median(e)?.toFixed(1) ?? '—'} п.п.`);
+  console.log(`  уровень прочитан ${hbStat.levelRead} (${pct(hbStat.levelRead, hbStat.bars)}); из них есть живой герой команды с таким уровнем ${pct(hbStat.levelFits, hbStat.levelRead)}`);
+}
+
 if (labeled === 0) console.log('Разметки нет: точность не посчитать, только проверка здравого смысла (см. docs/VISION_DATASET.md).');

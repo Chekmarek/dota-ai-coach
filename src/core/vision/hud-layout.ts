@@ -1,6 +1,7 @@
 import type { Rect } from '../../shared/types/observation.ts';
 import type { ChannelMode } from './image.ts';
 import type { MinimapLayout } from './minimap.ts';
+import type { HealthBarsLayout } from './health-bars.ts';
 
 export interface HudRegionDef {
   rect: [number, number, number, number];
@@ -28,6 +29,8 @@ export interface HudLayout {
   topBar?: TopBarLayout;
   /** Мини-карта (src/core/vision/minimap.ts): калибровка по умолчанию, цвета значков игроков */
   minimap?: MinimapLayout;
+  /** Полоски здоровья героев в 3D-виде (src/core/vision/health-bars.ts) */
+  healthBars?: HealthBarsLayout;
 }
 
 /** Координаты в эталонном разрешении (reference) */

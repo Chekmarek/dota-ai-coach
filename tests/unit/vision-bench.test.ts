@@ -5,6 +5,7 @@ import { frameAccessFromImage, type FrameAccess } from '../../src/core/vision/im
 import { recognizeHud } from '../../src/core/vision/recognize-hud.ts';
 import { readTopBar } from '../../src/core/vision/top-bar.ts';
 import { decodeMinimapBackground, readMinimap } from '../../src/core/vision/minimap.ts';
+import { readHealthBars } from '../../src/core/vision/health-bars.ts';
 
 /**
  * Бюджет зрения о союзниках и врагах: все новые читатели вместе — не больше 15 мс на кадр 1920×1080
@@ -34,6 +35,7 @@ function noiseFrame(w: number, h: number): FrameAccess {
 const NEW_READERS: { id: string; run: (f: FrameAccess) => unknown }[] = [
   { id: 'верхняя панель', run: (f) => readTopBar(f, LAYOUT, PORTRAITS, GLYPHS) },
   { id: 'мини-карта', run: (f) => readMinimap(f, LAYOUT.minimap, { ...LAYOUT.minimap.default, source: 'layout' }, { background: MM_BG }) },
+  { id: 'полоски здоровья', run: (f) => readHealthBars(f, LAYOUT, GLYPHS) },
 ];
 
 /** Наименьшее время из runs запусков: без помех от других тестов, идущих параллельно (они только замедляют) */
