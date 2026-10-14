@@ -21,8 +21,13 @@ const perFrame = args.includes('--per-frame');
 // Как в коуче: кадр шире «Максимальной ширины кадра» (по умолчанию 1920) уменьшается перед разбором
 const maxWidthArg = args.indexOf('--max-width');
 const maxWidth = maxWidthArg >= 0 ? Number(args[maxWidthArg + 1]) : 1920;
+// Только эти матчи (body.map.matchid в .json) и каждый N-й кадр — набор большой
+const matchesArg = args.indexOf('--matches');
+const onlyMatches = matchesArg >= 0 ? new Set(args[matchesArg + 1].split(',')) : null;
+const stepArg = args.indexOf('--step');
+const step = stepArg >= 0 ? Math.max(1, Number(args[stepArg + 1])) : 1;
 if (!dir || !existsSync(dir)) {
-  console.error('Использование: node scripts/vision-eval.mjs <папка с кадрами> [--limit N] [--per-frame] [--max-width 1920]');
+  console.error('Использование: node scripts/vision-eval.mjs <папка с кадрами> [--matches id,id] [--step N] [--limit N] [--per-frame] [--max-width 1920]');
   process.exit(2);
 }
 
@@ -133,7 +138,14 @@ const walk = (d) => {
   }
 };
 walk(dir);
-const frames = files.slice(0, limit);
+const matchOf = (png) => {
+  try {
+    return JSON.parse(readFileSync(png.replace(/.png$/i, '.json'), 'utf8'))?.body?.map?.matchid ?? null;
+  } catch {
+    return null;
+  }
+};
+const frames = (onlyMatches ? files.filter((f) => onlyMatches.has(matchOf(f))) : files).filter((_, i) => i % step === 0).slice(0, limit);
 
 const stats = new Map(); // readerId.fieldId → { withTruth, read, correct, readNoTruth }
 const st = (key) => stats.get(key) ?? (stats.set(key, { withTruth: 0, read: 0, correct: 0, readAny: 0, total: 0 }), stats.get(key));
