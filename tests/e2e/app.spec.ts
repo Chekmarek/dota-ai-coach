@@ -236,6 +236,8 @@ test('Зрение: на записи матча распознаются вре
     // Состояние матча (этап D): модель приняла время с записи — не прочерк
     await ui.click('[data-testid="nav-match"]');
     await expect(ui.locator('[data-testid="match-clock-value"]')).toHaveText(/^44:\d\d/, { timeout: 10_000 });
+    // Союзники и враги (этап 4 зрения): верхняя панель записи прочитана — карточка с игроками, а не пустая
+    await expect(ui.locator('[data-testid="players-card"]')).toBeVisible({ timeout: 15_000 });
     await ui.screenshot({ path: join(ROOT, 'test-results/match-state.png') });
   } finally {
     await app.close();
@@ -474,6 +476,8 @@ test('GSI: записанная сессия → «Состояние матча
     await expect(ui.locator('[data-testid="hero-level"] [data-testid="source-chip"]')).toHaveText('из игры');
     await expect(ui.locator('[data-testid="match-clock"] [data-testid="source-chip"]')).toHaveText('из игры');
     await expect(ui.locator('[data-testid="item-inv1-value"]')).toHaveText('Bottle');
+    // Без кадров верхней панели нет — карточка «Союзники и враги» честно пуста, а не «все мертвы»
+    await expect(ui.locator('[data-testid="players-empty"]')).toBeVisible();
     // «Ближайшие события» по часам матча (8:0x): волна по расписанию, руны мудрости нет, Рошан — без времени смерти
     const upcoming = ui.locator('[data-testid="upcoming-events"]');
     await expect(upcoming).toBeVisible();

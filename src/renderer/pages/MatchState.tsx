@@ -2,14 +2,16 @@
 // Каждое значение — с пометкой (видно сейчас / видели раньше / вывод / неизвестно), возрастом и уверенностью.
 // Неизвестное показывается прочерком: ничего не додумываем. Советов здесь нет (это этап F).
 // С этапа GSI у каждого значения — источник: «из игры» (Valve GSI) или «с экрана» (зрение), и карточка «Точность зрения».
-import { useEffect, useState, type ReactNode } from 'react';
+import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { formatClock } from '@core/vision/hud-fields.ts';
 import type { AbilityState, MatchEvent, MatchState as MatchSnapshot, Tracked, TrackedSource, TrackedTag } from '@core/match-state/index.ts';
 import type { AgreementField, AgreementReport } from '@core/gsi/agreement.ts';
+import type { VisionAgreementField } from '@core/gsi/vision-agreement.ts';
 import { useEngine } from '../hooks/useEngine';
 import { Card, PageHeader } from '../components/ui';
 import { UpcomingEventsCard } from '../components/mechanics';
 import { useKnowledgeBase } from '../hooks/useKnowledgeBase';
+import { PlayersCard } from '../components/players';
 
 const TAG_LABEL: Record<TrackedTag, string> = {
   visible: 'видно сейчас',
@@ -154,6 +156,7 @@ function MatchView({ s, now }: { s: MatchSnapshot; now: number }) {
   const h = s.hero;
   const events = s.events.slice(-EVENTS_SHOWN).reverse();
   // Ячейки только из GSI: телепорт и нейтральные — всегда, тайник — только занятые ячейки (шесть пустых — шум)
+  const heroNames = useMemo(() => new Map((kb?.heroes ?? []).map((x) => [x.key, x.name])), [kb]);
   const extraAll = h.extraItems ?? [];
   const isStash = (slot: string) => slot.startsWith('stash');
   const extra = extraAll.filter((it) => !isStash(it.slot) || (it.tag !== 'unknown' && it.value?.item));
@@ -197,6 +200,8 @@ function MatchView({ s, now }: { s: MatchSnapshot; now: number }) {
           <Fact label="ДК / НО" t={h.farm} format={(v) => `${v.lastHits} / ${v.denies}`} now={now} testId="hero-farm" />
         </div>
       </Card>
+
+      <PlayersCard s={s} now={now} names={heroNames} />
 
       <Card title="Способности">
         {h.abilities.length === 0 ? (
@@ -282,7 +287,7 @@ function slotLabel(slot: string): string {
 
 const itemText = (v: { item: { name: string } | null }) => (v.item ? v.item.name : 'пусто');
 
-const AGREE_LABEL: Record<AgreementField, string> = {
+const AGREE_LABEL: Record<AgreementField | VisionAgreementField, string> = {
   clock: 'Время',
   scoreRadiant: 'Счёт Сил Света',
   scoreDire: 'Счёт Сил Тьмы',
@@ -297,6 +302,10 @@ const AGREE_LABEL: Record<AgreementField, string> = {
   abilityState: 'Состояние способностей',
   abilityLevel: 'Уровни способностей',
   items: 'Предметы',
+  topBarHero: 'Верхняя панель: герой',
+  topBarAlive: 'Верхняя панель: жив / мёртв',
+  minimapPosition: 'Мини-карта: место (≤ 400 ед.)',
+  healthBarHp: 'Полоски: здоровье (± 5 п.п.)',
 };
 
 const show = (v: unknown): string => {
@@ -307,13 +316,14 @@ const show = (v: unknown): string => {
 
 /** Точность зрения: насколько чтения с экрана совпадают с данными из игры (одни и те же моменты, окно 1.5 с) */
 function AgreementCard({ report }: { report: AgreementReport }) {
-  const rows = (Object.keys(AGREE_LABEL) as AgreementField[]).filter((f) => report[f] && report[f]!.samples > 0);
+  const rows = (Object.keys(AGREE_LABEL) as (AgreementField | VisionAgreementField)[]).filter((f) => report[f] && report[f]!.samples > 0);
   return (
     <Card title="Точность зрения">
       {rows.length === 0 ? (
         <p className="muted" data-testid="agreement-empty">
           Появится, когда одновременно идут данные из игры и живой захват экрана: коуч сравнивает, что прочитал с экрана, с тем, что прислала
-          Dota.
+          Dota. Строки о союзниках и врагах (верхняя панель, мини-карта, полоски) — только при просмотре записи или трансляции: тогда Dota
+          присылает данные обо всех десяти героях.
         </p>
       ) : (
         <table className="table" data-testid="agreement-table">

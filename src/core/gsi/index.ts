@@ -17,4 +17,13 @@ export {
 } from './schema.ts';
 export { mapGsi, gsiPhase, gsiSlotName, type GsiReading, type GsiAbility, type GsiItemSlot, type GsiPhase, type ItemNameLookup, type HeroLookup } from './map.ts';
 export { AgreementTracker, AGREE_WINDOW_MS, POOL_TOLERANCE, CLOCK_TOLERANCE_SEC, type AgreementField, type AgreementReport, type FieldAgreement } from './agreement.ts';
+export {
+  VisionAgreementTracker,
+  VISION_AGREE_WINDOW_MS,
+  MINIMAP_POSITION_TOLERANCE,
+  HEALTH_BAR_TOLERANCE_PP,
+  type VisionAgreementField,
+  type VisionAgreementReport,
+} from './vision-agreement.ts';
+export { parseSpectatorGsi, type SpectatorReading, type SpectatorHero } from './spectator.ts';
 export { labelFromGsi, type HudFrameLabel } from './labels.ts';

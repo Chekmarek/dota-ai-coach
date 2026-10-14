@@ -8,7 +8,7 @@ import { VideoFileSource } from './capture/video-file-source';
 import { LiveScreenSource } from './capture/live-screen-source';
 import { VisionStage } from './vision';
 import { GSI_LIVE_MS, MatchStateModel } from '@core/match-state/index.ts';
-import { AgreementTracker } from '@core/gsi/index.ts';
+import { AgreementTracker, VisionAgreementTracker, parseSpectatorGsi } from '@core/gsi/index.ts';
 import type { GsiBodyMessage } from '@shared/ipc';
 import { readGsi } from './gsi';
 
@@ -60,6 +60,9 @@ export class Pipeline {
   private readonly match = new MatchStateModel();
   /** Сверка зрения с GSI (только кадры живого захвата — это тот же матч) */
   private readonly agreement = new AgreementTracker();
+  /** Точность зрения о союзниках и врагах — только когда Dota присылает GSI наблюдателя (все 10 героев) */
+  private readonly visionAgreement = new VisionAgreementTracker();
+  private spectatorMatchId: string | null = null;
   private lastGsiAt: number | null = null;
   /** Свой герой из последнего GSI (ячейка и координаты) — для самокалибровки мини-карты; со временем получения */
   private ownHero: { slot: number; x: number; y: number; at: number } | null = null;
@@ -96,10 +99,21 @@ export class Pipeline {
     const reading = readGsi(msg.body);
     // Меню или наблюдение — матча своего героя нет; heartbeat всё равно значит, что GSI работает
     this.lastGsiAt = now;
+    // Наблюдатель: своего героя нет (reading будет null), сверка зрения — по всем 10 героям; новый матч — с нуля
+    const spectator = parseSpectatorGsi(msg.body);
+    const spectatorMatch = (msg.body as { map?: { matchid?: unknown } } | null)?.map?.matchid;
+    if (spectator && typeof spectatorMatch === 'string' && spectatorMatch !== this.spectatorMatchId) {
+      this.spectatorMatchId = spectatorMatch;
+      this.visionAgreement.reset();
+    }
+    this.visionAgreement.addSpectator(spectator, now);
     if (!reading) return;
     if (reading.slot !== null && reading.hero.x !== null && reading.hero.y !== null) this.ownHero = { slot: reading.slot, x: reading.hero.x, y: reading.hero.y, at: now };
     if (reading.matchId !== null && reading.matchId !== this.gsiMatchId) {
-      if (this.gsiMatchId !== null) this.agreement.reset();
+      if (this.gsiMatchId !== null) {
+        this.agreement.reset();
+        this.visionAgreement.reset();
+      }
       this.gsiMatchId = reading.matchId;
     }
     try {
@@ -194,7 +208,7 @@ export class Pipeline {
     this.lastMatchSentAt = now;
     this.sentEventSeq = this.match.eventSeq;
     const wallMs = Date.now();
-    this.send({ type: 'match', state: this.match.snapshot(wallMs), agreement: this.agreement.report(wallMs) });
+    this.send({ type: 'match', state: this.match.snapshot(wallMs), agreement: { ...this.agreement.report(wallMs), ...this.visionAgreement.report() } });
   }
 
   /** Новый источник или остановка — состояние прошлого матча больше не относится к делу (кроме матча из GSI) */
@@ -202,6 +216,7 @@ export class Pipeline {
     if (this.gsiLive()) return;
     this.match.reset(Date.now());
     this.agreement.reset();
+    this.visionAgreement.reset();
     this.publishMatch(true);
   }
 
@@ -252,7 +267,10 @@ export class Pipeline {
       const wallMs = Date.now();
       if (this.isLive() || !this.gsiLive(wallMs)) {
         this.match.ingest(reading, wallMs);
-        if (this.isLive()) this.agreement.addScreen(reading, wallMs);
+        if (this.isLive()) {
+          this.agreement.addScreen(reading, wallMs);
+          this.visionAgreement.addScreen(reading, wallMs);
+        }
         this.publishMatch(false);
       }
     } catch (err) {

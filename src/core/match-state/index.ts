@@ -16,6 +16,8 @@ export {
 export { SourceEventGate, CROSS_SOURCE_WINDOW_SEC, type EventSource } from './source-events.ts';
 export { CLOCK_TOLERANCE_SEC, CLOCK_JUMP_READINGS, PAUSE_AFTER_MS, RESET_BACK_SEC } from './clock.ts';
 export { VISIBLE_MS, FAST_CONFIDENCE, CORRECTION_MS } from './stable-field.ts';
+export { PlayersTrack, MISSING_AFTER_MS, POSITION_VISIBLE_MS, POSITION_TTL_MS, HP_TTL_MS, type TrackedPlayer, type VisibleHealthBar, type MapPoint, type PlayersSnapshot } from './players.ts';
+export { mapZone, MAP_ZONE_RU, MAP_HALF_SIZE, type MapZone } from './map-zones.ts';
 export type {
   Tracked,
   TrackedTag,

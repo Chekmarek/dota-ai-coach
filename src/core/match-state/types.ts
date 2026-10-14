@@ -111,4 +111,6 @@ export interface MatchState {
   /** Союзники и враги — только когда своя команда известна */
   allies: PlayersSnapshot['allies'];
   enemies: PlayersSnapshot['enemies'];
+  /** Полоски здоровья героев на экране (последний кадр); к игроку привязаны только несомненные */
+  healthBars: PlayersSnapshot['healthBars'];
 }

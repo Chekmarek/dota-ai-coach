@@ -6,6 +6,7 @@
 import type { HudReading } from '../vision/recognize-hud.ts';
 import type { Pool } from '../vision/hud-fields.ts';
 import type { GsiReading } from './map.ts';
+import type { VisionAgreementField } from './vision-agreement.ts';
 
 /** Чтения двух источников сравниваются, если между ними не больше этого (мс) */
 export const AGREE_WINDOW_MS = 1500;
@@ -39,7 +40,8 @@ export interface FieldAgreement {
   lastMismatch: { gsi: unknown; screen: unknown; wallMs: number } | null;
 }
 
-export type AgreementReport = Partial<Record<AgreementField, FieldAgreement>>;
+/** Поля игрока (AgreementTracker) и зрения о союзниках и врагах по GSI наблюдателя (VisionAgreementTracker) */
+export type AgreementReport = Partial<Record<AgreementField | VisionAgreementField, FieldAgreement>>;
 
 interface Sample {
   /** Значение с экрана и как его сравнить со значением GSI того же поля */

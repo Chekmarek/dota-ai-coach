@@ -131,3 +131,21 @@ button.link { background: none; border: none; padding: 0; color: var(--accent-2)
 .agree-pct.hi { color: var(--ok); }
 .agree-pct.mid { color: var(--warn); }
 .agree-pct.lo { color: var(--err); }
+
+/* Союзники и враги (этап 4 зрения) */
+.pl-layout { display: flex; gap: 16px; align-items: flex-start; flex-wrap: wrap; }
+.pl-tables { flex: 1 1 520px; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.pl-table td { vertical-align: top; padding-top: 6px; padding-bottom: 6px; }
+.pl-hero { display: flex; align-items: center; gap: 8px; }
+.pl-dot { width: 8px; height: 8px; border-radius: 50%; flex: none; }
+.portrait-mosaic { flex: none; border-radius: 3px; image-rendering: pixelated; }
+.portrait-none { display: inline-block; width: 42px; height: 15px; border: 1px dashed var(--line); }
+.pl-dead .pl-hero { opacity: 0.6; }
+.pl-value { font-weight: 600; }
+.pl-cell.fact-unknown .pl-value { color: var(--muted); font-weight: 400; }
+.pl-missing { margin-left: 6px; color: var(--warn); border-color: #5a4a1f; font-size: 11px; }
+.pl-side { flex: 0 0 200px; display: flex; flex-direction: column; gap: 8px; }
+.pl-map-bg { fill: #1d2a1f; stroke: var(--line); }
+.pl-map-river { stroke: #2b4a7a; stroke-width: 10; opacity: 0.6; }
+.pl-map-base-radiant { fill: rgba(63, 185, 80, 0.25); }
+.pl-map-base-dire { fill: rgba(220, 70, 60, 0.25); }
