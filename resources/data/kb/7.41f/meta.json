@@ -1,19 +1,22 @@
 {
   "patch": "7.41f",
   "patchDate": "2026-09-15",
-  "generatedAt": "2026-10-11T15:43:12.488Z",
+  "generatedAt": "2026-10-14T04:10:57.890Z",
   "verification": "imported-unverified",
   "note": "Данные импортированы автоматически и не сверены вручную с патч-ноутами. Для точных расчётов использовать только после проверки.",
   "sources": [
     {
       "name": "Valve datafeed (dota2.com)",
       "url": "https://www.dota2.com/datafeed",
-      "retrievedAt": "2026-10-11T15:43:12.488Z",
+      "retrievedAt": "2026-10-14T04:10:57.890Z",
       "covers": [
         "patch",
         "heroes",
         "abilities",
-        "descRu"
+        "descRu",
+        "item prices",
+        "item recipes",
+        "item availability"
       ]
     },
     {
@@ -21,12 +24,13 @@
       "url": "https://github.com/odota/dotaconstants",
       "license": "MIT",
       "commit": {
-        "sha": "6a7588e9c12f34077384b7e52f4a77ea68056709",
-        "date": "2026-10-10T04:51:09Z"
+        "sha": "5c0242df9057848fa2036ca3fafe9f2bd4508163",
+        "date": "2026-10-12T01:45:43Z"
       },
-      "retrievedAt": "2026-10-11T15:43:12.488Z",
+      "retrievedAt": "2026-10-14T04:10:57.890Z",
       "covers": [
-        "items",
+        "item attributes",
+        "item descriptions",
         "hero roles"
       ]
     }
@@ -34,6 +38,33 @@
   "counts": {
     "heroes": 127,
     "items": 409,
-    "abilities": 734
-  }
+    "abilities": 734,
+    "itemsByAvailability": {
+      "shop": 208,
+      "not-sold": 148,
+      "neutral": 49,
+      "removed": 4
+    }
+  },
+  "priceCorrections": [
+    "travel_boots_2: рецепт OpenDota null → Valve 2000",
+    "travel_boots_2: части OpenDota [travel_boots,recipe_travel_boots] → Valve [travel_boots]",
+    "dagon_2: рецепт OpenDota null → Valve 1100",
+    "dagon_2: части OpenDota [] → Valve [dagon]",
+    "dagon_3: рецепт OpenDota null → Valve 1100",
+    "dagon_3: части OpenDota [] → Valve [dagon_2]",
+    "dagon_4: рецепт OpenDota null → Valve 1100",
+    "dagon_4: части OpenDota [] → Valve [dagon_3]",
+    "dagon_5: рецепт OpenDota null → Valve 1100",
+    "dagon_5: части OpenDota [] → Valve [dagon_4]",
+    "necronomicon: цена OpenDota 2050 → Valve 2700",
+    "necronomicon: части OpenDota [sobi_mask,sobi_mask,belt_of_strength] → Valve [staff_of_wizardry,belt_of_strength]",
+    "necronomicon_2: цена OpenDota 3300 → Valve 3950",
+    "necronomicon_2: рецепт OpenDota null → Valve 1250",
+    "necronomicon_2: части OpenDota [necronomicon,recipe_necronomicon] → Valve [necronomicon]",
+    "necronomicon_3: цена OpenDota 4550 → Valve 5200",
+    "necronomicon_3: рецепт OpenDota null → Valve 1250",
+    "necronomicon_3: части OpenDota [necronomicon_2,recipe_necronomicon] → Valve [necronomicon_2]",
+    "iron_talon: рецепт OpenDota 125 → Valve 1"
+  ]
 }

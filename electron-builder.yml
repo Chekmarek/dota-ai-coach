@@ -9,8 +9,10 @@ directories:
 files:
   - out/**
   - package.json
+  # База знаний внутри app.asar: автообновление заменяет только app.asar, и база приходит вместе с ним
+  - resources/data/kb/**
   - '!**/*.map'
-# База знаний (JSON по патчам) — отдельными файлами, чтобы её можно было обновлять без пересборки кода
+# Копия базы рядом с программой (для установщика и zip). Коуч берёт более новую из двух копий (по meta.generatedAt)
 extraResources:
   - from: resources/data
     to: data

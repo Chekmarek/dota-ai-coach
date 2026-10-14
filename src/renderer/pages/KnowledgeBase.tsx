@@ -1,8 +1,17 @@
 import { useEffect, useMemo, useState } from 'react';
-import type { KbHero, KbItem, KnowledgeBase as Kb } from '@shared/types/kb';
+import type { KbHero, KbItem, KbItemAvailability, KnowledgeBase as Kb } from '@shared/types/kb';
+import { formatKbGain, formatKbList, formatKbNumber as fmt } from '@core/knowledge-base/format.ts';
+import { isShopItem } from '@core/knowledge-base/audit.ts';
 import { Card, PageHeader } from '../components/ui';
 
 let cache: Kb | null = null;
+
+const AVAILABILITY_LABEL: Record<KbItemAvailability, string> = {
+  shop: 'магазин',
+  neutral: 'нейтральный',
+  'not-sold': 'не продаётся',
+  removed: 'нет в игре',
+};
 
 const ATTR_LABEL = { str: 'Сила', agi: 'Ловкость', int: 'Интеллект', all: 'Универсальный' } as const;
 
@@ -12,6 +21,7 @@ export function KnowledgeBase() {
   const [tab, setTab] = useState<'heroes' | 'items'>('heroes');
   const [query, setQuery] = useState('');
   const [heroKey, setHeroKey] = useState<string | null>(null);
+  const [showAllItems, setShowAllItems] = useState(false);
 
   useEffect(() => {
     if (cache) return;
@@ -26,7 +36,10 @@ export function KnowledgeBase() {
 
   const q = query.trim().toLowerCase();
   const heroes = useMemo(() => (kb?.heroes ?? []).filter((h) => !q || h.name.toLowerCase().includes(q)).sort((a, b) => a.name.localeCompare(b.name)), [kb, q]);
-  const items = useMemo(() => (kb?.items ?? []).filter((i) => !q || i.name.toLowerCase().includes(q)), [kb, q]);
+  // По умолчанию — предметы, которые есть в игре (магазин и нейтральные); остальные — по переключателю
+  const visibleItems = useMemo(() => (kb?.items ?? []).filter((i) => showAllItems || isInGame(i)), [kb, showAllItems]);
+  const hiddenCount = (kb?.items.length ?? 0) - (kb?.items ?? []).filter(isInGame).length;
+  const items = useMemo(() => visibleItems.filter((i) => !q || i.name.toLowerCase().includes(q)), [visibleItems, q]);
   const hero = kb?.heroes.find((h) => h.key === heroKey) ?? heroes[0] ?? null;
 
   return (
@@ -41,7 +54,11 @@ export function KnowledgeBase() {
               Импортировано автоматически {new Date(kb.meta.generatedAt).toLocaleDateString('ru-RU')} из:{' '}
               {kb.meta.sources.map((s) => s.name + (s.license ? ` (${s.license})` : '')).join(', ')}. Точные расчёты не будут
               использовать эти данные, пока они не сверены с патч-ноутами.
-              {kb.audit.costMismatches.length > 0 && ` Самопроверка нашла расхождений в ценах: ${kb.audit.costMismatches.length}.`}
+              {kb.audit.costMismatches.length > 0 &&
+                ` Самопроверка нашла расхождений в ценах: ${kb.audit.costMismatches.length} (${kb.audit.costMismatches.map((m) => m.name).join(', ')}).`}
+            </p>
+            <p className="muted small" data-testid="kb-copy" data-copy={kb.copy}>
+              Копия базы: {kb.copy === 'asar' ? 'из обновления приложения (app.asar)' : 'рядом с программой (resources\data)'}
             </p>
           </div>
 
@@ -50,7 +67,7 @@ export function KnowledgeBase() {
               Герои ({kb.meta.counts.heroes})
             </button>
             <button className={tab === 'items' ? 'primary' : ''} onClick={() => setTab('items')} data-testid="kb-tab-items">
-              Предметы ({kb.meta.counts.items})
+              Предметы ({visibleItems.length})
             </button>
             <input placeholder="Поиск по названию…" value={query} onChange={(e) => setQuery(e.target.value)} data-testid="kb-search" style={{ minWidth: 240 }} />
           </div>
@@ -70,7 +87,13 @@ export function KnowledgeBase() {
               {hero && <HeroCard hero={hero} />}
             </div>
           ) : (
-            <ItemsTable items={items} kb={kb} />
+            <>
+              <label className="row gap small">
+                <input type="checkbox" checked={showAllItems} onChange={(e) => setShowAllItems(e.target.checked)} data-testid="kb-show-all-items" />
+                Показать предметы не из игры и не из магазина ({hiddenCount})
+              </label>
+              <ItemsTable items={items} kb={kb} />
+            </>
           )}
         </>
       )}
@@ -87,15 +110,18 @@ function HeroCard({ hero }: { hero: KbHero }) {
         {hero.roles.join(', ') || '—'}
       </div>
       <div className="stats">
-        <StatMini label="Сила" value={`${s.str.base} +${s.str.gain}`} />
-        <StatMini label="Ловкость" value={`${s.agi.base} +${s.agi.gain}`} />
-        <StatMini label="Интеллект" value={`${s.int.base} +${s.int.gain}`} />
-        <StatMini label="Здоровье (1 ур.)" value={s.maxHealth} />
-        <StatMini label="Мана (1 ур.)" value={s.maxMana} />
-        <StatMini label="Броня" value={s.armor} />
-        <StatMini label="Урон" value={`${s.damageMin}–${s.damageMax}`} />
-        <StatMini label="Скорость" value={s.moveSpeed} />
-        <StatMini label="Дальность атаки" value={s.attackRange} />
+        <StatMini label="Сила" value={`${fmt(s.str.base)} ${formatKbGain(s.str.gain)}`} />
+        <StatMini label="Ловкость" value={`${fmt(s.agi.base)} ${formatKbGain(s.agi.gain)}`} />
+        <StatMini label="Интеллект" value={`${fmt(s.int.base)} ${formatKbGain(s.int.gain)}`} />
+        <StatMini label="Здоровье (1 ур.)" value={fmt(s.maxHealth)} />
+        <StatMini label="Мана (1 ур.)" value={fmt(s.maxMana)} />
+        <StatMini label="Броня" value={fmt(s.armor)} testId="kb-hero-armor" />
+        <StatMini label="Урон" value={`${fmt(s.damageMin)}–${fmt(s.damageMax)}`} />
+        <StatMini label="Скорость" value={fmt(s.moveSpeed)} />
+        <StatMini label="Дальность атаки" value={fmt(s.attackRange)} />
+        <StatMini label="Интервал атаки, с" value={fmt(s.attackRate)} />
+        <StatMini label="Реген. здоровья" value={fmt(s.healthRegen)} />
+        <StatMini label="Реген. маны" value={fmt(s.manaRegen)} />
       </div>
       <h4 className="kb-h">Способности</h4>
       <div className="kb-abilities">
@@ -109,9 +135,9 @@ function HeroCard({ hero }: { hero: KbHero }) {
             </div>
             {(a.cooldowns.length > 0 || a.manaCosts.length > 0) && (
               <div className="muted small mono">
-                {a.cooldowns.length > 0 && `перезарядка ${a.cooldowns.join('/')} с`}
+                {a.cooldowns.length > 0 && `перезарядка ${formatKbList(a.cooldowns)} с`}
                 {a.cooldowns.length > 0 && a.manaCosts.length > 0 && ' · '}
-                {a.manaCosts.length > 0 && `мана ${a.manaCosts.join('/')}`}
+                {a.manaCosts.length > 0 && `мана ${formatKbList(a.manaCosts)}`}
               </div>
             )}
             {a.descRu && <p className="kb-desc">{a.descRu}</p>}
@@ -143,6 +169,7 @@ function ItemsTable({ items, kb }: { items: KbItem[]; kb: Kb }) {
             <th>Предмет</th>
             <th>Цена</th>
             <th>Из чего собирается</th>
+            <th>Где взять</th>
             <th>Проверка</th>
           </tr>
         </thead>
@@ -152,12 +179,20 @@ function ItemsTable({ items, kb }: { items: KbItem[]; kb: Kb }) {
             return (
               <tr key={i.key}>
                 <td>{i.name}</td>
-                <td className="mono">{i.cost ?? '—'}</td>
+                <td className="mono" title={i.priceSource === 'valve' ? 'цена: Valve datafeed' : i.priceSource ? 'цена: OpenDota' : undefined}>
+                  {i.cost ?? '—'}
+                </td>
                 <td className="small">
                   {i.components.map((c) => names.get(c) ?? c).join(' + ')}
-                  {i.recipeCost ? `${i.components.length ? ' + ' : ''}рецепт ${i.recipeCost}` : ''}
+                  {i.recipeCost && isShopItem(i) ? `${i.components.length ? ' + ' : ''}рецепт ${i.recipeCost}` : ''}
                 </td>
-                <td className={m ? 'warn small' : 'muted small'}>{m ? `сумма частей ${m.computed} ≠ ${m.cost}` : i.components.length ? 'сходится' : '—'}</td>
+                <td className="small" data-availability={i.availability ?? 'shop'}>
+                  {AVAILABILITY_LABEL[i.availability ?? 'shop']}
+                  {i.neutralTier ? `, уровень ${i.neutralTier}` : ''}
+                </td>
+                <td className={m ? 'warn small' : 'muted small'} title={m?.reason ?? undefined}>
+                  {m ? `сумма частей ${m.computed} ≠ ${m.cost}${m.reason ? ' (расхождение в данных Valve)' : ''}` : i.components.length && isShopItem(i) ? 'сходится' : '—'}
+                </td>
               </tr>
             );
           })}
@@ -167,9 +202,12 @@ function ItemsTable({ items, kb }: { items: KbItem[]; kb: Kb }) {
   );
 }
 
-function StatMini({ label, value }: { label: string; value: string | number }) {
+/** Есть в игре: продаётся/собирается или нейтральный предмет текущего набора */
+const isInGame = (i: KbItem) => isShopItem(i) || i.availability === 'neutral';
+
+function StatMini({ label, value, testId }: { label: string; value: string | number; testId?: string }) {
   return (
-    <div className="stat">
+    <div className="stat" data-testid={testId}>
       <div className="stat-label">{label}</div>
       <div className="stat-value">{value}</div>
     </div>

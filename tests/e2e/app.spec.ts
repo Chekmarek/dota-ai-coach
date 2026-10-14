@@ -10,13 +10,13 @@ const FRAMES = join(ROOT, 'tests/fixtures/frames/synthetic');
  * live: false (по умолчанию) — живой захват при запуске не включается, чтобы тесты записей не зависели
  * от того, запущена ли Дота. Обновления в тестах не проверяются (не ходим в сеть).
  */
-async function launch(dataDir: string, opts: { live?: boolean } = {}): Promise<{ app: ElectronApplication; ui: Page }> {
+async function launch(dataDir: string, opts: { live?: boolean; env?: Record<string, string> } = {}): Promise<{ app: ElectronApplication; ui: Page }> {
   const settingsFile = join(dataDir, 'settings.json');
   if (!opts.live && !existsSync(settingsFile)) writeFileSync(settingsFile, JSON.stringify({ live: { autoStart: false } }));
   const app = await electron.launch({
     args: ['.'],
     cwd: ROOT,
-    env: { ...process.env, DOTACOACH_DATA_DIR: dataDir, ELECTRON_RENDERER_URL: '', DOTACOACH_NO_UPDATE_CHECK: '1' },
+    env: { ...process.env, DOTACOACH_DATA_DIR: dataDir, ELECTRON_RENDERER_URL: '', DOTACOACH_NO_UPDATE_CHECK: '1', ...opts.env },
   });
   // Окон два: интерфейс и скрытый движок — берём окно интерфейса
   const ui = await waitForUi(app);
@@ -314,10 +314,55 @@ test('База знаний: герои и предметы текущего п�
     await ui.fill('[data-testid="kb-search"]', 'kez');
     await expect(ui.locator('[data-testid="kb-hero-name"]')).toContainText('Ловкость');
     await expect(ui.locator('.kb-ability b', { hasText: 'Echo Slash' }).first()).toBeVisible();
+    // Числа округлены: 2.6666667 → 2.7
+    await ui.fill('[data-testid="kb-search"]', 'crystal');
+    await expect(ui.locator('[data-testid="kb-hero-armor"]')).toContainText('2.7');
+    await expect(ui.locator('[data-testid="kb-hero-armor"]')).not.toContainText('2.66');
     await ui.fill('[data-testid="kb-search"]', 'black king');
     await ui.click('[data-testid="kb-tab-items"]');
     await expect(ui.locator('[data-testid="kb-items"]')).toContainText('4050');
+    // Убранный из игры предмет скрыт, пока не включён переключатель
+    await ui.fill('[data-testid="kb-search"]', 'iron talon');
+    await expect(ui.locator('[data-testid="kb-items"] tbody tr')).toHaveCount(0);
+    await ui.check('[data-testid="kb-show-all-items"]');
+    await expect(ui.locator('[data-testid="kb-items"]')).toContainText('нет в игре');
     await ui.screenshot({ path: join(ROOT, 'test-results/kb.png') });
+  } finally {
+    await app.close();
+  }
+});
+
+/** Копия базы «рядом с программой» с заданной датой и именем патча (для проверки выбора копии) */
+function externalKb(generatedAt: string, patch: string): string {
+  const dir = join(tmp(), 'kb');
+  const src = join(ROOT, 'resources/data/kb', JSON.parse(readFileSync(join(ROOT, 'resources/data/kb/current.json'), 'utf8')).patch);
+  mkdirSync(join(dir, patch), { recursive: true });
+  writeFileSync(join(dir, 'current.json'), JSON.stringify({ patch }));
+  for (const f of ['heroes.json', 'items.json']) writeFileSync(join(dir, patch, f), readFileSync(join(src, f)));
+  const meta = JSON.parse(readFileSync(join(src, 'meta.json'), 'utf8'));
+  writeFileSync(join(dir, patch, 'meta.json'), JSON.stringify({ ...meta, patch, generatedAt }));
+  return dir;
+}
+
+test('База знаний: берётся копия из app.asar, если копия рядом с программой старее', async () => {
+  const { app, ui } = await launch(tmp(), { env: { DOTACOACH_KB_EXTERNAL_DIR: externalKb('2020-01-01T00:00:00.000Z', '7.00z') } });
+  try {
+    await ui.click('[data-testid="nav-kb"]');
+    await expect(ui.locator('[data-testid="kb-copy"]')).toHaveAttribute('data-copy', 'asar');
+    await expect(ui.locator('[data-testid="kb-unverified"]')).toContainText('патч 7.41');
+    await expect(ui.locator('[data-testid="kb-unverified"]')).not.toContainText('7.00z');
+    await expect(ui.locator('[data-testid="kb-tab-heroes"]')).toContainText('127');
+  } finally {
+    await app.close();
+  }
+});
+
+test('База знаний: более новая копия рядом с программой побеждает', async () => {
+  const { app, ui } = await launch(tmp(), { env: { DOTACOACH_KB_EXTERNAL_DIR: externalKb('2099-01-01T00:00:00.000Z', '9.99z') } });
+  try {
+    await ui.click('[data-testid="nav-kb"]');
+    await expect(ui.locator('[data-testid="kb-copy"]')).toHaveAttribute('data-copy', 'external');
+    await expect(ui.locator('[data-testid="kb-unverified"]')).toContainText('патч 9.99z');
   } finally {
     await app.close();
   }

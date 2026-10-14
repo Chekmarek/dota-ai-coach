@@ -100,26 +100,91 @@ for (const [i, h] of heroList.entries()) {
 }
 console.log(`Героев: ${heroes.length} (в OpenDota: ${Object.keys(odHeroes).length})`);
 
-// --- Предметы (OpenDota) ---
+// --- Предметы: описание и атрибуты — OpenDota; цена, рецепт и наличие в игре — Valve (Valve главнее) ---
 const odItems = await getJson(`${ODOTA}/items.json`);
+const valveList = (await getJson(`${VALVE}/itemlist?language=english`)).result.data.itemabilities;
+const vKey = (name) => name.replace(/^item_/, '');
+const valveByKey = new Map(valveList.map((x) => [vKey(x.name), x]));
+const valveKeyById = new Map(valveList.map((x) => [x.id, vKey(x.name)]));
+// Цена есть только в itemdata — по запросу на предмет (включая рецепты)
+const valveCost = new Map();
+for (const [i, x] of valveList.entries()) {
+  const d = (await getJson(`${VALVE}/itemdata?language=english&item_id=${x.id}`)).result.data.items[0];
+  valveCost.set(vKey(x.name), typeof d?.item_cost === 'number' ? d.item_cost : null);
+  await sleep(DELAY_MS);
+  if ((i + 1) % 100 === 0) console.log(`  предметы Valve: ${i + 1}/${valveList.length}`);
+}
+// Рецепт Valve: компоненты первого варианта сборки; части-рецепты (recipe_x) переходят в цену рецепта
+function valveRecipe(key) {
+  const rec = valveByKey.get(`recipe_${key}`);
+  const option = rec?.recipes?.[0]?.items;
+  if (!rec || !option) return null;
+  let recipeCost = valveCost.get(`recipe_${key}`) ?? 0;
+  const components = [];
+  for (const id of option) {
+    const c = valveKeyById.get(id);
+    if (!c) return null;
+    if (c.startsWith('recipe_')) recipeCost += valveCost.get(c) ?? 0;
+    else components.push(c);
+  }
+  return { components, recipeCost: recipeCost || null, options: rec.recipes.length };
+}
+
+const priceConflicts = [];
 const items = Object.entries(odItems)
   .filter(([key, it]) => it && it.dname && typeof it.id === 'number' && !key.startsWith('recipe_'))
-  .map(([key, it]) => ({
-    id: it.id,
-    key,
-    name: it.dname,
-    cost: typeof it.cost === 'number' ? it.cost : null,
-    components: Array.isArray(it.components) ? it.components : [],
-    recipeCost: typeof odItems[`recipe_${key}`]?.cost === 'number' ? odItems[`recipe_${key}`].cost : null,
-    quality: it.qual ?? null,
-    neutralTier: it.tier ?? null,
-    cooldown: typeof it.cd === 'number' ? it.cd : null,
-    manaCost: typeof it.mc === 'number' ? it.mc : null,
-    attributes: (it.attrib ?? []).map((a) => ({ key: a.key, value: String(a.value), display: a.display ?? null })),
-    abilities: (it.abilities ?? []).map((a) => ({ type: a.type, title: a.title, description: a.description })),
-  }))
+  .map(([key, it]) => {
+    const v = valveByKey.get(key);
+    const odCost = typeof it.cost === 'number' ? it.cost : null;
+    const odComponents = (Array.isArray(it.components) ? it.components : []).filter((c) => typeof c === 'string' && c);
+    const odRecipe = typeof odItems[`recipe_${key}`]?.cost === 'number' ? odItems[`recipe_${key}`].cost || null : null;
+    const vr = v ? valveRecipe(key) : null;
+    const vCost = v ? valveCost.get(key) : null;
+    const cost = typeof vCost === 'number' ? vCost : odCost;
+    const components = vr ? vr.components : odComponents;
+    const recipeCost = vr ? vr.recipeCost : odRecipe;
+    if (typeof vCost === 'number' && odCost !== null && vCost !== odCost) priceConflicts.push(`${key}: цена OpenDota ${odCost} → Valve ${vCost}`);
+    if (vr && (odRecipe ?? null) !== (vr.recipeCost ?? null)) priceConflicts.push(`${key}: рецепт OpenDota ${odRecipe} → Valve ${vr.recipeCost}`);
+    if (vr && [...odComponents].sort().join() !== [...vr.components].sort().join()) {
+      priceConflicts.push(`${key}: части OpenDota [${odComponents}] → Valve [${vr.components}]`);
+    }
+    // Наличие в игре решается только по данным Valve
+    let availability;
+    if (!v) availability = 'removed'; // Valve такого предмета не знает
+    else if (v.neutral_item_tier >= 0) availability = 'neutral';
+    else if (cost > 0 || v.is_pregame_suggested || v.is_earlygame_suggested || v.is_lategame_suggested) availability = 'shop';
+    else if (components.length || vr) availability = 'removed'; // собираемый предмет с ценой 0 — собрать нельзя
+    else availability = 'not-sold';
+    // Расхождение внутри самих данных Valve — записываем причину, не исправляем
+    let priceNote = null;
+    if (availability === 'shop' && vr && cost !== null) {
+      const sum = (vr.recipeCost ?? 0) + vr.components.reduce((s, c) => s + (valveCost.get(c) ?? NaN), 0);
+      if (Number.isFinite(sum) && sum !== cost) priceNote = `В данных Valve сумма частей и рецепта ${sum}, а цена ${cost}: расхождение в самом источнике, нужна сверка с игрой.`;
+    }
+    return {
+      id: it.id,
+      key,
+      name: it.dname,
+      cost,
+      components,
+      recipeCost,
+      quality: it.qual ?? null,
+      neutralTier: v && v.neutral_item_tier >= 0 ? v.neutral_item_tier + 1 : null,
+      cooldown: typeof it.cd === 'number' ? it.cd : null,
+      manaCost: typeof it.mc === 'number' ? it.mc : null,
+      attributes: (it.attrib ?? []).map((a) => ({ key: a.key, value: String(a.value), display: a.display ?? null })),
+      abilities: (it.abilities ?? []).map((a) => ({ type: a.type, title: a.title, description: a.description })),
+      availability,
+      priceSource: typeof vCost === 'number' ? 'valve' : 'opendota',
+      componentsSource: vr ? 'valve' : 'opendota',
+      priceNote,
+    };
+  })
   .sort((a, b) => a.name.localeCompare(b.name));
-console.log(`Предметов: ${items.length}`);
+const byAvail = items.reduce((m, i) => ((m[i.availability] = (m[i.availability] ?? 0) + 1), m), {});
+console.log(`Предметов: ${items.length}`, byAvail);
+console.log(`Valve исправил OpenDota: ${priceConflicts.length}`);
+for (const c of priceConflicts) console.log(`  ${c}`);
 
 let odotaCommit = null;
 try {
@@ -136,10 +201,11 @@ const meta = {
   verification: 'imported-unverified',
   note: 'Данные импортированы автоматически и не сверены вручную с патч-ноутами. Для точных расчётов использовать только после проверки.',
   sources: [
-    { name: 'Valve datafeed (dota2.com)', url: VALVE, retrievedAt, covers: ['patch', 'heroes', 'abilities', 'descRu'] },
-    { name: 'OpenDota dotaconstants', url: 'https://github.com/odota/dotaconstants', license: 'MIT', commit: odotaCommit, retrievedAt, covers: ['items', 'hero roles'] },
+    { name: 'Valve datafeed (dota2.com)', url: VALVE, retrievedAt, covers: ['patch', 'heroes', 'abilities', 'descRu', 'item prices', 'item recipes', 'item availability'] },
+    { name: 'OpenDota dotaconstants', url: 'https://github.com/odota/dotaconstants', license: 'MIT', commit: odotaCommit, retrievedAt, covers: ['item attributes', 'item descriptions', 'hero roles'] },
   ],
-  counts: { heroes: heroes.length, items: items.length, abilities: heroes.reduce((n, h) => n + h.abilities.length, 0) },
+  counts: { heroes: heroes.length, items: items.length, abilities: heroes.reduce((n, h) => n + h.abilities.length, 0), itemsByAvailability: byAvail },
+  priceCorrections: priceConflicts,
 };
 
 const out = join(root, 'resources/data/kb', patch);
