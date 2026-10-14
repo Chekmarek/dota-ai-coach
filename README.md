@@ -79,7 +79,8 @@ $env:DOTACOACH_PACKAGED_EXE = "D:\DotaCoach\.tmp\portable-check\DotaCoach.exe"; 
    и `app.asar.sha256` и опубликует релиз `v0.7.1`. Коуч у всех предложит «Установить».
 
 Если версия в `package.json` не поменялась, релиз не создаётся. Ход сборки — на вкладке Actions репозитория.
-⚠ База знаний лежит рядом с `app.asar` (`resources\data`), поэтому при её обновлении (`npm run kb:import`)
-пользователям нужен новый установщик — через автообновление приходит только `app.asar`.
+База знаний (`resources/data/kb`) с 0.9.0 лежит **внутри `app.asar`**, поэтому после `npm run kb:import` достаточно
+выпустить новую версию: база придёт всем через автообновление. Копия рядом с программой (`resources\data`) остаётся
+для установщика и zip; коуч берёт более новую из двух копий (по `meta.generatedAt`).
 
 Документы: [архитектура](docs/ARCHITECTURE.md) · [ограничения](docs/LIMITATIONS.md) · [политика использования](docs/POLICY.md) · [источники данных](docs/DATA_SOURCES.md).
