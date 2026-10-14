@@ -12,8 +12,8 @@ import { sanitizeGsiBody } from '../gsi/recorder';
 
 /** Тело GSI старше этого (мс) к кадру не прикладывается: разметка была бы для другого момента */
 export const MAX_GSI_AGE_MS = 1000;
-/** Не больше стольких кадров в папке одного дня (≈ 3–4 МБ на кадр 1920×1080) */
-export const MAX_FRAMES_PER_DAY = 5000;
+/** Не больше стольких кадров в папке одного дня (≈ 3 МБ на кадр 1920×1080: 10 000 кадров ≈ 30 ГБ) */
+export const MAX_FRAMES_PER_DAY = 10000;
 
 export interface DatasetFrameMeta {
   /** Версия формата файла .json */
