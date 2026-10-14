@@ -287,6 +287,25 @@ test('Обновления и настройки: страница открыв�
   }
 });
 
+test('Режим разработчика: набор кадров виден только при DOTACOACH_DEV=1', async () => {
+  let { app, ui } = await launch(tmp(), { env: { DOTACOACH_DEV: '' } });
+  try {
+    await ui.click('[data-testid="nav-settings"]');
+    await expect(ui.locator('[data-testid="settings-open-updates"]')).toBeVisible();
+    await expect(ui.locator('[data-testid="setting-dev-dataset"]')).toHaveCount(0);
+  } finally {
+    await app.close();
+  }
+  ({ app, ui } = await launch(tmp(), { env: { DOTACOACH_DEV: '1' } }));
+  try {
+    await ui.click('[data-testid="nav-settings"]');
+    await ui.check('[data-testid="setting-dev-dataset"]');
+    await expect.poll(() => ui.evaluate(() => window.dotacoach.getSettings().then((s) => s.dev))).toEqual({ datasetRecord: true, datasetEveryN: 10 });
+  } finally {
+    await app.close();
+  }
+});
+
 test('Replay: ошибка источника показывается, приложение не падает', async () => {
   const dir = tmp();
   const bad = join(dir, 'broken.mp4');

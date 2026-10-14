@@ -1,5 +1,5 @@
 import { MessageChannelMain, type BrowserWindow } from 'electron';
-import { LIVE_IPC, type GsiBodyMessage } from '@shared/ipc';
+import { LIVE_IPC, type DatasetConfig, type GsiBodyMessage } from '@shared/ipc';
 import { createEngineWindow } from '../application/windows';
 import { onLiveEngineGone, setLiveEngine } from '../live/live';
 
@@ -13,6 +13,8 @@ export class EngineLink {
   private uiReady = false;
   private restarts = 0;
   private disposed = false;
+  /** Запись набора кадров (режим разработчика); повторно отправляется новому окну движка */
+  private datasetConfig: DatasetConfig = { everyN: 0 };
 
   constructor(private readonly ui: BrowserWindow) {
     ui.webContents.on('did-finish-load', () => {
@@ -35,6 +37,12 @@ export class EngineLink {
     this.engine.webContents.send(LIVE_IPC.gsiBody, msg);
   }
 
+  /** Запись набора кадров: everyN = 0 — выключено */
+  setDatasetConfig(cfg: DatasetConfig): void {
+    this.datasetConfig = cfg;
+    if (this.engineReady && this.engine && !this.engine.isDestroyed()) this.engine.webContents.send(LIVE_IPC.datasetConfig, cfg);
+  }
+
   dispose(): void {
     this.disposed = true;
     if (this.engine && !this.engine.isDestroyed()) this.engine.destroy();
@@ -50,6 +58,7 @@ export class EngineLink {
     win.webContents.on('did-finish-load', () => {
       this.engineReady = true;
       this.connect();
+      if (this.datasetConfig.everyN > 0) win.webContents.send(LIVE_IPC.datasetConfig, this.datasetConfig);
     });
     win.webContents.on('render-process-gone', (_e, details) => {
       console.error('[engine] процесс движка завершился:', details.reason);

@@ -60,6 +60,7 @@ export function registerIpc(deps: Deps): void {
     electron: process.versions.electron,
     chrome: process.versions.chrome,
     node: process.versions.node,
+    dev: process.env.DOTACOACH_DEV === '1',
   }));
 
   handle(IPC.replayPickFolder, async (e): Promise<ReplaySourceSpec | null> => {

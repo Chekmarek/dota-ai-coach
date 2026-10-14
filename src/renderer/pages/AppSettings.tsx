@@ -133,6 +133,15 @@ export function AppSettings({ onNavigate }: PageProps) {
         <NumberSetting label="Лимит обработки, кадров/с" hint="Сколько кадров в секунду коуч разбирает. Лишние отбрасываются" value={c.processingFpsCap} min={0.2} max={30} step={0.1} testId="setting-processingFpsCap" onSave={(n) => void update({ capture: { processingFpsCap: n } })} />
         <NumberSetting label="Максимальная ширина кадра, px" hint="Большие кадры уменьшаются до этой ширины перед разбором (распознавание HUD настроено на 1920)" value={c.maxWidth} min={320} max={3840} step={1} testId="setting-maxWidth" onSave={(n) => void update({ capture: { maxWidth: n } })} />
       </SettingsSection>
+      {info?.dev && (
+        <SettingsSection icon="🛠" title="Для разработчика: набор кадров" subtitle="Видно только при DOTACOACH_DEV=1. Кадры живого захвата + GSI наблюдателя — для проверки зрения (docs/VISION_DATASET.md).">
+          <label className="check">
+            <input type="checkbox" checked={settings.dev.datasetRecord} onChange={(e) => void update({ dev: { datasetRecord: e.target.checked } })} data-testid="setting-dev-dataset" />
+            Сохранять кадры в папку данных, vision-dataset (≈ 3–4 МБ на кадр 1920×1080; кадры могут содержать ники — не публиковать)
+          </label>
+          <NumberSetting label="Каждый N-й кадр" hint="При захвате 10 к/с и N = 10 — один кадр в секунду" value={settings.dev.datasetEveryN} min={1} max={600} step={1} testId="setting-dev-every-n" onSave={(n) => void update({ dev: { datasetEveryN: Math.round(n) } })} />
+        </SettingsSection>
+      )}
       <SettingsSection icon="ℹ" title="О программе">
         {info && (
           <>

@@ -69,6 +69,10 @@ export class Pipeline {
   private live: LiveInfo | null = null;
   private reportedLive: string | null = null;
   private reportedLiveAt = 0;
+  /** Набор кадров для проверки зрения (только режим разработчика): каждый N-й кадр живого захвата; 0 — выключено */
+  private datasetEveryN = 0;
+  private datasetBusy = false;
+  private datasetCanvas: OffscreenCanvas | null = null;
 
   /** Сейчас идёт живой захват окна Доты */
   isLive(): boolean {
@@ -102,6 +106,11 @@ export class Pipeline {
       this.lastError = { code: 'internal', message: `Ошибка данных GSI: ${(err as Error).message}`, fatal: false, at: now };
     }
     this.publishMatch(false);
+  }
+
+  /** Запись набора кадров (main решает, включена ли: только DOTACOACH_DEV=1 и настройка) */
+  setDatasetEveryN(n: number): void {
+    this.datasetEveryN = Number.isInteger(n) && n > 0 ? n : 0;
   }
 
   setSender(send: (msg: EngineToUi, transfer?: Transferable[]) => void): void {
@@ -220,6 +229,7 @@ export class Pipeline {
     this.lastFrameAt = Date.now();
     this.position = { index: f.index, total: this.source?.total ?? null, sourceTimeMs: f.sourceTimeMs };
     if (this.state === 'starting') this.setState('running');
+    if (this.datasetEveryN > 0 && this.isLive() && this.received % this.datasetEveryN === 0) this.saveDatasetFrame(f);
 
     if (!this.gate.tryAcquire(now)) {
       this.dropped++;
@@ -248,6 +258,32 @@ export class Pipeline {
       this.maybePreview(f, now);
       this.gate.done();
     }
+  }
+
+  /**
+   * Кадр полного размера → PNG → main (там он сохраняется вместе с GSI наблюдателя).
+   * Рисуем сразу (bitmap дальше закроется), кодируем асинхронно; пока предыдущий не ушёл — новый пропускаем.
+   */
+  private saveDatasetFrame(f: Frame): void {
+    const api = window.dotacoachEngine;
+    if (!api || this.datasetBusy) return;
+    this.datasetBusy = true;
+    const wallMs = Date.now();
+    this.datasetCanvas ??= new OffscreenCanvas(f.width, f.height);
+    const c = this.datasetCanvas;
+    if (c.width !== f.width || c.height !== f.height) {
+      c.width = f.width;
+      c.height = f.height;
+    }
+    c.getContext('2d')!.drawImage(f.bitmap, 0, 0);
+    void c
+      .convertToBlob({ type: 'image/png' })
+      .then((b) => b.arrayBuffer())
+      .then((png) => api.saveDatasetFrame({ png, width: f.width, height: f.height, wallMs }))
+      .catch(() => undefined)
+      .finally(() => {
+        this.datasetBusy = false;
+      });
   }
 
   private maybePreview(f: Frame, now: number): void {

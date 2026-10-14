@@ -38,6 +38,10 @@ export const LIVE_IPC = {
   gsiBody: 'engine:gsi',
   /** событие main → значок поверх игры */
   overlayState: 'overlay:state',
+  /** событие main → движок: запись набора кадров (только DOTACOACH_DEV=1) */
+  datasetConfig: 'engine:dataset-config',
+  /** движок → main: кадр для набора (PNG) */
+  datasetFrame: 'engine:dataset-frame',
 } as const;
 
 /** Имя сообщения, которым preload передаёт странице MessagePort к движку */
@@ -51,6 +55,8 @@ export interface AppInfo {
   electron: string;
   chrome: string;
   node: string;
+  /** Режим разработчика (DOTACOACH_DEV=1): видны настройки набора кадров */
+  dev: boolean;
 }
 
 export type UpdateStatus = 'idle' | 'checking' | 'up-to-date' | 'available' | 'downloading' | 'installing' | 'error';
@@ -154,4 +160,22 @@ export interface DotaCoachEngineApi {
   reportLive(status: LiveStatusReport): void;
   /** Подписка на тела GSI от main */
   onGsi(fn: (msg: GsiBodyMessage) => void): void;
+  /** Подписка на настройку записи набора кадров (everyN = 0 — выключено) */
+  onDatasetConfig(fn: (cfg: DatasetConfig) => void): void;
+  /** Кадр для набора: main сохраняет его вместе с последним телом GSI наблюдателя */
+  saveDatasetFrame(frame: DatasetFrameMessage): void;
+}
+
+/** Запись набора кадров для проверки зрения (docs/VISION_DATASET.md) */
+export interface DatasetConfig {
+  /** Каждый N-й кадр живого захвата; 0 — запись выключена */
+  everyN: number;
+}
+
+export interface DatasetFrameMessage {
+  png: ArrayBuffer;
+  width: number;
+  height: number;
+  /** Время кадра, мс Unix (часы движка) */
+  wallMs: number;
 }

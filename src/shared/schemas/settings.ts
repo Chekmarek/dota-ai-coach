@@ -20,6 +20,8 @@ const DEFAULTS = {
   hints: { enabled: true, ranked: true },
   // Valve Game State Integration: локальный приёмник на 127.0.0.1 (этап 2 GSI)
   gsi: { port: GSI_DEFAULT_PORT, token: '', record: true, dotaDir: null as string | null },
+  // Только для разработчика (DOTACOACH_DEV=1): набор кадров для проверки зрения (docs/VISION_DATASET.md)
+  dev: { datasetRecord: false, datasetEveryN: 10 },
 };
 
 export type OverlayCorner = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
@@ -75,6 +77,12 @@ const fields = {
     /** Папка «dota 2 beta», если коуч не нашёл её сам; null — искать через Steam */
     dotaDir: z.string().min(3).max(1000).nullable(),
   },
+  dev: {
+    /** Сохранять кадры живого захвата + GSI наблюдателя в <папка данных>/vision-dataset. Работает только при DOTACOACH_DEV=1 */
+    datasetRecord: z.boolean(),
+    /** Сохранять каждый N-й кадр живого захвата */
+    datasetEveryN: z.number().int().min(1).max(600),
+  },
 };
 
 type Sections = typeof fields;
@@ -97,6 +105,7 @@ export const settingsSchema = z.object({
   live: tolerant('live'),
   hints: tolerant('hints'),
   gsi: tolerant('gsi'),
+  dev: tolerant('dev'),
 });
 
 export type Settings = z.infer<typeof settingsSchema>;
@@ -116,6 +125,7 @@ export const settingsPatchSchema = z
     hints: z.object(fields.hints).partial().strict().optional(),
     // token — только main-процесс (SettingsStore.setGsiToken), dotaDir — через диалог выбора папки
     gsi: z.object({ port: fields.gsi.port, record: fields.gsi.record }).partial().strict().optional(),
+    dev: z.object(fields.dev).partial().strict().optional(),
   })
   .strict();
 
@@ -131,6 +141,7 @@ export function applySettingsPatch(current: Settings, patch: SettingsPatch): Set
     live: { ...current.live, ...patch.live },
     hints: { ...current.hints, ...patch.hints },
     gsi: { ...current.gsi, ...patch.gsi },
+    dev: { ...current.dev, ...patch.dev },
   });
 }
 

@@ -7,6 +7,8 @@ const ENGINE_PORT_MESSAGE: typeof import('@shared/ipc').ENGINE_PORT_MESSAGE = 'd
 const FIND_DOTA: (typeof import('@shared/ipc').LIVE_IPC)['findDota'] = 'engine:find-dota';
 const LIVE_STATUS: (typeof import('@shared/ipc').LIVE_IPC)['liveStatus'] = 'engine:live-status';
 const GSI_BODY: (typeof import('@shared/ipc').LIVE_IPC)['gsiBody'] = 'engine:gsi';
+const DATASET_CONFIG: (typeof import('@shared/ipc').LIVE_IPC)['datasetConfig'] = 'engine:dataset-config';
+const DATASET_FRAME: (typeof import('@shared/ipc').LIVE_IPC)['datasetFrame'] = 'engine:dataset-frame';
 
 ipcRenderer.on('engine:port', (event) => {
   window.postMessage(ENGINE_PORT_MESSAGE, '*', event.ports);
@@ -20,5 +22,10 @@ const api: DotaCoachEngineApi = {
   onGsi: (fn) => {
     ipcRenderer.on(GSI_BODY, (_e, msg) => fn(msg));
   },
+  // Набор кадров для проверки зрения — только в режиме разработчика (main сам решает, включено ли)
+  onDatasetConfig: (fn) => {
+    ipcRenderer.on(DATASET_CONFIG, (_e, cfg) => fn(cfg));
+  },
+  saveDatasetFrame: (frame) => ipcRenderer.send(DATASET_FRAME, frame),
 };
 contextBridge.exposeInMainWorld('dotacoachEngine', api);

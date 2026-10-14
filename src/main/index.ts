@@ -11,6 +11,7 @@ import { handleMediaProtocol, registerMediaScheme } from './media/media-protocol
 import { onLiveSettingsChanged, setupLive } from './live/live';
 import { setupUpdater } from './live/updater';
 import { setupGsi } from './gsi';
+import { setupDevDataset } from './dev';
 
 // Данные (настройки, кэш Chromium) — в одной папке: для портативной версии это ./data рядом с exe
 const { dataDir, distribution } = resolveDataDir();
@@ -46,8 +47,19 @@ if (!app.requestSingleInstanceLock()) {
     const isTrustedSender = (e: Electron.IpcMainInvokeEvent) => !!ui && !ui.isDestroyed() && e.sender.id === ui.webContents.id;
 
     ui = createUiWindow();
+    // Режим разработчика (DOTACOACH_DEV=1): набор кадров + GSI наблюдателя для проверки зрения
+    const dataset = setupDevDataset(dataDir, () => settings.get());
     // Данные из игры (Valve GSI): приёмник на 127.0.0.1, тела — в движок
-    const gsi = setupGsi({ settings, dataDir, getUi: () => ui, isTrustedSender, forward: (body, wallMs) => engine?.sendGsi(body, wallMs) });
+    const gsi = setupGsi({
+      settings,
+      dataDir,
+      getUi: () => ui,
+      isTrustedSender,
+      forward: (body, wallMs) => {
+        dataset.noteGsi(body, wallMs);
+        engine?.sendGsi(body, wallMs);
+      },
+    });
     registerIpc({
       settings,
       kb: new KbStore(),
@@ -57,6 +69,7 @@ if (!app.requestSingleInstanceLock()) {
       onSettingsChanged: (next) => {
         onLiveSettingsChanged();
         gsi.onSettingsChanged(next);
+        engine?.setDatasetConfig(dataset.config(next));
       },
     });
     // Живой захват окна Dota 2 (только наблюдение) и проверка обновлений
@@ -65,6 +78,7 @@ if (!app.requestSingleInstanceLock()) {
     setupUpdater({ getUi: () => ui, isTrustedSender, repo: process.env.DOTACOACH_NO_UPDATE_CHECK ? null : readUpdateRepo() });
 
     engine = new EngineLink(ui);
+    engine.setDatasetConfig(dataset.config(settings.get()));
     engine.start();
 
     ui.on('closed', () => {
