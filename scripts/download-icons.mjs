@@ -15,15 +15,17 @@ const out = join(ROOT, '.cache/icons', patch);
 const heroes = kb('heroes.json');
 const items = kb('items.json');
 const jobs = [];
-const add = (kind, key) => jobs.push({ kind, key, url: `${CDN}/${kind}/${key}.png`, file: join(out, kind, `${key}.png`) });
+const add = (kind, key, path = `${kind}/${key}`) => jobs.push({ kind, key, url: `${CDN}/${path}.png`, file: join(out, kind, `${key}.png`) });
 for (const it of items) add('items', it.key.replace(/^item_/, ''));
 for (const h of heroes) {
   add('heroes', h.key.replace(/^npc_dota_hero_/, ''));
+  // Маленький значок 32×32 — портрет на верхней панели матча (этап 1 зрения)
+  add('hero-icons', h.key.replace(/^npc_dota_hero_/, ''), `heroes/icons/${h.key.replace(/^npc_dota_hero_/, '')}`);
   for (const a of h.abilities ?? []) add('abilities', a.key);
 }
 // Дубликаты ключей (общие способности) скачиваем один раз
 const unique = [...new Map(jobs.map((j) => [j.file, j])).values()];
-for (const kind of ['items', 'abilities', 'heroes']) mkdirSync(join(out, kind), { recursive: true });
+for (const kind of ['items', 'abilities', 'heroes', 'hero-icons']) mkdirSync(join(out, kind), { recursive: true });
 
 const failed = [];
 let done = 0, skipped = 0, bytes = 0;
