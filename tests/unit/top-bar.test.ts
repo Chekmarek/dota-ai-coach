@@ -32,7 +32,7 @@ describe('верхняя панель: герои, смерть, таймер', 
     expect(r.slots.filter((s) => s.slot !== 8).every((s) => s.alive === true && s.respawnSec === null)).toBe(true);
   });
 
-  it('все живы; другой облик героя узнаётся по варианту из набора', () => {
+  it('все живы; другой облик героя (Nevermore) узнаётся по облику из файлов игры', () => {
     const r = readTopBar(frameWithStrip('all-alive.png'), layout, portraits, model);
     expect(r.slots.map((s) => s.heroKey)).toEqual(['mirana', 'necrolyte', 'dark_willow', 'nevermore', 'sven', 'winter_wyvern', 'hoodwink', 'lycan', 'ember_spirit', 'muerta']);
     expect(r.slots.every((s) => s.alive === true && s.respawnSec === null)).toBe(true);
@@ -57,9 +57,11 @@ describe('верхняя панель: герои, смерть, таймер', 
     expect(r).toMatchObject({ supported: false, slots: [] });
   });
 
-  it('шаблоны: 127 героев Valve + варианты облика из набора, без картинок', () => {
+  it('шаблоны: 127 героев и их облики из файлов игры, без картинок', () => {
     expect(portraits.heroes.filter((h) => !h.variant)).toHaveLength(127);
-    expect(portraits.heroes.filter((h) => h.variant).every((h) => h.variant!.startsWith('dataset:'))).toBe(true);
+    // Облики (арканы, персоны) — из файлов игры, не выучены с кадров набора: проверка на наборе честная
+    expect(portraits.heroes.filter((h) => h.variant).every((h) => h.variant!.startsWith('game:'))).toBe(true);
+    expect(portraits.heroes.some((h) => h.key === 'nevermore' && h.variant)).toBe(true);
     expect(portraits.grid).toEqual([14, 5]);
   });
 });
