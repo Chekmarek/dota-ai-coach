@@ -15,5 +15,6 @@
     "level": { "rect": [458, 1038, 36, 36], "mode": "luma", "circleMask": true, "anchor": "barLeft", "label": "Уровень" },
     "kda": { "rect": [76, 62, 96, 18], "mode": "white", "label": "Убийства / смерти / помощь" },
     "farm": { "rect": [76, 80, 96, 18], "mode": "white", "label": "Добивания / невсе" }
-  }
+  },
+  "topBar": { "radiantX": 545, "direX": 1063, "step": 62, "y": 4, "w": 62, "h": 35, "roi": [3, 2, 56, 20], "timer": [10, 46, 42, 15] }
 }

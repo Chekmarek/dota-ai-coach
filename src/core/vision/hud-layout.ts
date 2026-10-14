@@ -23,6 +23,24 @@ export interface HudLayout {
   /** Эталонные положения опор в координатах reference */
   anchors?: { barLeft?: number };
   regions: Record<string, HudRegionDef>;
+  /** Верхняя панель с портретами героев (src/core/vision/top-bar.ts); нет — читатель честно «не поддерживается» */
+  topBar?: TopBarLayout;
+}
+
+/** Координаты в эталонном разрешении (reference) */
+export interface TopBarLayout {
+  /** Левый край первого портрета Сил Света и Сил Тьмы, шаг между портретами */
+  radiantX: number;
+  direX: number;
+  step: number;
+  /** Верх и размер портрета */
+  y: number;
+  w: number;
+  h: number;
+  /** Часть портрета для сравнения с шаблоном (x, y, w, h от левого верхнего угла портрета): без значков внизу */
+  roi: [number, number, number, number];
+  /** Таймер возрождения под портретом: x от левого края портрета, y от верха кадра, w, h */
+  timer: [number, number, number, number];
 }
 
 /** Подходит ли раскладка к кадру. Другое соотношение сторон — HUD расположен иначе, гадать не будем. */

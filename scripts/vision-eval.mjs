@@ -9,6 +9,7 @@ import { join, relative } from 'node:path';
 import { decodePng } from './png.mjs';
 import { frameAccessFromImage } from '../src/core/vision/image.ts';
 import { recognizeHud } from '../src/core/vision/recognize-hud.ts';
+import { readTopBar } from '../src/core/vision/top-bar.ts';
 
 const root = join(import.meta.dirname, '..');
 const data = (f) => JSON.parse(readFileSync(join(root, 'src/data', f), 'utf8'));
@@ -41,6 +42,9 @@ const hudCtx = {
     itemTemplates: data('item-templates.json'),
   },
 };
+// --portraits <файл> — другие шаблоны портретов (проверка вариантов на отложенном матче)
+const portraitsArg = args.indexOf('--portraits');
+const portraits = portraitsArg >= 0 ? JSON.parse(readFileSync(args[portraitsArg + 1], 'utf8')) : data('hero-portraits.json');
 const ok = (o) => o && o.validity === 'valid' && o.value !== null;
 
 /**
@@ -49,7 +53,10 @@ const ok = (o) => o && o.validity === 'valid' && o.value !== null;
  *   truth(meta)    → правильное значение из разметки или undefined (разметки нет)
  *   correct(v, t)  → совпадает ли
  *   identity       → поле — «кто это» (для счёта подмен между соседними кадрами)
+ *   multi          → read и truth возвращают массивы (по ячейкам), считается каждый элемент
  */
+/** Правда по ячейке верхней панели: герой из GSI наблюдателя с тем же номером игрока */
+const heroBySlot = (m, slot) => m.spectator?.heroes?.find((h) => h.slot === slot);
 const READERS = [
   {
     id: 'hud',
@@ -96,10 +103,44 @@ const READERS = [
       },
     ],
   },
-  // Этап 1: верхняя панель (src/core/vision/top-bar.ts), этап 2: мини-карта (minimap.ts),
-  // этап 3: полоски здоровья (health-bars.ts) — пока не написаны.
+  {
+    id: 'topbar',
+    nameRu: 'Верхняя панель (этап 1): по 10 ячеек на кадр',
+    run: (frame) => readTopBar(frame, hudCtx.layout, portraits, hudCtx.model),
+    ms: (r) => r.durationMs,
+    fields: [
+      {
+        id: 'hero',
+        nameRu: 'Герой в ячейке',
+        multi: true,
+        identity: true,
+        read: (r) => r.slots.map((s) => s.heroKey),
+        truth: (m) => (m.spectator ? Array.from({ length: 10 }, (_, i) => heroBySlot(m, i)?.heroKey ?? undefined) : undefined),
+        correct: (v, t) => v === t,
+      },
+      {
+        id: 'alive',
+        nameRu: 'Жив / мёртв',
+        multi: true,
+        read: (r) => r.slots.map((s) => s.alive),
+        truth: (m) => (m.spectator ? Array.from({ length: 10 }, (_, i) => (typeof heroBySlot(m, i)?.alive === 'boolean' ? heroBySlot(m, i).alive : undefined)) : undefined),
+        correct: (v, t) => v === t,
+      },
+      {
+        id: 'respawn',
+        // Экран округляет секунды вверх, GSI — вниз: на кадре таймер на 1 с больше (проверено по часам того же кадра)
+        nameRu: 'Таймер возрождения ±1 с (мёртвые)',
+        multi: true,
+        read: (r) => r.slots.map((s) => s.respawnSec),
+        // Только мёртвые с таймером: у живых правды нет
+        truth: (m) => (m.spectator ? Array.from({ length: 10 }, (_, i) => { const h = heroBySlot(m, i); return h && h.alive === false && h.respawnSec > 0 ? h.respawnSec + 1 : undefined; }) : undefined),
+        correct: (v, t) => Math.abs(v - t) <= 1,
+      },
+    ],
+  },
+  // Этап 2: мини-карта (minimap.ts), этап 3: полоски здоровья (health-bars.ts) — пока не написаны.
 ];
-const PENDING = ['верхняя панель (этап 1)', 'мини-карта (этап 2)', 'полоски здоровья (этап 3)'];
+const PENDING = ['мини-карта (этап 2)', 'полоски здоровья (этап 3)'];
 
 /** Уменьшение по площади (усреднение пикселей) — близко к createImageBitmap(resizeQuality: medium/high) */
 function downscale(img, w) {
@@ -193,23 +234,31 @@ for (const file of frames) {
     for (const f of reader.fields) {
       const key = `${reader.id}.${f.id}`;
       const s = st(key);
-      const v = f.read(r);
-      s.total++;
-      if (v !== null) s.readAny++;
-      const truth = meta ? f.truth(meta) : undefined;
-      if (truth !== undefined) {
-        s.withTruth++;
-        if (v !== null) {
-          s.read++;
-          if (f.correct(v, truth)) s.correct++;
+      const vs = f.multi ? f.read(r) : [f.read(r)];
+      const ts = meta ? (f.multi ? f.truth(meta) ?? [] : [f.truth(meta)]) : [];
+      const cells = [];
+      vs.forEach((v, k) => {
+        s.total++;
+        if (v !== null) s.readAny++;
+        const truth = ts[k];
+        if (truth !== undefined) {
+          s.withTruth++;
+          if (v !== null) {
+            s.read++;
+            if (f.correct(v, truth)) s.correct++;
+            else if (perFrame) cells.push(`✗${k}:${v}≠${truth}`);
+          }
         }
-      }
-      if (f.identity && v !== null) {
-        const prev = lastIdentity.get(key);
-        if (prev !== undefined && prev !== v) swaps.set(key, (swaps.get(key) ?? 0) + 1);
-        lastIdentity.set(key, v);
-      }
-      row.push(`${f.id}=${v === null ? '—' : v}${truth !== undefined ? `(${truth})` : ''}`);
+        if (f.identity && v !== null) {
+          // Подмена — только внутри одного матча: в новом матче в ячейке законно другой герой
+          const ik = `${key}#${meta?.body?.map?.matchid ?? ''}#${k}`;
+          const prev = lastIdentity.get(ik);
+          if (prev !== undefined && prev !== v) swaps.set(key, (swaps.get(key) ?? 0) + 1);
+          lastIdentity.set(ik, v);
+        }
+      });
+      if (f.multi) row.push(`${f.id}: ${cells.join(' ') || 'ok'}`);
+      else row.push(`${f.id}=${vs[0] === null ? '—' : vs[0]}${ts[0] !== undefined ? `(${ts[0]})` : ''}`);
     }
     row.push(`${t.toFixed(1)}мс`);
   }

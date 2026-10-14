@@ -19,7 +19,7 @@ const add = (kind, key, path = `${kind}/${key}`) => jobs.push({ kind, key, url: 
 for (const it of items) add('items', it.key.replace(/^item_/, ''));
 for (const h of heroes) {
   add('heroes', h.key.replace(/^npc_dota_hero_/, ''));
-  // Маленький значок 32×32 — портрет на верхней панели матча (этап 1 зрения)
+  // Маленький значок 32×32 — иконка героя на мини-карте (этап 2 зрения); портрет верхней панели — heroes/<ключ>.png
   add('hero-icons', h.key.replace(/^npc_dota_hero_/, ''), `heroes/icons/${h.key.replace(/^npc_dota_hero_/, '')}`);
   for (const a of h.abilities ?? []) add('abilities', a.key);
 }
