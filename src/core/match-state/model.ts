@@ -9,6 +9,7 @@ import type { Observed } from '../../shared/types/observation.ts';
 import { ClockTracker } from './clock.ts';
 import { StableField, VISIBLE_MS, unknownTracked, type FieldChange } from './stable-field.ts';
 import { SourceEventGate } from './source-events.ts';
+import { PlayersTrack } from './players.ts';
 import type {
   AbilityState,
   DayNight,
@@ -128,6 +129,8 @@ export class MatchStateModel {
   private scoreDire = new StableField<number>({ equals: same, decreases: lessNum });
   private dayNight = new StableField<DayNight>({ equals: same });
   private hero = new HeroTrack();
+  /** Союзники и враги по верхней панели */
+  private players = new PlayersTrack();
   private events: MatchEvent[] = [];
   private seq = 0;
   /** Какое значение каждого поля последним подтвердил каждый источник — события только по своим изменениям */
@@ -190,6 +193,9 @@ export class MatchStateModel {
     // 4. Нижняя панель — только если на ней герой игрока (после GSI герой известен сразу, чужая панель отсекается)
     this.trackIdentity(reading, wallMs);
     if (this.isPlayerReading(reading, wallMs)) this.ingestHero(reading, wallMs);
+
+    // 5. Верхняя панель: герои обеих команд, смерть и возрождение (время возрождения — от часов матча)
+    if (reading.topBar) this.players.ingest(reading.topBar, this.clock.at(wallMs), wallMs);
   }
 
   /**
@@ -210,6 +216,8 @@ export class MatchStateModel {
       this.emit('match-reset', wallMs, { reason: 'gsi-hero', from: g.heroId, to: reading.hero.id });
     }
     if (reading.hero.id !== null) g.heroId = reading.hero.id;
+    // Своя команда — для союзников и врагов на верхней панели (после возможного сброса матча)
+    this.players.setOurTeam(reading.team);
     const sync = !this.gsiLive(wallMs);
     // Первое чтение после тишины GSI — сверка: прежние значения GSI больше не «свои» для событий
     if (sync) this.gate.forget('gsi');
@@ -398,6 +406,7 @@ export class MatchStateModel {
         ...(extraItems.length > 0 ? { extraItems } : {}),
       },
       events: [...this.events],
+      ...this.players.snapshot(wallMs),
     };
   }
 
@@ -413,6 +422,7 @@ export class MatchStateModel {
     this.scoreDire = new StableField<number>({ equals: same, decreases: lessNum });
     this.dayNight = new StableField<DayNight>({ equals: same });
     this.hero = new HeroTrack();
+    this.players = new PlayersTrack();
     this.events = [];
     this.gate.reset();
   }

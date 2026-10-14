@@ -1,3 +1,4 @@
+import type { TopBarReading } from './top-bar.ts';
 import type { Observed } from '../../shared/types/observation.ts';
 import { readText, type GlyphModel } from '../ocr/glyph-ocr.ts';
 import type { FrameAccess } from './image.ts';
@@ -34,6 +35,8 @@ export interface HudReading {
   items: ItemSlot[] | null;
   /** Лучшие кандидаты на имя — для диагностики */
   heroNameCandidates: { name: string; cost: number }[];
+  /** Верхняя панель (src/core/vision/top-bar.ts): добавляет движок; нет поля — не читалась */
+  topBar?: TopBarReading;
   durationMs: number;
 }
 

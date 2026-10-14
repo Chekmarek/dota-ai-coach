@@ -3,6 +3,7 @@ import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { frameAccessFromImage, type FrameAccess } from '../../src/core/vision/image.ts';
 import { recognizeHud } from '../../src/core/vision/recognize-hud.ts';
+import { readTopBar } from '../../src/core/vision/top-bar.ts';
 
 /**
  * Бюджет зрения о союзниках и врагах: все новые читатели вместе — не больше 15 мс на кадр 1920×1080
@@ -13,6 +14,8 @@ const NEW_VISION_BUDGET_MS = 15;
 
 const ROOT = join(import.meta.dirname, '../..');
 const data = (f: string) => JSON.parse(readFileSync(join(ROOT, 'src/data', f), 'utf8'));
+const PORTRAITS = data('hero-portraits.json');
+const GLYPHS = data('hud-layouts/glyphs-default.json');
 
 function noiseFrame(w: number, h: number): FrameAccess {
   const px = new Uint8ClampedArray(w * h * 4);
@@ -24,8 +27,10 @@ function noiseFrame(w: number, h: number): FrameAccess {
   return frameAccessFromImage({ width: w, height: h, data: px });
 }
 
-/** Новые читатели этапов 1–3 (пока нет ни одного) */
-const NEW_READERS: { id: string; run: (f: FrameAccess) => unknown }[] = [];
+/** Новые читатели этапов 1–3 */
+const NEW_READERS: { id: string; run: (f: FrameAccess) => unknown }[] = [
+  { id: 'верхняя панель', run: (f) => readTopBar(f, data('hud-layouts/dota2-default-16x9.json'), PORTRAITS, GLYPHS) },
+];
 
 function median(fn: () => void, runs = 15): number {
   fn(); // прогрев

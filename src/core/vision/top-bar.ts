@@ -4,7 +4,8 @@
 // Положения — в раскладке HUD (topBar), размечены по набору кадров наблюдателя 2026-10-14 (1920×1080, 16:9).
 // Чистое ядро: без Electron, DOM, сети и файлов.
 import type { GlyphModel } from '../ocr/glyph-ocr.ts';
-import { readText } from '../ocr/glyph-ocr.ts';
+import { classify } from '../ocr/glyph-ocr.ts';
+import { segment } from './segment.ts';
 import type { HudLayout, TopBarLayout } from './hud-layout.ts';
 import { layoutFits } from './hud-layout.ts';
 import type { FrameAccess, RgbaImage } from './image.ts';
@@ -212,11 +213,17 @@ export function readTopBar(frame: FrameAccess, layout: HudLayout, templates: Por
     let respawnSec: number | null = null;
     let respawnConfidence = 0;
     const [tx, ty, tw, th] = tb.timer;
-    const r = readText(model, cropStrip(strip, cx + Math.round(tx * sx), Math.round(ty * sy), Math.round(tw * sx), Math.round(th * sy)), { mode: 'white' });
-    const n = /^\d{1,3}$/.test(r.text) ? Number(r.text) : NaN;
-    if (r.hasText && !r.truncated && n >= 1 && n <= 200 && r.confidence >= MIN_RESPAWN_CONFIDENCE) {
-      respawnSec = n;
-      respawnConfidence = r.confidence;
+    const seg = segment(cropStrip(strip, cx + Math.round(tx * sx), Math.round(ty * sy), Math.round(tw * sx), Math.round(th * sy)), { mode: 'white' });
+    // Таймер — 1–3 цифры; больше пятен — не таймер (и не тратим время на сравнение каждого с образцами)
+    if (seg.hasText && !seg.truncated && seg.glyphs.length <= 3) {
+      const glyphs = seg.glyphs.map((g) => classify(model, g));
+      const text = glyphs.map((g) => g.ch).join('');
+      const confidence = Math.min(...glyphs.map((g) => g.score));
+      const n = /^\d{1,3}$/.test(text) ? Number(text) : NaN;
+      if (n >= 1 && n <= 200 && confidence >= MIN_RESPAWN_CONFIDENCE) {
+        respawnSec = n;
+        respawnConfidence = confidence;
+      }
     }
     const grey = ratio < DEAD_SATURATION_RATIO;
     // Мёртв, если портрет серый или под ним таймер возрождения

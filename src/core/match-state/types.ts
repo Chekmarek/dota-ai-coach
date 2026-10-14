@@ -3,6 +3,7 @@ import type { DayNight } from '../vision/day-night.ts';
 import type { HeroIdentity } from '../vision/hero-name.ts';
 import type { Farm, Kda, Pool } from '../vision/hud-fields.ts';
 import type { AbilityState } from '../vision/abilities.ts';
+import type { PlayersSnapshot } from './players.ts';
 
 export type { DayNight, HeroIdentity, Farm, Kda, Pool, AbilityState };
 
@@ -103,4 +104,11 @@ export interface MatchState {
   };
   /** Последние события (не больше EVENT_LIMIT), от старых к новым */
   events: MatchEvent[];
+  /** Своя команда (из GSI игрока); null — неизвестна */
+  ourTeam: PlayersSnapshot['ourTeam'];
+  /** Все 10 героев с верхней панели (пусто, пока панель не читалась) */
+  players: PlayersSnapshot['players'];
+  /** Союзники и враги — только когда своя команда известна */
+  allies: PlayersSnapshot['allies'];
+  enemies: PlayersSnapshot['enemies'];
 }

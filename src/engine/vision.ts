@@ -13,6 +13,8 @@ import type { ItemTemplates } from '@core/vision/items.ts';
 import heroNamesJson from '../data/hero-names.json';
 import type { HeroNameEntry } from '@core/vision/hero-name.ts';
 import { DAY_NIGHT_RECT } from '@core/vision/day-night.ts';
+import { readTopBar, type PortraitTemplates } from '@core/vision/top-bar.ts';
+import portraitsJson from '../data/hero-portraits.json';
 
 const layout = layoutJson as unknown as HudLayout;
 const model = modelJson as unknown as GlyphModel;
@@ -20,6 +22,7 @@ const nameModel = nameModelJson as unknown as GlyphModel;
 const cooldownModel = cooldownModelJson as unknown as GlyphModel;
 const itemTemplates = itemTemplatesJson as unknown as ItemTemplates;
 const heroNames = heroNamesJson.names as HeroNameEntry[];
+const portraits = portraitsJson as unknown as PortraitTemplates;
 
 /** Полоса с именем героя над портретом: её положение зависит от ширины панели, берём с запасом (при 1920×1080) */
 const NAME_BAND = { x: 340, y: 912, w: 480, h: 26 };
@@ -51,7 +54,12 @@ export class VisionStage {
         return this.copy(bitmap, r); // область вне полос — отдельная копия
       },
     };
-    return recognizeHud(access, layout, model, observedAt, { heroName: { model: nameModel, names: heroNames }, cooldownModel, itemTemplates });
+    const hud = recognizeHud(access, layout, model, observedAt, { heroName: { model: nameModel, names: heroNames }, cooldownModel, itemTemplates });
+    // Верхняя панель (этап 1): герои обеих команд, смерть и таймер возрождения; время — в общем durationMs
+    const t0 = performance.now();
+    hud.topBar = readTopBar(access, layout, portraits, model);
+    hud.durationMs += performance.now() - t0;
+    return hud;
   }
 
   private bandsCache: { key: string; bands: Rect[] } | null = null;
@@ -67,6 +75,8 @@ export class VisionStage {
       { x: Math.round(NAME_BAND.x * s), y: Math.round(NAME_BAND.y * sy), w: Math.round(NAME_BAND.w * s), h: Math.round(NAME_BAND.h * sy) },
       // значок дня/ночи над часами — в верхнюю полосу (ячейки способностей и так внутри нижней)
       { x: Math.round(DAY_NIGHT_RECT.x * s), y: Math.round(DAY_NIGHT_RECT.y * sy), w: Math.round(DAY_NIGHT_RECT.w * s), h: Math.round(DAY_NIGHT_RECT.h * sy) },
+      // верхняя панель с портретами — тоже в верхнюю полосу (иначе отдельная копия на каждый кадр)
+      ...(layout.topBar ? [topBarRect(layout.topBar, s, sy)] : []),
     ];
     const bands = [rects.filter((r) => r.y < h / 2), rects.filter((r) => r.y >= h / 2)]
       .filter((g) => g.length)
@@ -93,6 +103,12 @@ export class VisionStage {
     const d = this.ctx.getImageData(0, 0, w, h);
     return { width: d.width, height: d.height, data: d.data };
   }
+}
+
+/** Вся верхняя панель: от первого портрета Сил Света до последнего Сил Тьмы, сверху до низа таймера */
+function topBarRect(tb: NonNullable<HudLayout['topBar']>, s: number, sy: number): Rect {
+  const x0 = Math.round(tb.radiantX * s);
+  return { x: x0, y: 0, w: Math.round((tb.direX + 4 * tb.step + tb.w) * s) - x0, h: Math.round((tb.timer[1] + tb.timer[3]) * sy) };
 }
 
 function contains(outer: Rect, r: Rect): boolean {
