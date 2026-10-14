@@ -196,6 +196,8 @@ export class MatchStateModel {
 
     // 5. Верхняя панель: герои обеих команд, смерть и возрождение (время возрождения — от часов матча)
     if (reading.topBar) this.players.ingest(reading.topBar, this.clock.at(wallMs), wallMs);
+    // 6. Мини-карта: где герои и кто пропал
+    if (reading.minimap) this.players.ingestMinimap(reading.minimap, wallMs);
   }
 
   /**

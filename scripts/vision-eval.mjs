@@ -10,6 +10,7 @@ import { decodePng } from './png.mjs';
 import { frameAccessFromImage } from '../src/core/vision/image.ts';
 import { recognizeHud } from '../src/core/vision/recognize-hud.ts';
 import { readTopBar } from '../src/core/vision/top-bar.ts';
+import { decodeMinimapBackground, readMinimap } from '../src/core/vision/minimap.ts';
 
 const root = join(import.meta.dirname, '..');
 const data = (f) => JSON.parse(readFileSync(join(root, 'src/data', f), 'utf8'));
@@ -140,7 +141,29 @@ const READERS = [
   },
   // Этап 2: мини-карта (minimap.ts), этап 3: полоски здоровья (health-bars.ts) — пока не написаны.
 ];
-const PENDING = ['мини-карта (этап 2)', 'полоски здоровья (этап 3)'];
+const PENDING = ['полоски здоровья (этап 3)'];
+
+// --- Мини-карта (этап 2): своя оценка — «виден ли значок» проверяется по пикселям кадра у позиции GSI ---
+const mmLayout = hudCtx.layout.minimap;
+const mmCal = mmLayout ? { ...mmLayout.default, source: 'layout' } : null;
+const mmBg = decodeMinimapBackground(data('minimap-background.json'));
+/** Пикселей цвета игрока в радиусе 7 px у позиции GSI: значок нарисован (не в тумане и не закрыт другими) */
+function markerPixels(frame, slot, wx, wy) {
+  const px = Math.round((mmCal.ax * wx + mmCal.bx) * frame.width), py = Math.round((mmCal.ay * wy + mmCal.by) * frame.height);
+  const img = frame.read({ x: px - 7, y: py - 7, w: 15, h: 15 });
+  const c = mmLayout.colors[slot], tol = mmLayout.colorToleranceBySlot?.[String(slot)] ?? mmLayout.colorTolerance;
+  let n = 0;
+  for (let y = 0; y < 15; y++)
+    for (let x = 0; x < 15; x++) {
+      if ((x - 7) ** 2 + (y - 7) ** 2 > 49) continue;
+      const k = (y * 15 + x) * 4;
+      if (Math.abs(img.data[k] - c[0]) + Math.abs(img.data[k + 1] - c[1]) + Math.abs(img.data[k + 2] - c[2]) < tol) n++;
+    }
+  return n;
+}
+const mmStat = { frames: 0, ms: [], vis15: 0, found15: 0, vis50: 0, found50: 0, pos: 0, posOk: 0, false: 0, swaps: 0, ambiguous: 0, ambiguousOff: 0 };
+/** Последняя подмена по ячейке (матч#ячейка → время кадра), чтобы считать подмены в окне 10 с */
+const mmLastSwap = new Map();
 
 /** Уменьшение по площади (усреднение пикселей) — близко к createImageBitmap(resizeQuality: medium/high) */
 function downscale(img, w) {
@@ -218,6 +241,45 @@ for (const file of frames) {
     continue;
   }
   const row = [relative(dir, file)];
+  if (mmLayout && meta?.spectator) {
+    try {
+      const r = readMinimap(frame, mmLayout, mmCal, { background: mmBg });
+      mmStat.frames++;
+      mmStat.ms.push(r.durationMs);
+      const det = new Map(r.heroes.map((h) => [h.slot, h]));
+      for (const h of meta.spectator.heroes) {
+        const d = det.get(h.slot);
+        if (!h.alive || typeof h.xpos !== 'number') {
+          if (d) mmStat.false++;
+          continue;
+        }
+        if (d) {
+          const e = Math.hypot(d.x - h.xpos, d.y - h.ypos);
+          mmStat.pos++;
+          if (e <= 400) mmStat.posOk++;
+          // Подмена: значок стоит на месте другого живого героя (≤400), а от своего далеко (>1200)
+          const other = meta.spectator.heroes.some((o) => o.slot !== h.slot && o.alive && typeof o.xpos === 'number' && Math.hypot(d.x - o.xpos, d.y - o.ypos) <= 400);
+          if (d.ambiguous) {
+            // Несколько значков цвета игрока (иллюзии, клоны): коуч не утверждает, где герой — считаем отдельно
+            mmStat.ambiguous++;
+            if (e > 1200) mmStat.ambiguousOff++;
+          } else if (e > 1200 && other) {
+            const key = `${meta.body?.map?.matchid}#${h.slot}`;
+            const prev = mmLastSwap.get(key);
+            if (prev === undefined || meta.wallMs - prev > 10_000) mmStat.swaps++;
+            mmLastSwap.set(key, meta.wallMs);
+          } else if (e > 1500) mmStat.false++;
+        }
+        const n = markerPixels(frame, h.slot, h.xpos, h.ypos);
+        const ok = d && Math.hypot(d.x - h.xpos, d.y - h.ypos) <= 1500;
+        if (n >= 15) (mmStat.vis15++, ok && mmStat.found15++);
+        if (n >= 50) (mmStat.vis50++, ok && mmStat.found50++);
+      }
+    } catch (err) {
+      crashes++;
+      if (crashSamples.length < 5) crashSamples.push(`${relative(dir, file)}: minimap: ${err.message}`);
+    }
+  }
   for (const reader of READERS) {
     let r;
     try {
@@ -284,6 +346,16 @@ for (const reader of READERS) {
         (f.identity ? `   смен между соседними кадрами: ${swaps.get(`${reader.id}.${f.id}`) ?? 0}` : ''),
     );
   }
+}
+if (mmStat.frames) {
+  const m = mmStat.ms.reduce((a, b) => a + b, 0) / mmStat.ms.length;
+  console.log(`\nМини-карта (этап 2): ${m.toFixed(1)} мс в среднем; калибровка — раскладка по умолчанию; кадров с разметкой ${mmStat.frames}`);
+  console.log(`  найдено значков, видно ≥40 % значка (≥50 px)   ${mmStat.found50}/${mmStat.vis50} (${pct(mmStat.found50, mmStat.vis50)})`);
+  console.log(`  найдено значков, виден хоть кусочек (≥15 px)   ${mmStat.found15}/${mmStat.vis15} (${pct(mmStat.found15, mmStat.vis15)})`);
+  console.log(`  позиция ≤ 400 ед. от GSI                        ${mmStat.posOk}/${mmStat.pos} (${pct(mmStat.posOk, mmStat.pos)})`);
+  console.log(`  ложных значков (мёртвый или > 1500 ед.)         ${mmStat.false} (${((100 * mmStat.false) / mmStat.frames).toFixed(1)} на 100 кадров)`);
+  console.log(`  подмен героя (значок на месте другого), окно 10 с ${mmStat.swaps}`);
+  console.log(`  неоднозначных (иллюзии/клоны) ${mmStat.ambiguous}, из них далеко от героя ${mmStat.ambiguousOff}`);
 }
 console.log(`\nЕщё не написаны: ${PENDING.join(', ')}.`);
 if (labeled === 0) console.log('Разметки нет: точность не посчитать, только проверка здравого смысла (см. docs/VISION_DATASET.md).');

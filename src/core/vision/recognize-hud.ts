@@ -1,4 +1,5 @@
 import type { TopBarReading } from './top-bar.ts';
+import type { MinimapReading } from './minimap.ts';
 import type { Observed } from '../../shared/types/observation.ts';
 import { readText, type GlyphModel } from '../ocr/glyph-ocr.ts';
 import type { FrameAccess } from './image.ts';
@@ -37,6 +38,8 @@ export interface HudReading {
   heroNameCandidates: { name: string; cost: number }[];
   /** Верхняя панель (src/core/vision/top-bar.ts): добавляет движок; нет поля — не читалась */
   topBar?: TopBarReading;
+  /** Мини-карта (src/core/vision/minimap.ts): добавляет движок; нет поля — не читалась */
+  minimap?: MinimapReading;
   durationMs: number;
 }
 

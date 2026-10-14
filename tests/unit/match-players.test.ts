@@ -95,3 +95,50 @@ describe('союзники и враги по верхней панели', () =
     expect(m.snapshot(2).players).toEqual([]);
   });
 });
+
+describe('мини-карта в модели: позиция и «пропал»', () => {
+  const mm = (heroes: { slot: number; x: number; y: number }[]) => ({
+    supported: true,
+    rect: null,
+    durationMs: 1,
+    heroes: heroes.map((h) => ({ ...h, team: (h.slot < 5 ? 'radiant' : 'dire') as 'radiant' | 'dire', px: 0, py: 0, confidence: 0.9, ambiguous: false })),
+  });
+
+  it('позиция: «видно сейчас», затем «видели раньше» с временем последнего показа', () => {
+    const p = new PlayersTrack();
+    p.ingestMinimap(mm([{ slot: 6, x: 1000, y: -2000 }]), 1000);
+    expect(p.snapshot(1100).players[6]!.position).toMatchObject({ value: { x: 1000, y: -2000 }, tag: 'visible', lastSeenWallMs: 1000, source: 'screen' });
+    p.ingestMinimap(mm([]), 4000);
+    expect(p.snapshot(4000).players[6]!.position).toMatchObject({ value: { x: 1000, y: -2000 }, tag: 'remembered', lastSeenWallMs: 1000 });
+  });
+
+  it('враг пропал через 3 с без значка; до первого показа — не определить', () => {
+    const p = new PlayersTrack();
+    p.setOurTeam('radiant');
+    p.ingest(bar(), 100, 0);
+    p.ingestMinimap(mm([{ slot: 5, x: 0, y: 0 }]), 1000);
+    p.ingestMinimap(mm([]), 2500);
+    expect(p.snapshot(2500).players[5]!.missing).toBe(false);
+    p.ingestMinimap(mm([]), 4100);
+    expect(p.snapshot(4100).players[5]).toMatchObject({ missing: true, missingSinceWallMs: 4000 });
+    // Врага в ячейке 6 ни разу не видели — «пропал» не срабатывает
+    expect(p.snapshot(4100).players[6]!.missing).toBeNull();
+    // Снова показался — не пропал
+    p.ingestMinimap(mm([{ slot: 5, x: 100, y: 0 }]), 5000);
+    expect(p.snapshot(5000).players[5]!.missing).toBe(false);
+  });
+
+  it('союзник, мёртвый враг или нет кадров мини-карты — «пропал» не определяется', () => {
+    const p = new PlayersTrack();
+    p.setOurTeam('radiant');
+    p.ingestMinimap(mm([{ slot: 1, x: 0, y: 0 }, { slot: 7, x: 0, y: 0 }]), 1000);
+    p.ingest(bar({ 7: { alive: false, aliveConfidence: 0.95, respawnSec: 20, respawnConfidence: 0.9 } }), 100, 1000);
+    p.ingest(bar({ 7: { alive: false, aliveConfidence: 0.95, respawnSec: 19, respawnConfidence: 0.9 } }), 101, 2000);
+    p.ingestMinimap(mm([]), 9000);
+    const s = p.snapshot(9000);
+    expect(s.players[1]!.missing).toBeNull(); // союзник
+    expect(s.players[7]!.missing).toBeNull(); // мёртв
+    // Кадров мини-карты давно нет (свернули Доту) — не утверждаем, что кто-то пропал
+    expect(p.snapshot(20000).players.every((x) => x.missing === null)).toBe(true);
+  });
+});

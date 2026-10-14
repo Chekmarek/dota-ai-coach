@@ -61,6 +61,8 @@ export class Pipeline {
   /** Сверка зрения с GSI (только кадры живого захвата — это тот же матч) */
   private readonly agreement = new AgreementTracker();
   private lastGsiAt: number | null = null;
+  /** Свой герой из последнего GSI (ячейка и координаты) — для самокалибровки мини-карты; со временем получения */
+  private ownHero: { slot: number; x: number; y: number; at: number } | null = null;
   private gsiMatchId: string | null = null;
   private lastMatchSentAt = -Infinity;
   private sentEventSeq = -1;
@@ -95,6 +97,7 @@ export class Pipeline {
     // Меню или наблюдение — матча своего героя нет; heartbeat всё равно значит, что GSI работает
     this.lastGsiAt = now;
     if (!reading) return;
+    if (reading.slot !== null && reading.hero.x !== null && reading.hero.y !== null) this.ownHero = { slot: reading.slot, x: reading.hero.x, y: reading.hero.y, at: now };
     if (reading.matchId !== null && reading.matchId !== this.gsiMatchId) {
       if (this.gsiMatchId !== null) this.agreement.reset();
       this.gsiMatchId = reading.matchId;
@@ -237,7 +240,9 @@ export class Pipeline {
       return;
     }
     try {
-      const reading = this.vision.run(f.bitmap, f.sourceTimeMs ?? Date.now());
+      // Свой герой для самокалибровки мини-карты — только живой захват и только свежий GSI (кадр и координаты одного момента)
+      const own = this.isLive() && this.ownHero && Date.now() - this.ownHero.at < 300 ? this.ownHero : null;
+      const reading = this.vision.run(f.bitmap, f.sourceTimeMs ?? Date.now(), own);
       this.visionMsAvg = this.visionMsAvg === null ? reading.durationMs : this.visionMsAvg * 0.9 + reading.durationMs * 0.1;
       if (now - this.lastVisionSentAt >= 1000 / VISION_UI_FPS) {
         this.lastVisionSentAt = now;

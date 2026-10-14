@@ -114,3 +114,18 @@ describe('GSI: настоящая запись Hero Demo', () => {
     expect(evs.filter((x) => x.type === 'ability-learned')).toHaveLength(learned);
   });
 });
+
+describe('настоящая запись: координаты своего героя и ячейка', () => {
+  it('Hero Demo присылает xpos/ypos и team_slot — коуч берёт координаты и ячейку на верхней панели', async () => {
+    const { readFileSync: rf } = await import('node:fs');
+    const { join: j } = await import('node:path');
+    const { mapGsi: map } = await import('../../src/core/gsi/map.ts');
+    const lines = rf(j(import.meta.dirname, '../fixtures/gsi/recorded/demo-antimage.jsonl'), 'utf8').split(/\r?\n/).filter(Boolean);
+    const readings = lines.map((l) => map(JSON.parse(l).body, () => undefined, () => undefined)).filter((r) => r !== null);
+    const withPos = readings.filter((r) => r!.hero.x !== null && r!.hero.y !== null);
+    expect(withPos.length).toBeGreaterThan(1000);
+    expect(withPos[0]!.hero).toMatchObject({ x: -2112, y: 1344 });
+    // Radiant, team_slot 0 → первая ячейка верхней панели
+    expect(readings.some((r) => r!.slot === 0)).toBe(true);
+  });
+});

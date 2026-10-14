@@ -49,6 +49,8 @@ export const gsiPlayerSchema = z.looseObject({
   gold_reliable: int,
   gold_unreliable: int,
   team_name: str,
+  /** Номер игрока внутри команды (0–4) — ячейка на верхней панели; player_slot — место в лобби, не то */
+  team_slot: int,
 });
 
 export const gsiHeroSchema = z.looseObject({
@@ -57,6 +59,9 @@ export const gsiHeroSchema = z.looseObject({
   level: int,
   alive: bool,
   respawn_seconds: int,
+  /** Координаты героя на карте (единицы мира) — для калибровки мини-карты по своему герою */
+  xpos: num,
+  ypos: num,
   health: int,
   max_health: int,
   mana: int,

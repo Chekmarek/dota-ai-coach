@@ -15,6 +15,9 @@ import type { HeroNameEntry } from '@core/vision/hero-name.ts';
 import { DAY_NIGHT_RECT } from '@core/vision/day-night.ts';
 import { readTopBar, type PortraitTemplates } from '@core/vision/top-bar.ts';
 import portraitsJson from '../data/hero-portraits.json';
+import { decodeMinimapBackground, minimapRect, readMinimap } from '@core/vision/minimap.ts';
+import { MinimapCalibrator } from '@core/vision/minimap-calibration.ts';
+import backgroundJson from '../data/minimap-background.json';
 
 const layout = layoutJson as unknown as HudLayout;
 const model = modelJson as unknown as GlyphModel;
@@ -23,6 +26,16 @@ const cooldownModel = cooldownModelJson as unknown as GlyphModel;
 const itemTemplates = itemTemplatesJson as unknown as ItemTemplates;
 const heroNames = heroNamesJson.names as HeroNameEntry[];
 const portraits = portraitsJson as unknown as PortraitTemplates;
+const minimapBackground = decodeMinimapBackground(backgroundJson as unknown as Parameters<typeof decodeMinimapBackground>[0]);
+/** Не чаще этого (мс) искать свой значок для самокалибровки мини-карты: это две большие копии углов кадра */
+const CALIBRATION_EVERY_MS = 1000;
+
+/** Свой герой из GSI (для самокалибровки мини-карты): ячейка — цвет значка, координаты — правда */
+export interface OwnHero {
+  slot: number;
+  x: number;
+  y: number;
+}
 
 /** Полоса с именем героя над портретом: её положение зависит от ширины панели, берём с запасом (при 1920×1080) */
 const NAME_BAND = { x: 340, y: 912, w: 480, h: 26 };
@@ -40,9 +53,11 @@ interface Band {
  */
 export class VisionStage {
   private canvas = new OffscreenCanvas(64, 32);
+  private readonly calibrator = layout.minimap ? new MinimapCalibrator(layout.minimap) : null;
+  private lastCalibrationAt = -Infinity;
   private ctx = this.canvas.getContext('2d', { willReadFrequently: true })!;
 
-  run(bitmap: ImageBitmap, observedAt: number): HudReading {
+  run(bitmap: ImageBitmap, observedAt: number, own: OwnHero | null = null): HudReading {
     const { width, height } = bitmap;
     const bands = this.bandsFor(width, height).map((rect) => ({ rect, image: this.copy(bitmap, rect) }));
     const access: FrameAccess = {
@@ -58,6 +73,15 @@ export class VisionStage {
     // Верхняя панель (этап 1): герои обеих команд, смерть и таймер возрождения; время — в общем durationMs
     const t0 = performance.now();
     hud.topBar = readTopBar(access, layout, portraits, model);
+    // Мини-карта (этап 2): самокалибровка по своему герою (если GSI прислал координаты), затем значки героев
+    const now = performance.now();
+    if (this.calibrator && own && now - this.lastCalibrationAt >= CALIBRATION_EVERY_MS) {
+      this.lastCalibrationAt = now;
+      this.calibrator.addSample(access, own.slot, own.x, own.y, Date.now());
+    }
+    const cal = this.calibrator?.state() ?? null;
+    hud.minimap = readMinimap(access, layout.minimap, cal?.calibration ?? null, { background: minimapBackground });
+    if (cal) hud.minimap.calibration = cal.status;
     hud.durationMs += performance.now() - t0;
     return hud;
   }
@@ -77,6 +101,8 @@ export class VisionStage {
       { x: Math.round(DAY_NIGHT_RECT.x * s), y: Math.round(DAY_NIGHT_RECT.y * sy), w: Math.round(DAY_NIGHT_RECT.w * s), h: Math.round(DAY_NIGHT_RECT.h * sy) },
       // верхняя панель с портретами — тоже в верхнюю полосу (иначе отдельная копия на каждый кадр)
       ...(layout.topBar ? [topBarRect(layout.topBar, s, sy)] : []),
+      // мини-карта по умолчанию — в нижнюю полосу (своя калибровка в другом месте даст отдельную копию)
+      ...(layout.minimap ? [minimapRect(layout.minimap.default, layout.minimap.world, w, h)] : []),
     ];
     const bands = [rects.filter((r) => r.y < h / 2), rects.filter((r) => r.y >= h / 2)]
       .filter((g) => g.length)

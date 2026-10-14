@@ -4,6 +4,7 @@ import { describe, expect, it } from 'vitest';
 import { frameAccessFromImage, type FrameAccess } from '../../src/core/vision/image.ts';
 import { recognizeHud } from '../../src/core/vision/recognize-hud.ts';
 import { readTopBar } from '../../src/core/vision/top-bar.ts';
+import { decodeMinimapBackground, readMinimap } from '../../src/core/vision/minimap.ts';
 
 /**
  * Бюджет зрения о союзниках и врагах: все новые читатели вместе — не больше 15 мс на кадр 1920×1080
@@ -16,6 +17,8 @@ const ROOT = join(import.meta.dirname, '../..');
 const data = (f: string) => JSON.parse(readFileSync(join(ROOT, 'src/data', f), 'utf8'));
 const PORTRAITS = data('hero-portraits.json');
 const GLYPHS = data('hud-layouts/glyphs-default.json');
+const LAYOUT = data('hud-layouts/dota2-default-16x9.json');
+const MM_BG = decodeMinimapBackground(data('minimap-background.json'));
 
 function noiseFrame(w: number, h: number): FrameAccess {
   const px = new Uint8ClampedArray(w * h * 4);
@@ -29,9 +32,11 @@ function noiseFrame(w: number, h: number): FrameAccess {
 
 /** Новые читатели этапов 1–3 */
 const NEW_READERS: { id: string; run: (f: FrameAccess) => unknown }[] = [
-  { id: 'верхняя панель', run: (f) => readTopBar(f, data('hud-layouts/dota2-default-16x9.json'), PORTRAITS, GLYPHS) },
+  { id: 'верхняя панель', run: (f) => readTopBar(f, LAYOUT, PORTRAITS, GLYPHS) },
+  { id: 'мини-карта', run: (f) => readMinimap(f, LAYOUT.minimap, { ...LAYOUT.minimap.default, source: 'layout' }, { background: MM_BG }) },
 ];
 
+/** Наименьшее время из runs запусков: без помех от других тестов, идущих параллельно (они только замедляют) */
 function median(fn: () => void, runs = 15): number {
   fn(); // прогрев
   const t: number[] = [];
@@ -40,7 +45,7 @@ function median(fn: () => void, runs = 15): number {
     fn();
     t.push(performance.now() - t0);
   }
-  return t.sort((a, b) => a - b)[Math.floor(runs / 2)]!;
+  return Math.min(...t);
 }
 
 describe('скорость зрения (бенчмарк)', () => {

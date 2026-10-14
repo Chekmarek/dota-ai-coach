@@ -10,6 +10,8 @@ export default defineConfig({
   },
   test: {
     include: ['tests/unit/**/*.test.ts', 'tests/integration/**/*.test.ts'],
+    // Бенчмарк скорости зрения — отдельно (npm run bench): среди параллельных тестов время завышено вдвое
+    exclude: process.env.DOTACOACH_BENCH ? [] : ['tests/unit/vision-bench.test.ts', '**/node_modules/**'],
     environment: 'node',
   },
 });

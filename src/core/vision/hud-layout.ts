@@ -1,5 +1,6 @@
 import type { Rect } from '../../shared/types/observation.ts';
 import type { ChannelMode } from './image.ts';
+import type { MinimapLayout } from './minimap.ts';
 
 export interface HudRegionDef {
   rect: [number, number, number, number];
@@ -25,6 +26,8 @@ export interface HudLayout {
   regions: Record<string, HudRegionDef>;
   /** Верхняя панель с портретами героев (src/core/vision/top-bar.ts); нет — читатель честно «не поддерживается» */
   topBar?: TopBarLayout;
+  /** Мини-карта (src/core/vision/minimap.ts): калибровка по умолчанию, цвета значков игроков */
+  minimap?: MinimapLayout;
 }
 
 /** Координаты в эталонном разрешении (reference) */

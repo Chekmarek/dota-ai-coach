@@ -56,6 +56,8 @@ export interface GsiReading {
   scoreRadiant: number | null;
   scoreDire: number | null;
   team: 'radiant' | 'dire' | null;
+  /** Ячейка своего героя на верхней панели (0–9): team_slot для Сил Света, 5 + team_slot для Сил Тьмы; null — неизвестна */
+  slot: number | null;
   hero: {
     /** Ключ без «npc_dota_hero_», например nevermore */
     key: string;
@@ -65,6 +67,9 @@ export interface GsiReading {
     level: number | null;
     alive: boolean | null;
     respawnSec: number | null;
+    /** Координаты на карте (единицы мира); null — GSI не прислал */
+    x: number | null;
+    y: number | null;
     health: Pool | null;
     mana: Pool | null;
   };
@@ -225,6 +230,7 @@ export function mapGsi(body: unknown, itemName?: ItemNameLookup, heroLookup?: He
     scoreRadiant: n(map.radiant_score),
     scoreDire: n(map.dire_score),
     team,
+    slot: team !== null && typeof player?.team_slot === 'number' && player.team_slot >= 0 && player.team_slot <= 4 ? (team === 'dire' ? 5 : 0) + player.team_slot : null,
     hero: {
       key,
       id: hero.id !== undefined && hero.id > 0 ? hero.id : (known?.id ?? null),
@@ -232,6 +238,8 @@ export function mapGsi(body: unknown, itemName?: ItemNameLookup, heroLookup?: He
       level: hero.level !== undefined && hero.level > 0 ? hero.level : null,
       alive: b(hero.alive),
       respawnSec: n(hero.respawn_seconds),
+      x: typeof hero.xpos === 'number' ? hero.xpos : null,
+      y: typeof hero.ypos === 'number' ? hero.ypos : null,
       health: pool(hero.health, hero.max_health),
       mana: hero.max_mana === 0 && hero.mana === 0 ? { current: 0, max: 0 } : pool(hero.mana, hero.max_mana),
     },

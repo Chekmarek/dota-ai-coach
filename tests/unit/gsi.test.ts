@@ -177,9 +177,13 @@ describe('GSI: mapGsi', () => {
       level: 7,
       alive: true,
       respawnSec: 0,
+      x: -6700,
+      y: -6200,
       health: { current: 812, max: 980 },
       mana: { current: 230, max: 411 },
     });
+    // team_slot в синтетическом теле нет — своя ячейка неизвестна
+    expect(r.slot).toBeNull();
     expect(r.gold).toBe(1335);
     expect(r.goldReliable).toBe(402);
     expect(r.goldUnreliable).toBe(933);
