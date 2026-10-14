@@ -1,10 +1,10 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import type { KbHero, KbItem, KbItemAvailability, KnowledgeBase as Kb } from '@shared/types/kb';
 import { formatKbGain, formatKbList, formatKbNumber as fmt } from '@core/knowledge-base/format.ts';
 import { isShopItem } from '@core/knowledge-base/audit.ts';
 import { Card, PageHeader } from '../components/ui';
-
-let cache: Kb | null = null;
+import { MechanicsTab } from '../components/mechanics';
+import { useKnowledgeBase } from '../hooks/useKnowledgeBase';
 
 const AVAILABILITY_LABEL: Record<KbItemAvailability, string> = {
   shop: 'магазин',
@@ -16,23 +16,11 @@ const AVAILABILITY_LABEL: Record<KbItemAvailability, string> = {
 const ATTR_LABEL = { str: 'Сила', agi: 'Ловкость', int: 'Интеллект', all: 'Универсальный' } as const;
 
 export function KnowledgeBase() {
-  const [kb, setKb] = useState<Kb | null>(cache);
-  const [error, setError] = useState<string | null>(null);
-  const [tab, setTab] = useState<'heroes' | 'items'>('heroes');
+  const { kb, error } = useKnowledgeBase();
+  const [tab, setTab] = useState<'heroes' | 'items' | 'mechanics'>('heroes');
   const [query, setQuery] = useState('');
   const [heroKey, setHeroKey] = useState<string | null>(null);
   const [showAllItems, setShowAllItems] = useState(false);
-
-  useEffect(() => {
-    if (cache) return;
-    void window.dotacoach.getKnowledgeBase().then((r) => {
-      if ('error' in r) setError(r.error);
-      else {
-        cache = r;
-        setKb(r);
-      }
-    });
-  }, []);
 
   const q = query.trim().toLowerCase();
   const heroes = useMemo(() => (kb?.heroes ?? []).filter((h) => !q || h.name.toLowerCase().includes(q)).sort((a, b) => a.name.localeCompare(b.name)), [kb, q]);
@@ -44,7 +32,7 @@ export function KnowledgeBase() {
 
   return (
     <>
-      <PageHeader title="База знаний" subtitle="Герои, способности и предметы текущего патча — с источником и датой." />
+      <PageHeader title="База знаний" subtitle="Герои, способности, предметы и механика карты текущего патча — с источником и датой." />
       {error && <p className="error">{error}</p>}
       {kb && (
         <>
@@ -52,7 +40,10 @@ export function KnowledgeBase() {
             <span className="not-impl-badge">Не проверено вручную · патч {kb.meta.patch} от {kb.meta.patchDate}</span>
             <p>
               Импортировано автоматически {new Date(kb.meta.generatedAt).toLocaleDateString('ru-RU')} из:{' '}
-              {kb.meta.sources.map((s) => s.name + (s.license ? ` (${s.license})` : '')).join(', ')}. Точные расчёты не будут
+              {kb.meta.sources
+                .filter((s) => !s.covers.includes('mechanics'))
+                .map((s) => s.name + (s.license ? ` (${s.license})` : ''))
+                .join(', ')}. Точные расчёты не будут
               использовать эти данные, пока они не сверены с патч-ноутами.
               {kb.audit.costMismatches.length > 0 &&
                 ` Самопроверка нашла расхождений в ценах: ${kb.audit.costMismatches.length} (${kb.audit.costMismatches.map((m) => m.name).join(', ')}).`}
@@ -69,10 +60,17 @@ export function KnowledgeBase() {
             <button className={tab === 'items' ? 'primary' : ''} onClick={() => setTab('items')} data-testid="kb-tab-items">
               Предметы ({visibleItems.length})
             </button>
-            <input placeholder="Поиск по названию…" value={query} onChange={(e) => setQuery(e.target.value)} data-testid="kb-search" style={{ minWidth: 240 }} />
+            <button className={tab === 'mechanics' ? 'primary' : ''} onClick={() => setTab('mechanics')} data-testid="kb-tab-mechanics">
+              Механика ({kb.mechanics.length})
+            </button>
+            {tab !== 'mechanics' && (
+              <input placeholder="Поиск по названию…" value={query} onChange={(e) => setQuery(e.target.value)} data-testid="kb-search" style={{ minWidth: 240 }} />
+            )}
           </div>
 
-          {tab === 'heroes' ? (
+          {tab === 'mechanics' ? (
+            <MechanicsTab entries={kb.mechanics} warnings={kb.mechanicsWarnings} />
+          ) : tab === 'heroes' ? (
             <div className="kb-split">
               <Card title={`Герои: ${heroes.length}`}>
                 <div className="kb-list">

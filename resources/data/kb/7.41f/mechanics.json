@@ -1,0 +1,2716 @@
+{
+ "patch": "7.41f",
+ "generatedAt": "2026-10-14T04:33:36.180Z",
+ "entries": [
+  {
+   "id": "lane-wave-spawn",
+   "category": "lane-creeps",
+   "nameRu": "Волна крипов на линии",
+   "values": [
+    {
+     "key": "firstAt",
+     "labelRu": "Первая волна",
+     "value": 0,
+     "unit": "s"
+    },
+    {
+     "key": "interval",
+     "labelRu": "Интервал",
+     "value": 30,
+     "unit": "s"
+    }
+   ],
+   "schedule": {
+    "firstAt": 0,
+    "interval": 30,
+    "lastAt": null
+   },
+   "notesRu": "Волны выходят на всех трёх линиях одновременно с горном (0:00) и затем каждые 30 секунд.",
+   "source": {
+    "name": "Liquipedia: Lane Creeps",
+    "url": "https://liquipedia.net/dota2/Lane_Creeps",
+    "license": "CC BY-SA 3.0"
+   },
+   "patch": "7.41",
+   "retrievedAt": "2026-10-14",
+   "verification": "imported-unverified"
+  },
+  {
+   "id": "lane-wave-composition",
+   "category": "lane-creeps",
+   "nameRu": "Состав волны по времени",
+   "values": [
+    {
+     "key": "start",
+     "labelRu": "С начала",
+     "value": "3 ближних + 1 дальний",
+     "unit": "text"
+    },
+    {
+     "key": "at15",
+     "labelRu": "С 15:00 (31-я волна)",
+     "value": "+1 ближний (4)",
+     "unit": "text"
+    },
+    {
+     "key": "at30",
+     "labelRu": "С 30:00 (61-я волна)",
+     "value": "+1 ближний (5)",
+     "unit": "text"
+    },
+    {
+     "key": "at40",
+     "labelRu": "С 40:00 (81-я волна)",
+     "value": "+1 дальний (2)",
+     "unit": "text"
+    },
+    {
+     "key": "at45",
+     "labelRu": "С 45:00 (91-я волна)",
+     "value": "+1 ближний (6)",
+     "unit": "text"
+    }
+   ],
+   "schedule": null,
+   "notesRu": "Знаменосец заменяет одного ближнего крипа и не увеличивает волну. Осадные крипы — отдельной записью.",
+   "source": {
+    "name": "Liquipedia: Lane Creeps",
+    "url": "https://liquipedia.net/dota2/Lane_Creeps",
+    "license": "CC BY-SA 3.0"
+   },
+   "patch": "7.41",
+   "retrievedAt": "2026-10-14",
+   "verification": "imported-unverified"
+  },
+  {
+   "id": "lane-siege-cadence",
+   "category": "lane-creeps",
+   "nameRu": "Осадные крипы: частота",
+   "values": [
+    {
+     "key": "firstAt",
+     "labelRu": "Первый",
+     "value": 300,
+     "unit": "s"
+    },
+    {
+     "key": "interval",
+     "labelRu": "Интервал",
+     "value": 300,
+     "unit": "s"
+    }
+   ],
+   "schedule": {
+    "firstAt": 300,
+    "interval": 300,
+    "lastAt": null
+   },
+   "notesRu": "Осадный крип идёт с 11-й волны и затем в каждой 10-й волне, то есть каждые 5 минут.",
+   "source": {
+    "name": "Liquipedia: Lane Creeps",
+    "url": "https://liquipedia.net/dota2/Lane_Creeps",
+    "license": "CC BY-SA 3.0"
+   },
+   "patch": "7.41",
+   "retrievedAt": "2026-10-14",
+   "verification": "imported-unverified"
+  },
+  {
+   "id": "lane-siege-extra-30",
+   "category": "lane-creeps",
+   "nameRu": "Второй осадный крип в волне",
+   "values": [
+    {
+     "key": "at",
+     "labelRu": "С",
+     "value": 1800,
+     "unit": "s"
+    }
+   ],
+   "schedule": null,
+   "notesRu": "С 30:00 в осадной волне два осадных крипа (раньше было с 35:00).",
+   "source": {
+    "name": "Valve: патч-ноуты 7.41",
+    "url": "https://www.dota2.com/patches/7.41",
+    "license": null
+   },
+   "patch": "7.41",
+   "retrievedAt": "2026-10-14",
+   "verification": "verified"
+  },
+  {
+   "id": "lane-siege-extra-60",
+   "category": "lane-creeps",
+   "nameRu": "Третий осадный крип в волне",
+   "values": [
+    {
+     "key": "at",
+     "labelRu": "С",
+     "value": 3600,
+     "unit": "s"
+    }
+   ],
+   "schedule": null,
+   "notesRu": "С 60:00 в осадной волне три осадных крипа.",
+   "source": {
+    "name": "Valve: патч-ноуты 7.41",
+    "url": "https://www.dota2.com/patches/7.41",
+    "license": null
+   },
+   "patch": "7.41",
+   "retrievedAt": "2026-10-14",
+   "verification": "verified"
+  },
+  {
+   "id": "lane-flagbearer",
+   "category": "lane-creeps",
+   "nameRu": "Знаменосец",
+   "values": [
+    {
+     "key": "firstAt",
+     "labelRu": "Первый",
+     "value": 120,
+     "unit": "s"
+    },
+    {
+     "key": "interval",
+     "labelRu": "Интервал",
+     "value": 60,
+     "unit": "s"
+    }
+   ],
+   "schedule": {
+    "firstAt": 120,
+    "interval": 60,
+    "lastAt": null
+   },
+   "notesRu": "С 5-й волны в каждой второй волне один ближний крип заменяется знаменосцем; его золото получают все враги рядом.",
+   "source": {
+    "name": "Liquipedia: Lane Creeps",
+    "url": "https://liquipedia.net/dota2/Lane_Creeps",
+    "license": "CC BY-SA 3.0"
+   },
+   "patch": "7.41",
+   "retrievedAt": "2026-10-14",
+   "verification": "imported-unverified"
+  },
+  {
+   "id": "lane-flagbearer-xp",
+   "category": "lane-creeps",
+   "nameRu": "Знаменосец: опыт",
+   "values": [
+    {
+     "key": "xp",
+     "labelRu": "Опыт",
+     "value": 60,
+     "unit": "xp"
+    }
+   ],
+   "schedule": null,
+   "notesRu": "Опыт за знаменосца увеличен с 57 до 60.",
+   "source": {
+    "name": "Valve: патч-ноуты 7.41",
+    "url": "https://www.dota2.com/patches/7.41",
+    "license": null
+   },
+   "patch": "7.41",
+   "retrievedAt": "2026-10-14",
+   "verification": "verified"
+  },
+  {
+   "id": "lane-meeting-point",
+   "category": "lane-creeps",
+   "nameRu": "Точка встречи волн до 7:30",
+   "values": [
+    {
+     "key": "until",
+     "labelRu": "Действует до",
+     "value": 450,
+     "unit": "s"
+    }
+   ],
+   "schedule": null,
+   "notesRu": "До 7:30 крипы сложной линии на выходе из базы замедлены, а лёгкой — ускорены: волны встречаются ближе к сложной линии.",
+   "source": {
+    "name": "Valve: патч-ноуты 7.41",
+    "url": "https://www.dota2.com/patches/7.41",
+    "license": null
+   },
+   "patch": "7.41",
+   "retrievedAt": "2026-10-14",
+   "verification": "verified"
+  },
+  {
+   "id": "lane-creep-upgrades",
+   "category": "lane-creeps",
+   "nameRu": "Усиление крипов со временем",
+   "values": [
+    {
+     "key": "interval",
+     "labelRu": "Каждые",
+     "value": 450,
+     "unit": "s"
+    },
+    {
+     "key": "maxUpgrades",
+     "labelRu": "Максимум усилений (здоровье и урон)",
+     "value": 30,
+     "unit": "count"
+    },
+    {
+     "key": "melee",
+     "labelRu": "Ближний",
+     "value": "+12 здоровья, +1 урон, +1 золото",
+     "unit": "text"
+    },
+    {
+     "key": "ranged",
+     "labelRu": "Дальний",
+     "value": "+12 здоровья, +2 урона, +3 золота, +8 опыта",
+     "unit": "text"
+    }
+   ],
+   "schedule": {
+    "firstAt": 450,
+    "interval": 450,
+    "lastAt": null
+   },
+   "notesRu": "Золото и опыт растут без предела, здоровье и урон — до 30 усилений. Осадный крип усиливается только после потери казарм.",
+   "source": {
+    "name": "Liquipedia: Lane Creeps",
+    "url": "https://liquipedia.net/dota2/Lane_Creeps",
+    "license": "CC BY-SA 3.0"
+   },
+   "patch": "7.41",
+   "retrievedAt": "2026-10-14",
+   "verification": "imported-unverified"
+  },
+  {
+   "id": "lane-super-mega",
+   "category": "lane-creeps",
+   "nameRu": "Супер- и мега-крипы",
+   "values": [
+    {
+     "key": "rule",
+     "labelRu": "Правило",
+     "value": "казарма линии разрушена → супер-крипы; все 6 казарм → мега-крипы",
+     "unit": "text"
+    }
+   ],
+   "schedule": null,
+   "notesRu": "Супер-крипы сильнее, но дают врагу меньше золота и опыта. Знаменосцы не усиливаются.",
+   "source": {
+    "name": "Liquipedia: Lane Creeps",
+    "url": "https://liquipedia.net/dota2/Lane_Creeps",
+    "license": "CC BY-SA 3.0"
+   },
+   "patch": "7.41",
+   "retrievedAt": "2026-10-14",
+   "verification": "imported-unverified"
+  },
+  {
+   "id": "lane-creep-stats-melee",
+   "category": "lane-creeps",
+   "nameRu": "Ближний крип",
+   "values": [
+    {
+     "key": "hp",
+     "labelRu": "Здоровье",
+     "value": 550,
+     "unit": "hp"
+    },
+    {
+     "key": "armor",
+     "labelRu": "Броня",
+     "value": 2,
+     "unit": "armor"
+    },
+    {
+     "key": "damage",
+     "labelRu": "Урон",
+     "value": "19–23",
+     "unit": "text"
+    },
+    {
+     "key": "gold",
+     "labelRu": "Золото",
+     "value": "34–39",
+     "unit": "gold"
+    },
+    {
+     "key": "xp",
+     "labelRu": "Опыт",
+     "value": 57,
+     "unit": "xp"
+    }
+   ],
+   "schedule": null,
+   "notesRu": "Значения на 0:00, до первых усилений.",
+   "source": {
+    "name": "Liquipedia: Lane Creeps",
+    "url": "https://liquipedia.net/dota2/Lane_Creeps",
+    "license": "CC BY-SA 3.0"
+   },
+   "patch": "7.41",
+   "retrievedAt": "2026-10-14",
+   "verification": "imported-unverified"
+  },
+  {
+   "id": "lane-creep-stats-ranged",
+   "category": "lane-creeps",
+   "nameRu": "Дальний крип",
+   "values": [
+    {
+     "key": "hp",
+     "labelRu": "Здоровье",
+     "value": 300,
+     "unit": "hp"
+    },
+    {
+     "key": "armor",
+     "labelRu": "Броня",
+     "value": 0,
+     "unit": "armor"
+    },
+    {
+     "key": "damage",
+     "labelRu": "Урон",
+     "value": "21–26",
+     "unit": "text"
+    },
+    {
+     "key": "gold",
+     "labelRu": "Золото",
+     "value": "43–52",
+     "unit": "gold"
+    },
+    {
+     "key": "xp",
+     "labelRu": "Опыт",
+     "value": 69,
+     "unit": "xp"
+    }
+   ],
+   "schedule": null,
+   "notesRu": "Значения на 0:00, до первых усилений.",
+   "source": {
+    "name": "Liquipedia: Lane Creeps",
+    "url": "https://liquipedia.net/dota2/Lane_Creeps",
+    "license": "CC BY-SA 3.0"
+   },
+   "patch": "7.41",
+   "retrievedAt": "2026-10-14",
+   "verification": "imported-unverified"
+  },
+  {
+   "id": "lane-creep-stats-siege",
+   "category": "lane-creeps",
+   "nameRu": "Осадный крип",
+   "values": [
+    {
+     "key": "hp",
+     "labelRu": "Здоровье",
+     "value": 935,
+     "unit": "hp"
+    },
+    {
+     "key": "armor",
+     "labelRu": "Броня",
+     "value": 0,
+     "unit": "armor"
+    },
+    {
+     "key": "damage",
+     "labelRu": "Урон",
+     "value": "35–46",
+     "unit": "text"
+    },
+    {
+     "key": "gold",
+     "labelRu": "Золото",
+     "value": "59–72",
+     "unit": "gold"
+    },
+    {
+     "key": "xp",
+     "labelRu": "Опыт",
+     "value": 88,
+     "unit": "xp"
+    }
+   ],
+   "schedule": null,
+   "notesRu": "Сильно бьёт здания и сначала атакует их.",
+   "source": {
+    "name": "Liquipedia: Lane Creeps",
+    "url": "https://liquipedia.net/dota2/Lane_Creeps",
+    "license": "CC BY-SA 3.0"
+   },
+   "patch": "7.41",
+   "retrievedAt": "2026-10-14",
+   "verification": "imported-unverified"
+  },
+  {
+   "id": "lane-creep-stats-flagbearer",
+   "category": "lane-creeps",
+   "nameRu": "Знаменосец: характеристики",
+   "values": [
+    {
+     "key": "hp",
+     "labelRu": "Здоровье",
+     "value": 550,
+     "unit": "hp"
+    },
+    {
+     "key": "armor",
+     "labelRu": "Броня",
+     "value": 2,
+     "unit": "armor"
+    },
+    {
+     "key": "damage",
+     "labelRu": "Урон",
+     "value": "19–23",
+     "unit": "text"
+    },
+    {
+     "key": "gold",
+     "labelRu": "Золото",
+     "value": "34–39",
+     "unit": "gold"
+    }
+   ],
+   "schedule": null,
+   "notesRu": "Опыт — отдельной записью (изменён в 7.41).",
+   "source": {
+    "name": "Liquipedia: Lane Creeps",
+    "url": "https://liquipedia.net/dota2/Lane_Creeps",
+    "license": "CC BY-SA 3.0"
+   },
+   "patch": "7.41",
+   "retrievedAt": "2026-10-14",
+   "verification": "imported-unverified"
+  },
+  {
+   "id": "lane-deny",
+   "category": "lane-creeps",
+   "nameRu": "Добивание своих (денай)",
+   "values": [
+    {
+     "key": "denyBelow",
+     "labelRu": "Можно добить при здоровье ниже",
+     "value": 50,
+     "unit": "%"
+    },
+    {
+     "key": "xpToEnemy",
+     "labelRu": "Опыт врагу за добитого своего",
+     "value": 50,
+     "unit": "%"
+    }
+   ],
+   "schedule": null,
+   "notesRu": "Золото за добитого своего крипа враг не получает, опыт — половину.",
+   "source": {
+    "name": "Liquipedia: Lane Creeps",
+    "url": "https://liquipedia.net/dota2/Lane_Creeps",
+    "license": "CC BY-SA 3.0"
+   },
+   "patch": "7.41",
+   "retrievedAt": "2026-10-14",
+   "verification": "imported-unverified"
+  },
+  {
+   "id": "neutral-spawn",
+   "category": "neutral-camps",
+   "nameRu": "Появление нейтральных крипов",
+   "values": [
+    {
+     "key": "firstAt",
+     "labelRu": "Первое появление",
+     "value": 60,
+     "unit": "s"
+    },
+    {
+     "key": "interval",
+     "labelRu": "Интервал",
+     "value": 60,
+     "unit": "s"
+    }
+   ],
+   "schedule": {
+    "firstAt": 60,
+    "interval": 60,
+    "lastAt": null
+   },
+   "notesRu": "Лагерь появляется каждую ровную минуту, только если в его зоне нет юнитов (в т. ч. вардов). Ночью нейтралы спят.",
+   "source": {
+    "name": "Liquipedia: Neutral Creeps",
+    "url": "https://liquipedia.net/dota2/Neutral_Creeps",
+    "license": "CC BY-SA 3.0"
+   },
+   "patch": "7.41",
+   "retrievedAt": "2026-10-14",
+   "verification": "imported-unverified"
+  },
+  {
+   "id": "neutral-stack-window",
+   "category": "neutral-camps",
+   "nameRu": "Окно стака",
+   "values": [
+    {
+     "key": "fromSecond",
+     "labelRu": "С секунды минуты",
+     "value": 54,
+     "unit": "s"
+    },
+    {
+     "key": "toSecond",
+     "labelRu": "По секунду минуты",
+     "value": 55,
+     "unit": "s"
+    }
+   ],
+   "schedule": null,
+   "notesRu": "Большинство лагерей стакают примерно на 54–55-й секунде; точное время зависит от лагеря и героя.",
+   "source": {
+    "name": "Liquipedia: Creep Stacking",
+    "url": "https://liquipedia.net/dota2/Creep_Stacking",
+    "license": "CC BY-SA 3.0"
+   },
+   "patch": null,
+   "retrievedAt": "2026-10-14",
+   "verification": "imported-unverified"
+  },
+  {
+   "id": "neutral-stack-bounty",
+   "category": "neutral-camps",
+   "nameRu": "Награда за стак",
+   "values": [
+    {
+     "key": "stackerShare",
+     "labelRu": "Стакеру от золота союзника",
+     "value": 30,
+     "unit": "%"
+    },
+    {
+     "key": "stackPenalty",
+     "labelRu": "Штраф к награде за стакнутых",
+     "value": 20,
+     "unit": "%"
+    }
+   ],
+   "schedule": null,
+   "notesRu": "Крипы из стака дают убийце на 20% меньше; стакер получает 30% того, что получил союзник.",
+   "source": {
+    "name": "Liquipedia: Neutral Creeps",
+    "url": "https://liquipedia.net/dota2/Neutral_Creeps",
+    "license": "CC BY-SA 3.0"
+   },
+   "patch": "7.41",
+   "retrievedAt": "2026-10-14",
+   "verification": "imported-unverified"
+  },
+  {
+   "id": "neutral-pull-general",
+   "category": "neutral-camps",
+   "nameRu": "Отвод крипов (пулл): общий момент",
+   "values": [
+    {
+     "key": "second",
+     "labelRu": "Секунда, когда бить лагерь",
+     "value": 17,
+     "unit": "s"
+    }
+   ],
+   "schedule": null,
+   "notesRu": "Источник указывает «-:17» без привязки к линии; используйте как ориентир, а не точное время.",
+   "source": {
+    "name": "Liquipedia: Creep Stacking",
+    "url": "https://liquipedia.net/dota2/Creep_Stacking",
+    "license": "CC BY-SA 3.0"
+   },
+   "patch": null,
+   "retrievedAt": "2026-10-14",
+   "verification": "imported-unverified"
+  },
+  {
+   "id": "neutral-pull-per-lane",
+   "category": "neutral-camps",
+   "nameRu": "Пулл: время для каждой линии",
+   "values": [
+    {
+     "key": "radiantSafe",
+     "labelRu": "Свет, лёгкая линия",
+     "value": null,
+     "unit": "s"
+    },
+    {
+     "key": "radiantOff",
+     "labelRu": "Свет, сложная линия",
+     "value": null,
+     "unit": "s"
+    },
+    {
+     "key": "direSafe",
+     "labelRu": "Тьма, лёгкая линия",
+     "value": null,
+     "unit": "s"
+    },
+    {
+     "key": "direOff",
+     "labelRu": "Тьма, сложная линия",
+     "value": null,
+     "unit": "s"
+    }
+   ],
+   "schedule": null,
+   "notesRu": "Нет источника с временем пулла по линиям для 7.41 (в 7.41 сдвинуты вышки и лагеря у пуллов).",
+   "source": {
+    "name": "Liquipedia: Creep Stacking",
+    "url": "https://liquipedia.net/dota2/Creep_Stacking",
+    "license": "CC BY-SA 3.0"
+   },
+   "patch": null,
+   "retrievedAt": "2026-10-14",
+   "verification": "missing"
+  },
+  {
+   "id": "neutral-camp-small",
+   "category": "neutral-camps",
+   "nameRu": "Малый лагерь",
+   "values": [
+    {
+     "key": "gold",
+     "labelRu": "Золото (среднее)",
+     "value": "55–61 (58)",
+     "unit": "gold"
+    },
+    {
+     "key": "xp",
+     "labelRu": "Опыт",
+     "value": 90,
+     "unit": "xp"
+    }
+   ],
+   "schedule": null,
+   "notesRu": "Среднее по всем вариантам малого лагеря, без эволюции речных лагерей.",
+   "source": {
+    "name": "Liquipedia: Neutral Creeps",
+    "url": "https://liquipedia.net/dota2/Neutral_Creeps",
+    "license": "CC BY-SA 3.0"
+   },
+   "patch": "7.41",
+   "retrievedAt": "2026-10-14",
+   "verification": "imported-unverified"
+  },
+  {
+   "id": "neutral-camp-medium",
+   "category": "neutral-camps",
+   "nameRu": "Средний лагерь",
+   "values": [
+    {
+     "key": "gold",
+     "labelRu": "Золото (среднее)",
+     "value": "75–88 (82)",
+     "unit": "gold"
+    },
+    {
+     "key": "xp",
+     "labelRu": "Опыт",
+     "value": 129,
+     "unit": "xp"
+    }
+   ],
+   "schedule": null,
+   "notesRu": "Среднее по всем вариантам среднего лагеря.",
+   "source": {
+    "name": "Liquipedia: Neutral Creeps",
+    "url": "https://liquipedia.net/dota2/Neutral_Creeps",
+    "license": "CC BY-SA 3.0"
+   },
+   "patch": "7.41",
+   "retrievedAt": "2026-10-14",
+   "verification": "imported-unverified"
+  },
+  {
+   "id": "neutral-camp-large",
+   "category": "neutral-camps",
+   "nameRu": "Большой лагерь",
+   "values": [
+    {
+     "key": "gold",
+     "labelRu": "Золото (среднее)",
+     "value": "96–107 (102)",
+     "unit": "gold"
+    },
+    {
+     "key": "xp",
+     "labelRu": "Опыт",
+     "value": 158,
+     "unit": "xp"
+    }
+   ],
+   "schedule": null,
+   "notesRu": "Среднее по всем вариантам большого лагеря.",
+   "source": {
+    "name": "Liquipedia: Neutral Creeps",
+    "url": "https://liquipedia.net/dota2/Neutral_Creeps",
+    "license": "CC BY-SA 3.0"
+   },
+   "patch": "7.41",
+   "retrievedAt": "2026-10-14",
+   "verification": "imported-unverified"
+  },
+  {
+   "id": "neutral-camp-ancient",
+   "category": "neutral-camps",
+   "nameRu": "Древний лагерь",
+   "values": [
+    {
+     "key": "gold",
+     "labelRu": "Золото (среднее)",
+     "value": "156–170 (163)",
+     "unit": "gold"
+    },
+    {
+     "key": "xp",
+     "labelRu": "Опыт",
+     "value": 314,
+     "unit": "xp"
+    }
+   ],
+   "schedule": null,
+   "notesRu": "Древние крипы — отдельный класс юнитов, на них не действуют некоторые способности.",
+   "source": {
+    "name": "Liquipedia: Neutral Creeps",
+    "url": "https://liquipedia.net/dota2/Neutral_Creeps",
+    "license": "CC BY-SA 3.0"
+   },
+   "patch": "7.41",
+   "retrievedAt": "2026-10-14",
+   "verification": "imported-unverified"
+  },
+  {
+   "id": "neutral-flooded-evolve",
+   "category": "neutral-camps",
+   "nameRu": "Эволюция речных лагерей",
+   "values": [
+    {
+     "key": "interval",
+     "labelRu": "Каждые",
+     "value": 300,
+     "unit": "s"
+    },
+    {
+     "key": "max",
+     "labelRu": "Всего эволюций",
+     "value": 6,
+     "unit": "count"
+    }
+   ],
+   "schedule": {
+    "firstAt": 300,
+    "interval": 300,
+    "lastAt": 1800
+   },
+   "notesRu": "Каждые 5 минут один крип речного лагеря переходит на ступень выше; последняя эволюция в 30:00.",
+   "source": {
+    "name": "Liquipedia: Neutral Creeps",
+    "url": "https://liquipedia.net/dota2/Neutral_Creeps",
+    "license": "CC BY-SA 3.0"
+   },
+   "patch": "7.41",
+   "retrievedAt": "2026-10-14",
+   "verification": "imported-unverified"
+  },
+  {
+   "id": "rune-bounty",
+   "category": "runes",
+   "nameRu": "Руна богатства",
+   "values": [
+    {
+     "key": "firstAt",
+     "labelRu": "Первые (в реке)",
+     "value": 0,
+     "unit": "s"
+    },
+    {
+     "key": "interval",
+     "labelRu": "Дальше в лесу каждые",
+     "value": 240,
+     "unit": "s"
+    },
+    {
+     "key": "gold",
+     "labelRu": "Золото каждому в команде",
+     "value": "40 + 6 × ⌊минуты / 5⌋",
+     "unit": "formula"
+    }
+   ],
+   "schedule": {
+    "firstAt": 0,
+    "interval": 240,
+    "lastAt": null
+   },
+   "notesRu": "Первая пара — на местах рун силы в реке, дальше — по одной в лесу каждой стороны. Неподобранная руна остаётся, новая появляется рядом.",
+   "source": {
+    "name": "Liquipedia: Runes",
+    "url": "https://liquipedia.net/dota2/Runes",
+    "license": "CC BY-SA 3.0"
+   },
+   "patch": "7.40",
+   "retrievedAt": "2026-10-14",
+   "verification": "imported-unverified"
+  },
+  {
+   "id": "rune-power",
+   "category": "runes",
+   "nameRu": "Руна силы",
+   "values": [
+    {
+     "key": "firstAt",
+     "labelRu": "Первая",
+     "value": 360,
+     "unit": "s"
+    },
+    {
+     "key": "interval",
+     "labelRu": "Интервал",
+     "value": 120,
+     "unit": "s"
+    },
+    {
+     "key": "types",
+     "labelRu": "Виды",
+     "value": "Amplify Damage, Arcane, Haste, Illusion, Invisibility, Regeneration, Shield",
+     "unit": "text"
+    }
+   ],
+   "schedule": {
+    "firstAt": 360,
+    "interval": 120,
+    "lastAt": null
+   },
+   "notesRu": "Появляется на точках рун в реке; неподобранная исчезает при следующем появлении. Вид не повторяется, пока не выпадут все остальные.",
+   "source": {
+    "name": "Liquipedia: Runes",
+    "url": "https://liquipedia.net/dota2/Runes",
+    "license": "CC BY-SA 3.0"
+   },
+   "patch": "7.40",
+   "retrievedAt": "2026-10-14",
+   "verification": "imported-unverified"
+  },
+  {
+   "id": "rune-water",
+   "category": "runes",
+   "nameRu": "Руна воды",
+   "values": [
+    {
+     "key": "times",
+     "labelRu": "Появляется",
+     "value": "2:00 и 4:00",
+     "unit": "text"
+    },
+    {
+     "key": "heal",
+     "labelRu": "Лечение",
+     "value": 40,
+     "unit": "hp"
+    },
+    {
+     "key": "mana",
+     "labelRu": "Мана",
+     "value": 80,
+     "unit": "mana"
+    }
+   ],
+   "schedule": {
+    "firstAt": 120,
+    "interval": 120,
+    "lastAt": 240
+   },
+   "notesRu": "Только два раза за игру, на обеих точках рун в реке.",
+   "source": {
+    "name": "Liquipedia: Runes",
+    "url": "https://liquipedia.net/dota2/Runes",
+    "license": "CC BY-SA 3.0"
+   },
+   "patch": "7.40",
+   "retrievedAt": "2026-10-14",
+   "verification": "imported-unverified"
+  },
+  {
+   "id": "rune-wisdom",
+   "category": "runes",
+   "nameRu": "Руна мудрости",
+   "values": [
+    {
+     "key": "inGame",
+     "labelRu": "В игре",
+     "value": "нет — заменена Святилищами мудрости (7.38)",
+     "unit": "text"
+    }
+   ],
+   "schedule": null,
+   "notesRu": "Руны мудрости убраны в 7.38; опыт теперь дают Святилища мудрости (см. «Объекты карты»).",
+   "source": {
+    "name": "Liquipedia: Runes",
+    "url": "https://liquipedia.net/dota2/Runes",
+    "license": "CC BY-SA 3.0"
+   },
+   "patch": "7.40",
+   "retrievedAt": "2026-10-14",
+   "verification": "imported-unverified"
+  },
+  {
+   "id": "lotus-pool",
+   "category": "runes",
+   "nameRu": "Пруд с лотосами",
+   "values": [
+    {
+     "key": "interval",
+     "labelRu": "Новый лотос каждые",
+     "value": 180,
+     "unit": "s"
+    },
+    {
+     "key": "max",
+     "labelRu": "Максимум лотосов",
+     "value": 6,
+     "unit": "count"
+    },
+    {
+     "key": "great",
+     "labelRu": "Великий лотос с",
+     "value": 2100,
+     "unit": "s"
+    },
+    {
+     "key": "greater",
+     "labelRu": "Величайший лотос с",
+     "value": 3600,
+     "unit": "s"
+    }
+   ],
+   "schedule": {
+    "firstAt": 180,
+    "interval": 180,
+    "lastAt": null
+   },
+   "notesRu": "Растёт по одному лотосу, если есть свободное место; лотосы видны обеим командам.",
+   "source": {
+    "name": "Liquipedia: Lotus Pool",
+    "url": "https://liquipedia.net/dota2/Lotus_Pool",
+    "license": "CC BY-SA 3.0"
+   },
+   "patch": null,
+   "retrievedAt": "2026-10-14",
+   "verification": "imported-unverified"
+  },
+  {
+   "id": "lotus-pool-contest",
+   "category": "runes",
+   "nameRu": "Пруд с лотосами: враг рядом",
+   "values": [
+    {
+     "key": "rule",
+     "labelRu": "Правило",
+     "value": "отсчёт идёт назад, пока рядом враг",
+     "unit": "text"
+    }
+   ],
+   "schedule": null,
+   "notesRu": "С 7.41 отсчёт сбора в прудах и святилищах при врагах рядом откатывается назад, а не замирает.",
+   "source": {
+    "name": "Valve: патч-ноуты 7.41",
+    "url": "https://www.dota2.com/patches/7.41",
+    "license": null
+   },
+   "patch": "7.41",
+   "retrievedAt": "2026-10-14",
+   "verification": "verified"
+  },
+  {
+   "id": "day-night-cycle",
+   "category": "day-night",
+   "nameRu": "Смена дня и ночи",
+   "values": [
+    {
+     "key": "dayStart",
+     "labelRu": "Первый день",
+     "value": 0,
+     "unit": "s"
+    },
+    {
+     "key": "half",
+     "labelRu": "День и ночь по",
+     "value": 300,
+     "unit": "s"
+    }
+   ],
+   "schedule": {
+    "firstAt": 0,
+    "interval": 300,
+    "lastAt": null
+   },
+   "notesRu": "До горна — ночь; день начинается в 0:00, ночь в 5:00, день в 10:00 и так далее. Способности (Luna, Night Stalker и др.) меняют время суток, но не сдвигают цикл.",
+   "source": {
+    "name": "Liquipedia: Time of Day",
+    "url": "https://liquipedia.net/dota2/Time_of_Day",
+    "license": "CC BY-SA 3.0"
+   },
+   "patch": "7.38",
+   "retrievedAt": "2026-10-14",
+   "verification": "imported-unverified"
+  },
+  {
+   "id": "day-night-neutrals",
+   "category": "day-night",
+   "nameRu": "Нейтралы ночью",
+   "values": [
+    {
+     "key": "rule",
+     "labelRu": "Правило",
+     "value": "спят: сами не нападают",
+     "unit": "text"
+    }
+   ],
+   "schedule": null,
+   "notesRu": "Ночью нейтралы (кроме Рошана) не нападают сами, их надо ударить или выбрать целью способности.",
+   "source": {
+    "name": "Liquipedia: Time of Day",
+    "url": "https://liquipedia.net/dota2/Time_of_Day",
+    "license": "CC BY-SA 3.0"
+   },
+   "patch": "7.38",
+   "retrievedAt": "2026-10-14",
+   "verification": "imported-unverified"
+  },
+  {
+   "id": "roshan-start",
+   "category": "roshan",
+   "nameRu": "Рошан: начало игры",
+   "values": [
+    {
+     "key": "alive",
+     "labelRu": "Доступен с",
+     "value": 0,
+     "unit": "s"
+    },
+    {
+     "key": "pit",
+     "labelRu": "Начинает в",
+     "value": "верхнем логове",
+     "unit": "text"
+    }
+   ],
+   "schedule": null,
+   "notesRu": "С 7.41 Рошан начинает игру в верхнем логове.",
+   "source": {
+    "name": "Valve: патч-ноуты 7.41",
+    "url": "https://www.dota2.com/patches/7.41",
+    "license": null
+   },
+   "patch": "7.41",
+   "retrievedAt": "2026-10-14",
+   "verification": "verified"
+  },
+  {
+   "id": "roshan-pit-day-night",
+   "category": "roshan",
+   "nameRu": "Рошан: логово днём и ночью",
+   "values": [
+    {
+     "key": "day",
+     "labelRu": "Днём",
+     "value": "верхнее логово",
+     "unit": "text"
+    },
+    {
+     "key": "night",
+     "labelRu": "Ночью",
+     "value": "нижнее логово",
+     "unit": "text"
+    }
+   ],
+   "schedule": null,
+   "notesRu": "Рошан переходит в другое логово при естественной смене дня и ночи; возрождается в логове текущего времени суток.",
+   "source": {
+    "name": "Liquipedia: Roshan",
+    "url": "https://liquipedia.net/dota2/Roshan",
+    "license": "CC BY-SA 3.0"
+   },
+   "patch": "7.41c",
+   "retrievedAt": "2026-10-14",
+   "verification": "imported-unverified"
+  },
+  {
+   "id": "roshan-respawn",
+   "category": "roshan",
+   "nameRu": "Рошан: возрождение",
+   "values": [
+    {
+     "key": "min",
+     "labelRu": "Не раньше чем через",
+     "value": 480,
+     "unit": "s"
+    },
+    {
+     "key": "max",
+     "labelRu": "Не позже чем через",
+     "value": 660,
+     "unit": "s"
+    }
+   ],
+   "schedule": null,
+   "notesRu": "Точное время скрыто: первые 8 минут Рошан точно мёртв, затем может возродиться в любой момент до 11 минут.",
+   "source": {
+    "name": "Liquipedia: Roshan",
+    "url": "https://liquipedia.net/dota2/Roshan",
+    "license": "CC BY-SA 3.0"
+   },
+   "patch": "7.41c",
+   "retrievedAt": "2026-10-14",
+   "verification": "imported-unverified"
+  },
+  {
+   "id": "roshan-drops",
+   "category": "roshan",
+   "nameRu": "Рошан: что выпадает",
+   "values": [
+    {
+     "key": "kill1",
+     "labelRu": "1-е убийство",
+     "value": "Aegis",
+     "unit": "text"
+    },
+    {
+     "key": "kill2",
+     "labelRu": "2-е убийство",
+     "value": "Aegis, Roshan's Banner",
+     "unit": "text"
+    },
+    {
+     "key": "kill3",
+     "labelRu": "3-е и далее",
+     "value": "Aegis, Roshan's Banner, Cheese, Refresher Shard",
+     "unit": "text"
+    }
+   ],
+   "schedule": null,
+   "notesRu": "Aegis нельзя передать или выбросить после подбора; Cheese и Refresher Shard можно продать за 500.",
+   "source": {
+    "name": "Liquipedia: Roshan",
+    "url": "https://liquipedia.net/dota2/Roshan",
+    "license": "CC BY-SA 3.0"
+   },
+   "patch": "7.41c",
+   "retrievedAt": "2026-10-14",
+   "verification": "imported-unverified"
+  },
+  {
+   "id": "roshan-bounty",
+   "category": "roshan",
+   "nameRu": "Рошан: награда",
+   "values": [
+    {
+     "key": "killer",
+     "labelRu": "Убийце",
+     "value": "200–290",
+     "unit": "gold"
+    },
+    {
+     "key": "team",
+     "labelRu": "Каждому в команде",
+     "value": 135,
+     "unit": "gold"
+    },
+    {
+     "key": "xp",
+     "labelRu": "Опыт команде",
+     "value": "400 + 20 в минуту",
+     "unit": "text"
+    }
+   ],
+   "schedule": null,
+   "notesRu": "Опыт за Рошана получает только убившая команда.",
+   "source": {
+    "name": "Liquipedia: Roshan",
+    "url": "https://liquipedia.net/dota2/Roshan",
+    "license": "CC BY-SA 3.0"
+   },
+   "patch": "7.41c",
+   "retrievedAt": "2026-10-14",
+   "verification": "imported-unverified"
+  },
+  {
+   "id": "tormentor-spawn",
+   "category": "tormentor",
+   "nameRu": "Мучитель: появление",
+   "values": [
+    {
+     "key": "firstAt",
+     "labelRu": "Первое появление",
+     "value": 1200,
+     "unit": "s"
+    },
+    {
+     "key": "respawn",
+     "labelRu": "Возрождение после убийства",
+     "value": 600,
+     "unit": "s"
+    }
+   ],
+   "schedule": {
+    "firstAt": 1200,
+    "interval": null,
+    "lastAt": null
+   },
+   "notesRu": "Появляется в 20:00, после убийства — через 10 минут; возрождение нельзя заблокировать.",
+   "source": {
+    "name": "Liquipedia: Tormentor",
+    "url": "https://liquipedia.net/dota2/Tormentor",
+    "license": "CC BY-SA 3.0"
+   },
+   "patch": "7.41e",
+   "retrievedAt": "2026-10-14",
+   "verification": "imported-unverified"
+  },
+  {
+   "id": "tormentor-location",
+   "category": "tormentor",
+   "nameRu": "Мучитель: где стоит",
+   "values": [
+    {
+     "key": "start",
+     "labelRu": "Начинает в",
+     "value": "нижней расщелине",
+     "unit": "text"
+    }
+   ],
+   "schedule": null,
+   "notesRu": "С 7.41 Мучитель начинает в нижней расщелине и переходит между углами карты при смене дня и ночи.",
+   "source": {
+    "name": "Valve: патч-ноуты 7.41",
+    "url": "https://www.dota2.com/patches/7.41",
+    "license": null
+   },
+   "patch": "7.41",
+   "retrievedAt": "2026-10-14",
+   "verification": "verified"
+  },
+  {
+   "id": "tormentor-reward",
+   "category": "tormentor",
+   "nameRu": "Мучитель: награда",
+   "values": [
+    {
+     "key": "shard",
+     "labelRu": "Предмет",
+     "value": "Aghanim's Shard одному герою команды",
+     "unit": "text"
+    },
+    {
+     "key": "teamGold",
+     "labelRu": "Золото команде всего",
+     "value": 700,
+     "unit": "gold"
+    }
+   ],
+   "schedule": null,
+   "notesRu": "Герой, получивший Shard, не получает 175 золота; всего команде 700.",
+   "source": {
+    "name": "Valve: патч-ноуты 7.41",
+    "url": "https://www.dota2.com/patches/7.41",
+    "license": null
+   },
+   "patch": "7.41",
+   "retrievedAt": "2026-10-14",
+   "verification": "verified"
+  },
+  {
+   "id": "tormentor-all-shard",
+   "category": "tormentor",
+   "nameRu": "Мучитель: награда при Shard у всех",
+   "values": [
+    {
+     "key": "each",
+     "labelRu": "Каждому",
+     "value": 415,
+     "unit": "gold"
+    }
+   ],
+   "schedule": null,
+   "notesRu": "Уменьшено с 455 до 415.",
+   "source": {
+    "name": "Valve: патч-ноуты 7.41",
+    "url": "https://www.dota2.com/patches/7.41",
+    "license": null
+   },
+   "patch": "7.41",
+   "retrievedAt": "2026-10-14",
+   "verification": "verified"
+  },
+  {
+   "id": "tormentor-shield",
+   "category": "tormentor",
+   "nameRu": "Мучитель: барьер",
+   "values": [
+    {
+     "key": "base",
+     "labelRu": "Барьер",
+     "value": 3000,
+     "unit": "hp"
+    },
+    {
+     "key": "perMinute",
+     "labelRu": "Прирост барьера в минуту",
+     "value": 50,
+     "unit": "hp"
+    }
+   ],
+   "schedule": null,
+   "notesRu": "Барьер Мучителя растёт со временем, поэтому позже его убить труднее.",
+   "source": {
+    "name": "Valve: патч-ноуты 7.41",
+    "url": "https://www.dota2.com/patches/7.41",
+    "license": null
+   },
+   "patch": "7.41",
+   "retrievedAt": "2026-10-14",
+   "verification": "verified"
+  },
+  {
+   "id": "neutral-items-t1",
+   "category": "neutral-items",
+   "nameRu": "Нейтральные предметы: 1-й уровень",
+   "values": [
+    {
+     "key": "availableAt",
+     "labelRu": "Доступен с",
+     "value": 0,
+     "unit": "s"
+    }
+   ],
+   "schedule": null,
+   "notesRu": "В 7.41 первый уровень доступен с 0:00 (было 5:00). Цена создания — отдельной записью.",
+   "source": {
+    "name": "Valve: патч-ноуты 7.41",
+    "url": "https://www.dota2.com/patches/7.41",
+    "license": null
+   },
+   "patch": "7.41",
+   "retrievedAt": "2026-10-14",
+   "verification": "verified"
+  },
+  {
+   "id": "neutral-items-t1-cost",
+   "category": "neutral-items",
+   "nameRu": "Нейтральные предметы: цена 1-го уровня",
+   "values": [
+    {
+     "key": "madstone",
+     "labelRu": "Madstone",
+     "value": 6,
+     "unit": "count"
+    }
+   ],
+   "schedule": null,
+   "notesRu": "Подтверждение цены создания предмета 1-го уровня.",
+   "source": {
+    "name": "Valve: патч-ноуты 7.41",
+    "url": "https://www.dota2.com/patches/7.41",
+    "license": null
+   },
+   "patch": "7.41",
+   "retrievedAt": "2026-10-14",
+   "verification": "verified"
+  },
+  {
+   "id": "neutral-items-tiers",
+   "category": "neutral-items",
+   "nameRu": "Нейтральные предметы: уровни 2–5",
+   "values": [
+    {
+     "key": "t2",
+     "labelRu": "2-й уровень с",
+     "value": 900,
+     "unit": "s"
+    },
+    {
+     "key": "t3",
+     "labelRu": "3-й уровень с",
+     "value": 1500,
+     "unit": "s"
+    },
+    {
+     "key": "t4",
+     "labelRu": "4-й уровень с",
+     "value": 2100,
+     "unit": "s"
+    },
+    {
+     "key": "t5",
+     "labelRu": "5-й уровень с",
+     "value": 3600,
+     "unit": "s"
+    },
+    {
+     "key": "cost",
+     "labelRu": "Madstone на каждый уровень 2–5",
+     "value": 10,
+     "unit": "count"
+    }
+   ],
+   "schedule": null,
+   "notesRu": "Время — по ограничению запаса Madstone в таблице Liquipedia; строка 1-го уровня в той же таблице устарела (7.41 изменил её), поэтому остальные строки тоже требуют сверки.",
+   "source": {
+    "name": "Liquipedia: Neutral Items",
+    "url": "https://liquipedia.net/dota2/Neutral_Items",
+    "license": "CC BY-SA 3.0"
+   },
+   "patch": "7.40",
+   "retrievedAt": "2026-10-14",
+   "verification": "imported-unverified"
+  },
+  {
+   "id": "neutral-items-choices",
+   "category": "neutral-items",
+   "nameRu": "Нейтральные предметы: выбор",
+   "values": [
+    {
+     "key": "artifacts",
+     "labelRu": "Артефактов на выбор (уровни 2–5)",
+     "value": 5,
+     "unit": "count"
+    },
+    {
+     "key": "enchantments",
+     "labelRu": "Зачарований на выбор (уровни 2–5)",
+     "value": 5,
+     "unit": "count"
+    }
+   ],
+   "schedule": null,
+   "notesRu": "Зачарования больше не случайные — зависят от главного атрибута героя.",
+   "source": {
+    "name": "Valve: патч-ноуты 7.41",
+    "url": "https://www.dota2.com/patches/7.41",
+    "license": null
+   },
+   "patch": "7.41",
+   "retrievedAt": "2026-10-14",
+   "verification": "verified"
+  },
+  {
+   "id": "neutral-items-madstone",
+   "category": "neutral-items",
+   "nameRu": "Madstone: как получить",
+   "values": [
+    {
+     "key": "regular",
+     "labelRu": "Обычный лагерь: убийце / союзникам",
+     "value": "2 / 1",
+     "unit": "text"
+    },
+    {
+     "key": "ancient",
+     "labelRu": "Древний лагерь: убийце / союзникам",
+     "value": "3 / 2",
+     "unit": "text"
+    }
+   ],
+   "schedule": null,
+   "notesRu": "Madstone выпадает при зачистке лагеря нейтралов; если рядом враг, падает на землю.",
+   "source": {
+    "name": "Liquipedia: Neutral Items",
+    "url": "https://liquipedia.net/dota2/Neutral_Items",
+    "license": "CC BY-SA 3.0"
+   },
+   "patch": "7.40",
+   "retrievedAt": "2026-10-14",
+   "verification": "imported-unverified"
+  },
+  {
+   "id": "buyback-cost",
+   "category": "buyback-respawn-xp",
+   "nameRu": "Выкуп: цена",
+   "values": [
+    {
+     "key": "formula",
+     "labelRu": "Цена",
+     "value": "⌊200 + ценность героя / 13⌋",
+     "unit": "formula"
+    }
+   ],
+   "schedule": null,
+   "notesRu": "Сначала тратится надёжное золото. Пример: при ценности 10 000 — 969.",
+   "source": {
+    "name": "Liquipedia: Gold",
+    "url": "https://liquipedia.net/dota2/Gold",
+    "license": "CC BY-SA 3.0"
+   },
+   "patch": "7.40",
+   "retrievedAt": "2026-10-14",
+   "verification": "imported-unverified"
+  },
+  {
+   "id": "buyback-cooldown",
+   "category": "buyback-respawn-xp",
+   "nameRu": "Выкуп: перезарядка и штраф",
+   "values": [
+    {
+     "key": "cooldown",
+     "labelRu": "Перезарядка",
+     "value": 480,
+     "unit": "s"
+    },
+    {
+     "key": "penalty",
+     "labelRu": "К следующему возрождению",
+     "value": 25,
+     "unit": "s"
+    }
+   ],
+   "schedule": null,
+   "notesRu": "Штраф добавляется к времени следующей смерти.",
+   "source": {
+    "name": "Liquipedia: Gold",
+    "url": "https://liquipedia.net/dota2/Gold",
+    "license": "CC BY-SA 3.0"
+   },
+   "patch": "7.40",
+   "retrievedAt": "2026-10-14",
+   "verification": "imported-unverified"
+  },
+  {
+   "id": "respawn-time",
+   "category": "buyback-respawn-xp",
+   "nameRu": "Время возрождения по уровню",
+   "values": [
+    {
+     "key": "lvl1",
+     "labelRu": "1-й уровень",
+     "value": 12,
+     "unit": "s"
+    },
+    {
+     "key": "lvl25",
+     "labelRu": "25-й уровень и выше",
+     "value": 100,
+     "unit": "s"
+    },
+    {
+     "key": "lvl2to24",
+     "labelRu": "Уровни 2–24",
+     "value": null,
+     "unit": "s"
+    },
+    {
+     "key": "neutralMin",
+     "labelRu": "Минимум при смерти от нейтралов",
+     "value": 26,
+     "unit": "s"
+    }
+   ],
+   "schedule": null,
+   "notesRu": "Значения для уровней 2–24 в загруженном источнике не раскрыты (таблица собирается шаблоном) — не заполняем.",
+   "source": {
+    "name": "Liquipedia: Death",
+    "url": "https://liquipedia.net/dota2/Death",
+    "license": "CC BY-SA 3.0"
+   },
+   "patch": null,
+   "retrievedAt": "2026-10-14",
+   "verification": "imported-unverified"
+  },
+  {
+   "id": "death-gold-loss",
+   "category": "buyback-respawn-xp",
+   "nameRu": "Потеря золота при смерти",
+   "values": [
+    {
+     "key": "formula",
+     "labelRu": "Теряется",
+     "value": "ценность героя / 40 (только ненадёжное)",
+     "unit": "formula"
+    }
+   ],
+   "schedule": null,
+   "notesRu": "Надёжное золото при смерти не теряется.",
+   "source": {
+    "name": "Liquipedia: Gold",
+    "url": "https://liquipedia.net/dota2/Gold",
+    "license": "CC BY-SA 3.0"
+   },
+   "patch": "7.40",
+   "retrievedAt": "2026-10-14",
+   "verification": "imported-unverified"
+  },
+  {
+   "id": "xp-per-level",
+   "category": "buyback-respawn-xp",
+   "nameRu": "Опыт до следующего уровня",
+   "values": [
+    {
+     "key": "l1",
+     "labelRu": "1→2",
+     "value": 240,
+     "unit": "xp"
+    },
+    {
+     "key": "l2",
+     "labelRu": "2→3",
+     "value": 400,
+     "unit": "xp"
+    },
+    {
+     "key": "l3",
+     "labelRu": "3→4",
+     "value": 520,
+     "unit": "xp"
+    },
+    {
+     "key": "l4",
+     "labelRu": "4→5",
+     "value": 600,
+     "unit": "xp"
+    },
+    {
+     "key": "l5",
+     "labelRu": "5→6",
+     "value": 680,
+     "unit": "xp"
+    },
+    {
+     "key": "l6",
+     "labelRu": "6→7",
+     "value": 760,
+     "unit": "xp"
+    },
+    {
+     "key": "l7",
+     "labelRu": "7→8",
+     "value": 800,
+     "unit": "xp"
+    },
+    {
+     "key": "l8",
+     "labelRu": "8→9",
+     "value": 900,
+     "unit": "xp"
+    },
+    {
+     "key": "l9",
+     "labelRu": "9→10",
+     "value": 1000,
+     "unit": "xp"
+    },
+    {
+     "key": "l10",
+     "labelRu": "10→11",
+     "value": 1100,
+     "unit": "xp"
+    },
+    {
+     "key": "l11",
+     "labelRu": "11→12",
+     "value": 1200,
+     "unit": "xp"
+    },
+    {
+     "key": "l12",
+     "labelRu": "12→13",
+     "value": 1300,
+     "unit": "xp"
+    },
+    {
+     "key": "l13",
+     "labelRu": "13→14",
+     "value": 1400,
+     "unit": "xp"
+    },
+    {
+     "key": "l14",
+     "labelRu": "14→15",
+     "value": 1500,
+     "unit": "xp"
+    },
+    {
+     "key": "l15",
+     "labelRu": "15→16",
+     "value": 1600,
+     "unit": "xp"
+    },
+    {
+     "key": "l16",
+     "labelRu": "16→17",
+     "value": 1700,
+     "unit": "xp"
+    },
+    {
+     "key": "l17",
+     "labelRu": "17→18",
+     "value": 1800,
+     "unit": "xp"
+    },
+    {
+     "key": "l18",
+     "labelRu": "18→19",
+     "value": 1900,
+     "unit": "xp"
+    },
+    {
+     "key": "l19",
+     "labelRu": "19→20",
+     "value": 2000,
+     "unit": "xp"
+    },
+    {
+     "key": "l20",
+     "labelRu": "20→21",
+     "value": 2200,
+     "unit": "xp"
+    },
+    {
+     "key": "l21",
+     "labelRu": "21→22",
+     "value": 2400,
+     "unit": "xp"
+    },
+    {
+     "key": "l22",
+     "labelRu": "22→23",
+     "value": 2600,
+     "unit": "xp"
+    },
+    {
+     "key": "l23",
+     "labelRu": "23→24",
+     "value": 2800,
+     "unit": "xp"
+    },
+    {
+     "key": "l24",
+     "labelRu": "24→25",
+     "value": 3000,
+     "unit": "xp"
+    },
+    {
+     "key": "l25",
+     "labelRu": "25→26",
+     "value": 4000,
+     "unit": "xp"
+    },
+    {
+     "key": "l26",
+     "labelRu": "26→27",
+     "value": 5000,
+     "unit": "xp"
+    },
+    {
+     "key": "l27",
+     "labelRu": "27→28",
+     "value": 6000,
+     "unit": "xp"
+    },
+    {
+     "key": "l28",
+     "labelRu": "28→29",
+     "value": 7000,
+     "unit": "xp"
+    },
+    {
+     "key": "l29",
+     "labelRu": "29→30",
+     "value": 8000,
+     "unit": "xp"
+    },
+    {
+     "key": "total30",
+     "labelRu": "Всего до 30-го",
+     "value": 64400,
+     "unit": "xp"
+    }
+   ],
+   "schedule": null,
+   "notesRu": "30-й уровень — максимальный.",
+   "source": {
+    "name": "Liquipedia: Experience",
+    "url": "https://liquipedia.net/dota2/Experience",
+    "license": "CC BY-SA 3.0"
+   },
+   "patch": "7.32",
+   "retrievedAt": "2026-10-14",
+   "verification": "imported-unverified"
+  },
+  {
+   "id": "gold-start",
+   "category": "gold",
+   "nameRu": "Стартовое золото",
+   "values": [
+    {
+     "key": "gold",
+     "labelRu": "Золото",
+     "value": 600,
+     "unit": "gold"
+    }
+   ],
+   "schedule": null,
+   "notesRu": "Плюс свиток телепорта; при случайном выборе героя — ещё Faerie Fire и Enchanted Mango.",
+   "source": {
+    "name": "Liquipedia: Gold",
+    "url": "https://liquipedia.net/dota2/Gold",
+    "license": "CC BY-SA 3.0"
+   },
+   "patch": "7.40",
+   "retrievedAt": "2026-10-14",
+   "verification": "imported-unverified"
+  },
+  {
+   "id": "gold-passive",
+   "category": "gold",
+   "nameRu": "Пассивное золото",
+   "values": [
+    {
+     "key": "at0",
+     "labelRu": "С 0:00",
+     "value": 90,
+     "unit": "gold/min"
+    },
+    {
+     "key": "at12",
+     "labelRu": "С 12:00",
+     "value": 94.8,
+     "unit": "gold/min"
+    },
+    {
+     "key": "at30",
+     "labelRu": "С 30:00",
+     "value": 99.8,
+     "unit": "gold/min"
+    },
+    {
+     "key": "at45",
+     "labelRu": "С 45:00",
+     "value": 105.5,
+     "unit": "gold/min"
+    },
+    {
+     "key": "at62",
+     "labelRu": "С 62:00",
+     "value": 112.8,
+     "unit": "gold/min"
+    }
+   ],
+   "schedule": null,
+   "notesRu": "Надёжное золото, начисляется с 0:00 и медленно растёт со временем.",
+   "source": {
+    "name": "Liquipedia: Gold",
+    "url": "https://liquipedia.net/dota2/Gold",
+    "license": "CC BY-SA 3.0"
+   },
+   "patch": "7.40",
+   "retrievedAt": "2026-10-14",
+   "verification": "imported-unverified"
+  },
+  {
+   "id": "gold-hero-kill",
+   "category": "gold",
+   "nameRu": "Золото за убийство героя",
+   "values": [
+    {
+     "key": "formula",
+     "labelRu": "Убийце",
+     "value": "125 + 8 × уровень убитого + серия",
+     "unit": "formula"
+    },
+    {
+     "key": "firstBlood",
+     "labelRu": "Первая кровь, дополнительно",
+     "value": 135,
+     "unit": "gold"
+    }
+   ],
+   "schedule": null,
+   "notesRu": "Ненадёжное золото. Если героя добили крипы или башня без урона от героев за 20 с, золото делится между врагами.",
+   "source": {
+    "name": "Liquipedia: Gold",
+    "url": "https://liquipedia.net/dota2/Gold",
+    "license": "CC BY-SA 3.0"
+   },
+   "patch": "7.40",
+   "retrievedAt": "2026-10-14",
+   "verification": "imported-unverified"
+  },
+  {
+   "id": "gold-assist",
+   "category": "gold",
+   "nameRu": "Золото за помощь (по площади)",
+   "values": [
+    {
+     "key": "f",
+     "labelRu": "Основа",
+     "value": "15 + (50 + 0.037 × ценность убитого) / число героев",
+     "unit": "formula"
+    },
+    {
+     "key": "comeback",
+     "labelRu": "Множитель отставания",
+     "value": "× ценность команды убитого / ценность команды убийцы",
+     "unit": "formula"
+    },
+    {
+     "key": "radius",
+     "labelRu": "Радиус",
+     "value": 1500,
+     "unit": "range"
+    }
+   ],
+   "schedule": null,
+   "notesRu": "Отстающая команда получает больше за убийство лидеров — это и есть механика «камбэка».",
+   "source": {
+    "name": "Liquipedia: Gold",
+    "url": "https://liquipedia.net/dota2/Gold",
+    "license": "CC BY-SA 3.0"
+   },
+   "patch": "7.40",
+   "retrievedAt": "2026-10-14",
+   "verification": "imported-unverified"
+  },
+  {
+   "id": "gold-streak",
+   "category": "gold",
+   "nameRu": "Золото за прерывание серии",
+   "values": [
+    {
+     "key": "formula",
+     "labelRu": "За серию из k убийств",
+     "value": "5k² + 5k (k от 3 до 10)",
+     "unit": "formula"
+    },
+    {
+     "key": "values",
+     "labelRu": "Значения 3…10",
+     "value": "60/100/150/210/280/360/450/550",
+     "unit": "text"
+    }
+   ],
+   "schedule": null,
+   "notesRu": "Серия не растёт после 10 убийств; смерть от нейтралов серию не прерывает.",
+   "source": {
+    "name": "Liquipedia: Gold",
+    "url": "https://liquipedia.net/dota2/Gold",
+    "license": "CC BY-SA 3.0"
+   },
+   "patch": "7.40",
+   "retrievedAt": "2026-10-14",
+   "verification": "imported-unverified"
+  },
+  {
+   "id": "glyph",
+   "category": "glyph-scan-courier-wards",
+   "nameRu": "Глиф (Glyph of Fortification)",
+   "values": [
+    {
+     "key": "buildings",
+     "labelRu": "Неуязвимость зданий",
+     "value": 7,
+     "unit": "s"
+    },
+    {
+     "key": "creeps",
+     "labelRu": "Неуязвимость крипов",
+     "value": 3,
+     "unit": "s"
+    },
+    {
+     "key": "cooldown",
+     "labelRu": "Перезарядка",
+     "value": 300,
+     "unit": "s"
+    },
+    {
+     "key": "firstAt",
+     "labelRu": "Доступен с",
+     "value": 180,
+     "unit": "s"
+    }
+   ],
+   "schedule": null,
+   "notesRu": "Перезарядка сбрасывается при потере первой вышки 1-го и 2-го уровня и первой казармы ближнего боя.",
+   "source": {
+    "name": "Liquipedia: Buildings",
+    "url": "https://liquipedia.net/dota2/Buildings",
+    "license": "CC BY-SA 3.0"
+   },
+   "patch": "7.41e",
+   "retrievedAt": "2026-10-14",
+   "verification": "imported-unverified"
+  },
+  {
+   "id": "scan",
+   "category": "glyph-scan-courier-wards",
+   "nameRu": "Сканирование",
+   "values": [
+    {
+     "key": "radius",
+     "labelRu": "Радиус",
+     "value": 900,
+     "unit": "range"
+    },
+    {
+     "key": "duration",
+     "labelRu": "Длительность",
+     "value": 8,
+     "unit": "s"
+    },
+    {
+     "key": "charges",
+     "labelRu": "Заряды (в начале 1)",
+     "value": 2,
+     "unit": "count"
+    },
+    {
+     "key": "restore",
+     "labelRu": "Восстановление заряда",
+     "value": 210,
+     "unit": "s"
+    }
+   ],
+   "schedule": null,
+   "notesRu": "Заряды общие на команду; враг не видит, что его сканируют.",
+   "source": {
+    "name": "Liquipedia: Scan",
+    "url": "https://liquipedia.net/dota2/Scan",
+    "license": "CC BY-SA 3.0"
+   },
+   "patch": null,
+   "retrievedAt": "2026-10-14",
+   "verification": "imported-unverified"
+  },
+  {
+   "id": "courier",
+   "category": "glyph-scan-courier-wards",
+   "nameRu": "Курьер",
+   "values": [
+    {
+     "key": "speed",
+     "labelRu": "Скорость",
+     "value": 290,
+     "unit": "speed"
+    },
+    {
+     "key": "respawn",
+     "labelRu": "Возрождение",
+     "value": "45 с + 5 с за уровень героя",
+     "unit": "formula"
+    },
+    {
+     "key": "cost",
+     "labelRu": "Цена",
+     "value": "выдаётся каждому игроку бесплатно",
+     "unit": "text"
+    },
+    {
+     "key": "flyingLevel",
+     "labelRu": "Начинает летать с уровня",
+     "value": null,
+     "unit": "level"
+    }
+   ],
+   "schedule": null,
+   "notesRu": "Уровень, с которого курьер летает, в загруженных источниках не указан.",
+   "source": {
+    "name": "Liquipedia: Courier",
+    "url": "https://liquipedia.net/dota2/Courier",
+    "license": "CC BY-SA 3.0"
+   },
+   "patch": "7.40",
+   "retrievedAt": "2026-10-14",
+   "verification": "imported-unverified"
+  },
+  {
+   "id": "towers",
+   "category": "buildings",
+   "nameRu": "Вышки",
+   "values": [
+    {
+     "key": "t1",
+     "labelRu": "1-й уровень: здоровье / броня",
+     "value": "1800 / 12",
+     "unit": "text"
+    },
+    {
+     "key": "t2",
+     "labelRu": "2-й уровень",
+     "value": "2500 / 16",
+     "unit": "text"
+    },
+    {
+     "key": "t3",
+     "labelRu": "3-й уровень",
+     "value": "2500 / 16",
+     "unit": "text"
+    },
+    {
+     "key": "t4",
+     "labelRu": "4-й уровень",
+     "value": "2600 / 21",
+     "unit": "text"
+    }
+   ],
+   "schedule": null,
+   "notesRu": "Вышка неуязвима, пока не разрушена предыдущая на линии; обе вышки 4-го уровня защищают трон.",
+   "source": {
+    "name": "Liquipedia: Buildings",
+    "url": "https://liquipedia.net/dota2/Buildings",
+    "license": "CC BY-SA 3.0"
+   },
+   "patch": "7.41e",
+   "retrievedAt": "2026-10-14",
+   "verification": "imported-unverified"
+  },
+  {
+   "id": "tower-t4-reinforcement",
+   "category": "buildings",
+   "nameRu": "Вышки 4-го уровня: броня от казарм",
+   "values": [
+    {
+     "key": "perBarracks",
+     "labelRu": "Броня за каждую целую казарму",
+     "value": 4,
+     "unit": "armor"
+    }
+   ],
+   "schedule": null,
+   "notesRu": "До +24 брони при всех 6 казармах.",
+   "source": {
+    "name": "Liquipedia: Buildings",
+    "url": "https://liquipedia.net/dota2/Buildings",
+    "license": "CC BY-SA 3.0"
+   },
+   "patch": "7.41e",
+   "retrievedAt": "2026-10-14",
+   "verification": "imported-unverified"
+  },
+  {
+   "id": "barracks",
+   "category": "buildings",
+   "nameRu": "Казармы",
+   "values": [
+    {
+     "key": "melee",
+     "labelRu": "Ближнего боя: здоровье / броня",
+     "value": "2200 / 15",
+     "unit": "text"
+    },
+    {
+     "key": "ranged",
+     "labelRu": "Дальнего боя: здоровье / броня",
+     "value": "1300 / 9",
+     "unit": "text"
+    }
+   ],
+   "schedule": null,
+   "notesRu": "Неуязвимы, пока цела вышка 3-го уровня этой линии.",
+   "source": {
+    "name": "Liquipedia: Buildings",
+    "url": "https://liquipedia.net/dota2/Buildings",
+    "license": "CC BY-SA 3.0"
+   },
+   "patch": "7.41e",
+   "retrievedAt": "2026-10-14",
+   "verification": "imported-unverified"
+  },
+  {
+   "id": "ancient",
+   "category": "buildings",
+   "nameRu": "Трон (Ancient)",
+   "values": [
+    {
+     "key": "hp",
+     "labelRu": "Здоровье",
+     "value": 4500,
+     "unit": "hp"
+    },
+    {
+     "key": "armor",
+     "labelRu": "Броня",
+     "value": 23,
+     "unit": "armor"
+    }
+   ],
+   "schedule": null,
+   "notesRu": "Неуязвим, пока стоят обе вышки 4-го уровня; добить свой трон нельзя.",
+   "source": {
+    "name": "Liquipedia: Buildings",
+    "url": "https://liquipedia.net/dota2/Buildings",
+    "license": "CC BY-SA 3.0"
+   },
+   "patch": "7.41e",
+   "retrievedAt": "2026-10-14",
+   "verification": "imported-unverified"
+  },
+  {
+   "id": "backdoor-protection",
+   "category": "buildings",
+   "nameRu": "Защита от бэкдора",
+   "values": [
+    {
+     "key": "reduction",
+     "labelRu": "Снижение урона",
+     "value": 50,
+     "unit": "%"
+    },
+    {
+     "key": "heal",
+     "labelRu": "Лечение здания",
+     "value": 180,
+     "unit": "hp/s"
+    },
+    {
+     "key": "disable",
+     "labelRu": "Отключается на",
+     "value": 15,
+     "unit": "s"
+    }
+   ],
+   "schedule": null,
+   "notesRu": "Отключается, когда рядом вражеские крипы линии. Вышки 1-го уровня этой защиты не имеют.",
+   "source": {
+    "name": "Liquipedia: Buildings",
+    "url": "https://liquipedia.net/dota2/Buildings",
+    "license": "CC BY-SA 3.0"
+   },
+   "patch": "7.41e",
+   "retrievedAt": "2026-10-14",
+   "verification": "imported-unverified"
+  },
+  {
+   "id": "building-bounty",
+   "category": "buildings",
+   "nameRu": "Золото за здания",
+   "values": [
+    {
+     "key": "t1",
+     "labelRu": "Вышка 1: команде / за добивание",
+     "value": "90 / 110–130",
+     "unit": "text"
+    },
+    {
+     "key": "t2",
+     "labelRu": "Вышка 2",
+     "value": "110 / 130",
+     "unit": "text"
+    },
+    {
+     "key": "t3",
+     "labelRu": "Вышка 3",
+     "value": "125 / 150",
+     "unit": "text"
+    },
+    {
+     "key": "t4",
+     "labelRu": "Вышка 4",
+     "value": "145 / 170",
+     "unit": "text"
+    },
+    {
+     "key": "rangedRax",
+     "labelRu": "Казарма дальнего боя, команде",
+     "value": 90,
+     "unit": "gold"
+    },
+    {
+     "key": "meleeRax",
+     "labelRu": "Казарма ближнего боя, команде",
+     "value": 155,
+     "unit": "gold"
+    }
+   ],
+   "schedule": null,
+   "notesRu": "Здание ниже 10% здоровья можно добить своим — тогда обе команды получают половину командной награды.",
+   "source": {
+    "name": "Liquipedia: Gold",
+    "url": "https://liquipedia.net/dota2/Gold",
+    "license": "CC BY-SA 3.0"
+   },
+   "patch": "7.40",
+   "retrievedAt": "2026-10-14",
+   "verification": "imported-unverified"
+  },
+  {
+   "id": "outpost",
+   "category": "map-objects",
+   "nameRu": "Аванпост",
+   "values": [
+    {
+     "key": "capture",
+     "labelRu": "Захват (один герой)",
+     "value": 6,
+     "unit": "s"
+    }
+   ],
+   "schedule": null,
+   "notesRu": "Захват быстрее, если захватывают несколько героев (6 / n с); на свой аванпост можно телепортироваться.",
+   "source": {
+    "name": "Liquipedia: Outpost",
+    "url": "https://liquipedia.net/dota2/Outpost",
+    "license": "CC BY-SA 3.0"
+   },
+   "patch": null,
+   "retrievedAt": "2026-10-14",
+   "verification": "imported-unverified"
+  },
+  {
+   "id": "watcher",
+   "category": "map-objects",
+   "nameRu": "Наблюдатель (Watcher)",
+   "values": [
+    {
+     "key": "capture",
+     "labelRu": "Захват",
+     "value": 1,
+     "unit": "s"
+    },
+    {
+     "key": "on",
+     "labelRu": "Даёт обзор",
+     "value": 420,
+     "unit": "s"
+    },
+    {
+     "key": "off",
+     "labelRu": "Выключен после сбития врагом",
+     "value": 120,
+     "unit": "s"
+    },
+    {
+     "key": "vision",
+     "labelRu": "Обзор день / ночь",
+     "value": "800 / 450",
+     "unit": "text"
+    }
+   ],
+   "schedule": null,
+   "notesRu": "Захваченного врагом наблюдателя можно выключить повторным захватом.",
+   "source": {
+    "name": "Liquipedia: Watcher",
+    "url": "https://liquipedia.net/dota2/Watcher",
+    "license": "CC BY-SA 3.0"
+   },
+   "patch": null,
+   "retrievedAt": "2026-10-14",
+   "verification": "imported-unverified"
+  },
+  {
+   "id": "twin-gate",
+   "category": "map-objects",
+   "nameRu": "Двойные врата",
+   "values": [
+    {
+     "key": "channel",
+     "labelRu": "Перенос",
+     "value": 4,
+     "unit": "s"
+    },
+    {
+     "key": "mana",
+     "labelRu": "Мана",
+     "value": 30,
+     "unit": "mana"
+    }
+   ],
+   "schedule": null,
+   "notesRu": "Мана возвращается, если перенос прерван.",
+   "source": {
+    "name": "Liquipedia: Twin Gate",
+    "url": "https://liquipedia.net/dota2/Twin_Gate",
+    "license": "CC BY-SA 3.0"
+   },
+   "patch": null,
+   "retrievedAt": "2026-10-14",
+   "verification": "imported-unverified"
+  },
+  {
+   "id": "twin-gate-root",
+   "category": "map-objects",
+   "nameRu": "Двойные врата: прерывание",
+   "values": [
+    {
+     "key": "rule",
+     "labelRu": "Правило",
+     "value": "прерывается обездвиживанием (root)",
+     "unit": "text"
+    }
+   ],
+   "schedule": null,
+   "notesRu": "С 7.41e перенос через врата прерывается рутом.",
+   "source": {
+    "name": "Valve: патч-ноуты 7.41e",
+    "url": "https://www.dota2.com/patches/7.41e",
+    "license": null
+   },
+   "patch": "7.41e",
+   "retrievedAt": "2026-10-14",
+   "verification": "verified"
+  },
+  {
+   "id": "shrine-of-wisdom",
+   "category": "map-objects",
+   "nameRu": "Святилище мудрости",
+   "values": [
+    {
+     "key": "firstAt",
+     "labelRu": "Первый раз",
+     "value": 420,
+     "unit": "s"
+    },
+    {
+     "key": "interval",
+     "labelRu": "Интервал",
+     "value": 420,
+     "unit": "s"
+    }
+   ],
+   "schedule": {
+    "firstAt": 420,
+    "interval": 420,
+    "lastAt": null
+   },
+   "notesRu": "Святилища у сложных линий заменили руны мудрости; опыт получает герой с наименьшим опытом из стоящих рядом союзников.",
+   "source": {
+    "name": "Liquipedia: Shrine of Wisdom",
+    "url": "https://liquipedia.net/dota2/Shrine_of_Wisdom",
+    "license": "CC BY-SA 3.0"
+   },
+   "patch": null,
+   "retrievedAt": "2026-10-14",
+   "verification": "imported-unverified"
+  },
+  {
+   "id": "shrine-of-wisdom-xp",
+   "category": "map-objects",
+   "nameRu": "Святилище мудрости: опыт",
+   "values": [
+    {
+     "key": "first",
+     "labelRu": "Первое святилище",
+     "value": 200,
+     "unit": "xp"
+    },
+    {
+     "key": "step",
+     "labelRu": "Прибавка к каждому следующему",
+     "value": 300,
+     "unit": "xp"
+    }
+   ],
+   "schedule": null,
+   "notesRu": "200, 500, 800 и так далее.",
+   "source": {
+    "name": "Valve: патч-ноуты 7.41",
+    "url": "https://www.dota2.com/patches/7.41",
+    "license": null
+   },
+   "patch": "7.41",
+   "retrievedAt": "2026-10-14",
+   "verification": "verified"
+  },
+  {
+   "id": "ward-observer",
+   "category": "glyph-scan-courier-wards",
+   "nameRu": "Observer Ward",
+   "values": [
+    {
+     "key": "cost",
+     "labelRu": "Цена",
+     "value": 0,
+     "unit": "gold"
+    },
+    {
+     "key": "stock",
+     "labelRu": "Максимум в лавке",
+     "value": 4,
+     "unit": "count"
+    },
+    {
+     "key": "restock",
+     "labelRu": "Пополнение лавки",
+     "value": 135,
+     "unit": "s"
+    },
+    {
+     "key": "lifetime",
+     "labelRu": "Живёт",
+     "value": 360,
+     "unit": "s"
+    },
+    {
+     "key": "vision",
+     "labelRu": "Обзор",
+     "value": 1600,
+     "unit": "range"
+    }
+   ],
+   "schedule": null,
+   "notesRu": "Значения из данных Valve для текущего патча.",
+   "source": {
+    "name": "Valve datafeed (dota2.com)",
+    "url": "https://www.dota2.com/datafeed/itemdata?language=english&item_id=42",
+    "license": null
+   },
+   "patch": "7.41f",
+   "retrievedAt": "2026-10-14",
+   "verification": "verified"
+  },
+  {
+   "id": "ward-sentry",
+   "category": "glyph-scan-courier-wards",
+   "nameRu": "Sentry Ward",
+   "values": [
+    {
+     "key": "cost",
+     "labelRu": "Цена",
+     "value": 50,
+     "unit": "gold"
+    },
+    {
+     "key": "stock",
+     "labelRu": "Максимум в лавке",
+     "value": 8,
+     "unit": "count"
+    },
+    {
+     "key": "restock",
+     "labelRu": "Пополнение лавки",
+     "value": 70,
+     "unit": "s"
+    },
+    {
+     "key": "lifetime",
+     "labelRu": "Живёт",
+     "value": 420,
+     "unit": "s"
+    },
+    {
+     "key": "trueSight",
+     "labelRu": "Радиус истинного зрения",
+     "value": 1050,
+     "unit": "range"
+    }
+   ],
+   "schedule": null,
+   "notesRu": "Значения из данных Valve для текущего патча.",
+   "source": {
+    "name": "Valve datafeed (dota2.com)",
+    "url": "https://www.dota2.com/datafeed/itemdata?language=english&item_id=43",
+    "license": null
+   },
+   "patch": "7.41f",
+   "retrievedAt": "2026-10-14",
+   "verification": "verified"
+  },
+  {
+   "id": "smoke-of-deceit",
+   "category": "glyph-scan-courier-wards",
+   "nameRu": "Smoke of Deceit",
+   "values": [
+    {
+     "key": "cost",
+     "labelRu": "Цена",
+     "value": 50,
+     "unit": "gold"
+    },
+    {
+     "key": "stock",
+     "labelRu": "Максимум в лавке",
+     "value": 3,
+     "unit": "count"
+    },
+    {
+     "key": "restock",
+     "labelRu": "Пополнение лавки",
+     "value": 420,
+     "unit": "s"
+    }
+   ],
+   "schedule": null,
+   "notesRu": "Значения из данных Valve для текущего патча.",
+   "source": {
+    "name": "Valve datafeed (dota2.com)",
+    "url": "https://www.dota2.com/datafeed/itemdata?language=english&item_id=188",
+    "license": null
+   },
+   "patch": "7.41f",
+   "retrievedAt": "2026-10-14",
+   "verification": "verified"
+  },
+  {
+   "id": "vision-heroes",
+   "category": "day-night",
+   "nameRu": "Обзор героев днём и ночью",
+   "values": [
+    {
+     "key": "day",
+     "labelRu": "Днём",
+     "value": 1800,
+     "unit": "range"
+    },
+    {
+     "key": "night",
+     "labelRu": "Ночью",
+     "value": 800,
+     "unit": "range"
+    },
+    {
+     "key": "heroes",
+     "labelRu": "Героев с таким обзором",
+     "value": 120,
+     "unit": "count"
+    }
+   ],
+   "schedule": null,
+   "notesRu": "Исключения (день/ночь): Bane, Winter Wyvern — 1800/1200; Sniper — 1800/1400; Night Stalker — 800/1800; Bounty Hunter, Gyrocopter — 1800/1000; Slark — 1800/1800.",
+   "source": {
+    "name": "Valve datafeed (dota2.com)",
+    "url": "https://www.dota2.com/datafeed/herodata?language=english",
+    "license": null
+   },
+   "patch": "7.41f",
+   "retrievedAt": "2026-10-14",
+   "verification": "verified"
+  },
+  {
+   "id": "vision-night-stalker",
+   "category": "day-night",
+   "nameRu": "Night Stalker: обзор",
+   "values": [
+    {
+     "key": "day",
+     "labelRu": "Днём",
+     "value": 800,
+     "unit": "range"
+    },
+    {
+     "key": "night",
+     "labelRu": "Ночью",
+     "value": 1800,
+     "unit": "range"
+    }
+   ],
+   "schedule": null,
+   "notesRu": "Исключение из общего правила: ночью Night Stalker видит дальше, чем днём.",
+   "source": {
+    "name": "Valve datafeed (dota2.com)",
+    "url": "https://www.dota2.com/datafeed/herodata?language=english",
+    "license": null
+   },
+   "patch": "7.41f",
+   "retrievedAt": "2026-10-14",
+   "verification": "verified"
+  }
+ ]
+}

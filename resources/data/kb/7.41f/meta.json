@@ -1,7 +1,7 @@
 {
   "patch": "7.41f",
   "patchDate": "2026-09-15",
-  "generatedAt": "2026-10-14T04:10:57.890Z",
+  "generatedAt": "2026-10-14T04:33:36.180Z",
   "verification": "imported-unverified",
   "note": "Данные импортированы автоматически и не сверены вручную с патч-ноутами. Для точных расчётов использовать только после проверки.",
   "sources": [
@@ -33,6 +33,225 @@
         "item descriptions",
         "hero roles"
       ]
+    },
+    {
+      "name": "Liquipedia: Lane Creeps",
+      "url": "https://liquipedia.net/dota2/Lane_Creeps",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-10-14T04:33:36.180Z",
+      "covers": [
+        "mechanics"
+      ]
+    },
+    {
+      "name": "Valve: патч-ноуты 7.41",
+      "url": "https://www.dota2.com/patches/7.41",
+      "retrievedAt": "2026-10-14T04:33:36.180Z",
+      "covers": [
+        "mechanics"
+      ]
+    },
+    {
+      "name": "Liquipedia: Neutral Creeps",
+      "url": "https://liquipedia.net/dota2/Neutral_Creeps",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-10-14T04:33:36.180Z",
+      "covers": [
+        "mechanics"
+      ]
+    },
+    {
+      "name": "Liquipedia: Creep Stacking",
+      "url": "https://liquipedia.net/dota2/Creep_Stacking",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-10-14T04:33:36.180Z",
+      "covers": [
+        "mechanics"
+      ]
+    },
+    {
+      "name": "Liquipedia: Runes",
+      "url": "https://liquipedia.net/dota2/Runes",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-10-14T04:33:36.180Z",
+      "covers": [
+        "mechanics"
+      ]
+    },
+    {
+      "name": "Liquipedia: Lotus Pool",
+      "url": "https://liquipedia.net/dota2/Lotus_Pool",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-10-14T04:33:36.180Z",
+      "covers": [
+        "mechanics"
+      ]
+    },
+    {
+      "name": "Liquipedia: Time of Day",
+      "url": "https://liquipedia.net/dota2/Time_of_Day",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-10-14T04:33:36.180Z",
+      "covers": [
+        "mechanics"
+      ]
+    },
+    {
+      "name": "Liquipedia: Roshan",
+      "url": "https://liquipedia.net/dota2/Roshan",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-10-14T04:33:36.180Z",
+      "covers": [
+        "mechanics"
+      ]
+    },
+    {
+      "name": "Liquipedia: Tormentor",
+      "url": "https://liquipedia.net/dota2/Tormentor",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-10-14T04:33:36.180Z",
+      "covers": [
+        "mechanics"
+      ]
+    },
+    {
+      "name": "Liquipedia: Neutral Items",
+      "url": "https://liquipedia.net/dota2/Neutral_Items",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-10-14T04:33:36.180Z",
+      "covers": [
+        "mechanics"
+      ]
+    },
+    {
+      "name": "Liquipedia: Gold",
+      "url": "https://liquipedia.net/dota2/Gold",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-10-14T04:33:36.180Z",
+      "covers": [
+        "mechanics"
+      ]
+    },
+    {
+      "name": "Liquipedia: Death",
+      "url": "https://liquipedia.net/dota2/Death",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-10-14T04:33:36.180Z",
+      "covers": [
+        "mechanics"
+      ]
+    },
+    {
+      "name": "Liquipedia: Experience",
+      "url": "https://liquipedia.net/dota2/Experience",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-10-14T04:33:36.180Z",
+      "covers": [
+        "mechanics"
+      ]
+    },
+    {
+      "name": "Liquipedia: Buildings",
+      "url": "https://liquipedia.net/dota2/Buildings",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-10-14T04:33:36.180Z",
+      "covers": [
+        "mechanics"
+      ]
+    },
+    {
+      "name": "Liquipedia: Scan",
+      "url": "https://liquipedia.net/dota2/Scan",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-10-14T04:33:36.180Z",
+      "covers": [
+        "mechanics"
+      ]
+    },
+    {
+      "name": "Liquipedia: Courier",
+      "url": "https://liquipedia.net/dota2/Courier",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-10-14T04:33:36.180Z",
+      "covers": [
+        "mechanics"
+      ]
+    },
+    {
+      "name": "Liquipedia: Outpost",
+      "url": "https://liquipedia.net/dota2/Outpost",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-10-14T04:33:36.180Z",
+      "covers": [
+        "mechanics"
+      ]
+    },
+    {
+      "name": "Liquipedia: Watcher",
+      "url": "https://liquipedia.net/dota2/Watcher",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-10-14T04:33:36.180Z",
+      "covers": [
+        "mechanics"
+      ]
+    },
+    {
+      "name": "Liquipedia: Twin Gate",
+      "url": "https://liquipedia.net/dota2/Twin_Gate",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-10-14T04:33:36.180Z",
+      "covers": [
+        "mechanics"
+      ]
+    },
+    {
+      "name": "Valve: патч-ноуты 7.41e",
+      "url": "https://www.dota2.com/patches/7.41e",
+      "retrievedAt": "2026-10-14T04:33:36.180Z",
+      "covers": [
+        "mechanics"
+      ]
+    },
+    {
+      "name": "Liquipedia: Shrine of Wisdom",
+      "url": "https://liquipedia.net/dota2/Shrine_of_Wisdom",
+      "license": "CC BY-SA 3.0",
+      "retrievedAt": "2026-10-14T04:33:36.180Z",
+      "covers": [
+        "mechanics"
+      ]
+    },
+    {
+      "name": "Valve datafeed (dota2.com)",
+      "url": "https://www.dota2.com/datafeed/itemdata?language=english&item_id=42",
+      "retrievedAt": "2026-10-14T04:33:36.180Z",
+      "covers": [
+        "mechanics"
+      ]
+    },
+    {
+      "name": "Valve datafeed (dota2.com)",
+      "url": "https://www.dota2.com/datafeed/itemdata?language=english&item_id=43",
+      "retrievedAt": "2026-10-14T04:33:36.180Z",
+      "covers": [
+        "mechanics"
+      ]
+    },
+    {
+      "name": "Valve datafeed (dota2.com)",
+      "url": "https://www.dota2.com/datafeed/itemdata?language=english&item_id=188",
+      "retrievedAt": "2026-10-14T04:33:36.180Z",
+      "covers": [
+        "mechanics"
+      ]
+    },
+    {
+      "name": "Valve datafeed (dota2.com)",
+      "url": "https://www.dota2.com/datafeed/herodata?language=english",
+      "retrievedAt": "2026-10-14T04:33:36.180Z",
+      "covers": [
+        "mechanics"
+      ]
     }
   ],
   "counts": {
@@ -44,6 +263,28 @@
       "not-sold": 148,
       "neutral": 49,
       "removed": 4
+    },
+    "mechanics": {
+      "total": 78,
+      "byCategory": {
+        "lane-creeps": 15,
+        "neutral-camps": 10,
+        "runes": 6,
+        "day-night": 4,
+        "roshan": 5,
+        "tormentor": 5,
+        "neutral-items": 5,
+        "buyback-respawn-xp": 5,
+        "gold": 5,
+        "glyph-scan-courier-wards": 6,
+        "buildings": 6,
+        "map-objects": 6
+      },
+      "byVerification": {
+        "imported-unverified": 57,
+        "verified": 20,
+        "missing": 1
+      }
     }
   },
   "priceCorrections": [

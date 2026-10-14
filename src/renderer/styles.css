@@ -157,3 +157,13 @@ p.warn { margin: 0; }
 .kb-ability { background: var(--panel-2); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
 .kb-desc { margin: 6px 0 0; color: #c3ccd7; white-space: pre-line; }
 .kb-talents { margin: 0; padding-left: 18px; color: #c3ccd7; columns: 2; }
+/* База знаний: механика карты */
+.mech-list { display: flex; flex-direction: column; gap: 14px; }
+.mech-entry { border-top: 1px solid var(--line); padding-top: 10px; }
+.mech-entry:first-child { border-top: 0; padding-top: 0; }
+.mech-values { border-collapse: collapse; margin: 6px 0; font-size: 13px; }
+.mech-values td { padding: 2px 16px 2px 0; vertical-align: top; }
+.pill.mech-verified { color: var(--ok); border-color: #2a5a35; }
+.pill.mech-unverified { color: var(--warn); border-color: #5a4a1f; }
+.pill.mech-missing { color: var(--muted); }
+.mech-upcoming td { padding: 4px 8px; }

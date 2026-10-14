@@ -8,6 +8,8 @@ import type { AbilityState, MatchEvent, MatchState as MatchSnapshot, Tracked, Tr
 import type { AgreementField, AgreementReport } from '@core/gsi/agreement.ts';
 import { useEngine } from '../hooks/useEngine';
 import { Card, PageHeader } from '../components/ui';
+import { UpcomingEventsCard } from '../components/mechanics';
+import { useKnowledgeBase } from '../hooks/useKnowledgeBase';
 
 const TAG_LABEL: Record<TrackedTag, string> = {
   visible: 'видно сейчас',
@@ -146,6 +148,9 @@ export function MatchState() {
 
 function MatchView({ s, now }: { s: MatchSnapshot; now: number }) {
   const m = s.match;
+  const { kb } = useKnowledgeBase();
+  // «Ближайшие события» — только когда игровые часы известны
+  const clockKnown = m.clock.value !== null && m.clock.tag !== 'unknown';
   const h = s.hero;
   const events = s.events.slice(-EVENTS_SHOWN).reverse();
   // Ячейки только из GSI: телепорт и нейтральные — всегда, тайник — только занятые ячейки (шесть пустых — шум)
@@ -173,6 +178,8 @@ function MatchView({ s, now }: { s: MatchSnapshot; now: number }) {
           Источники: {s.sources.gsi ? 'данные из игры' : 'данных из игры нет'} · {s.sources.screen ? 'экран' : 'экран не используется'}
         </p>
       </Card>
+
+      {clockKnown && kb && kb.mechanics.length > 0 && <UpcomingEventsCard clockSec={m.clock.value as number} entries={kb.mechanics} />}
 
       <Card title="Мой герой">
         {!h.locked && (

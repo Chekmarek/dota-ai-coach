@@ -4,6 +4,7 @@ import { join } from 'node:path';
 import type { KbHero, KbItem, KbMeta, KnowledgeBase } from '@shared/types/kb';
 import { auditItems } from '@core/knowledge-base/audit.ts';
 import { selectKbCopy, type KbCopyOrigin } from '@core/knowledge-base/select.ts';
+import { parseMechanics } from '@shared/types/mechanics';
 
 interface KbCopy {
   origin: KbCopyOrigin;
@@ -51,12 +52,24 @@ export class KbStore {
       if (!existsSync(dir)) throw new Error(`Нет данных патча ${copy.patch}`);
       const read = <T>(f: string) => JSON.parse(readFileSync(join(dir, f), 'utf8')) as T;
       const items = read<KbItem[]>('items.json');
+      // Механика необязательна: без файла или с плохими записями база всё равно работает
+      let mech: ReturnType<typeof parseMechanics> = { file: null, warnings: ['mechanics.json нет в этой копии базы'] };
+      if (existsSync(join(dir, 'mechanics.json'))) {
+        try {
+          mech = parseMechanics(read<unknown>('mechanics.json'));
+        } catch (e) {
+          mech = { file: null, warnings: [`mechanics.json не читается: ${(e as Error).message}`] };
+        }
+      }
+      for (const w of mech.warnings) console.warn(`[kb] ${w}`);
       this.cache = {
         meta: read<KbMeta>('meta.json'),
         heroes: read<KbHero[]>('heroes.json'),
         items,
         audit: auditItems(items),
         copy: copy.origin,
+        mechanics: mech.file?.entries ?? [],
+        mechanicsWarnings: mech.warnings,
       };
       return this.cache;
     } catch (e) {

@@ -332,6 +332,29 @@ test('База знаний: герои и предметы текущего п�
   }
 });
 
+test('База знаний: вкладка «Механика» — группы, источник, пометка «не проверено»', async () => {
+  const { app, ui } = await launch(tmp());
+  try {
+    await ui.click('[data-testid="nav-kb"]');
+    await ui.click('[data-testid="kb-tab-mechanics"]');
+    const tab = ui.locator('[data-testid="kb-mechanics"]');
+    await expect(tab).toContainText('Крипы на линиях');
+    await expect(tab).toContainText('Рошан');
+    // Проверенное по патч-ноутам Valve и непроверенное из вики отличаются пометкой
+    await expect(ui.locator('[data-testid="mech-lane-siege-extra-30"] [data-testid="mech-verified"]')).toBeVisible();
+    await expect(ui.locator('[data-testid="mech-lane-wave-spawn"] [data-testid="mech-unverified"]')).toBeVisible();
+    await expect(ui.locator('[data-testid="mech-lane-wave-spawn"] a')).toHaveAttribute('href', /liquipedia.net/);
+    await expect(ui.locator('[data-testid="mech-neutral-pull-per-lane"]')).toContainText('нет данных');
+    await ui.fill('[data-testid="mech-search"]', 'Рошан: возрождение');
+    await expect(ui.locator('[data-testid="mech-roshan-respawn"]')).toContainText('8:00');
+    await expect(ui.locator('[data-testid="mech-lane-wave-spawn"]')).toHaveCount(0);
+    await expect(ui.locator('[data-testid="mech-warnings"]')).toHaveCount(0);
+    await ui.screenshot({ path: join(ROOT, 'test-results/kb-mechanics.png') });
+  } finally {
+    await app.close();
+  }
+});
+
 /** Копия базы «рядом с программой» с заданной датой и именем патча (для проверки выбора копии) */
 function externalKb(generatedAt: string, patch: string): string {
   const dir = join(tmp(), 'kb');
@@ -416,6 +439,7 @@ test('GSI: записанная сессия → «Состояние матча
   try {
     await ui.click('[data-testid="nav-match"]');
     await expect(ui.locator('[data-testid="match-empty"]')).toBeVisible();
+    await expect(ui.locator('[data-testid="upcoming-events"]')).toHaveCount(0);
     const entries = parseSession(readFileSync(join(ROOT, 'tests/fixtures/gsi/session.jsonl'), 'utf8'));
     const r = await replaySession(entries, { url: `http://127.0.0.1:${port}/`, token: GSI_TOKEN });
     expect(r.failed).toBe(0);
@@ -429,6 +453,14 @@ test('GSI: записанная сессия → «Состояние матча
     await expect(ui.locator('[data-testid="hero-level"] [data-testid="source-chip"]')).toHaveText('из игры');
     await expect(ui.locator('[data-testid="match-clock"] [data-testid="source-chip"]')).toHaveText('из игры');
     await expect(ui.locator('[data-testid="item-inv1-value"]')).toHaveText('Bottle');
+    // «Ближайшие события» по часам матча (8:0x): волна по расписанию, руны мудрости нет, Рошан — без времени смерти
+    const upcoming = ui.locator('[data-testid="upcoming-events"]');
+    await expect(upcoming).toBeVisible();
+    await expect(upcoming.locator('[data-testid="upcoming-lane-wave"]')).toHaveAttribute('data-status', 'ok');
+    await expect(upcoming.locator('[data-testid="upcoming-lane-wave"]')).toContainText(/8:(00|30)|9:00/);
+    await expect(upcoming.locator('[data-testid="upcoming-rune-water"]')).toHaveAttribute('data-status', 'ended');
+    await expect(upcoming.locator('[data-testid="upcoming-rune-wisdom"]')).toHaveAttribute('data-status', 'removed');
+    await expect(upcoming.locator('[data-testid="upcoming-roshan-respawn"]')).toHaveAttribute('data-status', 'unknown');
     await expect(ui.locator('[data-testid="sidebar-gsi"]')).toBeVisible();
     await ui.screenshot({ path: join(ROOT, 'test-results/gsi-match.png') });
     // Сессия записана без ников и steamid

@@ -1,4 +1,5 @@
 // Типы базы знаний (формат файлов resources/data/kb/<патч>/*.json, см. scripts/import-kb.mjs)
+import type { MechanicsEntry } from './mechanics';
 
 export type Verification = 'verified' | 'imported-unverified' | 'missing';
 
@@ -18,7 +19,13 @@ export interface KbMeta {
   verification: Verification;
   note: string;
   sources: KbSource[];
-  counts: { heroes: number; items: number; abilities: number; itemsByAvailability?: Partial<Record<KbItemAvailability, number>> };
+  counts: {
+    heroes: number;
+    items: number;
+    abilities: number;
+    itemsByAvailability?: Partial<Record<KbItemAvailability, number>>;
+    mechanics?: { total: number; byCategory: Record<string, number>; byVerification: Record<string, number> };
+  };
   /** Где Valve исправил OpenDota (цена, рецепт, части) — для отчёта */
   priceCorrections?: string[];
 }
@@ -113,4 +120,8 @@ export interface KnowledgeBase {
   audit: KbAudit;
   /** Какая копия загружена: asar — из обновления приложения, external — рядом с программой */
   copy: 'asar' | 'external';
+  /** Механика карты (mechanics.json); пусто, если файла нет */
+  mechanics: MechanicsEntry[];
+  /** Предупреждения при чтении mechanics.json (отброшенные записи, нет файла) */
+  mechanicsWarnings: string[];
 }

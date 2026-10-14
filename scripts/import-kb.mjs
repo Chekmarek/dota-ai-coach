@@ -1,12 +1,16 @@
 // Импорт базы знаний из открытых источников:
 //  - Valve datafeed (dota2.com) — официально: патч, герои, характеристики, способности (+ описания на русском);
 //  - OpenDota dotaconstants (MIT) — предметы: цена, рецепты, атрибуты; роли героев.
+//  - механика карты: scripts/kb-mechanics.sources.json (вручную, с источниками) + варды и обзор из Valve (см. kb-mechanics.mjs).
 // Все данные помечаются imported-unverified: их нужно сверить с патч-ноутами, прежде чем считать проверенными.
-//   node scripts/import-kb.mjs
-// Результат: resources/data/kb/<патч>/{meta,heroes,items}.json
-import { mkdirSync, writeFileSync } from 'node:fs';
+// Исключение — механика: «verified» только для значений, найденных в патч-ноутах Valve текущей серии или в datafeed.
+//   node scripts/import-kb.mjs                  — всё заново
+//   node scripts/import-kb.mjs --mechanics-only — только mechanics.json (герои и предметы берутся с диска)
+// Результат: resources/data/kb/<патч>/{meta,heroes,items,mechanics}.json
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { buildMechanics } from './kb-mechanics.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const VALVE = 'https://www.dota2.com/datafeed';
@@ -39,6 +43,33 @@ const last = patches[patches.length - 1];
 const patch = last.patch_number;
 const patchDate = new Date(last.patch_timestamp * 1000).toISOString().slice(0, 10);
 console.log(`Текущий патч: ${patch} (${patchDate})`);
+const out = join(root, 'resources/data/kb', patch);
+
+/** Собирает mechanics.json и дописывает в meta источники механики и счётчики */
+async function writeMechanics(heroes, meta) {
+  const m = await buildMechanics({ root, patch, patches, heroes, getJson, valve: VALVE, retrievedAt });
+  for (const w of m.warnings) console.warn(`  ⚠ ${w}`);
+  console.log(`Механика: ${m.counts.total} записей (проверены по патч-ноутам ${m.checkedVersions.join(', ')})`, m.counts.byVerification);
+  writeFileSync(join(out, 'mechanics.json'), JSON.stringify(m.file, null, 1));
+  meta.sources = meta.sources.filter((s) => !s.covers?.includes('mechanics'));
+  for (const s of m.sourcesUsed) {
+    const [name, url, license] = s.split('|');
+    meta.sources.push({ name, url, ...(license ? { license } : {}), retrievedAt, covers: ['mechanics'] });
+  }
+  meta.counts.mechanics = m.counts;
+  return meta;
+}
+
+if (process.argv.includes('--mechanics-only')) {
+  if (!existsSync(join(out, 'meta.json'))) throw new Error(`Нет базы патча ${patch}: сначала полный импорт`);
+  const heroesOnDisk = JSON.parse(readFileSync(join(out, 'heroes.json'), 'utf8'));
+  const metaOnDisk = JSON.parse(readFileSync(join(out, 'meta.json'), 'utf8'));
+  // Дата базы = дата последнего изменения любой её части (по ней выбирается копия базы)
+  metaOnDisk.generatedAt = retrievedAt;
+  writeFileSync(join(out, 'meta.json'), JSON.stringify(await writeMechanics(heroesOnDisk, metaOnDisk), null, 2));
+  console.log(`Готово: ${out}`);
+  process.exit(0);
+}
 
 // --- Герои (Valve) ---
 const heroList = (await getJson(`${VALVE}/herolist?language=english`)).result.data.heroes;
@@ -208,8 +239,8 @@ const meta = {
   priceCorrections: priceConflicts,
 };
 
-const out = join(root, 'resources/data/kb', patch);
 mkdirSync(out, { recursive: true });
+await writeMechanics(heroes, meta);
 writeFileSync(join(out, 'meta.json'), JSON.stringify(meta, null, 2));
 writeFileSync(join(out, 'heroes.json'), JSON.stringify(heroes));
 writeFileSync(join(out, 'items.json'), JSON.stringify(items));
