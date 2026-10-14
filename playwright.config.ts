@@ -4,5 +4,6 @@ export default defineConfig({
   testDir: 'tests/e2e',
   timeout: 60_000,
   workers: 1,
-  reporter: [['list']],
+  // В CI ещё и отчёт github: упавший тест виден аннотацией в проверке (без входа в логи Actions)
+  reporter: process.env.CI ? [['list'], ['github']] : [['list']],
 });
