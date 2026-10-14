@@ -299,8 +299,10 @@ test('Режим разработчика: набор кадров виден т
   ({ app, ui } = await launch(tmp(), { env: { DOTACOACH_DEV: '1' } }));
   try {
     await ui.click('[data-testid="nav-settings"]');
-    await ui.check('[data-testid="setting-dev-dataset"]');
+    // Флажок управляемый: состояние меняется после ответа main — поэтому клик и ожидание сохранения, а не check()
+    await ui.click('[data-testid="setting-dev-dataset"]');
     await expect.poll(() => ui.evaluate(() => window.dotacoach.getSettings().then((s) => s.dev))).toEqual({ datasetRecord: true, datasetEveryN: 10 });
+    await expect(ui.locator('[data-testid="setting-dev-dataset"]')).toBeChecked();
   } finally {
     await app.close();
   }
