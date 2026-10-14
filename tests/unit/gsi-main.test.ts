@@ -385,6 +385,13 @@ describe('путь Steam из реестра', () => {
     expect(parseRegSteamPath('ERROR: The system was unable to find the specified registry key or value.')).toBeNull();
   });
 
+  it('кириллица, искажённая кодировкой («????»), — «не прочитано», а не путь', () => {
+    const out = '\r\nHKEY_CURRENT_USER\\Software\\Valve\\Steam\r\n    SteamPath    REG_SZ    D:\\????\\Steam Library\r\n\r\n';
+    expect(parseRegSteamPath(out)).toBeNull();
+    expect(parsePowershellSteamPath('D:\\\uFFFD\uFFFD\\Steam')).toBeNull();
+    expect(parsePowershellSteamPath('D:\\Игры\\Steam Library')).toBe('D:\\Игры\\Steam Library');
+  });
+
   // Только в CI на Windows: пишем временный ключ HKCU и читаем его так же, как коуч читает ключ Steam
   it.skipIf(process.platform !== 'win32' || !process.env.CI)('Windows: путь с кириллицей и пробелами читается без искажений', async () => {
     const key = 'HKCU\\Software\\DotaCoachTest';
@@ -395,7 +402,7 @@ describe('путь Steam из реестра', () => {
     } finally {
       execFileSync('reg', ['delete', key, '/f'], { windowsHide: true });
     }
-  }, 20_000);
+  }, 45_000);
 });
 
 describe('npm run gsi:replay', () => {

@@ -107,10 +107,14 @@ export function parsePowershellSteamPath(stdout: string): string | null {
   return line ? normalizeSteamPath(line) : null;
 }
 
-/** Steam пишет путь с прямыми слешами («d:/игры/steam») — приводим к виду Windows */
+/**
+ * Steam пишет путь с прямыми слешами («d:/игры/steam») — приводим к виду Windows.
+ * «?» и «�» в пути Windows невозможны: это след потерянной кодировки (reg.exe выводит кириллицу как «????»).
+ * Такой путь не возвращаем — лучше «не нашли», чем чужая папка.
+ */
 function normalizeSteamPath(p: string): string | null {
   const v = p.trim().replace(/\//g, '\\');
-  return v.length > 0 ? v : null;
+  return v.length > 0 && !/[?\uFFFD]/.test(v) ? v : null;
 }
 
 /** Ключ реестра Steam (HKCU) */
@@ -131,7 +135,8 @@ export function steamPathFromRegistry(key: string = STEAM_REG_KEY): Promise<stri
   if (process.platform !== 'win32') return Promise.resolve(null);
   const run = (file: string, args: string[]) =>
     new Promise<string | null>((resolve) => {
-      execFile(file, args, { windowsHide: true, timeout: 8000, encoding: 'utf8' }, (err, stdout) => resolve(err ? null : String(stdout)));
+      // Первый запуск PowerShell на медленном или «холодном» компьютере бывает дольше 8 с
+      execFile(file, args, { windowsHide: true, timeout: 20_000, encoding: 'utf8' }, (err, stdout) => resolve(err ? null : String(stdout)));
     });
   return run('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command', psSteamPath(key)]).then(async (out) => {
     const fromPs = out === null ? null : parsePowershellSteamPath(out);
