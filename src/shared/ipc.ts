@@ -2,6 +2,9 @@ import type { Settings, SettingsPatch } from './schemas/settings';
 import type { PolicyState } from './types/policy';
 import type { LiveReason, LiveState, ReplaySourceSpec } from './types/capture';
 import type { KnowledgeBase } from './types/kb';
+import type { AiAskPayload, AiAskResult, AiChunkMessage, AiFeedback, AiUiState } from './types/ai';
+import type { AiLocalModel } from './schemas/settings';
+import type { GsiReading } from '../core/gsi/map.ts';
 
 /** Полный список IPC-каналов окна интерфейса. Других каналов нет. */
 export const IPC = {
@@ -25,6 +28,23 @@ export const IPC = {
   gsiCopyLaunchOption: 'gsi:copy-launch-option',
   /** событие main → UI */
   gsiState: 'gsi:state',
+  // ИИ-помощник (0.11.0)
+  aiGet: 'ai:get',
+  aiAsk: 'ai:ask',
+  aiCancel: 'ai:cancel',
+  aiSetKey: 'ai:set-key',
+  aiClearKey: 'ai:clear-key',
+  aiFeedback: 'ai:feedback',
+  aiLocalDownload: 'ai:local-download',
+  aiLocalCancel: 'ai:local-cancel',
+  aiLocalDelete: 'ai:local-delete',
+  aiLocalStop: 'ai:local-stop',
+  /** Записанные сессии GSI для «Разбора матча» */
+  aiSessions: 'ai:sessions',
+  aiSessionReadings: 'ai:session-readings',
+  /** события main → UI */
+  aiChunk: 'ai:chunk',
+  aiState: 'ai:state',
 } as const;
 
 /**
@@ -133,6 +153,39 @@ export interface DotaCoachApi {
   pickDotaFolder(): Promise<GsiState>;
   copyGsiLaunchOption(): Promise<void>;
   onGsiState(fn: (state: GsiState) => void): () => void;
+  // ИИ-помощник
+  getAiState(): Promise<AiUiState>;
+  askAi(payload: AiAskPayload): Promise<AiAskResult>;
+  cancelAi(requestId?: string): Promise<void>;
+  setAiKey(key: string): Promise<AiUiState>;
+  clearAiKey(): Promise<AiUiState>;
+  sendAiFeedback(f: AiFeedback): Promise<void>;
+  downloadLocalAi(model: AiLocalModel): Promise<AiUiState>;
+  cancelLocalAiDownload(): Promise<AiUiState>;
+  deleteLocalAi(): Promise<AiUiState>;
+  stopLocalAi(): Promise<AiUiState>;
+  listGsiSessions(): Promise<GsiSessionInfo[]>;
+  /** Чтения GSI одного матча из записанной сессии (прорежено), для фактов после матча */
+  getGsiSessionMatch(id: string): Promise<GsiSessionMatch | { error: string }>;
+  onAiChunk(fn: (msg: AiChunkMessage) => void): () => void;
+  onAiState(fn: (state: AiUiState) => void): () => void;
+}
+
+/** Матч в записанной сессии GSI (файл дня может содержать несколько матчей) */
+export interface GsiSessionInfo {
+  /** «<файл>#<номер матча>» */
+  id: string;
+  day: string;
+  matchId: string | null;
+  hero: string | null;
+  startedAt: number;
+  durationSec: number | null;
+}
+
+export interface GsiSessionMatch {
+  info: GsiSessionInfo;
+  /** Чтения GSI своего героя (без ников), не чаще раза в 2 секунды игрового времени */
+  readings: GsiReading[];
 }
 
 /** Найденное окно Доты: source — для захвата, windows — заголовки всех окон (диагностика) */

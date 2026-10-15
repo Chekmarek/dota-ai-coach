@@ -14,6 +14,8 @@
     "typecheck": "tsc -p tsconfig.node.json --noEmit && tsc -p tsconfig.web.json --noEmit",
     "test": "vitest run",
     "bench": "node scripts/bench.mjs",
+    "ai:bench": "vitest run --config vitest.ai.config.ts tests/ai/local-bench.eval.ts",
+    "ai:eval": "vitest run --config vitest.ai.config.ts tests/ai/local-eval.eval.ts",
     "test:e2e": "electron-vite build && playwright test",
     "fixtures": "node scripts/make-fixtures.mjs",
     "gsi:replay": "node scripts/gsi-replay.mjs",

@@ -1,4 +1,6 @@
 import { useMemo, useState } from 'react';
+import { AskCoach } from '../components/ask';
+import { usePageFacts } from '../hooks/useFacts';
 import type { KbHero, KbItem, KbItemAvailability, KnowledgeBase as Kb } from '@shared/types/kb';
 import { formatKbGain, formatKbList, formatKbNumber as fmt } from '@core/knowledge-base/format.ts';
 import { isShopItem } from '@core/knowledge-base/audit.ts';
@@ -18,6 +20,7 @@ const ATTR_LABEL = { str: 'Сила', agi: 'Ловкость', int: 'Интел�
 export function KnowledgeBase() {
   const { kb, error } = useKnowledgeBase();
   const [tab, setTab] = useState<'heroes' | 'items' | 'mechanics'>('heroes');
+  const getFacts = usePageFacts('kb', undefined, false);
   const [query, setQuery] = useState('');
   const [heroKey, setHeroKey] = useState<string | null>(null);
   const [showAllItems, setShowAllItems] = useState(false);
@@ -33,6 +36,9 @@ export function KnowledgeBase() {
   return (
     <>
       <PageHeader title="База знаний" subtitle="Герои, способности, предметы и механика карты текущего патча — с источником и датой." />
+      <Card title="Спросить коуча о базе знаний">
+        <AskCoach page="kb" getFacts={getFacts} compact placeholder="Например: сколько стоит манта? перезарядка Meat Hook?" />
+      </Card>
       {error && <p className="error">{error}</p>}
       {kb && (
         <>

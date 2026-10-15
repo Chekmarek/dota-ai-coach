@@ -45,10 +45,10 @@ async function stubDialog(app: ElectronApplication, path: string): Promise<void>
 const TMP_ROOT = join(ROOT, '.tmp/e2e-data');
 const tmp = () => (mkdirSync(TMP_ROOT, { recursive: true }), mkdtempSync(join(TMP_ROOT, 'run-')));
 
-test('приложение запускается, все 9 экранов открываются, нереализованное честно помечено', async () => {
+test('приложение запускается, все 10 экранов открываются, нереализованное честно помечено', async () => {
   const { app, ui } = await launch(tmp());
   try {
-    for (const id of ['dashboard', 'live', 'replay', 'match', 'history', 'kb', 'voice', 'updates', 'settings']) {
+    for (const id of ['dashboard', 'live', 'replay', 'match', 'ai', 'history', 'kb', 'voice', 'updates', 'settings']) {
       await ui.click(`[data-testid="nav-${id}"]`);
       await expect(ui.locator(`[data-testid="page-${id}"]`)).toBeVisible();
     }
@@ -75,23 +75,42 @@ test('безопасность: в интерфейсе нет доступа к
     expect(exposure.require).toBe('undefined');
     expect(exposure.process).toBe('undefined');
     expect(exposure.api).toEqual([
+      'askAi',
+      'cancelAi',
+      'cancelLocalAiDownload',
       'checkForUpdates',
+      'clearAiKey',
       'connectGsi',
       'copyGsiLaunchOption',
+      'deleteLocalAi',
       'disconnectGsi',
+      'downloadLocalAi',
+      'getAiState',
       'getAppInfo',
+      'getGsiSessionMatch',
       'getGsiState',
       'getKnowledgeBase',
       'getSettings',
       'getUpdateState',
       'installUpdate',
+      'listGsiSessions',
+      'onAiChunk',
+      'onAiState',
       'onGsiState',
       'onUpdateState',
       'pickDotaFolder',
       'pickReplayFolder',
       'pickReplayVideo',
+      'sendAiFeedback',
+      'setAiKey',
+      'stopLocalAi',
       'updateSettings',
     ]);
+    // ИИ: лишние поля и чужие модели отклоняются main-процессом (zod), ключ через настройки не задать
+    await expect(ui.evaluate(() => window.dotacoach.askAi({ requestId: 'x', kind: 'ask', facts: [], apiKey: 'k' } as never))).rejects.toThrow();
+    await expect(ui.evaluate(() => window.dotacoach.downloadLocalAi('llama-70b' as never))).rejects.toThrow();
+    await expect(ui.evaluate(() => window.dotacoach.updateSettings({ ai: { provider: 'gigachat' } } as never))).rejects.toThrow();
+    await expect(ui.evaluate(() => window.dotacoach.getGsiSessionMatch('../../etc'))).resolves.toEqual({ error: 'Неверный номер записи' });
     const info = await ui.evaluate(() => window.dotacoach.getAppInfo());
     // Решение владельца 2026-10-13: подсказки разрешены, включает их пользователь переключателями
     expect(info.policy.modes.filter((m) => m.allowed).map((m) => m.mode)).toEqual(['replay', 'live-observe', 'live-coach-unranked', 'live-coach-ranked']);

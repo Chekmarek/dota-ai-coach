@@ -5,13 +5,17 @@ import { useSettings } from '../hooks/useSettings';
 import { Card, PageHeader, StatePill, Stat } from '../components/ui';
 import { HudRecognition, RegionOverlay } from '../components/HudRecognition';
 import { isLive } from '../components/live';
+import { AskCoach, MatchSummary } from '../components/ask';
+import { usePageFacts } from '../hooks/useFacts';
+import { afterMatchFromState } from '@core/ai/after-match.ts';
 
 // Выбранный источник живёт вне компонента, чтобы не теряться при переходе между страницами
 let selected: ReplaySourceSpec | null = null;
 
 export function ReplayMode() {
-  const { status, preview, vision } = useEngine();
+  const { status, preview, vision, match } = useEngine();
   const { settings } = useSettings();
+  const getFacts = usePageFacts('replay');
   const [source, setSource] = useState<ReplaySourceSpec | null>(selected);
   const [error, setError] = useState<string | null>(null);
 
@@ -137,6 +141,17 @@ export function ReplayMode() {
 
       {/* Распознавание HUD (бывшая «Диагностика зрения»): для записей — здесь, для живой игры — в «Живой игре» */}
       {!liveOn && (active || state === 'ended') && <HudRecognition />}
+
+      {!liveOn && (active || state === 'ended') && (
+        <Card title="Спросить коуча о записи">
+          <AskCoach page="replay" getFacts={getFacts} compact placeholder="Например: сколько золота было на 10:00? когда была смерть?" />
+        </Card>
+      )}
+      {!liveOn && state === 'ended' && match && (
+        <Card title="Разбор матча">
+          <MatchSummary label="Факты из записи (то, что коуч увидел на кадрах)" lines={afterMatchFromState(match).lines} testId="replay-summary" />
+        </Card>
+      )}
     </>
   );
 }

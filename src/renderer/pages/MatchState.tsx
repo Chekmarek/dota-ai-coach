@@ -12,6 +12,8 @@ import { Card, PageHeader } from '../components/ui';
 import { UpcomingEventsCard } from '../components/mechanics';
 import { useKnowledgeBase } from '../hooks/useKnowledgeBase';
 import { PlayersCard } from '../components/players';
+import { AskCoach } from '../components/ask';
+import { usePageFacts } from '../hooks/useFacts';
 
 const TAG_LABEL: Record<TrackedTag, string> = {
   visible: 'видно сейчас',
@@ -128,6 +130,7 @@ export function MatchState() {
   const running = status?.state === 'starting' || status?.state === 'running' || status?.state === 'paused';
   // Данные из игры (GSI) заполняют страницу и без захвата экрана
   const gsi = !!match?.sources.gsi;
+  const getFacts = usePageFacts('match');
 
   return (
     <>
@@ -141,6 +144,9 @@ export function MatchState() {
       ) : (
         <>
           <MatchView s={match} now={now} />
+          <Card title="Спросить коуча">
+            <AskCoach page="match" getFacts={getFacts} compact placeholder="Например: кто из врагов пропал? когда возродится Lina?" />
+          </Card>
           <AgreementCard report={agreement} />
         </>
       )}

@@ -8,6 +8,8 @@ import { LIVE_HINT, LivePill, isLive, startLive } from '../components/live';
 import { HintsToggles } from '../components/hints';
 import { GsiCard } from '../components/gsi';
 import { engine } from '../hooks/useEngine';
+import { AskCoach } from '../components/ask';
+import { usePageFacts } from '../hooks/useFacts';
 import type { PageProps } from './types';
 
 export function LiveGame({ onNavigate }: PageProps) {
@@ -20,6 +22,7 @@ export function LiveGame({ onNavigate }: PageProps) {
   const showFrame = on && preview && (s === 'seeing' || s === 'no-image');
   // Полноэкранный режим Доты: Windows рисует игру поверх всех окон, значок там не виден (0.6.0)
   const exclusive = !!settings?.live.overlay && live?.videoMode === 'exclusive';
+  const getFacts = usePageFacts('live');
 
   return (
     <>
@@ -79,6 +82,10 @@ export function LiveGame({ onNavigate }: PageProps) {
       </Card>
 
       <GsiCard />
+
+      <Card title="Спросить коуча">
+        <AskCoach page="live" getFacts={getFacts} compact placeholder="Например: когда руна силы? хватит ли на BKB?" />
+      </Card>
 
       {settings && (
         <Card title="Live-подсказки">

@@ -8,7 +8,9 @@ import { KbStore } from './knowledge/kb-store';
 import { registerIpc } from './ipc/register';
 import { EngineLink } from './lifecycle/engine-link';
 import { handleMediaProtocol, registerMediaScheme } from './media/media-protocol';
-import { onLiveSettingsChanged, setupLive } from './live/live';
+import { liveSeesDota, onLiveSettingsChanged, setupLive } from './live/live';
+import { setupAi } from './ai';
+import { gsiPhase } from '@core/gsi/map.ts';
 import { setupUpdater } from './live/updater';
 import { setupGsi } from './gsi';
 import { setupDevDataset } from './dev';
@@ -34,6 +36,8 @@ if (!app.requestSingleInstanceLock()) {
 } else {
   let ui: BrowserWindow | null = null;
   let engine: EngineLink | null = null;
+  /** Когда GSI последний раз сообщил идущий матч (для ИИ: во время матча локальная модель отвечает коротко) */
+  let gsiInMatchAt = 0;
 
   app.on('second-instance', () => {
     if (!ui) return;
@@ -56,6 +60,8 @@ if (!app.requestSingleInstanceLock()) {
       getUi: () => ui,
       isTrustedSender,
       forward: (body, wallMs) => {
+        const map = body.map as { game_state?: unknown } | undefined;
+        if (gsiPhase(typeof map?.game_state === 'string' ? map.game_state : null) === 'in-progress') gsiInMatchAt = Date.now();
         dataset.noteGsi(body, wallMs);
         engine?.sendGsi(body, wallMs);
       },
@@ -77,12 +83,23 @@ if (!app.requestSingleInstanceLock()) {
     // DOTACOACH_NO_UPDATE_CHECK — для автотестов: не ходить в сеть
     setupUpdater({ getUi: () => ui, isTrustedSender, repo: process.env.DOTACOACH_NO_UPDATE_CHECK ? null : readUpdateRepo() });
 
+    // ИИ-помощник: вопросы к локальной модели или облаку (с согласием), ключи — в safeStorage
+    const ai = setupAi({
+      settings,
+      dataDir,
+      getUi: () => ui,
+      isTrustedSender,
+      inMatch: () => liveSeesDota() || Date.now() - gsiInMatchAt < 10_000,
+    });
+    app.on('will-quit', () => ai.dispose());
+
     engine = new EngineLink(ui);
     engine.setDatasetConfig(dataset.config(settings.get()));
     engine.start();
 
     ui.on('closed', () => {
       void gsi.dispose();
+      ai.dispose();
       engine?.dispose();
       engine = null;
       ui = null;

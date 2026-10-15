@@ -29,6 +29,29 @@ const api: DotaCoachApi = {
     ipcRenderer.on(IPC.gsiState, listener);
     return () => ipcRenderer.removeListener(IPC.gsiState, listener);
   },
+  // ИИ-помощник
+  getAiState: () => ipcRenderer.invoke(IPC.aiGet),
+  askAi: (payload) => ipcRenderer.invoke(IPC.aiAsk, payload),
+  cancelAi: (requestId) => ipcRenderer.invoke(IPC.aiCancel, requestId),
+  setAiKey: (key) => ipcRenderer.invoke(IPC.aiSetKey, { provider: 'openai-compatible', key }),
+  clearAiKey: () => ipcRenderer.invoke(IPC.aiClearKey),
+  sendAiFeedback: (f) => ipcRenderer.invoke(IPC.aiFeedback, f),
+  downloadLocalAi: (model) => ipcRenderer.invoke(IPC.aiLocalDownload, model),
+  cancelLocalAiDownload: () => ipcRenderer.invoke(IPC.aiLocalCancel),
+  deleteLocalAi: () => ipcRenderer.invoke(IPC.aiLocalDelete),
+  stopLocalAi: () => ipcRenderer.invoke(IPC.aiLocalStop),
+  listGsiSessions: () => ipcRenderer.invoke(IPC.aiSessions),
+  getGsiSessionMatch: (id) => ipcRenderer.invoke(IPC.aiSessionReadings, id),
+  onAiChunk: (fn) => {
+    const listener = (_e: Electron.IpcRendererEvent, msg: Parameters<typeof fn>[0]) => fn(msg);
+    ipcRenderer.on(IPC.aiChunk, listener);
+    return () => ipcRenderer.removeListener(IPC.aiChunk, listener);
+  },
+  onAiState: (fn) => {
+    const listener = (_e: Electron.IpcRendererEvent, state: Parameters<typeof fn>[0]) => fn(state);
+    ipcRenderer.on(IPC.aiState, listener);
+    return () => ipcRenderer.removeListener(IPC.aiState, listener);
+  },
 };
 
 contextBridge.exposeInMainWorld('dotacoach', api);

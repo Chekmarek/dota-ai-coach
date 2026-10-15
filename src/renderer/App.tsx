@@ -15,6 +15,7 @@ import type { PageId, PageProps } from './pages/types';
 import { VoiceSettings } from './pages/VoiceSettings';
 import { AppSettings } from './pages/AppSettings';
 import { ReplayMode } from './pages/ReplayMode';
+import { AiAssistant } from './pages/AiAssistant';
 
 // Вкладка «Диагностика зрения» убрана в обновлении 0.5.0 (решение команды): распознавание HUD теперь
 // показывается в «Живой игре» и в «Разборе записи».
@@ -23,6 +24,7 @@ const PAGES: readonly { id: PageId; label: string; icon: string; Component: Comp
   { id: 'live', label: 'Живая игра', icon: '●', Component: LiveGame },
   { id: 'replay', label: 'Разбор записи', icon: '▶', Component: ReplayMode },
   { id: 'match', label: 'Состояние матча', icon: '▦', Component: MatchState },
+  { id: 'ai', label: 'ИИ-помощник', icon: '✦', Component: AiAssistant },
   { id: 'history', label: 'История советов', icon: '☰', Component: RecommendationHistory },
   { id: 'kb', label: 'База знаний', icon: '◆', Component: KnowledgeBase },
   { id: 'voice', label: 'Голос', icon: '♪', Component: VoiceSettings },

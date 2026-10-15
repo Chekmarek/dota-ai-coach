@@ -300,6 +300,13 @@ class Overlay {
 
 let overlay: Overlay | null = null;
 let lastLoggedState: string | null = null;
+/** Последнее состояние живого захвата и когда оно пришло */
+let liveSeen: { state: string; at: number } = { state: 'off', at: 0 };
+
+/** Живой захват видит окно Доты (статус не старше 10 с) — ИИ тогда бережёт CPU */
+export function liveSeesDota(): boolean {
+  return liveSeen.state === 'seeing' && Date.now() - liveSeen.at < 10_000;
+}
 let lastLoggedReason: string | null | undefined = null;
 let lastLoggedError: string | null | undefined = null;
 
@@ -324,6 +331,7 @@ export function setupLive(deps: LiveDeps): void {
     const parsed = liveStatusSchema.safeParse(arg);
     if (!parsed.success) return;
     const st = parsed.data;
+    liveSeen = { state: st.state, at: Date.now() };
     if (st.state !== lastLoggedState || st.reason !== lastLoggedReason || (st.error && st.error !== lastLoggedError)) {
       liveLog('engine', st);
       lastLoggedState = st.state;

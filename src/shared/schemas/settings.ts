@@ -24,6 +24,49 @@ const DEFAULTS = {
   dev: { datasetRecord: false, datasetEveryN: 10 },
 };
 
+export const AI_PROVIDER_SETTINGS = ['off', 'local', 'gigachat', 'openai-compatible'] as const;
+export type AiProviderSetting = (typeof AI_PROVIDER_SETTINGS)[number];
+export const AI_LOCAL_MODELS = ['qwen3-1.7b', 'qwen3-4b'] as const;
+export type AiLocalModel = (typeof AI_LOCAL_MODELS)[number];
+
+/** Адрес облачного ИИ: https://…; http — только для сервера на этом ПК (127.0.0.1, localhost) */
+export function isAllowedAiBaseUrl(raw: string): boolean {
+  try {
+    const u = new URL(raw);
+    if (u.username || u.password) return false;
+    if (u.protocol === 'https:') return true;
+    return u.protocol === 'http:' && ['127.0.0.1', 'localhost', '[::1]'].includes(u.hostname);
+  } catch {
+    return false;
+  }
+}
+
+const aiFields = {
+  /** Кто отвечает: off — ИИ выключен; gigachat пока недоступен (нужен корневой сертификат Минцифры, его не встраиваем) */
+  provider: z.enum(AI_PROVIDER_SETTINGS),
+  localModel: z.enum(AI_LOCAL_MODELS),
+  /** Пусто — не задан */
+  cloudBaseUrl: z.union([z.literal(''), z.string().max(500).refine(isAllowedAiBaseUrl, 'Адрес должен начинаться с https://')]),
+  cloudModel: z.string().max(200),
+  /** Согласие отправлять вопрос и факты матча в облако (без ников и ключей); без него облако не вызывается */
+  sendToCloudConsent: z.boolean(),
+};
+
+// ИИ-помощник (0.11.0): по умолчанию выключен; облако — только с согласием пользователя (docs/POLICY.md)
+const D_AI = { provider: 'off', local: { model: 'qwen3-1.7b' }, cloud: { baseUrl: '', model: '' }, sendToCloudConsent: false } as const;
+
+/** Терпимый раздел ai: плохое поле → значение по умолчанию, остальные сохраняются */
+const aiTolerant = z
+  .object({
+    provider: aiFields.provider.catch(D_AI.provider),
+    local: z.object({ model: aiFields.localModel.catch(D_AI.local.model) }).catch(() => ({ ...D_AI.local })),
+    cloud: z
+      .object({ baseUrl: aiFields.cloudBaseUrl.catch(''), model: aiFields.cloudModel.catch('') })
+      .catch(() => ({ ...D_AI.cloud })),
+    sendToCloudConsent: aiFields.sendToCloudConsent.catch(false),
+  })
+  .catch(() => structuredClone(D_AI) as never);
+
 export type OverlayCorner = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
 
 const fields = {
@@ -106,6 +149,7 @@ export const settingsSchema = z.object({
   hints: tolerant('hints'),
   gsi: tolerant('gsi'),
   dev: tolerant('dev'),
+  ai: aiTolerant,
 });
 
 export type Settings = z.infer<typeof settingsSchema>;
@@ -126,6 +170,17 @@ export const settingsPatchSchema = z
     // token — только main-процесс (SettingsStore.setGsiToken), dotaDir — через диалог выбора папки
     gsi: z.object({ port: fields.gsi.port, record: fields.gsi.record }).partial().strict().optional(),
     dev: z.object(fields.dev).partial().strict().optional(),
+    // gigachat из интерфейса не выбирается, пока он недоступен
+    ai: z
+      .object({
+        provider: z.enum(['off', 'local', 'openai-compatible']),
+        local: z.object({ model: aiFields.localModel }).strict(),
+        cloud: z.object({ baseUrl: aiFields.cloudBaseUrl, model: aiFields.cloudModel }).partial().strict(),
+        sendToCloudConsent: aiFields.sendToCloudConsent,
+      })
+      .partial()
+      .strict()
+      .optional(),
   })
   .strict();
 
@@ -142,6 +197,12 @@ export function applySettingsPatch(current: Settings, patch: SettingsPatch): Set
     hints: { ...current.hints, ...patch.hints },
     gsi: { ...current.gsi, ...patch.gsi },
     dev: { ...current.dev, ...patch.dev },
+    ai: {
+      ...current.ai,
+      ...patch.ai,
+      local: { ...current.ai.local, ...patch.ai?.local },
+      cloud: { ...current.ai.cloud, ...patch.ai?.cloud },
+    },
   });
 }
 
