@@ -114,12 +114,10 @@ export class LlamaSidecar {
       '-np', '1',
       '--jinja',
       '--no-webui',
-      // память: без второй (переупакованной) копии весов и с KV-кэшем q8_0 — 1.7B ≈ 1,5 ГБ вместо 2,3 ГБ,
-      // скорость ответа та же (замер ai:bench 2026-10-15)
+      // память: без второй (переупакованной) копии весов — 1.7B ≈ 1,7 ГБ вместо 2,3 ГБ, скорость почти та же.
+      // KV-кэш q8_0 экономит ещё ~0,2 ГБ, но вдвое замедляет чтение фактов (114 против 176 токенов/с) — не включаем
+      // (замеры 2026-10-15)
       '--no-repack',
-      '-fa', 'on',
-      '-ctk', 'q8_0',
-      '-ctv', 'q8_0',
     ];
     const cmd = this.deps.command ? this.deps.command(this.deps.exe(), args) : { file: this.deps.exe(), args };
     const child = spawn(cmd.file, cmd.args, { windowsHide: true, stdio: ['ignore', 'pipe', 'pipe'] });

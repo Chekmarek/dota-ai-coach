@@ -45,12 +45,24 @@ function factBlock(facts: readonly string[]): string {
 }
 
 /** Вопрос пользователя («Спроси коуча»): 1–5 предложений */
-export function buildAskPrompt(question: string, facts: readonly string[], history: readonly AiMessage[] = []): BuiltPrompt {
+export function buildAskPrompt(question: string, facts: readonly string[], history: readonly AiMessage[] = [], short = false): BuiltPrompt {
   const f = limitFacts(facts);
-  const system = [...COMMON, 'Отвечай 1–5 предложениями, без списков и заголовков.', '', factBlock(f)].join('\n');
+  const len = short ? 'Идёт матч: отвечай одним-двумя короткими предложениями, только главное.' : 'Отвечай 1–5 предложениями, без списков и заголовков.';
+  const system = [...COMMON, 'Не называй команды, игроков, турниры и другие имена, которых нет в фактах.', len, '', factBlock(f)].join('\n');
   const past = history.slice(-MAX_HISTORY).map((m) => ({ role: m.role, content: m.content.slice(0, 1000) }));
   return { system, messages: [...past, { role: 'user', content: question.trim().slice(0, MAX_QUESTION_CHARS) }], facts: f };
 }
+
+/** Обрезает ответ, упёршийся в предел токенов, до последнего законченного предложения */
+export function trimToSentence(text: string): string {
+  const t = text.trimEnd();
+  if (/[.!?…»)]$/.test(t)) return t;
+  const m = /^[\s\S]*[.!?…](?=\s|$)/.exec(t);
+  return m && m[0].length >= t.length * 0.4 ? m[0] : `${t}…`;
+}
+
+/** Ответ без фактов не нужен модели: «не знаю» без выдумок */
+export const NO_FACTS_ANSWER = 'Не знаю: в данных коуча нет сведений об этом.';
 
 /** Разбор матча: не больше 10 строк по фактам после матча */
 export function buildSummaryPrompt(facts: readonly string[]): BuiltPrompt {

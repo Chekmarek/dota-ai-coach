@@ -52,7 +52,10 @@ export function scoreAnswer(q: EvalQuestion, answer: string, facts: string[]): E
   const has = (x: string) => {
     if (a.includes(norm(x))) return true;
     const t = /^(\d+):(\d{2})$/.exec(x);
-    return !!t && new RegExp(`(^|\\D)${Number(t[1]) * 60 + Number(t[2])}\\s*(с|сек)`).test(a);
+    if (!t) return false;
+    if (new RegExp(`(^|\\D)${Number(t[1]) * 60 + Number(t[2])}\\s*(с|сек)`).test(a)) return true;
+    // «20:00» = «20 минут»
+    return t[2] === '00' && new RegExp(`(^|\\D)${Number(t[1])}\\s*мин`).test(a);
   };
   const missing = q.expectAnswer.filter((x) => !has(x));
   const pass = missing.length === 0 && g.ok;

@@ -32,14 +32,14 @@ export function AiAnswer({ text, result, question, testId }: { text: string; res
   return (
     <div className="ai-answer" data-testid={testId} data-grounded={g.ok ? 'yes' : 'no'}>
       {!g.ok && (
-        <div className="ai-unverified-badge" title="В ответе есть числа, которых нет в данных коуча" data-testid="ai-unverified">
+        <div className="ai-unverified-badge" title="В ответе есть числа или имена, которых нет в данных коуча" data-testid="ai-unverified">
           ⚠ не проверено
         </div>
       )}
       <div className="ai-text">
         {highlightUnverified(result.text, g).map((p, i) =>
           p.flagged ? (
-            <mark key={i} className="ai-flag" title="Этого числа нет в данных коуча">
+            <mark key={i} className="ai-flag" title="Этого нет в данных коуча">
               {p.text}
             </mark>
           ) : (

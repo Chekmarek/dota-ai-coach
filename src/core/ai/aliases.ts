@@ -132,6 +132,13 @@ export const HERO_ALIASES: Record<string, string[]> = {
   zuus: ['зевс', 'зеус'],
 };
 
+/** Прозвища латиницей (BKB, MKB, QoP…) — в ответе это не «выдуманное имя» */
+export function latinAliases(): Set<string> {
+  const out = new Set<string>(['bkb', 'mkb', 'sny', 'aghs', 'tp']);
+  for (const list of [...Object.values(HERO_ALIASES), ...Object.values(ITEM_ALIASES)]) for (const a of list) if (/^[a-z ]+$/i.test(a)) out.add(a.toLowerCase());
+  return out;
+}
+
 export const ITEM_ALIASES: Record<string, string[]> = {
   blink: ['блинк', 'даггер', 'дагер'],
   black_king_bar: ['бкб', 'bkb'],

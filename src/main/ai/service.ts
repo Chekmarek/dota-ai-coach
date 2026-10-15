@@ -1,7 +1,7 @@
 // Запросы к ИИ в main: выбор поставщика по настройкам, согласие на облако, таймауты, «Стоп», один запрос за раз.
 // Без Electron (зависимости передаются снаружи) — проверяется unit-тестами с поддельным сервером на 127.0.0.1.
 import { AiError, toAiError, type AiErrorCode, type AiMessage, type AiProvider } from '@core/ai/provider.ts';
-import { buildAskPrompt, buildCardPrompt, buildSummaryPrompt, type BuiltPrompt, type PromptKind } from '@core/ai/prompt.ts';
+import { NO_FACTS_ANSWER, buildAskPrompt, buildCardPrompt, buildSummaryPrompt, trimToSentence, type BuiltPrompt, type PromptKind } from '@core/ai/prompt.ts';
 import { cleanAnswer } from '@core/ai/stream.ts';
 import type { AiLocalModel, Settings } from '@shared/schemas/settings';
 import { openAiCompatibleProvider } from './openai-client';
@@ -67,10 +67,10 @@ export interface AskResult {
   limited: boolean;
 }
 
-function buildPrompt(input: AskInput): BuiltPrompt {
+function buildPrompt(input: AskInput, short: boolean): BuiltPrompt {
   if (input.kind === 'summary') return buildSummaryPrompt(input.facts);
   if (input.kind === 'card') return buildCardPrompt(input.card?.type ?? 'hint', input.facts, input.card?.severity ?? 'info');
-  return buildAskPrompt(input.question ?? '', input.facts, input.history ?? []);
+  return buildAskPrompt(input.question ?? '', input.facts, input.history ?? [], short);
 }
 
 export class AiService {
@@ -123,9 +123,16 @@ export class AiService {
   async ask(input: AskInput, onChunk: (text: string) => void): Promise<AskResult> {
     const settings = this.deps.getSettings().ai;
     const started = Date.now();
-    const prompt = buildPrompt(input);
+    // во время матча локальная модель отвечает коротко — и подсказка просит об этом заранее
+    const short = settings.provider === 'local' && this.deps.inMatch();
+    const prompt = buildPrompt(input, short);
     const base: AskResult = { requestId: input.requestId, text: '', error: null, provider: settings.provider, facts: prompt.facts, chunks: 0, firstChunkMs: null, totalMs: 0, limited: false };
     if (this.current) return { ...base, error: { code: 'busy', message: new AiError('busy').message } };
+    // фактов нет — отвечать нечем: модель не спрашиваем (иначе маленькая модель выдумывает)
+    if (input.kind === 'ask' && prompt.facts.length === 0 && settings.provider !== 'off') {
+      onChunk(NO_FACTS_ANSWER);
+      return { ...base, text: NO_FACTS_ANSWER, chunks: 1, firstChunkMs: 0, totalMs: Date.now() - started };
+    }
 
     const ctrl = new AbortController();
     this.current = { id: input.requestId, ctrl };
@@ -160,7 +167,9 @@ export class AiService {
       }
       if (ctrl.signal.aborted) throw ctrl.signal.reason instanceof AiError ? ctrl.signal.reason : new AiError('cancelled');
       if (local) this.deps.local?.touch();
-      return { ...base, text: cleanAnswer(text), chunks, firstChunkMs, totalMs: Date.now() - started, limited };
+      // упёрлись в предел токенов — без оборванного на полуслове хвоста
+      const answer = chunks >= maxTokens - 1 ? trimToSentence(cleanAnswer(text)) : cleanAnswer(text);
+      return { ...base, text: answer, chunks, firstChunkMs, totalMs: Date.now() - started, limited };
     } catch (err) {
       const e = ctrl.signal.aborted && ctrl.signal.reason instanceof AiError ? ctrl.signal.reason : toAiError(err);
       // в журнал — только код ошибки и поставщик, ни вопроса, ни ключа

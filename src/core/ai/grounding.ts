@@ -1,6 +1,9 @@
 // Проверка ответа ИИ: каждое число в ответе должно встречаться в фактах, которые получила модель (или в вопросе).
 // Иначе ответ помечается «⚠ не проверено», а такие числа подсвечиваются. Время «мм:сс» сравнивается и как секунды.
 // Чистое ядро.
+import { latinAliases } from './aliases.ts';
+
+let aliasSet: Set<string> | null = null;
 
 export interface NumberSpan {
   start: number;
@@ -14,7 +17,26 @@ export interface NumberSpan {
 export interface GroundingResult {
   ok: boolean;
   numbers: NumberSpan[];
+  /** Непроверенные числа и имена латиницей (по порядку в тексте) */
   unverified: NumberSpan[];
+}
+
+/** Латинские слова, которые не считаются «именами» (общие сокращения игры) */
+const COMMON_LATIN = new Set(['dota', 'gsi', 'hp', 'mp', 'cd', 'xp', 'ai', 'ok']);
+
+/**
+ * Имена латиницей в ответе (герои, предметы, команды, турниры): слово с заглавной буквы или сокращение из заглавных.
+ * Имя проверено, если встречается в фактах или вопросе (без учёта регистра) или это известное прозвище.
+ */
+export function unverifiedNames(answer: string, sources: readonly string[], allowed: ReadonlySet<string> = new Set()): NumberSpan[] {
+  const known = sources.join(' ').toLowerCase();
+  const out: NumberSpan[] = [];
+  for (const m of answer.matchAll(/\b[A-Z][A-Za-z'’]{1,}\b/g)) {
+    const w = m[0].toLowerCase().replace(/[’']s$/, '');
+    if (w.length < 3 || COMMON_LATIN.has(w) || allowed.has(w) || known.includes(w)) continue;
+    out.push({ start: m.index, end: m.index + m[0].length, text: m[0], value: NaN, grounded: false });
+  }
+  return out;
 }
 
 // время «12:05» или «1:02:03»; число с пробелами-разделителями тысяч «2 250»; дробь «2,5» / «7.41»
@@ -49,12 +71,12 @@ export function numberSet(sources: readonly string[]): Set<number> {
   return s;
 }
 
-export function checkGrounding(answer: string, facts: readonly string[], question = ''): GroundingResult {
+export function checkGrounding(answer: string, facts: readonly string[], question = '', allowedNames: ReadonlySet<string> = (aliasSet ??= latinAliases())): GroundingResult {
   const known = numberSet([...facts, question]);
   // «5 минут» в ответе — это и «300 с» в фактах
   const minutes = (n: { end: number; value: number }) => /^\s*мин/i.test(answer.slice(n.end, n.end + 6)) && known.has(n.value * 60);
   const numbers: NumberSpan[] = extractNumbers(answer).map((n) => ({ start: n.start, end: n.end, text: n.text, value: n.value, grounded: known.has(n.value) || minutes(n) }));
-  const unverified = numbers.filter((n) => !n.grounded);
+  const unverified = [...numbers.filter((n) => !n.grounded), ...unverifiedNames(answer, [...facts, question], allowedNames)].sort((a, b) => a.start - b.start);
   return { ok: unverified.length === 0, numbers, unverified };
 }
 

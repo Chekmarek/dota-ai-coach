@@ -36,6 +36,14 @@ describe('проверка чисел в ответе', () => {
     expect(parts.map((p) => p.text).join('')).toBe('Blink Dagger стоит 2300 золота, а Рошан в 9:00.');
   });
 
+  it('имена латиницей, которых нет в фактах, — «не проверено»; прозвища вроде BKB — нет', () => {
+    const facts = ['Предмет Black King Bar: цена 4050 золота'];
+    expect(checkGrounding('Black King Bar (BKB) стоит 4050 золота.', facts, 'Сколько стоит бкб?').ok).toBe(true);
+    const g = checkGrounding('The International выиграла Team Secret.', facts, 'Кто выиграл?');
+    expect(g.ok).toBe(false);
+    expect(g.unverified.map((n) => n.text)).toEqual(['The', 'International', 'Team', 'Secret']);
+  });
+
   it('число из вопроса пользователя не считается выдумкой', () => {
     expect(checkGrounding('На 15 минуте — не знаю.', [], 'Что будет на 15 минуте?').ok).toBe(true);
   });

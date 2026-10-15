@@ -15,6 +15,8 @@ import { liveLog } from './live';
 const FIRST_CHECK_DELAY_MS = 5e3;
 const CHECK_INTERVAL_MS = 6 * 60 * 60 * 1e3;
 const ELEVATION_WAIT_MS = 120e3;
+const WAITING_UAC =
+  'Windows ждёт подтверждения: нажмите «Да» в окне «Контроль учётных записей» (оно могло спрятаться за другими окнами — найдите его на панели задач). После этого коуч перезапустится сам.';
 
 interface GithubAsset {
   name?: string;
@@ -155,8 +157,12 @@ class Updater {
     }
   }
 
+  /** Запрос UAC показан и ещё не отвечен: второй запрос не создаём */
+  private waitingElevation = false;
+
   async install(): Promise<void> {
     const release = this.release;
+    if (this.waitingElevation) return this.set({ error: WAITING_UAC });
     if (this.state.status !== 'available' || !release) return;
     if (process.platform !== 'win32') return this.set({ status: 'error', error: 'Установка обновлений поддерживается только в Windows' });
     try {
@@ -206,32 +212,31 @@ class Updater {
         child = spawn('cmd.exe', ['/c', script], { detached: true, stdio: 'ignore', windowsHide: true });
       }
       child.unref();
-      // Ждём, пока скрипт реально стартует (пользователь мог отменить запрос UAC)
-      const started = await new Promise<boolean>((resolve) => {
-        const deadline = Date.now() + ELEVATION_WAIT_MS;
-        const timer = setInterval(() => {
-          if (fs.existsSync(marker)) {
-            clearInterval(timer);
-            resolve(true);
-          } else if (Date.now() > deadline) {
-            clearInterval(timer);
-            resolve(false);
-          }
-        }, 300);
-        child.once('exit', (code) => {
-          if (code && !fs.existsSync(marker))
-            setTimeout(() => {
-              if (!fs.existsSync(marker)) {
-                clearInterval(timer);
-                resolve(false);
-              }
-            }, 1500);
-        });
+      // Ждём, пока скрипт реально стартует. Запрос UAC может долго висеть за другими окнами: после ELEVATION_WAIT_MS
+      // не считаем установку отменённой, а подсказываем, где окно, и ждём дальше — до ответа «Да» или «Нет».
+      let declined = false;
+      child.once('exit', (code) => {
+        if (code)
+          setTimeout(() => {
+            if (!fs.existsSync(marker)) declined = true;
+          }, 1500);
       });
-      if (!started) {
-        this.set({ status: 'available', progress: null, error: 'Установка отменена: нужны права администратора (подтверди запрос Windows)' });
-        return;
+      const deadline = Date.now() + ELEVATION_WAIT_MS;
+      for (;;) {
+        if (fs.existsSync(marker)) break;
+        if (declined) {
+          this.waitingElevation = false;
+          this.set({ status: 'available', progress: null, error: 'Установка отменена: нужны права администратора (подтверди запрос Windows)' });
+          return;
+        }
+        if (Date.now() > deadline && !this.waitingElevation) {
+          this.waitingElevation = true;
+          liveLog('update ждёт подтверждения UAC');
+          this.set({ status: 'available', progress: null, error: WAITING_UAC });
+        }
+        await new Promise((r) => setTimeout(r, 500));
       }
+      this.waitingElevation = false;
       fs.rmSync(marker, { force: true });
       for (const w of BrowserWindow.getAllWindows()) w.destroy();
       app.quit();

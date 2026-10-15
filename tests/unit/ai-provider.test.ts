@@ -131,17 +131,35 @@ describe('сервис ИИ: настройки, таймауты, «Стоп»,
     expect(msgs.at(-1)!.content).toBe('Сколько стоит Blink Dagger?');
   });
 
+  it('без фактов модель не спрашивается: «не знаю» без выдумок', async () => {
+    const svc = service(() => cloudSettings());
+    const r = await svc.ask({ requestId: 'n', kind: 'ask', question: 'Кто выиграл The International?', facts: [] }, () => undefined);
+    expect(r.text).toContain('Не знаю');
+    expect(mock.requests).toHaveLength(0);
+  });
+
+  it('во время матча: подсказка просит 1–2 предложения; ответ на пределе токенов — без оборванного хвоста', async () => {
+    const s = defaultSettings();
+    // 130 кусочков — больше предела 120: хвост «В бли» должен уйти
+    mock.set({ reply: () => `${Array.from({ length: 128 }, (_, i) => (i % 8 === 7 ? 'конец.' : 'слово')).join(' ')} В бли` });
+    const local = { ensure: async () => mock.url, touch: () => undefined };
+    const svc = new AiService({ getSettings: () => ({ ...s, ai: { ...s.ai, provider: 'local' } }), keys: { get: () => null }, local, inMatch: () => true, log: () => undefined });
+    const r = await svc.ask({ requestId: 'a', kind: 'ask', question: 'q', facts: ['факт'] }, () => undefined);
+    expect(mock.requests.at(-1)!.body.messages![0]!.content).toContain('одним-двумя');
+    expect(r.text.endsWith('конец.')).toBe(true);
+  });
+
   it('без согласия облако не вызывается', async () => {
     const svc = service(() => cloudSettings({ sendToCloudConsent: false }));
-    const r = await svc.ask({ requestId: 'a', kind: 'ask', question: 'q', facts: [] }, () => undefined);
+    const r = await svc.ask({ requestId: 'a', kind: 'ask', question: 'q', facts: ['факт'] }, () => undefined);
     expect(r.error?.code).toBe('no-consent');
     expect(mock.requests).toHaveLength(0);
   });
 
   it('ИИ выключен и GigaChat недоступен — понятные ошибки', async () => {
-    const off = await service(() => defaultSettings()).ask({ requestId: 'a', kind: 'ask', question: 'q', facts: [] }, () => undefined);
+    const off = await service(() => defaultSettings()).ask({ requestId: 'a', kind: 'ask', question: 'q', facts: ['факт'] }, () => undefined);
     expect(off.error?.code).toBe('not-configured');
-    const giga = await service(() => cloudSettings({ provider: 'gigachat' })).ask({ requestId: 'a', kind: 'ask', question: 'q', facts: [] }, () => undefined);
+    const giga = await service(() => cloudSettings({ provider: 'gigachat' })).ask({ requestId: 'a', kind: 'ask', question: 'q', facts: ['факт'] }, () => undefined);
     expect(giga.error?.code).toBe('unavailable');
     expect(mock.requests).toHaveLength(0);
   });
@@ -149,11 +167,11 @@ describe('сервис ИИ: настройки, таймауты, «Стоп»,
   it('таймаут до первого кусочка и между кусочками', async () => {
     mock.set({ mode: 'hang' });
     const svc = service(() => cloudSettings(), [], { firstTokenCloudMs: 150, idleMs: 150 });
-    const r = await svc.ask({ requestId: 'a', kind: 'ask', question: 'q', facts: [] }, () => undefined);
+    const r = await svc.ask({ requestId: 'a', kind: 'ask', question: 'q', facts: ['факт'] }, () => undefined);
     expect(r.error?.code).toBe('timeout');
     expect(r.error?.message).toContain('не ответил вовремя');
     mock.set({ mode: 'hang-after-first', reply: () => 'начало ответа' });
-    const r2 = await svc.ask({ requestId: 'b', kind: 'ask', question: 'q', facts: [] }, () => undefined);
+    const r2 = await svc.ask({ requestId: 'b', kind: 'ask', question: 'q', facts: ['факт'] }, () => undefined);
     expect(r2.error?.code).toBe('timeout');
     expect(r2.text).toBe('начало');
   });
@@ -162,11 +180,11 @@ describe('сервис ИИ: настройки, таймауты, «Стоп»,
     mock.set({ chunkDelayMs: 50, reply: () => 'один два три четыре пять шесть семь восемь девять десять' });
     const svc = service(() => cloudSettings());
     const chunks: string[] = [];
-    const first = svc.ask({ requestId: 'a', kind: 'ask', question: 'q', facts: [] }, (c) => {
+    const first = svc.ask({ requestId: 'a', kind: 'ask', question: 'q', facts: ['факт'] }, (c) => {
       chunks.push(c);
       if (chunks.length === 2) svc.cancel('a');
     });
-    const second = await svc.ask({ requestId: 'b', kind: 'ask', question: 'q', facts: [] }, () => undefined);
+    const second = await svc.ask({ requestId: 'b', kind: 'ask', question: 'q', facts: ['факт'] }, () => undefined);
     expect(second.error?.code).toBe('busy');
     const r = await first;
     expect(r.error?.code).toBe('cancelled');
