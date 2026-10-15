@@ -132,6 +132,9 @@ function CloudCard({ ai, settings, update }: { ai: AiUiState; settings: Settings
   const c = settings.ai.cloud;
   const [key, setKey] = useState('');
   const [err, setErr] = useState<string | null>(null);
+  // флажок отмечается сразу, сохранение в main — следом (без задержки на ответ IPC)
+  const [consent, setConsent] = useState(settings.ai.sendToCloudConsent);
+  useEffect(() => setConsent(settings.ai.sendToCloudConsent), [settings.ai.sendToCloudConsent]);
   const saveText = (field: 'baseUrl' | 'model', v: string) => {
     if (v === c[field]) return;
     void update({ ai: { cloud: { [field]: v.trim() } } }).catch((e: Error) => setErr(e.message));
@@ -169,7 +172,15 @@ function CloudCard({ ai, settings, update }: { ai: AiUiState; settings: Settings
           {!ai.encryption && <span className="error small">Шифрование Windows недоступно — ключ сохранить нельзя.</span>}
         </label>
         <label className="check">
-          <input type="checkbox" checked={settings.ai.sendToCloudConsent} onChange={(e) => void update({ ai: { sendToCloudConsent: e.target.checked } })} data-testid="ai-cloud-consent" />
+          <input
+            type="checkbox"
+            checked={consent}
+            onChange={(e) => {
+              setConsent(e.target.checked);
+              void update({ ai: { sendToCloudConsent: e.target.checked } });
+            }}
+            data-testid="ai-cloud-consent"
+          />
           Согласен отправлять в облако вопрос и факты коуча (игровые данные без ников, без steamid и без ключей)
         </label>
         {err && <p className="error small">{err}</p>}

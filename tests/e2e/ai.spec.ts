@@ -86,6 +86,8 @@ test('ИИ-помощник: выключен по умолчанию, обла�
 
     // С согласием — ответ потоком, числа сверены, данные указаны
     await ui.check('[data-testid="ai-cloud-consent"]');
+    // согласие сохранено в main до вопроса
+    await expect.poll(() => JSON.parse(readFileSync(join(dataDir, 'settings.json'), 'utf8')).ai?.sendToCloudConsent).toBe(true);
     await ui.fill('[data-testid="ask-assistant"] [data-testid="ask-input"]', 'Сколько стоит бкб?');
     await ui.click('[data-testid="ask-assistant"] [data-testid="ask-submit"]');
     const answer = ui.locator('[data-testid="ai-answer"]').last();
