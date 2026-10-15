@@ -51,6 +51,11 @@ export interface MinimapHero {
    * какой из них герой, по мини-карте не определить; x, y — самый крупный значок, уверенность снижена
    */
   ambiguous: boolean;
+  /**
+   * Другие значки цвета этого игрока (поменьше выбранного): координаты мира и площадь в пикселях.
+   * По ним сопровождение (minimap-track.ts) выбирает значок, ближний к прежнему месту героя
+   */
+  others: { x: number; y: number; n: number }[];
 }
 
 export interface MinimapReading {
@@ -289,6 +294,7 @@ export function readMinimap(
     const ambiguous = cand.some((c) => c !== b && c.n >= 0.5 * b.n);
     // Уверенность: чем ближе цвет и чем меньше соперников — тем выше
     const confidence = Math.max(0, Math.min(1, (1 - b.d / tol) * (ambiguous ? 0.3 : cand.length === 1 ? 1 : 0.7)));
+    const toWorld = (c: Blob) => ({ x: ((rect.x + c.x + 0.5) / frame.width - cal.bx) / cal.ax, y: ((rect.y + c.y + 0.5) / frame.height - cal.by) / cal.ay, n: c.n });
     heroes.push({
       slot,
       team: slot < 5 ? 'radiant' : 'dire',
@@ -298,6 +304,7 @@ export function readMinimap(
       py,
       confidence,
       ambiguous,
+      others: cand.filter((c) => c !== b).map(toWorld),
     });
   }
   return { supported: true, heroes, rect, durationMs: now() - t0 };

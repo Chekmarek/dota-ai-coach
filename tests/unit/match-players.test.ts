@@ -101,7 +101,7 @@ describe('мини-карта в модели: позиция и «пропал�
     supported: true,
     rect: null,
     durationMs: 1,
-    heroes: heroes.map((h) => ({ ...h, team: (h.slot < 5 ? 'radiant' : 'dire') as 'radiant' | 'dire', px: 0, py: 0, confidence: 0.9, ambiguous: false })),
+    heroes: heroes.map((h) => ({ ...h, team: (h.slot < 5 ? 'radiant' : 'dire') as 'radiant' | 'dire', px: 0, py: 0, confidence: 0.9, ambiguous: false, others: [] })),
   });
 
   it('позиция: «видно сейчас», затем «видели раньше» с временем последнего показа', () => {

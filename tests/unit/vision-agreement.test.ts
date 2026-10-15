@@ -37,10 +37,10 @@ describe('точность зрения о союзниках и врагах п
         supported: true,
         durationMs: 1,
         heroes: [
-          { slot: 2, team: 'radiant', x: -3000 + 150, y: 100, px: 0, py: 0, confidence: 0.9, ambiguous: false },
-          { slot: 3, team: 'radiant', x: 5000, y: 5000, px: 0, py: 0, confidence: 0.9, ambiguous: false },
+          { slot: 2, team: 'radiant', x: -3000 + 150, y: 100, px: 0, py: 0, confidence: 0.9, ambiguous: false, others: [] },
+          { slot: 3, team: 'radiant', x: 5000, y: 5000, px: 0, py: 0, confidence: 0.9, ambiguous: false, others: [] },
           // Иллюзии: какой значок герой — неизвестно, не сравниваем
-          { slot: 4, team: 'radiant', x: 9999, y: 9999, px: 0, py: 0, confidence: 0.5, ambiguous: true },
+          { slot: 4, team: 'radiant', x: 9999, y: 9999, px: 0, py: 0, confidence: 0.5, ambiguous: true, others: [] },
         ],
       },
       healthBars: {

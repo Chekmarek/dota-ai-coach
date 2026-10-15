@@ -12,6 +12,7 @@ import { frameAccessFromImage } from '../src/core/vision/image.ts';
 import { recognizeHud } from '../src/core/vision/recognize-hud.ts';
 import { readTopBar } from '../src/core/vision/top-bar.ts';
 import { decodeMinimapBackground, readMinimap } from '../src/core/vision/minimap.ts';
+import { MinimapTracker } from '../src/core/vision/minimap-track.ts';
 import { barTeam, readHealthBars } from '../src/core/vision/health-bars.ts';
 
 const root = join(import.meta.dirname, '..');
@@ -174,6 +175,15 @@ function markerPixels(frame, slot, wx, wy) {
 const mmStat = { frames: 0, ms: [], vis15: 0, found15: 0, vis50: 0, found50: 0, pos: 0, posOk: 0, false: 0, swaps: 0, ambiguous: 0, ambiguousOff: 0 };
 /** Последняя подмена по ячейке (матч#ячейка → время кадра), чтобы считать подмены в окне 10 с */
 const mmLastSwap = new Map();
+/** Сопровождение значков во времени — как в движке; новое на каждый матч (кадры идут по времени) */
+const mmTracker = new MinimapTracker();
+let mmMatch = null;
+/**
+ * Места героев по GSI на предыдущем кадре. Кадр и GSI снимаются не в один миг: после прыжка, телепорта или рывка
+ * GSI уже показывает новое место, а мини-карта на кадре — ещё старое. Подменой и ложным значком считается только
+ * значок, далёкий от героя и сейчас, и на предыдущем кадре (место ≤ 400 ед. по-прежнему сравнивается с текущим GSI).
+ */
+let mmPrevGsi = new Map();
 
 /** Уменьшение по площади (усреднение пикселей) — близко к createImageBitmap(resizeQuality: medium/high) */
 function downscale(img, w) {
@@ -289,7 +299,9 @@ for (const file of frames) {
   }
   if (mmLayout && meta?.spectator) {
     try {
-      const r = readMinimap(frame, mmLayout, mmCal, { background: mmBg });
+      const match = meta.body?.map?.matchid ?? null;
+      if (match !== mmMatch) (mmTracker.reset(), (mmMatch = match), (mmPrevGsi = new Map()));
+      const r = mmTracker.update(readMinimap(frame, mmLayout, mmCal, { background: mmBg }), meta.wallMs);
       mmStat.frames++;
       mmStat.ms.push(r.durationMs);
       const det = new Map(r.heroes.map((h) => [h.slot, h]));
@@ -300,9 +312,11 @@ for (const file of frames) {
           continue;
         }
         if (d) {
-          const e = Math.hypot(d.x - h.xpos, d.y - h.ypos);
+          const e0 = Math.hypot(d.x - h.xpos, d.y - h.ypos);
           mmStat.pos++;
-          if (e <= 400) mmStat.posOk++;
+          if (e0 <= 400) mmStat.posOk++;
+          const prev = mmPrevGsi.get(h.slot);
+          const e = prev ? Math.min(e0, Math.hypot(d.x - prev.x, d.y - prev.y)) : e0;
           // Подмена: значок стоит на месте другого живого героя (≤400), а от своего далеко (>1200)
           const other = meta.spectator.heroes.some((o) => o.slot !== h.slot && o.alive && typeof o.xpos === 'number' && Math.hypot(d.x - o.xpos, d.y - o.ypos) <= 400);
           if (d.ambiguous) {
@@ -321,6 +335,7 @@ for (const file of frames) {
         if (n >= 15) (mmStat.vis15++, ok && mmStat.found15++);
         if (n >= 50) (mmStat.vis50++, ok && mmStat.found50++);
       }
+      mmPrevGsi = new Map(meta.spectator.heroes.filter((h) => h.alive && typeof h.xpos === 'number').map((h) => [h.slot, { x: h.xpos, y: h.ypos }]));
     } catch (err) {
       crashes++;
       if (crashSamples.length < 5) crashSamples.push(`${relative(dir, file)}: minimap: ${err.message}`);

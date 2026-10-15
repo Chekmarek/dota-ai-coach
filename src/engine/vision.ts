@@ -17,6 +17,7 @@ import { readTopBar, type PortraitTemplates } from '@core/vision/top-bar.ts';
 import portraitsJson from '../data/hero-portraits.json';
 import { decodeMinimapBackground, minimapRect, readMinimap } from '@core/vision/minimap.ts';
 import { MinimapCalibrator } from '@core/vision/minimap-calibration.ts';
+import { MinimapTracker } from '@core/vision/minimap-track.ts';
 import { readHealthBars } from '@core/vision/health-bars.ts';
 import backgroundJson from '../data/minimap-background.json';
 
@@ -56,6 +57,8 @@ export class VisionStage {
   private canvas = new OffscreenCanvas(64, 32);
   private readonly calibrator = layout.minimap ? new MinimapCalibrator(layout.minimap) : null;
   private lastCalibrationAt = -Infinity;
+  /** Сопровождение значков мини-карты во времени: скачок на другой конец карты не принимается сразу (подмены) */
+  private readonly minimapTracker = new MinimapTracker();
   private ctx = this.canvas.getContext('2d', { willReadFrequently: true })!;
 
   run(bitmap: ImageBitmap, observedAt: number, own: OwnHero | null = null): HudReading {
@@ -81,7 +84,7 @@ export class VisionStage {
       this.calibrator.addSample(access, own.slot, own.x, own.y, Date.now());
     }
     const cal = this.calibrator?.state() ?? null;
-    hud.minimap = readMinimap(access, layout.minimap, cal?.calibration ?? null, { background: minimapBackground });
+    hud.minimap = this.minimapTracker.update(readMinimap(access, layout.minimap, cal?.calibration ?? null, { background: minimapBackground }), observedAt);
     if (cal) hud.minimap.calibration = cal.status;
     // Полоски здоровья героев (этап 3): 3D-вид между панелями — своя копия, в полосы HUD она не входит
     hud.healthBars = readHealthBars(access, layout, model);
