@@ -95,5 +95,6 @@ describe.skipIf(SEQS.length === 0)('модель состояния на нас�
         expect(`${seq.name} ${id}: ${accChanges.get(id) ?? 0}`).toBe(`${seq.name} ${id}: ${Math.min(accChanges.get(id) ?? 0, rawChanges.get(id) ?? 0)}`);
       }
     }
-  });
+    // распознавание сотен полных кадров: при наборе кадров владельца (tests/fixtures/hud) дольше 5 с
+  }, 60_000);
 });

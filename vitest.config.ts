@@ -13,5 +13,8 @@ export default defineConfig({
     // Бенчмарк скорости зрения — отдельно (npm run bench): среди параллельных тестов время завышено вдвое
     exclude: process.env.DOTACOACH_BENCH ? [] : ['tests/unit/vision-bench.test.ts', '**/node_modules/**'],
     environment: 'node',
+    // Тесты на настоящих кадрах и имитации матча распознают сотни кадров; стандартных 5 с не хватает
+    // на сервере GitHub Actions (сборка 0.12.0 упала) и при большом наборе кадров владельца
+    testTimeout: 30_000,
   },
 });
