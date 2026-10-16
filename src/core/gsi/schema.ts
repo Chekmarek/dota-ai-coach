@@ -51,6 +51,23 @@ export const gsiPlayerSchema = z.looseObject({
   team_name: str,
   /** Номер игрока внутри команды (0–4) — ячейка на верхней панели; player_slot — место в лобби, не то */
   team_slot: int,
+  gpm: int,
+  xpm: int,
+  /** Счётчик приказов игрока — по нему видно простой (с 0.12.0) */
+  commands_issued: int,
+});
+
+/** Здание своей команды (блок buildings: { radiant: { dota_goodguys_tower1_top: {...} } }) */
+export const gsiBuildingSchema = z.looseObject({
+  health: int,
+  max_health: int,
+});
+
+/** Событие матча (блок events): roshan_killed, aegis_picked_up, bounty_rune_pickup, courier_killed, … */
+export const gsiEventSchema = z.looseObject({
+  game_time: num,
+  event_type: str,
+  team: str,
 });
 
 export const gsiHeroSchema = z.looseObject({
@@ -69,6 +86,25 @@ export const gsiHeroSchema = z.looseObject({
   silenced: bool,
   stunned: bool,
   hexed: bool,
+  /** Стоимость выкупа и секунды до его готовности (с 0.12.0 — для подсказок о выкупе) */
+  buyback_cost: int,
+  buyback_cooldown: num,
+  smoked: bool,
+  magicimmune: bool,
+  has_debuff: bool,
+  muted: bool,
+  aghanims_scepter: bool,
+  aghanims_shard: bool,
+  talent_1: bool,
+  talent_2: bool,
+  talent_3: bool,
+  talent_4: bool,
+  talent_5: bool,
+  talent_6: bool,
+  talent_7: bool,
+  talent_8: bool,
+  /** Сколько очков вложено в характеристики (+2 ко всем) */
+  attributes_level: int,
 });
 
 export const gsiAbilitySchema = z.looseObject({
@@ -107,6 +143,10 @@ export const gsiBodySchema = z.looseObject({
   abilities: opt(z.record(z.string(), entry(gsiAbilitySchema))),
   /** slot0…slot8, stash0…stash5, teleport0, neutral0 и, возможно, другие ячейки */
   items: opt(z.record(z.string(), entry(gsiItemSchema))),
+  /** Свои здания по командам (с 0.12.0); в режиме игрока Dota присылает только свою команду */
+  buildings: opt(z.record(z.string(), opt(z.record(z.string(), entry(gsiBuildingSchema))))),
+  /** Последние события матча (с 0.12.0) */
+  events: opt(z.array(entry(gsiEventSchema))),
   auth: opt(z.looseObject({ token: str })),
 });
 

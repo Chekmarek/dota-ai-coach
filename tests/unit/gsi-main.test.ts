@@ -170,7 +170,7 @@ describe('настройка Dota (во временной папке)', () => {
       expect(text).toContain(s);
     }
     const data = parseVdf(text)['dota ai coach'] as any;
-    expect(Object.keys(data.data).sort()).toEqual(['abilities', 'hero', 'items', 'map', 'player', 'provider']);
+    expect(Object.keys(data.data).sort()).toEqual(['abilities', 'buildings', 'events', 'hero', 'items', 'map', 'player', 'provider']);
     expect(readdirSync(dir).sort()).toEqual([GSI_CFG_NAME, 'gamestate_integration_other.cfg']);
     expect(cfgStatus(dota, 53790, TOKEN)).toMatchObject({ installed: true, current: true });
     expect(cfgStatus(dota, 53791, TOKEN)).toMatchObject({ installed: true, current: false });

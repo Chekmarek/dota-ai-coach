@@ -220,6 +220,8 @@ export function gsiCfgText(port: number, token: string): string {
     '    "hero"        "1"',
     '    "abilities"   "1"',
     '    "items"       "1"',
+    '    "buildings"   "1"',
+    '    "events"      "1"',
     '  }',
     '  "auth"',
     '  {',

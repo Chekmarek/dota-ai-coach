@@ -21,6 +21,7 @@
     "gsi:replay": "node scripts/gsi-replay.mjs",
     "train:glyphs": "node scripts/train-glyphs.ts",
     "kb:import": "node scripts/import-kb.mjs && node scripts/make-hero-names.mjs",
+    "kb:stats": "node scripts/import-stats.mjs",
     "train:names": "node scripts/train-names.ts",
     "dist": "electron-vite build && node scripts/dist.mjs"
   },

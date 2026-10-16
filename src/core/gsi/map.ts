@@ -83,6 +83,50 @@ export interface GsiReading {
   items: GsiItemSlot[] | null;
   /** provider.timestamp, секунды Unix; null — не сообщён */
   timestamp: number | null;
+  /** Данные для подсказок (с 0.12.0); нет поля — чтение старой версии или запись до 0.12.0 */
+  extra?: GsiExtra;
+}
+
+/** Здание своей команды из блока buildings */
+export interface GsiBuilding {
+  /** Ключ Valve без префикса команды, например tower1_top, rax_melee_mid, fort */
+  key: string;
+  health: number;
+  maxHealth: number;
+}
+
+export interface GsiEvent {
+  type: string;
+  /** game_time события, секунды; null — не сообщено */
+  gameTime: number | null;
+  team: string | null;
+}
+
+/** Поля GSI, которые нужны подсказкам. null — Dota не прислала */
+export interface GsiExtra {
+  buybackCost: number | null;
+  /** Секунды до готовности выкупа; 0 — готов */
+  buybackCooldown: number | null;
+  gpm: number | null;
+  xpm: number | null;
+  commandsIssued: number | null;
+  smoked: boolean | null;
+  magicImmune: boolean | null;
+  hasDebuff: boolean | null;
+  silenced: boolean | null;
+  stunned: boolean | null;
+  scepter: boolean | null;
+  shard: boolean | null;
+  /** Сколько талантов взято (talent_1…8); null — Dota не прислала */
+  talentsTaken: number | null;
+  /** Очков в характеристиках; null — Dota не прислала */
+  attributesLevel: number | null;
+  /** Победитель (map.win_team) после конца матча; null — матч идёт или не сообщено */
+  winTeam: 'radiant' | 'dire' | null;
+  /** Свои здания; null — блока buildings нет */
+  buildings: GsiBuilding[] | null;
+  /** События (последние, что прислала Dota); null — блока events нет */
+  events: GsiEvent[] | null;
 }
 
 export type ItemNameLookup = (key: string) => string | undefined;
@@ -205,7 +249,7 @@ function mapItem(slot: string, it: GsiItemRaw, itemName?: ItemNameLookup): GsiIt
 export function mapGsi(body: unknown, itemName?: ItemNameLookup, heroLookup?: HeroLookup): GsiReading | null {
   const parsed = parseGsiBody(body);
   if (!parsed.ok) return null;
-  const { map, player, hero, abilities, items, provider } = parsed.body;
+  const { map, player, hero, abilities, items, provider, buildings, events } = parsed.body;
   // У наблюдателя hero — словарь команд, а не герой: имени нет
   if (!map || !hero || !hero.name || !hero.name.startsWith(HERO_PREFIX)) return null;
 
@@ -251,5 +295,45 @@ export function mapGsi(body: unknown, itemName?: ItemNameLookup, heroLookup?: He
     abilities: mapAbilities(abilities, hero),
     items: mapItems(items, itemName),
     timestamp: n(provider?.timestamp),
+    extra: {
+      buybackCost: n(hero.buyback_cost),
+      buybackCooldown: n(hero.buyback_cooldown),
+      gpm: n(player?.gpm),
+      xpm: n(player?.xpm),
+      commandsIssued: n(player?.commands_issued),
+      smoked: b(hero.smoked),
+      magicImmune: b(hero.magicimmune),
+      hasDebuff: b(hero.has_debuff),
+      silenced: b(hero.silenced),
+      stunned: b(hero.stunned),
+      scepter: b(hero.aghanims_scepter),
+      shard: b(hero.aghanims_shard),
+      talentsTaken: talentsTaken(hero),
+      attributesLevel: n(hero.attributes_level),
+      winTeam: map.win_team === 'radiant' || map.win_team === 'dire' ? map.win_team : null,
+      buildings: mapBuildings(buildings, team),
+      events: events ? events.filter((e) => e !== null && typeof e.event_type === 'string').map((e) => ({ type: e!.event_type!, gameTime: n(e!.game_time), team: e!.team ?? null })) : null,
+    },
   };
+}
+
+function talentsTaken(hero: NonNullable<GsiBody['hero']>): number | null {
+  const flags = [hero.talent_1, hero.talent_2, hero.talent_3, hero.talent_4, hero.talent_5, hero.talent_6, hero.talent_7, hero.talent_8];
+  if (flags.every((f) => f === undefined)) return null;
+  return flags.filter((f) => f === true).length;
+}
+
+const BUILDING_PREFIX = /^dota_(goodguys|badguys)_/;
+
+function mapBuildings(raw: GsiBody['buildings'], team: 'radiant' | 'dire' | null): GsiBuilding[] | null {
+  if (!raw) return null;
+  // В режиме игрока приходит только своя команда; если команд несколько — берём свою
+  const block = (team && raw[team]) || Object.values(raw).find((v) => v) || null;
+  if (!block) return [];
+  const out: GsiBuilding[] = [];
+  for (const [k, v] of Object.entries(block)) {
+    if (!v || typeof v.health !== 'number' || typeof v.max_health !== 'number' || v.max_health <= 0) continue;
+    out.push({ key: k.replace(BUILDING_PREFIX, ''), health: v.health, maxHealth: v.max_health });
+  }
+  return out;
 }
