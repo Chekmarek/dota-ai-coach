@@ -1,4 +1,6 @@
 import { z } from 'zod';
+import { zoneOverridesSchema, type ZoneOverrides } from '../../core/hud/layout.ts';
+import { HUD_THEME_IDS, type HudThemeId } from '../types/hud.ts';
 
 // Схема настроек приложения.
 // Две версии одних и тех же полей:
@@ -18,6 +20,8 @@ const DEFAULTS = {
   live: { autoStart: true, fps: 10, overlay: true, overlayCorner: 'top-right' as OverlayCorner },
   // Решение владельца 2026-10-13 (docs/POLICY.md): подсказки включены по умолчанию, в рейтинге — тоже; решает пользователь
   hints: { enabled: true, ranked: true },
+  // Подсказки поверх игры (этап 3): тема, раскладка, анимации, прозрачность, размер
+  hud: { enabled: true, theme: 'arcane' as HudThemeId, reduceMotion: false, opacity: 1, scale: 1, zones: null as ZoneOverrides | null },
   // Valve Game State Integration: локальный приёмник на 127.0.0.1 (этап 2 GSI)
   gsi: { port: GSI_DEFAULT_PORT, token: '', record: true, dotaDir: null as string | null },
   // Только для разработчика (DOTACOACH_DEV=1): набор кадров для проверки зрения (docs/VISION_DATASET.md)
@@ -102,10 +106,21 @@ const fields = {
     overlayCorner: z.enum(['top-left', 'top-right', 'bottom-left', 'bottom-right']),
   },
   hints: {
-    /** Live-подсказки во время матча (в отдельном окне коуча, не поверх игры) */
+    /** Live-подсказки во время матча (поверх окна игры — раздел hud) */
     enabled: z.boolean(),
     /** Подсказки и в рейтинговых матчах — решает пользователь (риск для аккаунта, см. docs/POLICY.md) */
     ranked: z.boolean(),
+  },
+  hud: {
+    /** Показывать подсказки поверх окна игры */
+    enabled: z.boolean(),
+    theme: z.enum(HUD_THEME_IDS),
+    /** «Уменьшить анимации»: без движения, только проявление */
+    reduceMotion: z.boolean(),
+    opacity: z.number().min(0.4).max(1),
+    scale: z.number().min(0.8).max(1.4),
+    /** Сдвиги зон из «Режима расстановки»; null — стандартная раскладка */
+    zones: zoneOverridesSchema.nullable(),
   },
   gsi: {
     /** Порт приёмника на 127.0.0.1; если занят — показываем это, другой порт сами не выбираем */
@@ -147,6 +162,7 @@ export const settingsSchema = z.object({
   ui: tolerant('ui'),
   live: tolerant('live'),
   hints: tolerant('hints'),
+  hud: tolerant('hud'),
   gsi: tolerant('gsi'),
   dev: tolerant('dev'),
   ai: aiTolerant,
@@ -167,6 +183,7 @@ export const settingsPatchSchema = z
     ui: z.object(fields.ui).partial().strict().optional(),
     live: z.object(fields.live).partial().strict().optional(),
     hints: z.object(fields.hints).partial().strict().optional(),
+    hud: z.object(fields.hud).partial().strict().optional(),
     // token — только main-процесс (SettingsStore.setGsiToken), dotaDir — через диалог выбора папки
     gsi: z.object({ port: fields.gsi.port, record: fields.gsi.record }).partial().strict().optional(),
     dev: z.object(fields.dev).partial().strict().optional(),
@@ -195,6 +212,7 @@ export function applySettingsPatch(current: Settings, patch: SettingsPatch): Set
     ui: { ...current.ui, ...patch.ui },
     live: { ...current.live, ...patch.live },
     hints: { ...current.hints, ...patch.hints },
+    hud: { ...current.hud, ...patch.hud },
     gsi: { ...current.gsi, ...patch.gsi },
     dev: { ...current.dev, ...patch.dev },
     ai: {

@@ -45,6 +45,8 @@ export const IPC = {
   /** события main → UI */
   aiChunk: 'ai:chunk',
   aiState: 'ai:state',
+  /** Примеры подсказок поверх игры на 12 с (этап 3) */
+  hudDemo: 'hud:demo',
 } as const;
 
 /**
@@ -58,6 +60,8 @@ export const LIVE_IPC = {
   gsiBody: 'engine:gsi',
   /** событие main → значок поверх игры */
   overlayState: 'overlay:state',
+  /** событие main → окно подсказок поверх игры (HudState) */
+  hudState: 'hud:state',
   /** событие main → движок: запись набора кадров (только DOTACOACH_DEV=1) */
   datasetConfig: 'engine:dataset-config',
   /** движок → main: кадр для набора (PNG) */
@@ -137,6 +141,8 @@ export interface GsiBodyMessage {
 
 /** API, которое preload выдаёт интерфейсу как window.dotacoach */
 export interface DotaCoachApi {
+  /** Показать примеры подсказок поверх игры на 12 с */
+  showHudDemo(scene: 'alive' | 'dead' | 'match'): Promise<void>;
   getSettings(): Promise<Settings>;
   updateSettings(patch: SettingsPatch): Promise<Settings>;
   getAppInfo(): Promise<AppInfo>;

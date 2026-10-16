@@ -149,3 +149,14 @@ button.link { background: none; border: none; padding: 0; color: var(--accent-2)
 .pl-map-river { stroke: #2b4a7a; stroke-width: 10; opacity: 0.6; }
 .pl-map-base-radiant { fill: rgba(63, 185, 80, 0.25); }
 .pl-map-base-dire { fill: rgba(220, 70, 60, 0.25); }
+
+/* «Предпросмотр подсказок» (этап 3): сцена в размере настоящего экрана, уменьшенная под ширину страницы */
+.hudp-controls { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 10px 16px; }
+.hudp-wrap { position: relative; width: 100%; margin-top: 12px; overflow: hidden; border: 1px solid var(--border, #333); border-radius: 6px; }
+.hudp-stage { position: absolute; left: 0; top: 0; transform-origin: 0 0; overflow: hidden; }
+.hudp-bg, .hudp-host { position: absolute; inset: 0; }
+.hudp-bgimg { width: 100%; height: 100%; object-fit: cover; display: block; }
+.hudp-edit { position: absolute; inset: 0; cursor: default; }
+.hudp-zone { position: absolute; border: 2px dashed rgba(63, 227, 208, 0.9); background: rgba(63, 227, 208, 0.08); cursor: move; touch-action: none; }
+.hudp-zone span { position: absolute; left: 6px; top: 4px; font: 600 16px system-ui, sans-serif; color: #bff6ee; text-shadow: 0 1px 2px #000; }
+.hudp-zone.hudp-bad { border-color: #ff6b4f; background: rgba(255, 107, 79, 0.12); }

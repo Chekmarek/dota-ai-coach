@@ -8,7 +8,7 @@ import { KbStore } from './knowledge/kb-store';
 import { registerIpc } from './ipc/register';
 import { EngineLink } from './lifecycle/engine-link';
 import { handleMediaProtocol, registerMediaScheme } from './media/media-protocol';
-import { liveSeesDota, onLiveSettingsChanged, setupLive } from './live/live';
+import { liveSeesDota, onLiveSettingsChanged, setupLive, showHudDemo } from './live/live';
 import { setupAi } from './ai';
 import { gsiPhase } from '@core/gsi/map.ts';
 import { setupUpdater } from './live/updater';
@@ -72,6 +72,7 @@ if (!app.requestSingleInstanceLock()) {
       dataDir,
       distribution,
       isTrustedSender,
+      onHudDemo: showHudDemo,
       onSettingsChanged: (next) => {
         onLiveSettingsChanged();
         gsi.onSettingsChanged(next);

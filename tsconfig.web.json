@@ -6,5 +6,5 @@
     "jsx": "react-jsx",
     "types": []
   },
-  "include": ["src/renderer/**/*", "src/engine/**/*", "src/shared/**/*", "src/core/**/*"]
+  "include": ["src/renderer/**/*", "src/engine/**/*", "src/hud/**/*", "src/shared/**/*", "src/core/**/*"]
 }

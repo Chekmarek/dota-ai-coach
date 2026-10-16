@@ -3,6 +3,9 @@
 // захвата только для окна движка, приём статуса от движка и значок поверх игры.
 // Доступ к игре только на чтение: снимок окна средствами Windows, без чтения памяти
 // и без вмешательства в процесс dota2.exe.
+import { HudOverlay } from './hud-window';
+import type { HudHint } from '@shared/types/hud';
+import type { SampleScene } from '@shared/hud-samples';
 import { app, BrowserWindow, desktopCapturer, ipcMain, screen, session, webContents, type WebContents } from 'electron';
 import { appendFileSync, renameSync, statSync } from 'node:fs';
 import { join } from 'node:path';
@@ -134,7 +137,7 @@ const OVERLAY_RELATIVE_LEVEL = 1;
 export interface LiveDeps {
   settings: { get(): Settings };
   preloadDir: string;
-  pageUrl: (page: 'overlay') => { url?: string; file?: string };
+  pageUrl: (page: 'overlay' | 'hud') => { url?: string; file?: string };
   harden: (contents: WebContents) => void;
 }
 
@@ -299,6 +302,8 @@ class Overlay {
 }
 
 let overlay: Overlay | null = null;
+/** Окно подсказок поверх игры (этап 3) */
+let hud: HudOverlay | null = null;
 let lastLoggedState: string | null = null;
 /** Последнее состояние живого захвата и когда оно пришло */
 let liveSeen: { state: string; at: number } = { state: 'off', at: 0 };
@@ -314,11 +319,13 @@ let lastLoggedError: string | null | undefined = null;
 export function setupLive(deps: LiveDeps): void {
   liveLog('setup', { app: app.getVersion(), electron: process.versions.electron, platform: process.platform });
   overlay = new Overlay(deps);
+  hud = new HudOverlay({ ...deps, log: liveLog });
 
   ipcMain.handle(LIVE_IPC.findDota, async (e): Promise<FindDotaResult> => {
     if (!isLiveEngine(e.sender)) throw new Error('Untrusted IPC sender');
     try {
       const { source, windows, videoMode } = await findDotaSource();
+      hud?.setDotaSource(source?.id ?? null);
       return { source: source ? { id: source.id, name: source.name } : null, windows, videoMode };
     } catch (err) {
       liveLog('getSources failed', String((err as Error)?.stack ?? err));
@@ -339,6 +346,7 @@ export function setupLive(deps: LiveDeps): void {
       lastLoggedError = st.error;
     }
     overlay?.update({ state: st.state, fps: st.fps });
+    hud?.setSeeing(st.state === 'seeing');
   });
 
   // Запасной путь: если движок попросит getDisplayMedia — отдаём только окно Доты.
@@ -355,10 +363,22 @@ export function setupLive(deps: LiveDeps): void {
 /** Настройки поменялись — пересчитать видимость и угол значка */
 export function onLiveSettingsChanged(): void {
   overlay?.refresh();
+  hud?.refresh();
+}
+
+/** Примеры подсказок поверх игры (кнопка «Показать поверх игры» в предпросмотре) */
+export function showHudDemo(scene: SampleScene): void {
+  hud?.demo(scene);
+}
+
+/** Подсказки движка → окно поверх игры (подключается на этапе 4) */
+export function setHudHints(hints: HudHint[]): void {
+  hud?.setHints(hints);
 }
 
 /** Движок упал или перезапускается — значок прячем до нового статуса */
 export function onLiveEngineGone(): void {
   setLiveEngine(null);
   overlay?.hide();
+  hud?.setSeeing(false);
 }

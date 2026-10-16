@@ -5,7 +5,7 @@ import { allowLivePermission } from '../live/live';
 export const preloadDir = join(__dirname, '../preload');
 const rendererDir = join(__dirname, '../renderer');
 
-export type PageName = 'renderer' | 'engine' | 'overlay';
+export type PageName = 'renderer' | 'engine' | 'overlay' | 'hud';
 
 export function pageUrl(page: PageName): { url?: string; file?: string } {
   const devServer = process.env.ELECTRON_RENDERER_URL;

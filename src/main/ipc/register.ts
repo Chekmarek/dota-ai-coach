@@ -1,4 +1,5 @@
 import { app, BrowserWindow, dialog, ipcMain, type IpcMainInvokeEvent } from 'electron';
+import { z } from 'zod';
 import { readdirSync, statSync } from 'node:fs';
 import { basename, extname, join } from 'node:path';
 import { IPC, type AppInfo } from '@shared/ipc';
@@ -24,6 +25,8 @@ interface Deps {
   distribution: Distribution;
   /** Принимаем вызовы только от этого окна */
   isTrustedSender: (e: IpcMainInvokeEvent) => boolean;
+  /** Примеры подсказок поверх игры (этап 3) */
+  onHudDemo?: (scene: 'alive' | 'dead' | 'match') => void;
   /** Настройки изменились (живой режим пересчитывает значок поверх игры) */
   onSettingsChanged?: (settings: Settings) => void;
 }
@@ -42,6 +45,10 @@ export function registerIpc(deps: Deps): void {
   };
 
   handle(IPC.settingsGet, () => forUi(deps.settings.get()));
+
+  handle(IPC.hudDemo, (_e, arg) => {
+    deps.onHudDemo?.(z.enum(['alive', 'dead', 'match']).parse(arg));
+  });
 
   handle(IPC.kbGet, () => deps.kb.get());
 

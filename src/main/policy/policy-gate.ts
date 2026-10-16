@@ -15,7 +15,7 @@ const POLICY: Record<AppMode, { allowed: boolean; reason: string }> = {
   },
   'live-coach-unranked': {
     allowed: true,
-    reason: 'Подсказки в обычных матчах: в отдельном окне коуча, по переключателю в настройках.',
+    reason: 'Подсказки в обычных матчах: поверх окна игры (не перекрывая HUD), по переключателю в настройках.',
   },
   'live-coach-ranked': {
     allowed: true,

@@ -1,0 +1,135 @@
+/* Подсказки поверх игры. Только CSS-переменные темы (--hud-*): цвета, шрифты, размеры, тени, длительности.
+   Форма карточки — «срезанные углы» (фирменная, Dota-панели прямоугольные), бирюзовая полоса слева и эмблема. */
+@font-face {
+  font-family: 'HudDisplay';
+  src: url('./fonts/Forum-Regular.ttf') format('truetype');
+  font-display: block;
+}
+
+.hud-root {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  font-family: var(--hud-font-body);
+  color: var(--hud-c-text);
+  -webkit-font-smoothing: antialiased;
+}
+.hud-zone {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  gap: var(--hud-s-gap);
+  /* Что не влезло в зону — не показываем: зона никогда не залезает на HUD игры (запас — под свечение) */
+  overflow: clip;
+  overflow-clip-margin: var(--hud-glow-blur);
+}
+.hud-compact .hud-text, .hud-compact .hud-factors { display: none; }
+.hud-zone.hud-stack-up { flex-direction: column-reverse; justify-content: flex-start; }
+.hud-zone.hud-align-right { align-items: flex-end; }
+.hud-zone.hud-align-center { align-items: center; }
+.hud-zone.hud-align-left { align-items: flex-start; }
+
+.hud-card {
+  --chamfer: var(--hud-s-chamfer);
+  --glow: var(--hud-c-glowInfo);
+  --sev: var(--hud-c-info);
+  position: relative;
+  width: min(100%, var(--hud-s-cardWidth));
+  opacity: var(--hud-opacity);
+  will-change: transform, opacity;
+  contain: layout paint style;
+}
+.hud-p-advice { --glow: var(--hud-c-glowAdvice); --sev: var(--hud-c-advice); }
+.hud-p-critical { --glow: var(--hud-c-glowCritical); --sev: var(--hud-c-critical); }
+.hud-k-alert { width: 100%; }
+.hud-k-review { width: 100%; }
+.hud-k-alert .hud-title { font-size: calc(var(--hud-s-title) * 1.18); }
+
+/* Свечение — отдельный слой за карточкой; анимируется только его opacity */
+.hud-glow {
+  position: absolute;
+  inset: calc(var(--hud-s-border) * -1);
+  clip-path: polygon(var(--chamfer) 0, 100% 0, 100% calc(100% - var(--chamfer)), calc(100% - var(--chamfer)) 100%, 0 100%, 0 var(--chamfer));
+  background: var(--glow);
+  filter: blur(var(--hud-glow-blur));
+  opacity: 1;
+}
+.hud-p-info .hud-glow { display: none; }
+
+/* Рамка: бронзовый градиент, внутри — камень с тем же срезом углов */
+.hud-frame {
+  position: relative;
+  padding: var(--hud-s-border);
+  background: linear-gradient(160deg, var(--hud-c-borderHi), var(--hud-c-border) 45%, var(--hud-c-border) 70%, var(--hud-c-borderHi));
+  clip-path: polygon(var(--chamfer) 0, 100% 0, 100% calc(100% - var(--chamfer)), calc(100% - var(--chamfer)) 100%, 0 100%, 0 var(--chamfer));
+  box-shadow: var(--hud-shadow-card);
+}
+.hud-body {
+  position: relative;
+  padding: var(--hud-s-pad) var(--hud-s-pad) var(--hud-s-pad) calc(var(--hud-s-pad) + var(--hud-s-spine));
+  background: var(--hud-texture), linear-gradient(180deg, var(--hud-c-panelTop), var(--hud-c-panelBottom));
+  clip-path: polygon(var(--chamfer) 0, 100% 0, 100% calc(100% - var(--chamfer)), calc(100% - var(--chamfer)) 100%, 0 100%, 0 var(--chamfer));
+}
+.hud-spine {
+  position: absolute;
+  left: 0;
+  top: var(--chamfer);
+  bottom: 0;
+  width: var(--hud-s-spine);
+  background: linear-gradient(180deg, var(--hud-c-accent), transparent);
+}
+
+.hud-head { display: flex; align-items: center; gap: calc(var(--hud-s-gap) * 0.75); min-height: var(--hud-s-icon); }
+.hud-emblem { flex: none; width: var(--hud-s-emblem); height: var(--hud-s-emblem); color: var(--hud-c-accent); }
+.hud-sev { flex: none; width: var(--hud-s-icon); height: var(--hud-s-icon); color: var(--sev); }
+.hud-ai { flex: none; width: calc(var(--hud-s-small) * 0.9); height: calc(var(--hud-s-small) * 0.9); color: var(--hud-c-accent); opacity: 0.85; }
+.hud-title {
+  font-family: var(--hud-font-display);
+  font-size: var(--hud-s-title);
+  letter-spacing: 0.03em;
+  color: var(--hud-c-title);
+  line-height: 1.15;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+}
+.hud-p-critical .hud-title { color: var(--hud-c-title); }
+.hud-text { margin-top: calc(var(--hud-s-gap) * 0.6); font-size: var(--hud-s-text); line-height: 1.32; color: var(--hud-c-text); }
+
+/* Проценты */
+.hud-pctbox { margin-top: var(--hud-s-gap); }
+.hud-pct { display: flex; align-items: baseline; flex-wrap: wrap; gap: 0 var(--hud-s-gap); }
+.hud-pct-num { font-family: var(--hud-font-display); font-size: var(--hud-s-percent); color: var(--hud-c-accent); line-height: 1; text-shadow: 0 0 calc(var(--hud-glow-blur) * 0.6) var(--hud-c-accentSoft); }
+.hud-pct-label { font-size: var(--hud-s-text); color: var(--hud-c-title); }
+.hud-conf { margin-left: auto; font-size: var(--hud-s-small); color: var(--hud-c-muted); white-space: nowrap; }
+.hud-bar { margin-top: calc(var(--hud-s-gap) * 0.6); height: var(--hud-s-bar); background: var(--hud-c-barTrack); overflow: hidden; }
+.hud-bar i { display: block; height: 100%; background: linear-gradient(90deg, var(--hud-c-accentSoft), var(--hud-c-accent)); transform-origin: left center; }
+.hud-factors { list-style: none; margin: var(--hud-s-gap) 0 0; padding: 0; display: grid; grid-template-columns: 1fr auto; gap: 2px calc(var(--hud-s-gap) * 1.5); font-size: var(--hud-s-small); }
+.hud-factors li { display: contents; }
+.hud-factors span { color: var(--hud-c-muted); }
+.hud-f-plus b { color: var(--hud-c-good); font-weight: 600; text-align: right; }
+.hud-f-minus b { color: var(--hud-c-bad); font-weight: 600; text-align: right; }
+
+/* Сколько ещё будет на экране */
+.hud-ttl { position: absolute; left: var(--hud-s-spine); right: 0; bottom: 0; height: max(1px, calc(var(--hud-s-bar) * 0.5)); background: transparent; }
+.hud-ttl i { display: block; height: 100%; background: var(--hud-c-accent); opacity: 0.45; transform-origin: left center; animation: hud-ttl linear forwards; }
+@keyframes hud-ttl { from { transform: scaleX(1); } to { transform: scaleX(0); } }
+
+/* Разборы */
+.hud-k-review .hud-body { padding: calc(var(--hud-s-pad) * 1.6) calc(var(--hud-s-pad) * 2); }
+.hud-k-review .hud-title { font-size: calc(var(--hud-s-title) * 1.35); }
+.hud-review-sec { margin-top: calc(var(--hud-s-gap) * 1.4); }
+.hud-review-sec h4 { margin: 0 0 4px; font-family: var(--hud-font-display); font-weight: normal; font-size: var(--hud-s-text); color: var(--hud-c-accent); letter-spacing: 0.05em; }
+.hud-review-sec ul, .hud-review-sec ol { margin: 0; padding-left: 1.2em; font-size: var(--hud-s-text); line-height: 1.4; }
+.hud-review-ai { display: flex; gap: var(--hud-s-gap); margin: var(--hud-s-gap) 0 0; font-size: var(--hud-s-text); line-height: 1.4; color: var(--hud-c-title); }
+.hud-review-foot { margin-top: calc(var(--hud-s-gap) * 1.4); padding-top: var(--hud-s-gap); border-top: 1px solid var(--hud-c-border); font-size: var(--hud-s-text); color: var(--hud-c-title); }
+.hud-stats { margin-top: var(--hud-s-gap); border-collapse: collapse; font-size: var(--hud-s-small); width: 100%; }
+.hud-stats td { padding: 2px 6px 2px 0; }
+.hud-stat-v { color: var(--hud-c-title); text-align: right; }
+.hud-stat-ref { color: var(--hud-c-muted); text-align: right; }
+.hud-v-good .hud-stat-v { color: var(--hud-c-good); }
+.hud-v-bad .hud-stat-v { color: var(--hud-c-bad); }
+
+@media (prefers-reduced-motion: reduce) {
+  .hud-ttl i { animation: none; }
+}
+.hud-reduced .hud-ttl i { animation: none; }

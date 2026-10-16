@@ -45,10 +45,10 @@ async function stubDialog(app: ElectronApplication, path: string): Promise<void>
 const TMP_ROOT = join(ROOT, '.tmp/e2e-data');
 const tmp = () => (mkdirSync(TMP_ROOT, { recursive: true }), mkdtempSync(join(TMP_ROOT, 'run-')));
 
-test('приложение запускается, все 10 экранов открываются, нереализованное честно помечено', async () => {
+test('приложение запускается, все 11 экранов открываются, нереализованное честно помечено', async () => {
   const { app, ui } = await launch(tmp());
   try {
-    for (const id of ['dashboard', 'live', 'replay', 'match', 'ai', 'history', 'kb', 'voice', 'updates', 'settings']) {
+    for (const id of ['dashboard', 'live', 'hud', 'replay', 'match', 'ai', 'history', 'kb', 'voice', 'updates', 'settings']) {
       await ui.click(`[data-testid="nav-${id}"]`);
       await expect(ui.locator(`[data-testid="page-${id}"]`)).toBeVisible();
     }
@@ -103,6 +103,7 @@ test('безопасность: в интерфейсе нет доступа к
       'pickReplayVideo',
       'sendAiFeedback',
       'setAiKey',
+      'showHudDemo',
       'stopLocalAi',
       'updateSettings',
     ]);

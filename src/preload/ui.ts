@@ -3,6 +3,7 @@ import { ENGINE_PORT_MESSAGE, IPC, type DotaCoachApi } from '@shared/ipc';
 
 // Интерфейс получает только эти функции — ни Node.js, ни произвольного IPC.
 const api: DotaCoachApi = {
+  showHudDemo: (scene) => ipcRenderer.invoke(IPC.hudDemo, scene),
   getSettings: () => ipcRenderer.invoke(IPC.settingsGet),
   updateSettings: (patch) => ipcRenderer.invoke(IPC.settingsUpdate, patch),
   getAppInfo: () => ipcRenderer.invoke(IPC.appInfo),
