@@ -25,3 +25,6 @@ DotaCoach-*-update/
 
 # Резервные копии перед правками
 *.bak-*
+
+# Кэш npm из .npmrc (путь Windows), если npm запускали не на Windows
+/D:*
