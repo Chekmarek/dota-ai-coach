@@ -15,6 +15,8 @@ import { DEFAULT_QUEUE_CONFIG } from '../../src/core/coach/queue';
 import { realData, sim, type SimInput } from './coach-sim';
 
 const data = realData();
+/** Имитация 40 минут матча — несколько тысяч тиков: на медленной машине CI дольше стандартных 5 с */
+const SIM_TIMEOUT_MS = 120_000;
 const kb = {
   get: () => ({ meta: { patch: '7.41f', verification: 'imported-unverified' }, heroes: data.heroes, items: data.items, mechanics: data.mechanics }) as never,
   stats: () => data.stats,
@@ -133,7 +135,7 @@ describe('имитация матча с ботами', () => {
       const last = run.saved[run.saved.length - 1]!;
       expect(last.deathReviews.length).toBeGreaterThanOrEqual(1);
       expect(last.matchReview?.result).toBe('win');
-    });
+    }, SIM_TIMEOUT_MS);
   }
 
   it('ИИ падает на каждом запросе — подсказки идут шаблонами, движок не ломается', () => {
@@ -141,7 +143,7 @@ describe('имитация матча с ботами', () => {
     const run = runBotMatch(fakeAi(c, true), true);
     expect(run.shown.length).toBeGreaterThan(20);
     expect(run.shown.every((x) => x.h.source === 'template')).toBe(true);
-  });
+  }, SIM_TIMEOUT_MS);
 
   it('ИИ работает — советы ИИ есть, обращений к модели немного (по событиям, с бюджетом)', async () => {
     const c = { n: 0 };
@@ -152,13 +154,13 @@ describe('имитация матча с ботами', () => {
       clockRef.now = 10_000_000 + t * 1000;
       const s = sim({ wallMs: clockRef.now, clock: 0, ...botMatch(t, true) });
       svc.ingest({ state: s.state, gsi: s.gsi, gsiWallMs: clockRef.now });
-      await new Promise((r) => setTimeout(r, 0));
+      await new Promise((r) => setImmediate(r));
     }
     expect(run.shown.some((x) => x.h.source === 'ai')).toBe(true);
     // ~40 минут: обращений к модели — десятки, не сотни
     expect(c.n).toBeLessThan(200);
     expect(c.n / 41).toBeLessThanOrEqual(6);
-  });
+  }, SIM_TIMEOUT_MS);
 });
 
 describe('имитация по настоящей записи GSI (Hero Demo)', () => {
@@ -183,5 +185,5 @@ describe('имитация по настоящей записи GSI (Hero Demo)'
     }
     const pm = perMinute(run);
     if (pm.nonCritical.length) expect(Math.max(...pm.nonCritical)).toBeLessThanOrEqual(DEFAULT_QUEUE_CONFIG.maxPerMinute);
-  });
+  }, SIM_TIMEOUT_MS);
 });
