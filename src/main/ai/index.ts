@@ -1,5 +1,6 @@
 // ИИ-помощник в main: IPC интерфейса (проверка отправителя + zod), ключи в safeStorage, локальный llama-server.
 // Вопросы, ответы и ключи в журнал не пишутся — только коды ошибок и состояние llama-server.
+import type { AiProvider } from '@core/ai/provider.ts';
 import { BrowserWindow, ipcMain, safeStorage, type IpcMainInvokeEvent } from 'electron';
 import { appendFileSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
@@ -25,6 +26,8 @@ interface Deps {
 }
 
 export interface AiHandle {
+  /** Поставщик для движка подсказок; null — ИИ выключен */
+  coachProvider(): AiProvider | null;
   dispose(): void;
 }
 
@@ -177,6 +180,7 @@ export function setupAi(deps: Deps): AiHandle {
   });
 
   return {
+    coachProvider: () => service.coachProvider(),
     dispose: () => {
       downloadCtrl?.abort();
       service.cancel();

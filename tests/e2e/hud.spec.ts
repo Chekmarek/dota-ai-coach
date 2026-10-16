@@ -1,6 +1,7 @@
 // Этап 3: «Предпросмотр подсказок» и окно подсказок поверх игры (демо — без Доты).
 import { test, expect, _electron as electron, type ElectronApplication, type Page } from '@playwright/test';
-import { existsSync, mkdirSync, mkdtempSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
+import { parseSession, replaySession } from '../../scripts/gsi-replay.mjs';
 import { join, resolve } from 'node:path';
 
 const ROOT = resolve(import.meta.dirname, '../..');
@@ -78,6 +79,29 @@ test('поверх игры: прозрачное окно без фокуса �
     await expect
       .poll(() => app.evaluate(({ BrowserWindow }) => BrowserWindow.getAllWindows().find((x) => x.getTitle() === 'Dota AI Coach — подсказки')?.isVisible() ?? false), { timeout: 5000 })
       .toBe(false);
+  } finally {
+    await app.close();
+  }
+});
+
+test('матч по данным игры: подсказка движка — в ленте «Живой игры» и поверх игры (без захвата экрана)', async () => {
+  const dataDir = tmp();
+  const port = 54131;
+  const token = 'e2e1'.repeat(16);
+  writeFileSync(join(dataDir, 'settings.json'), JSON.stringify({ live: { autoStart: false }, gsi: { port, token, record: false, dotaDir: null } }));
+  const { app, ui } = await launch(dataDir);
+  try {
+    await ui.click('[data-testid="nav-live"]');
+    await expect(ui.locator('[data-testid="hints-empty"]')).toBeVisible();
+    // Настоящая сессия лайна, но часы 17:46…17:50 — до руны силы (18:00) 10–14 с
+    const base = parseSession(readFileSync(join(ROOT, 'tests/fixtures/gsi/session.jsonl'), 'utf8'));
+    const last = base[base.length - 1]!.body as { map: Record<string, unknown> };
+    const entries = [0, 1, 2, 3, 4].map((i) => ({ t: i * 1000, body: { ...last, map: { ...last.map, clock_time: 1066 + i, game_time: 1156 + i } } }));
+    expect((await replaySession(entries, { url: `http://127.0.0.1:${port}/`, token, speed: 2 })).failed).toBe(0);
+    const item = ui.locator('[data-testid="hint-item"]', { hasText: 'Руна силы через' });
+    await expect(item).toBeVisible({ timeout: 8000 });
+    const hud = await hudWindow(app);
+    await expect(hud.locator('.hud-card', { hasText: 'Руна силы через' })).toBeVisible({ timeout: 5000 });
   } finally {
     await app.close();
   }

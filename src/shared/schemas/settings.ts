@@ -2,6 +2,9 @@ import { z } from 'zod';
 import { zoneOverridesSchema, type ZoneOverrides } from '../../core/hud/layout.ts';
 import { HUD_THEME_IDS, type HudThemeId } from '../types/hud.ts';
 
+export type HintDetail = 'min' | 'normal' | 'detailed';
+export type HintCategories = Record<'fight' | 'danger' | 'laning' | 'economy' | 'macro' | 'timing' | 'mistake' | 'review', boolean>;
+
 // Схема настроек приложения.
 // Две версии одних и тех же полей:
 //  - строгая (для изменений из UI): недопустимое значение → ошибка;
@@ -19,7 +22,15 @@ const DEFAULTS = {
   ui: { showRegions: true },
   live: { autoStart: true, fps: 10, overlay: true, overlayCorner: 'top-right' as OverlayCorner },
   // Решение владельца 2026-10-13 (docs/POLICY.md): подсказки включены по умолчанию, в рейтинге — тоже; решает пользователь
-  hints: { enabled: true, ranked: true },
+  hints: {
+    enabled: true,
+    ranked: true,
+    // Этап 4: подробность текста, категории, ИИ во время матча, лента подсказок в окне коуча
+    detail: 'normal' as HintDetail,
+    categories: { fight: true, danger: true, laning: true, economy: true, macro: true, timing: true, mistake: true, review: true } as HintCategories,
+    ai: true,
+    inApp: true,
+  },
   // Подсказки поверх игры (этап 3): тема, раскладка, анимации, прозрачность, размер
   hud: { enabled: true, theme: 'runes' as HudThemeId, reduceMotion: false, opacity: 1, scale: 1, zones: null as ZoneOverrides | null },
   // Valve Game State Integration: локальный приёмник на 127.0.0.1 (этап 2 GSI)
@@ -110,6 +121,23 @@ const fields = {
     enabled: z.boolean(),
     /** Подсказки и в рейтинговых матчах — решает пользователь (риск для аккаунта, см. docs/POLICY.md) */
     ranked: z.boolean(),
+    /** Подробность текста: Минимум / Обычный / Подробно */
+    detail: z.enum(['min', 'normal', 'detailed']),
+    /** Какие категории подсказок показывать */
+    categories: z.object({
+      fight: z.boolean(),
+      danger: z.boolean(),
+      laning: z.boolean(),
+      economy: z.boolean(),
+      macro: z.boolean(),
+      timing: z.boolean(),
+      mistake: z.boolean(),
+      review: z.boolean(),
+    }),
+    /** Советы и разборы локального ИИ во время матча (если ИИ включён на странице «ИИ-помощник») */
+    ai: z.boolean(),
+    /** Дублировать подсказки лентой на странице «Живая игра» (отдельное окно коуча) */
+    inApp: z.boolean(),
   },
   hud: {
     /** Показывать подсказки поверх окна игры */

@@ -47,6 +47,12 @@ export const IPC = {
   aiState: 'ai:state',
   /** Примеры подсказок поверх игры на 12 с (этап 3) */
   hudDemo: 'hud:demo',
+  // Подсказки во время матча (этап 4)
+  /** событие main → UI: подсказки на экране сейчас */
+  coachState: 'coach:state',
+  coachMatchups: 'coach:matchups',
+  historyList: 'history:list',
+  historyGet: 'history:get',
 } as const;
 
 /**
@@ -62,6 +68,8 @@ export const LIVE_IPC = {
   overlayState: 'overlay:state',
   /** событие main → окно подсказок поверх игры (HudState) */
   hudState: 'hud:state',
+  /** движок → main: снимок матча для подсказок (≤ 2 раз в с) */
+  coachInput: 'engine:coach-input',
   /** событие main → движок: запись набора кадров (только DOTACOACH_DEV=1) */
   datasetConfig: 'engine:dataset-config',
   /** движок → main: кадр для набора (PNG) */
@@ -140,7 +148,18 @@ export interface GsiBodyMessage {
 }
 
 /** API, которое preload выдаёт интерфейсу как window.dotacoach */
+export interface CoachStateMessage {
+  hints: import('./types/hud').HudHint[];
+  inMatch: boolean;
+}
+
 export interface DotaCoachApi {
+  /** Подсказки на экране сейчас (событие); возвращает отписку */
+  onCoachState(fn: (s: CoachStateMessage) => void): () => void;
+  /** Матчапы против всех известных врагов — поверх игры и в ленте */
+  showMatchups(): Promise<void>;
+  listHistory(): Promise<import('./types/history').HistorySummary[]>;
+  getHistory(id: string): Promise<import('./types/history').HistoryMatch | null>;
   /** Показать примеры подсказок поверх игры на 12 с */
   showHudDemo(scene: 'alive' | 'dead' | 'match'): Promise<void>;
   getSettings(): Promise<Settings>;
@@ -223,6 +242,8 @@ export interface DotaCoachEngineApi {
   onDatasetConfig(fn: (cfg: DatasetConfig) => void): void;
   /** Кадр для набора: main сохраняет его вместе с последним телом GSI наблюдателя */
   saveDatasetFrame(frame: DatasetFrameMessage): void;
+  /** Снимок матча для движка подсказок (main проверяет форму) */
+  reportCoach(input: unknown): void;
 }
 
 /** Запись набора кадров для проверки зрения (docs/VISION_DATASET.md) */

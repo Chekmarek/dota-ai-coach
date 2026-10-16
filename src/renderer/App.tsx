@@ -7,7 +7,7 @@ import { LivePill, isLive, useLiveAutoStart } from './components/live';
 import { GsiSidebarPill } from './components/gsi';
 import { Dashboard } from './pages/Dashboard';
 import { LiveGame } from './pages/LiveGame';
-import { RecommendationHistory } from './pages/Placeholders';
+import { History } from './pages/History';
 import { MatchState } from './pages/MatchState';
 import { KnowledgeBase } from './pages/KnowledgeBase';
 import { UpdateNotice, UpdatesPage, UpdateToast } from './pages/Updates';
@@ -27,7 +27,7 @@ const PAGES: readonly { id: PageId; label: string; icon: string; Component: Comp
   { id: 'replay', label: 'Разбор записи', icon: '▶', Component: ReplayMode },
   { id: 'match', label: 'Состояние матча', icon: '▦', Component: MatchState },
   { id: 'ai', label: 'ИИ-помощник', icon: '✦', Component: AiAssistant },
-  { id: 'history', label: 'История советов', icon: '☰', Component: RecommendationHistory },
+  { id: 'history', label: 'История советов', icon: '☰', Component: History },
   { id: 'kb', label: 'База знаний', icon: '◆', Component: KnowledgeBase },
   { id: 'voice', label: 'Голос', icon: '♪', Component: VoiceSettings },
   { id: 'updates', label: 'Обновления', icon: '⬆', Component: UpdatesPage },

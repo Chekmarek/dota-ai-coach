@@ -91,6 +91,26 @@ export class AiService {
     this.current.ctrl.abort(new AiError('cancelled'));
   }
 
+  /**
+   * Поставщик для движка подсказок (src/core/coach): null — ИИ выключен или облако без согласия.
+   * Сервер локальной модели поднимается при первом запросе (ensure), как и для вопросов.
+   */
+  coachProvider(): AiProvider | null {
+    const s = this.deps.getSettings().ai;
+    if (s.provider === 'off' || s.provider === 'gigachat') return null;
+    if (s.provider === 'openai-compatible' && (!s.sendToCloudConsent || !s.cloud.baseUrl || !s.cloud.model)) return null;
+    if (s.provider === 'local' && !this.deps.local) return null;
+    const self = this;
+    return {
+      id: s.provider === 'local' ? 'local' : 'openai-compatible',
+      async *generate(req) {
+        const p = await self.provider(self.deps.getSettings().ai, req.signal ?? new AbortController().signal);
+        yield* p.generate(req);
+        self.deps.local?.touch();
+      },
+    };
+  }
+
   /** Поставщик по настройкам; ошибки настройки — AiError */
   private async provider(s: Settings['ai'], signal: AbortSignal): Promise<AiProvider> {
     if (s.provider === 'off') throw new AiError('not-configured');

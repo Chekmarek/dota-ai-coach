@@ -5,7 +5,7 @@ import { useSettings } from '../hooks/useSettings';
 import { Card, PageHeader, Stat } from '../components/ui';
 import { HudRecognition, RegionOverlay } from '../components/HudRecognition';
 import { LIVE_HINT, LivePill, isLive, startLive } from '../components/live';
-import { HintsToggles } from '../components/hints';
+import { HintsFeed, HintsToggles } from '../components/hints';
 import { GsiCard } from '../components/gsi';
 import { engine } from '../hooks/useEngine';
 import { AskCoach } from '../components/ask';
@@ -26,7 +26,7 @@ export function LiveGame({ onNavigate }: PageProps) {
 
   return (
     <>
-      <PageHeader title="Живая игра" subtitle="Коуч смотрит на окно Dota 2 в реальном времени. Подсказки во время матча появятся на следующих этапах; включить их заранее можно ниже." />
+      <PageHeader title="Живая игра" subtitle="Коуч смотрит на окно Dota 2 в реальном времени. Подсказки во время матча — поверх игры и в карточке «Подсказки сейчас»; настройки — ниже." />
       {exclusive && (
         <div className="live-warning" role="alert" data-testid="live-exclusive-warning">
           <strong>Дота в полноэкранном режиме — значок не может быть поверх игры.</strong>
@@ -86,6 +86,12 @@ export function LiveGame({ onNavigate }: PageProps) {
       <Card title="Спросить коуча">
         <AskCoach page="live" getFacts={getFacts} compact placeholder="Например: когда руна силы? хватит ли на BKB?" />
       </Card>
+
+      {settings?.hints.enabled && settings.hints.inApp && (
+        <Card title="Подсказки сейчас">
+          <HintsFeed />
+        </Card>
+      )}
 
       {settings && (
         <Card title="Live-подсказки">

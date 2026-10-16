@@ -371,8 +371,9 @@ export function showHudDemo(scene: SampleScene): void {
   hud?.demo(scene);
 }
 
-/** Подсказки движка → окно поверх игры (подключается на этапе 4) */
-export function setHudHints(hints: HudHint[]): void {
+/** Подсказки движка → окно поверх игры; inMatch — матч идёт по данным игры (тогда показываем и без захвата) */
+export function setHudHints(hints: HudHint[], inMatch = false): void {
+  hud?.setInMatch(inMatch);
   hud?.setHints(hints);
 }
 

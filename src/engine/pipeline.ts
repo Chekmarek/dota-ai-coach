@@ -11,6 +11,7 @@ import { GSI_LIVE_MS, MatchStateModel } from '@core/match-state/index.ts';
 import { AgreementTracker, VisionAgreementTracker, parseSpectatorGsi } from '@core/gsi/index.ts';
 import type { GsiBodyMessage } from '@shared/ipc';
 import { readGsi } from './gsi';
+import type { GsiReading } from '@core/gsi/index.ts';
 
 declare global {
   interface Window {
@@ -25,6 +26,8 @@ const STATUS_INTERVAL_MS = 500;
 const VISION_UI_FPS = 5;
 /** Состояние матча — не чаще стольких раз в секунду (плюс сразу при новом событии) */
 const MATCH_UI_FPS = 4;
+/** Снимок матча для движка подсказок в main — не чаще (мс) */
+const COACH_EVERY_MS = 500;
 /** Состояние матча публикуется, пока идёт источник кадров или GSI был не раньше этого (мс) */
 const GSI_PUBLISH_MS = 60_000;
 
@@ -58,6 +61,9 @@ export class Pipeline {
    * но не пока идёт GSI: тогда матч продолжается и без захвата экрана.
    */
   private readonly match = new MatchStateModel();
+  private lastReading: GsiReading | null = null;
+  private lastReadingAt: number | null = null;
+  private lastCoachAt = 0;
   /** Сверка зрения с GSI (только кадры живого захвата — это тот же матч) */
   private readonly agreement = new AgreementTracker();
   /** Точность зрения о союзниках и врагах — только когда Dota присылает GSI наблюдателя (все 10 героев) */
@@ -108,6 +114,8 @@ export class Pipeline {
     }
     this.visionAgreement.addSpectator(spectator, now);
     if (!reading) return;
+    this.lastReading = reading;
+    this.lastReadingAt = now;
     if (reading.slot !== null && reading.hero.x !== null && reading.hero.y !== null) this.ownHero = { slot: reading.slot, x: reading.hero.x, y: reading.hero.y, at: now };
     if (reading.matchId !== null && reading.matchId !== this.gsiMatchId) {
       if (this.gsiMatchId !== null) {
@@ -208,7 +216,19 @@ export class Pipeline {
     this.lastMatchSentAt = now;
     this.sentEventSeq = this.match.eventSeq;
     const wallMs = Date.now();
-    this.send({ type: 'match', state: this.match.snapshot(wallMs), agreement: { ...this.agreement.report(wallMs), ...this.visionAgreement.report() } });
+    const state = this.match.snapshot(wallMs);
+    this.send({ type: 'match', state, agreement: { ...this.agreement.report(wallMs), ...this.visionAgreement.report() } });
+    this.reportCoach(state, wallMs);
+  }
+
+  /** Снимок матча → движок подсказок в main: только живая игра или данные из игры (не разбор записи) */
+  private reportCoach(state: ReturnType<MatchStateModel['snapshot']>, wallMs: number): void {
+    const api = window.dotacoachEngine;
+    if (!api?.reportCoach || wallMs - this.lastCoachAt < COACH_EVERY_MS) return;
+    const gsiFresh = this.lastGsiAt !== null && wallMs - this.lastGsiAt < GSI_PUBLISH_MS;
+    if (!this.isLive() && !gsiFresh) return;
+    this.lastCoachAt = wallMs;
+    api.reportCoach({ state, gsi: gsiFresh ? this.lastReading : null, gsiWallMs: gsiFresh ? this.lastReadingAt : null });
   }
 
   /** Новый источник или остановка — состояние прошлого матча больше не относится к делу (кроме матча из GSI) */

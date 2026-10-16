@@ -8,3 +8,5 @@ export { estimate, engagePercent, matchupPercent, actionChoice, type ActionChoic
 export { MISTAKE_RU, type Mistake, type MistakeType } from './mistakes.ts';
 export type { DeathReview, MatchReview } from './reviews.ts';
 export { buildView, type CoachView } from './view.ts';
+export { toHudHint } from './hud.ts';
+export type { DeathReview as CoachDeathReview } from './reviews.ts';

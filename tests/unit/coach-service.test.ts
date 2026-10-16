@@ -1,0 +1,125 @@
+// Движок подсказок в main: настройки (выключено, категории, подробность), карточки для окна поверх игры,
+// «История советов» (файл на матч, разборы, ошибки, обрезка старых).
+import { describe, expect, it } from 'vitest';
+import { mkdtempSync, readdirSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { CoachService } from '../../src/main/coach/service';
+import { HistoryStore, MAX_FILES } from '../../src/main/coach/history';
+import { defaultSettings, applySettingsPatch, type Settings } from '../../src/shared/schemas/settings';
+import { hudHintSchema, type HudHint } from '../../src/shared/types/hud';
+import type { HistoryMatch } from '../../src/shared/types/history';
+import { parseCoachInput } from '../../src/shared/types/coach-input';
+import { realData, sim, type SimInput } from './coach-sim';
+
+const data = realData();
+const kb = {
+  get: () => ({ meta: { patch: '7.41f', verification: 'imported-unverified' }, heroes: data.heroes, items: data.items, mechanics: data.mechanics }) as never,
+  stats: () => data.stats,
+};
+
+function make(settings: Settings, history = { saved: [] as HistoryMatch[], save(m: HistoryMatch) { this.saved.push(structuredClone(m)); } }) {
+  let now = 0;
+  const out: { hints: HudHint[]; inMatch: boolean }[] = [];
+  const svc = new CoachService({ settings: { get: () => settings }, kb, aiProvider: () => null, history, onHints: (hints, inMatch) => out.push({ hints, inMatch }), now: () => now });
+  const feed = (t: number, i: Partial<SimInput>) => {
+    now = 1_000_000 + t * 1000;
+    const s = sim({ wallMs: now, clock: 600 + t, ...i });
+    svc.ingest({ state: s.state, gsi: s.gsi, gsiWallMs: now });
+  };
+  return { svc, out, feed, history };
+}
+
+const danger = (t: number): Partial<SimInput> => ({ pos: { x: 3000, y: 2500 }, hp: 200, items: [{ slot: 'inv1', key: 'boots' }], enemies: [5, 6, 7].map((slot) => ({ slot, hero: 'axe', pos: null, missingForSec: 10 + t })) });
+
+describe('CoachService', () => {
+  it('подсказки → карточки окна поверх игры (проходят схему), матч идёт', () => {
+    const { out, feed } = make(defaultSettings());
+    for (let t = 0; t < 5; t++) feed(t, danger(t));
+    const last = out[out.length - 1]!;
+    expect(last.inMatch).toBe(true);
+    expect(last.hints.length).toBeGreaterThan(0);
+    for (const h of last.hints) expect(hudHintSchema.safeParse(h).success).toBe(true);
+    expect(last.hints.some((h) => h.priority === 'critical' && h.zone === 'alert')).toBe(true);
+  });
+
+  it('подсказки выключены — пусто', () => {
+    const { out, feed } = make(applySettingsPatch(defaultSettings(), { hints: { enabled: false } }));
+    for (let t = 0; t < 5; t++) feed(t, danger(t));
+    expect(out.every((o) => o.hints.length === 0)).toBe(true);
+  });
+
+  it('категория выключена — её подсказок нет', () => {
+    const s = defaultSettings();
+    const { out, feed } = make(applySettingsPatch(s, { hints: { categories: { ...s.hints.categories, danger: false } } }));
+    for (let t = 0; t < 5; t++) feed(t, danger(t));
+    expect(out.flatMap((o) => o.hints).some((h) => h.category === 'danger')).toBe(false);
+  });
+
+  it('подробность «Минимум» — только короткая фраза, без текста и факторов', () => {
+    const { out, feed } = make(applySettingsPatch(defaultSettings(), { hints: { detail: 'min' } }));
+    for (let t = 0; t < 5; t++) feed(t, { enemies: [{ slot: 5, hero: 'axe', pos: { x: -3800, y: -3900 }, hpPercent: 30, barLevel: 6 }] });
+    const all = out.flatMap((o) => o.hints);
+    expect(all.length).toBeGreaterThan(0);
+    for (const h of all) {
+      expect(h.text).toBe('');
+      expect(h.percent?.factors ?? []).toEqual([]);
+    }
+  });
+
+  it('«Подробно» — у процентов есть факторы', () => {
+    const { out, feed } = make(applySettingsPatch(defaultSettings(), { hints: { detail: 'detailed' } }));
+    for (let t = 0; t < 5; t++) feed(t, { enemies: [{ slot: 5, hero: 'axe', pos: { x: -3800, y: -3900 }, hpPercent: 30, barLevel: 6 }] });
+    const pct = out.flatMap((o) => o.hints).find((h) => h.percent);
+    expect(pct?.percent?.factors.length).toBeGreaterThan(0);
+  });
+
+  it('история: смерть с разбором, ошибки, итог матча — в одном файле матча', () => {
+    const { feed, history } = make(defaultSettings());
+    const near = (slot: number) => ({ slot, hero: 'axe', pos: { x: 2900, y: 2500 } });
+    for (let t = 0; t < 80; t++) {
+      if (t < 8) feed(t, { pos: { x: 3000, y: 2500 }, level: 12, hp: 1000 - t * 120, enemies: [near(5), near(6), { slot: 7, hero: 'lion', pos: null, missingForSec: 20 }, { slot: 8, hero: 'pudge', pos: null, missingForSec: 20 }] });
+      else if (t < 40) feed(t, { pos: { x: 3000, y: 2500 }, level: 12, alive: false, respawnSec: 40 - t, enemies: [near(5), near(6)] });
+      else if (t < 75) feed(t, { level: 12 });
+      else feed(t, { level: 12, phase: 'post-game', winTeam: 'radiant' });
+    }
+    const m = history.saved[history.saved.length - 1]!;
+    expect(m.matchId).toBe('123');
+    expect(m.deathReviews.length).toBe(1);
+    expect(m.mistakes.some((x) => x.type === 'died-unused')).toBe(true);
+    expect(m.matchReview?.result).toBe('win');
+    expect(m.result).toBe('win');
+    expect(m.entries.some((e) => e.kind === 'hint')).toBe(true);
+    expect(/^[0-9A-Za-z_-]+$/.test(m.id)).toBe(true);
+  });
+
+  it('вход движка: мусор и чужая форма отклоняются', () => {
+    expect(parseCoachInput(null)).toBeNull();
+    expect(parseCoachInput({ state: { wallMs: 'x' } })).toBeNull();
+    const s = sim({ wallMs: 1, clock: 1 });
+    expect(parseCoachInput(JSON.parse(JSON.stringify({ state: s.state, gsi: s.gsi, gsiWallMs: 1 })))).not.toBeNull();
+  });
+});
+
+describe('HistoryStore', () => {
+  const match = (id: string): HistoryMatch => ({ id, startedAt: '2026-10-16T10:00:00.000Z', matchId: '1', heroName: 'Anti-Mage', result: 'win', durationSec: 2000, entries: [{ wallMs: 1, clock: 5, kind: 'hint', id: 'x', text: 'Руна силы через 15 с', source: 'template' }], mistakes: [], deathReviews: [], matchReview: null });
+
+  it('сохраняет, читает список и матч; опасные id не принимает', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'dc-hist-'));
+    const h = new HistoryStore(dir);
+    h.save(match('2026-10-16T10-00-00-000Z-1'));
+    h.save(match('../evil'));
+    expect(h.list().map((x) => x.id)).toEqual(['2026-10-16T10-00-00-000Z-1']);
+    expect(h.list()[0]!.hints).toBe(1);
+    expect(h.get('2026-10-16T10-00-00-000Z-1')?.heroName).toBe('Anti-Mage');
+    expect(h.get('../evil')).toBeNull();
+  });
+
+  it(`хранит не больше ${MAX_FILES} матчей`, () => {
+    const dir = mkdtempSync(join(tmpdir(), 'dc-hist-'));
+    const h = new HistoryStore(dir);
+    for (let i = 0; i < MAX_FILES + 5; i++) h.save(match(`m${String(i).padStart(3, '0')}`));
+    expect(readdirSync(join(dir, 'history')).length).toBe(MAX_FILES);
+    expect(h.list()[0]!.id).toBe(`m${String(MAX_FILES + 4).padStart(3, '0')}`);
+  });
+});

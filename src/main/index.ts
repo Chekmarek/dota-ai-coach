@@ -10,6 +10,7 @@ import { EngineLink } from './lifecycle/engine-link';
 import { handleMediaProtocol, registerMediaScheme } from './media/media-protocol';
 import { liveSeesDota, onLiveSettingsChanged, setupLive, showHudDemo } from './live/live';
 import { setupAi } from './ai';
+import { setupCoach, type CoachHandle } from './coach';
 import { gsiPhase } from '@core/gsi/map.ts';
 import { setupUpdater } from './live/updater';
 import { setupGsi } from './gsi';
@@ -66,15 +67,18 @@ if (!app.requestSingleInstanceLock()) {
         engine?.sendGsi(body, wallMs);
       },
     });
+    const kb = new KbStore();
+    let coach: CoachHandle | null = null;
     registerIpc({
       settings,
-      kb: new KbStore(),
+      kb,
       dataDir,
       distribution,
       isTrustedSender,
       onHudDemo: showHudDemo,
       onSettingsChanged: (next) => {
         onLiveSettingsChanged();
+        coach?.onSettingsChanged();
         gsi.onSettingsChanged(next);
         engine?.setDatasetConfig(dataset.config(next));
       },
@@ -94,11 +98,16 @@ if (!app.requestSingleInstanceLock()) {
     });
     app.on('will-quit', () => ai.dispose());
 
+    // Подсказки во время матча (этап 4): правила + ИИ → окно поверх игры, лента, «История советов»
+    coach = setupCoach({ settings, kb, dataDir, aiProvider: () => ai.coachProvider(), getUi: () => ui, isTrustedSender });
+    app.on('will-quit', () => coach?.dispose());
+
     engine = new EngineLink(ui);
     engine.setDatasetConfig(dataset.config(settings.get()));
     engine.start();
 
     ui.on('closed', () => {
+      coach?.dispose();
       void gsi.dispose();
       ai.dispose();
       engine?.dispose();

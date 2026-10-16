@@ -24,12 +24,22 @@ describe('настройки', () => {
 
   it('live-подсказки: по умолчанию включены и в рейтинге; переключатель рейтинга меняется отдельно', () => {
     const d = defaultSettings();
-    expect(d.hints).toEqual({ enabled: true, ranked: true });
+    expect(d.hints).toMatchObject({ enabled: true, ranked: true });
     const s = applySettingsPatch(d, { hints: { ranked: false } });
-    expect(s.hints).toEqual({ enabled: true, ranked: false });
+    expect(s.hints).toMatchObject({ enabled: true, ranked: false });
     expect(settingsPatchSchema.safeParse({ hints: { ranked: 'да' } }).success).toBe(false);
     // Старый settings.json без раздела hints читается с значениями по умолчанию
-    expect(settingsSchema.parse({ live: { fps: 5 } }).hints).toEqual({ enabled: true, ranked: true });
+    expect(settingsSchema.parse({ live: { fps: 5 } }).hints).toMatchObject({ enabled: true, ranked: true });
+    // Этап 4: подробность «Обычный», все категории включены, ИИ и лента в окне коуча включены
+    expect(d.hints.detail).toBe('normal');
+    expect(Object.values(d.hints.categories).every(Boolean)).toBe(true);
+    expect(d.hints.ai).toBe(true);
+    expect(d.hints.inApp).toBe(true);
+    // Испорченная подробность откатывается, остальное сохраняется
+    const bad = settingsSchema.parse({ hints: { detail: 'много', ranked: false, categories: { fight: 'нет' } } });
+    expect(bad.hints.detail).toBe('normal');
+    expect(bad.hints.ranked).toBe(false);
+    expect(bad.hints.categories.fight).toBe(true);
   });
 
   it('патч сливается с текущими настройками', () => {

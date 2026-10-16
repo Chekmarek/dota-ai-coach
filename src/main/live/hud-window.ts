@@ -45,6 +45,7 @@ export class HudOverlay {
   private hideTimer: ReturnType<typeof setTimeout> | null = null;
   private assertTimer: ReturnType<typeof setInterval> | null = null;
   private seeing = false;
+  private inMatch = false;
   private readonly tracker: WindowRectTracker;
   private lastBoundsKey = '';
 
@@ -63,6 +64,11 @@ export class HudOverlay {
     this.seeing = seeing;
     if (!seeing) this.tracker.stop();
     this.refresh();
+  }
+
+  /** Матч идёт по данным игры (GSI): подсказки показываем и без живого захвата — на экране, где Дота */
+  setInMatch(inMatch: boolean): void {
+    this.inMatch = inMatch;
   }
 
   /** Подсказки от движка (этап 4) */
@@ -96,7 +102,7 @@ export class HudOverlay {
 
   refresh(): void {
     const s = this.deps.settings.get();
-    const list = this.demoHints ?? (this.seeing ? this.hints : []);
+    const list = this.demoHints ?? (this.seeing || this.inMatch ? this.hints : []);
     const visible = s.hud.enabled && list.length > 0 && !(this.tracker.rect?.minimized ?? false);
     if (!visible) {
       // отправляем пустой список (карточки уходят анимацией), потом прячем окно

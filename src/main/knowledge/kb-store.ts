@@ -5,6 +5,7 @@ import type { KbHero, KbItem, KbMeta, KnowledgeBase } from '@shared/types/kb';
 import { auditItems } from '@core/knowledge-base/audit.ts';
 import { selectKbCopy, type KbCopyOrigin } from '@core/knowledge-base/select.ts';
 import { parseMechanics } from '@shared/types/mechanics';
+import { parseKbStats, type KbStats } from '@shared/types/stats';
 
 interface KbCopy {
   origin: KbCopyOrigin;
@@ -41,6 +42,27 @@ function probe(origin: KbCopyOrigin, base: string): KbCopy {
 export class KbStore {
   private cache: KnowledgeBase | null = null;
   private error: string | null = null;
+  private dir: string | null = null;
+  private statsCache: KbStats | null | undefined = undefined;
+
+  /**
+   * Статистика патча (stats.json) из той же копии базы; null — нет файла или он для другого патча.
+   * В интерфейс не отдаётся (≈ 0,5 МБ) — нужна только движку подсказок в main.
+   */
+  stats(): KbStats | null {
+    if (this.statsCache !== undefined) return this.statsCache;
+    const kb = this.get();
+    this.statsCache = null;
+    if ('error' in kb || !this.dir) return null;
+    const file = join(this.dir, 'stats.json');
+    if (!existsSync(file)) return null;
+    try {
+      this.statsCache = parseKbStats(JSON.parse(readFileSync(file, 'utf8')), kb.meta.patch);
+    } catch (e) {
+      console.warn(`[kb] stats.json не читается: ${(e as Error).message}`);
+    }
+    return this.statsCache;
+  }
 
   get(): KnowledgeBase | { error: string } {
     if (this.cache) return this.cache;
@@ -51,6 +73,7 @@ export class KbStore {
       const dir = join(copy.base, copy.patch);
       if (!existsSync(dir)) throw new Error(`Нет данных патча ${copy.patch}`);
       const read = <T>(f: string) => JSON.parse(readFileSync(join(dir, f), 'utf8')) as T;
+      this.dir = dir;
       const items = read<KbItem[]>('items.json');
       // Механика необязательна: без файла или с плохими записями база всё равно работает
       let mech: ReturnType<typeof parseMechanics> = { file: null, warnings: ['mechanics.json нет в этой копии базы'] };

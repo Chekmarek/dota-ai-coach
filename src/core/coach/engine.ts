@@ -129,7 +129,22 @@ export class CoachEngine {
     this.settings = s;
   }
 
+  /** Сколько записей журнала было всего (журнал обрезается — по этому счётчику main берёт новые) */
+  journalTotal = 0;
+
+  /** Матч идёт (по последнему снимку) */
+  get inGame(): boolean {
+    return this.lastView?.inGame ?? false;
+  }
+  get matchId(): string | null {
+    return this.lastView?.matchId ?? this.mem.matchId;
+  }
+  get heroName(): string | null {
+    return this.lastView?.me.hero.value?.name ?? null;
+  }
+
   private log(e: JournalEntry): void {
+    this.journalTotal++;
     this.journal.push(e);
     if (this.journal.length > 1000) this.journal.splice(0, this.journal.length - 1000);
   }

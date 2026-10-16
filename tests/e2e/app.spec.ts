@@ -52,10 +52,13 @@ test('приложение запускается, все 11 экранов от
       await ui.click(`[data-testid="nav-${id}"]`);
       await expect(ui.locator(`[data-testid="page-${id}"]`)).toBeVisible();
     }
-    for (const id of ['history', 'voice']) {
+    for (const id of ['voice']) {
       await ui.click(`[data-testid="nav-${id}"]`);
       await expect(ui.locator('[data-testid="not-implemented"]').first()).toBeVisible();
     }
+    // «История советов» (этап 4) реализована: без матчей — честно пусто
+    await ui.click('[data-testid="nav-history"]');
+    await expect(ui.locator('[data-testid="history-empty"]')).toBeVisible();
     // «Состояние матча» (этап D) реализовано: без источника — пустое состояние, без выдуманных значений
     await ui.click('[data-testid="nav-match"]');
     await expect(ui.locator('[data-testid="match-empty"]')).toHaveText('Запустите живую игру или разбор записи');
@@ -89,13 +92,16 @@ test('безопасность: в интерфейсе нет доступа к
       'getAppInfo',
       'getGsiSessionMatch',
       'getGsiState',
+      'getHistory',
       'getKnowledgeBase',
       'getSettings',
       'getUpdateState',
       'installUpdate',
       'listGsiSessions',
+      'listHistory',
       'onAiChunk',
       'onAiState',
+      'onCoachState',
       'onGsiState',
       'onUpdateState',
       'pickDotaFolder',
@@ -104,9 +110,12 @@ test('безопасность: в интерфейсе нет доступа к
       'sendAiFeedback',
       'setAiKey',
       'showHudDemo',
+      'showMatchups',
       'stopLocalAi',
       'updateSettings',
     ]);
+    // История: путь к файлу вне папки истории не прочитать
+    expect(await ui.evaluate(() => window.dotacoach.getHistory('../settings'))).toBeNull();
     // ИИ: лишние поля и чужие модели отклоняются main-процессом (zod), ключ через настройки не задать
     await expect(ui.evaluate(() => window.dotacoach.askAi({ requestId: 'x', kind: 'ask', facts: [], apiKey: 'k' } as never))).rejects.toThrow();
     await expect(ui.evaluate(() => window.dotacoach.downloadLocalAi('llama-70b' as never))).rejects.toThrow();
