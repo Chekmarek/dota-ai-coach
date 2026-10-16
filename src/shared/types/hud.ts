@@ -2,7 +2,7 @@
 import { z } from 'zod';
 import { HUD_ZONE_IDS, zoneOverridesSchema } from '../../core/hud/layout.ts';
 
-export const HUD_THEME_IDS = ['arcane', 'void'] as const;
+export const HUD_THEME_IDS = ['runes', 'obsidian'] as const;
 export type HudThemeId = (typeof HUD_THEME_IDS)[number];
 
 const text = (n: number) => z.string().max(n);
@@ -63,4 +63,4 @@ export const hudStateSchema = z.object({
 });
 export type HudState = z.infer<typeof hudStateSchema>;
 
-export const DEFAULT_HUD_OPTIONS: HudOptions = { theme: 'arcane', reduceMotion: false, opacity: 1, scale: 1, zones: null };
+export const DEFAULT_HUD_OPTIONS: HudOptions = { theme: 'runes', reduceMotion: false, opacity: 1, scale: 1, zones: null };

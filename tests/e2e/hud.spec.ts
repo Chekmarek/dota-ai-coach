@@ -43,10 +43,10 @@ test('предпросмотр: все виды подсказок, темы, э
     await expect(stage.locator('.hud-card')).toHaveCount(5);
     await expect(stage.locator('.hud-k-alert')).toHaveCount(1);
     await expect(stage.locator('.hud-k-decision .hud-pct-num')).toHaveText('31%');
-    await expect(stage.locator('.hud-emblem')).toHaveCount(5);
+    await expect(stage.locator('.hud-gem')).toHaveCount(5);
 
-    await ui.selectOption('[data-testid="hud-theme"]', 'void');
-    await expect(stage.locator('.hud-root')).toHaveAttribute('data-theme', 'void');
+    await ui.selectOption('[data-testid="hud-theme"]', 'obsidian');
+    await expect(stage.locator('.hud-root')).toHaveAttribute('data-theme', 'obsidian');
 
     await ui.selectOption('[data-testid="hud-screen"]', '21x9');
     await expect(stage).toHaveCSS('width', '3440px');

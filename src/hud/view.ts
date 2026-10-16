@@ -153,9 +153,32 @@ export class HudView {
       const now = m.el.getBoundingClientRect();
       this.animate(m.el, MOTION.reflow(this.theme, rect.left - now.left, rect.top - now.top, reduced));
     }
+    this.markOverflow();
     for (const m of entered) {
       this.animate(m.el, MOTION.enter(this.theme, this.edge(m.hint.zone), reduced));
       if (m.hint.priority === 'critical') this.pulse(m.el, reduced);
+      else {
+        const glow = m.el.querySelector('.hud-glow');
+        if (glow) this.animate(glow, MOTION.flash(this.theme, reduced));
+      }
+    }
+  }
+
+  /** Карточки, не влезающие в зону целиком, прячем (зона — граница безопасной области) */
+  private markOverflow(): void {
+    for (const [zone, zoneEl] of this.zoneEls) {
+      const r = this.zoneInfo.get(zone)?.rect;
+      if (!r) continue;
+      let used = 0;
+      const gap = parseFloat(getComputedStyle(zoneEl).rowGap) || 0;
+      const pad = parseFloat(getComputedStyle(zoneEl).paddingTop) || 0;
+      for (const el of [...zoneEl.children] as HTMLElement[]) {
+        if ([...this.mounted.values()].some((m) => m.el === el && m.leaving)) continue;
+        const h = el.offsetHeight;
+        const fits = used + h <= r.h - pad * 2 + 0.5;
+        el.classList.toggle('hud-overflow', !fits);
+        if (fits) used += h + gap;
+      }
     }
   }
 

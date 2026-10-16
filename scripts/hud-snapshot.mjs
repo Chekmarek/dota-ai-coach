@@ -43,7 +43,7 @@ const screens = [
   { id: '4x3', w: 1440, h: 1080 },
 ];
 const browser = await chromium.launch({ executablePath: process.env.PLAYWRIGHT_CHROMIUM ?? undefined });
-for (const theme of ['arcane', 'void']) {
+for (const theme of ['runes', 'obsidian']) {
   for (const scene of ['alive', 'dead', 'match']) {
     for (const s of scene === 'alive' ? screens : screens.slice(0, 1)) {
       const page = await browser.newPage({ viewport: { width: s.w, height: s.h } });

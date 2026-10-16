@@ -1,5 +1,6 @@
 // Дизайн-токены подсказок поверх игры. ВСЕ визуальные решения — здесь и в файлах тем (themes/*.ts):
 // компоненты и hud.css берут только CSS-переменные --hud-*. Новая тема = новый файл с HudTheme.
+// Стиль — «как часть Dota»: тёмный камень, кованый металл рамки, резные руны, светящийся самоцвет, магия.
 // Размеры — в «тысячных u» (u = min(высота, ширина × 9/16), см. src/core/hud/layout.ts): 18 = 1,8 % высоты
 // экрана 16:9, поэтому одинаково смотрится на ноутбуке и на телевизоре.
 
@@ -9,29 +10,36 @@ export interface HudTheme {
   /** Одна фраза: что делает тему узнаваемой */
   noteRu: string;
   color: {
-    /** Фирменный акцент коуча (не встречается в HUD Dota) */
-    accent: string;
-    accentSoft: string;
-    /** Свечение рамки по важности */
-    glowCritical: string;
-    glowAdvice: string;
-    glowInfo: string;
-    /** Цвет значка важности */
+    /** Фирменная магия коуча: свечение рун и самоцвета (в HUD Dota такого цвета нет) */
+    rune: string;
+    runeSoft: string;
+    runeDeep: string;
+    /** Самоцвет эмблемы: сердцевина и грань */
+    gemCore: string;
+    gemEdge: string;
+    /** Цвет значка и свечения по важности */
     critical: string;
+    criticalGlow: string;
     advice: string;
+    adviceGlow: string;
     info: string;
-    /** Камень панели: верх и низ градиента */
-    panelTop: string;
-    panelBottom: string;
-    /** Тонкая бронзовая рамка */
-    border: string;
-    borderHi: string;
-    title: string;
+    /** Камень панели: светлее в центре, темнее к краям */
+    stoneLight: string;
+    stoneDark: string;
+    /** Резная линия внутри камня */
+    carve: string;
+    /** Кованый металл рамки: тень, тело, блик */
+    metalDark: string;
+    metal: string;
+    metalLight: string;
+    /** Заголовок — золото: верх и низ градиента */
+    titleTop: string;
+    titleBottom: string;
     text: string;
     muted: string;
     good: string;
     bad: string;
-    barTrack: string;
+    groove: string;
   };
   font: {
     display: string;
@@ -44,20 +52,22 @@ export interface HudTheme {
     small: number;
     percent: number;
     icon: number;
-    emblem: number;
+    gem: number;
     pad: number;
     gap: number;
-    /** Срез углов карточки */
-    chamfer: number;
-    /** Фирменная полоса слева */
-    spine: number;
-    border: number;
+    /** Скос углов панели */
+    bevel: number;
+    /** Толщина металлической рамки */
+    frame: number;
+    /** Угловой орнамент */
+    corner: number;
     bar: number;
+    medallion: number;
     cardWidth: number;
   };
   shadow: {
     card: string;
-    /** Размытие свечения в тысячных u */
+    /** Размытие магического свечения в тысячных u */
     glowBlur: number;
   };
   /** Длительности, мс */
@@ -73,7 +83,7 @@ export interface HudTheme {
     in: string;
     inOut: string;
   };
-  /** Фон-текстура камня (data:image/svg+xml) */
+  /** Фактура камня (data:image/svg+xml) */
   texture: string;
 }
 
@@ -94,8 +104,21 @@ export function themeVars(t: HudTheme, unitPx: number, scale: number, opacity: n
   return vars;
 }
 
-/** Тонкий шум «камня»: SVG feTurbulence, без файлов */
-export function stoneTexture(alpha: number): string {
-  const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 ${alpha} 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>`;
+/**
+ * Фактура камня без файлов: крупные пятна (низкая частота) + мелкое зерно + редкие трещинки.
+ * tint — оттенок пятен (r g b 0…1), alpha — сила.
+ */
+export function stoneTexture(tint: [number, number, number], alpha: number): string {
+  const [r, g, b] = tint;
+  const svg =
+    `<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'>` +
+    `<filter id='m'><feTurbulence type='fractalNoise' baseFrequency='0.018' numOctaves='4' seed='7'/>` +
+    `<feColorMatrix values='0 0 0 0 ${r}  0 0 0 0 ${g}  0 0 0 0 ${b}  0 0 0 ${alpha * 2.2} -${alpha * 0.9}'/></filter>` +
+    `<filter id='g'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' seed='3'/>` +
+    `<feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 ${alpha} 0'/></filter>` +
+    `<filter id='c'><feTurbulence type='turbulence' baseFrequency='0.045' numOctaves='2' seed='11'/>` +
+    `<feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -9 1.9'/></filter>` +
+    `<rect width='100%' height='100%' filter='url(#m)'/><rect width='100%' height='100%' filter='url(#g)'/>` +
+    `<rect width='100%' height='100%' filter='url(#c)' opacity='${Math.min(0.16, alpha * 1.2)}'/></svg>`;
   return `data:image/svg+xml,${svg.replace(/#/g, '%23').replace(/"/g, "'")}`;
 }

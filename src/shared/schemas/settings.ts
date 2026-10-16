@@ -21,7 +21,7 @@ const DEFAULTS = {
   // Решение владельца 2026-10-13 (docs/POLICY.md): подсказки включены по умолчанию, в рейтинге — тоже; решает пользователь
   hints: { enabled: true, ranked: true },
   // Подсказки поверх игры (этап 3): тема, раскладка, анимации, прозрачность, размер
-  hud: { enabled: true, theme: 'arcane' as HudThemeId, reduceMotion: false, opacity: 1, scale: 1, zones: null as ZoneOverrides | null },
+  hud: { enabled: true, theme: 'runes' as HudThemeId, reduceMotion: false, opacity: 1, scale: 1, zones: null as ZoneOverrides | null },
   // Valve Game State Integration: локальный приёмник на 127.0.0.1 (этап 2 GSI)
   gsi: { port: GSI_DEFAULT_PORT, token: '', record: true, dotaDir: null as string | null },
   // Только для разработчика (DOTACOACH_DEV=1): набор кадров для проверки зрения (docs/VISION_DATASET.md)

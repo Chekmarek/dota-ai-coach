@@ -30,23 +30,23 @@ describe('положение окна Доты', () => {
 describe('настройки подсказок поверх игры', () => {
   it('старый settings.json без раздела hud читается, hud — по умолчанию', () => {
     const s = settingsSchema.parse({ live: { autoStart: false } });
-    expect(s.hud).toEqual({ enabled: true, theme: 'arcane', reduceMotion: false, opacity: 1, scale: 1, zones: null });
+    expect(s.hud).toEqual({ enabled: true, theme: 'runes', reduceMotion: false, opacity: 1, scale: 1, zones: null });
   });
   it('испорченные значения откатываются по одному', () => {
     const s = settingsSchema.parse({ hud: { theme: 'neon', opacity: 7, zones: { decision: { x: 'a' } }, scale: 1.2 } });
-    expect(s.hud.theme).toBe('arcane');
+    expect(s.hud.theme).toBe('runes');
     expect(s.hud.opacity).toBe(1);
     expect(s.hud.zones).toBeNull();
     expect(s.hud.scale).toBe(1.2);
   });
   it('патч из интерфейса: строгая проверка', () => {
     expect(() => settingsPatchSchema.parse({ hud: { theme: 'neon' } })).toThrow();
-    const next = applySettingsPatch(defaultSettings(), settingsPatchSchema.parse({ hud: { zones: { timing: { x: 0.02, y: 0.4 } }, theme: 'void' } }));
+    const next = applySettingsPatch(defaultSettings(), settingsPatchSchema.parse({ hud: { zones: { timing: { x: 0.02, y: 0.4 } }, theme: 'obsidian' } }));
     expect(next.hud.zones).toEqual({ timing: { x: 0.02, y: 0.4 } });
-    expect(next.hud.theme).toBe('void');
+    expect(next.hud.theme).toBe('obsidian');
   });
   it('примеры всех сцен проходят схему состояния окна', () => {
     for (const scene of ['alive', 'dead', 'match'] as const)
-      for (const d of ['min', 'normal', 'detailed'] as const) expect(hudStateSchema.safeParse({ hints: sampleHints(scene, d), options: { theme: 'arcane', reduceMotion: false, opacity: 1, scale: 1, zones: null } }).success).toBe(true);
+      for (const d of ['min', 'normal', 'detailed'] as const) expect(hudStateSchema.safeParse({ hints: sampleHints(scene, d), options: { theme: 'runes', reduceMotion: false, opacity: 1, scale: 1, zones: null } }).success).toBe(true);
   });
 });
