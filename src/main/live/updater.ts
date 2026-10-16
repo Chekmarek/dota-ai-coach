@@ -49,6 +49,35 @@ export interface UpdaterDeps {
 
 const errText = (err: unknown): string => (err as Error)?.message ?? String(err);
 
+/**
+ * Куда перенаправляет адрес (без перехода по нему). net.fetch тут не годится: после перенаправления
+ * res.url пустой, а redirect: 'manual' обрывает запрос ошибкой — поэтому net.request и событие 'redirect'.
+ */
+function redirectTarget(url: string, timeoutMs = 15e3): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const req = net.request({ url, method: 'HEAD', redirect: 'manual' });
+    const timer = setTimeout(() => {
+      req.abort();
+      reject(new Error('GitHub не ответил'));
+    }, timeoutMs);
+    req.setHeader('User-Agent', 'DotaAICoach-Updater');
+    req.on('redirect', (_status, _method, redirectUrl) => {
+      clearTimeout(timer);
+      resolve(redirectUrl);
+      req.abort();
+    });
+    req.on('response', (res) => {
+      clearTimeout(timer);
+      reject(new Error(`GitHub ответил ${res.statusCode}`));
+    });
+    req.on('error', (err) => {
+      clearTimeout(timer);
+      reject(err);
+    });
+    req.end();
+  });
+}
+
 class Updater {
   private readonly repo: string | null;
   private release: ReleaseFiles | null = null;
@@ -70,11 +99,18 @@ class Updater {
     if (this.state.status === 'downloading' || this.state.status === 'installing') return;
     this.set({ status: 'checking', error: null });
     try {
+      // Для проверки запасного пути: DOTACOACH_UPDATE_NO_API=1 — сразу без API
+      if (process.env.DOTACOACH_UPDATE_NO_API === '1') return await this.checkWithoutApi();
       // Список последних релизов: из него берём и новую версию, и историю изменений для вкладки «Обновления»
       const res = await net.fetch(`https://api.github.com/repos/${this.repo}/releases?per_page=10`, {
         headers: { Accept: 'application/vnd.github+json', 'User-Agent': 'DotaAICoach-Updater' },
       });
-      if (!res.ok) throw new Error(`GitHub ответил ${res.status}`);
+      if (!res.ok) {
+        // API без входа — 60 запросов в час на адрес; через общий VPN или прокси лимит часто съеден чужими
+        // запросами (403). Тогда — обычные страницы github.com, у них такого лимита нет.
+        liveLog('update check: API GitHub ответил', res.status, '— проверяю без API');
+        return await this.checkWithoutApi();
+      }
       const list = ((await res.json()) as GithubRelease[]).filter((r) => r && !r.draft && !r.prerelease);
       const history: ReleaseInfo[] = list
         .map((r) => ({
@@ -102,6 +138,34 @@ class Updater {
       liveLog('update check failed', errText(err));
       this.set({ status: 'error', checkedAt: Date.now(), error: `Не удалось проверить обновления: ${errText(err)}` });
     }
+  }
+
+  /**
+   * Проверка без API GitHub: github.com/<репо>/releases/latest перенаправляет на страницу последнего релиза
+   * (…/releases/tag/v0.13.0) — из адреса берём версию; файлы — по прямым ссылкам releases/download,
+   * заметки — docs/release-notes/v<версия>.md из исходников этого тега. История — только последний релиз.
+   */
+  private async checkWithoutApi(): Promise<void> {
+    const headers = { 'User-Agent': 'DotaAICoach-Updater' };
+    const pageUrl = await redirectTarget(`https://github.com/${this.repo}/releases/latest`);
+    const tag = /\/releases\/tag\/([^/?#]+)$/.exec(pageUrl)?.[1];
+    if (!tag) throw new Error('на GitHub нет релизов');
+    const version = decodeURIComponent(tag).replace(/^v/, '');
+    if (!/^\d+\.\d+\.\d+$/.test(version)) throw new Error(`непонятная версия релиза «${tag}»`);
+    const base = `https://github.com/${this.repo}/releases/download/${tag}`;
+    let notes = '';
+    try {
+      const n = await net.fetch(`https://raw.githubusercontent.com/${this.repo}/${tag}/docs/release-notes/${tag}.md`, { headers });
+      if (n.ok) notes = (await n.text()).slice(0, 4e3);
+    } catch {
+      // без заметок обновление всё равно ставится
+    }
+    const latest: ReleaseInfo = { version, notes, publishedAt: null, url: pageUrl };
+    // есть ли в релизе app.asar, узнаем при загрузке контрольной суммы — её нет, значит и установить нечего
+    this.release = { version, asarUrl: `${base}/app.asar`, asarSize: 0, sumUrl: `${base}/app.asar.sha256` };
+    const newer = compareVersions(version, this.state.current) > 0;
+    this.set({ status: newer ? 'available' : 'up-to-date', latest, history: [latest], checkedAt: Date.now() });
+    liveLog('update check (без API)', { current: this.state.current, latest: version, newer });
   }
 
   private async download(r: ReleaseFiles): Promise<string> {
