@@ -2,7 +2,10 @@
 //  - матчапы и доля побед героев — публичные рейтинговые матчи «All Pick» с даты выхода патча (не старше 7 дней);
 //  - сборки предметов (что и на какой минуте покупают), порядок навыков, добивания к 10-й минуте —
 //    профессиональные матчи с даты выхода патча (OpenDota explorer, таблицы matches / player_matches);
-//  - ориентиры GPM / XPM / добиваний в минуту — OpenDota /benchmarks (свежие публичные матчи).
+//  - ориентиры GPM / XPM / добиваний в минуту — OpenDota /benchmarks (свежие публичные матчи);
+//  - связки (доля побед пары героев в одной команде) — те же публичные матчи, что и матчапы (для драфта);
+//  - позиции 1–5 по профи патча (место по GPM в своей команде) и запасные сборки OpenDota /itemPopularity
+//    для героев, которых профи почти не берут (там данные не только текущего патча — помечены как «популярное»).
 // Защита от старых данных: патч берётся из базы знаний (resources/data/kb/current.json) и сверяется с последним патчем
 // Valve (datafeed). Не совпадает — импорт останавливается: сначала обновите базу (npm run kb:import).
 // Все значения — imported-unverified (собраны автоматически, вручную не сверены).
@@ -77,11 +80,12 @@ console.log(`Патч ${patch} с ${new Date(patchStart * 1000).toISOString().sl
 const heroById = new Map(heroes.map((h) => [h.id, h]));
 const abilityKeyById = new Map(heroes.flatMap((h) => h.abilities.map((a) => [a.id, a.key])));
 const itemKeys = new Set(items.map((i) => i.key));
-const out = new Map(heroes.map((h) => [h.id, { id: h.id, key: h.key, pub: null, matchups: {}, pro: null, bench: null }]));
+const out = new Map(heroes.map((h) => [h.id, { id: h.id, key: h.key, pub: null, matchups: {}, synergy: {}, pro: null, popular: null, bench: null }]));
 
 // --- Матчапы и доля побед (публичные рейтинговые All Pick) ---
 // Запросы по 6 часов: за неделю целиком explorer не успевает (ограничение времени запроса)
 const pairAcc = new Map(); // "a:b" → [игр, побед a]
+const allyAcc = new Map(); // "a:b" (a и b в одной команде) → [игр, побед]
 const soloAcc = new Map(); // a → [игр, побед]
 let pubMatches = 0;
 const STEP = 6 * 3600;
@@ -96,6 +100,22 @@ for (let from = since; from < now; from += STEP) {
          from (select unnest(dire_team) a, radiant_team d, radiant_win from ${pub}) t, unnest(d) b group by a, b
      ) u group by a, b`,
   );
+  const allies = await sql(
+    `select a, b, sum(n) n, sum(w) w from (
+       select a, b, count(*) n, sum(case when radiant_win then 1 else 0 end) w
+         from (select unnest(radiant_team) a, radiant_team t, radiant_win from ${pub}) x, unnest(t) b where a <> b group by a, b
+       union all
+       select a, b, count(*) n, sum(case when radiant_win then 0 else 1 end) w
+         from (select unnest(dire_team) a, dire_team t, radiant_win from ${pub}) x, unnest(t) b where a <> b group by a, b
+     ) u group by a, b`,
+  );
+  for (const r of allies) {
+    const k = `${r.a}:${r.b}`;
+    const acc = allyAcc.get(k) ?? [0, 0];
+    acc[0] += Number(r.n);
+    acc[1] += Number(r.w);
+    allyAcc.set(k, acc);
+  }
   for (const r of pairs) {
     const k = `${r.a}:${r.b}`;
     const acc = pairAcc.get(k) ?? [0, 0];
@@ -125,13 +145,20 @@ for (const [k, [n, w]] of pairAcc) {
   // [игр, доля побед героя a против героя b]
   h.matchups[b] = [n, r3(w / n)];
 }
-console.log(`Публичных матчей: ${pubMatches}, пар героев: ${pairAcc.size}`);
+for (const [k, [n, w]] of allyAcc) {
+  const [a, b] = k.split(':').map(Number);
+  const h = out.get(a);
+  if (!h || !heroById.has(b)) continue;
+  // [игр вместе, доля побед пары]
+  h.synergy[b] = [n, r3(w / n)];
+}
+console.log(`Публичных матчей: ${pubMatches}, пар героев: ${pairAcc.size}, связок: ${allyAcc.size}`);
 
 // --- Профессиональные матчи патча: сборки, навыки, добивания ---
 const proRows = [];
 for (let lastId = 0; ; ) {
   const rows = await sql(
-    `select m.match_id, m.duration, m.radiant_win, pm.player_slot, pm.hero_id, pm.lane_role, pm.purchase_log, pm.ability_upgrades_arr, pm.lh_t
+    `select m.match_id, m.duration, m.radiant_win, pm.player_slot, pm.hero_id, pm.lane_role, pm.gold_per_min, pm.purchase_log, pm.ability_upgrades_arr, pm.lh_t
        from matches m join player_matches pm using(match_id)
       where m.start_time >= ${patchStart} and m.match_id > ${lastId}
       order by m.match_id, pm.player_slot limit ${PRO_PAGE}`,
@@ -148,6 +175,17 @@ for (let lastId = 0; ; ) {
 const proMatches = new Set(proRows.map((r) => r.match_id)).size;
 console.log(`Профессиональных матчей: ${proMatches}, строк игроков: ${proRows.length}`);
 
+// Позиция 1–5: место игрока по GPM в своей команде (1 — больше всех золота). Для саппортов (4/5) точнее не бывает.
+const teamOf = new Map();
+for (const r of proRows) {
+  const k = `${r.match_id}:${r.player_slot < 128}`;
+  if (!teamOf.has(k)) teamOf.set(k, []);
+  teamOf.get(k).push(r);
+}
+for (const team of teamOf.values()) {
+  if (team.length !== 5) continue;
+  [...team].sort((a, b) => (b.gold_per_min ?? 0) - (a.gold_per_min ?? 0)).forEach((r, i) => (r.pos = i + 1));
+}
 const byHero = new Map();
 for (const r of proRows) {
   if (!byHero.has(r.hero_id)) byHero.set(r.hero_id, []);
@@ -160,11 +198,13 @@ for (const [heroId, rows] of byHero) {
   const firstBuy = new Map(); // ключ → минуты первой покупки
   const start = new Map();
   const lhByRole = {};
+  const posCount = [0, 0, 0, 0, 0];
   const skillVotes = Array.from({ length: SKILL_LEVELS }, () => new Map());
   let wins = 0;
   for (const r of rows) {
     const radiant = r.player_slot < 128;
     if (radiant === r.radiant_win) wins++;
+    if (r.pos) posCount[r.pos - 1]++;
     const seen = new Set();
     for (const p of r.purchase_log ?? []) {
       if (!itemKeys.has(p.key) || seen.has(p.key)) continue;
@@ -195,7 +235,9 @@ for (const [heroId, rows] of byHero) {
   });
   const lhAt10 = {};
   for (const [role, v] of Object.entries(lhByRole)) if (v.length >= 3) lhAt10[role] = { median: median(v), n: v.length };
-  h.pro = { games: n, winrate: r3(wins / n), build, startItems, skills, lhAt10 };
+  const posN = posCount.reduce((a, b) => a + b, 0);
+  const positions = posN ? posCount.map((c) => r3(c / posN)) : null;
+  h.pro = { games: n, winrate: r3(wins / n), build, startItems, skills, lhAt10, positions };
 }
 
 // --- Ориентиры: OpenDota benchmarks (свежие публичные матчи) ---
@@ -214,6 +256,29 @@ for (const h of heroes) {
   await sleep(1100);
 }
 
+// --- Запасные сборки: OpenDota /itemPopularity (недавние разобранные матчи, не только этот патч) ---
+// Нужны для героев, у которых в профи патча меньше POPULAR_IF_PRO_BELOW игр
+const POPULAR_IF_PRO_BELOW = 15;
+const itemKeyById = new Map(items.map((i) => [i.id, i.key]));
+let popularOk = 0;
+for (const h of heroes) {
+  if ((out.get(h.id).pro?.games ?? 0) >= POPULAR_IF_PRO_BELOW) continue;
+  try {
+    const p = await getJson(`${OD}/heroes/${h.id}/itemPopularity`);
+    const top = (phase, keep) =>
+      Object.entries(p[phase] ?? {})
+        .map(([id, c]) => ({ key: itemKeyById.get(Number(id)), count: Number(c) }))
+        .filter((x) => x.key && !BUILD_SKIP.has(x.key))
+        .sort((a, b) => b.count - a.count)
+        .slice(0, keep);
+    out.get(h.id).popular = { start: top('start_game_items', 6), early: top('early_game_items', 6), mid: top('mid_game_items', 8), late: top('late_game_items', 8) };
+    popularOk++;
+  } catch (e) {
+    console.warn(`itemPopularity ${h.key}: ${e.message}`);
+  }
+  await sleep(1100);
+}
+
 const stats = {
   schema: 'dota-coach.kb-stats',
   version: 1,
@@ -226,6 +291,8 @@ const stats = {
     { name: 'OpenDota explorer: public_matches', covers: ['matchups', 'winrate'], since: new Date(since * 1000).toISOString(), matches: pubMatches },
     { name: 'OpenDota explorer: matches / player_matches (профессиональные)', covers: ['build', 'startItems', 'skills', 'lhAt10'], since: new Date(patchStart * 1000).toISOString(), matches: proMatches },
     { name: 'OpenDota /benchmarks', covers: ['bench'], heroes: benchOk },
+    { name: 'OpenDota explorer: public_matches (одна команда)', covers: ['synergy'], since: new Date(since * 1000).toISOString(), matches: pubMatches },
+    { name: 'OpenDota /heroes/{id}/itemPopularity (недавние разобранные матчи, не только этот патч)', covers: ['popular'], heroes: popularOk },
   ],
   heroes: [...out.values()],
 };

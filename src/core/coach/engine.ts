@@ -16,6 +16,8 @@ import { DANGER_RULES } from './rules/danger.ts';
 import { LANING_RULES } from './rules/laning.ts';
 import { ECONOMY_RULES, GOLD_HIGH } from './rules/economy.ts';
 import { MACRO_RULES } from './rules/macro.ts';
+import { DRAFT_RULES } from './rules/draft.ts';
+import { TIMING_RULES } from './rules/timings.ts';
 import {
   CoachAi,
   DESTINATION_RU,
@@ -32,7 +34,7 @@ import {
 } from './ai.ts';
 import { PRIORITY_RANK, defaultCoachSettings, type CoachSettings, type Hint, type HintDraft } from './types.ts';
 
-export const ALL_RULES: Rule[] = [...DANGER_RULES, ...FIGHT_RULES, ...MACRO_RULES, ...LANING_RULES, ...ECONOMY_RULES];
+export const ALL_RULES: Rule[] = [...DANGER_RULES, ...FIGHT_RULES, ...MACRO_RULES, ...TIMING_RULES, ...LANING_RULES, ...ECONOMY_RULES, ...DRAFT_RULES];
 /**
  * Совет ИИ «что делать и куда идти» — только по событию (см. adviceTrigger), не по таймеру.
  * Не чаще раза в ADVICE_MIN_GAP_MS; та же обстановка (подпись) не спрашивается повторно ADVICE_SAME_MS;
@@ -293,6 +295,11 @@ export class CoachEngine {
       inFight: this.mem.inFight,
       rulesMs: this.now() - t0,
     };
+  }
+
+  /** Последний снимок матча (для страницы «Драфт»: какие герои уже известны); null — снимков ещё не было */
+  get currentView(): CoachView | null {
+    return this.lastView;
   }
 
   /** Матчапы против всех известных врагов (кнопка в интерфейсе) */

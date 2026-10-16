@@ -11,6 +11,8 @@ import type { KbStore } from '../knowledge/kb-store';
 import { isLiveEngine, liveLog, setHudHints } from '../live/live';
 import { CoachService } from './service';
 import { HistoryStore } from './history';
+import { DraftService } from './draft';
+import { draftRequestSchema } from '@shared/types/draft';
 
 /** Снимок больше этого (символов JSON) — отбрасываем: защита от мусора */
 const MAX_INPUT_CHARS = 1_000_000;
@@ -64,6 +66,9 @@ export function setupCoach(deps: {
       return fn(arg);
     });
   handle(IPC.coachMatchups, () => service.showMatchups());
+  const draftService = new DraftService(deps.kb);
+  handle(IPC.draftSuggest, (arg) => draftService.suggest(draftRequestSchema.parse(arg)));
+  handle(IPC.draftLive, () => service.liveHeroes());
   handle(IPC.historyList, () => history.list());
   handle(IPC.historyGet, (arg) => history.get(z.string().max(80).parse(arg)));
 

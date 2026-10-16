@@ -51,6 +51,8 @@ export const IPC = {
   /** событие main → UI: подсказки на экране сейчас */
   coachState: 'coach:state',
   coachMatchups: 'coach:matchups',
+  draftSuggest: 'draft:suggest',
+  draftLive: 'draft:live',
   historyList: 'history:list',
   historyGet: 'history:get',
 } as const;
@@ -158,6 +160,10 @@ export interface DotaCoachApi {
   onCoachState(fn: (s: CoachStateMessage) => void): () => void;
   /** Матчапы против всех известных врагов — поверх игры и в ленте */
   showMatchups(): Promise<void>;
+  /** Драфт: подбор героя, угрозы врагов и предметы против них */
+  draftSuggest(req: import('./types/draft').DraftRequest): Promise<import('./types/draft').DraftResult>;
+  /** Герои текущего матча (для кнопки «Взять из матча») */
+  draftLive(): Promise<import('./types/draft').DraftLiveHeroes>;
   listHistory(): Promise<import('./types/history').HistorySummary[]>;
   getHistory(id: string): Promise<import('./types/history').HistoryMatch | null>;
   /** Показать примеры подсказок поверх игры на 12 с */

@@ -9,6 +9,8 @@ import type { CoachInput } from '@shared/types/coach-input';
 import type { HistoryMatch } from '@shared/types/history';
 import type { KbStats } from '@shared/types/stats';
 import type { KnowledgeBase } from '@shared/types/kb';
+import type { DraftLiveHeroes } from '@shared/types/draft';
+import { liveHeroes } from './draft';
 
 /** Как часто сохранять историю идущего матча */
 export const HISTORY_SAVE_MS = 30_000;
@@ -94,6 +96,11 @@ export class CoachService {
     this.trackHistory(u);
     this.publish();
     return u;
+  }
+
+  /** Герои текущего матча (страница «Драфт», кнопка «Взять из матча») */
+  liveHeroes(): DraftLiveHeroes {
+    return liveHeroes(this.engine?.currentView ?? null, this.engine?.look ?? null);
   }
 
   /** Матчапы против всех известных врагов (кнопка в интерфейсе) */

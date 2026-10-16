@@ -112,7 +112,7 @@ export function matchReview(v: CoachView, mem: CoachMemory, look: CoachLookup, m
     { label: 'XPM', value: v.me.xpm.value, ref: st?.bench?.xpm?.p50 ?? null, refLabel: 'медиана патча', verdict: verdict(v.me.xpm.value, st?.bench?.xpm?.p50 ?? null) },
     { label: 'Смерти', value: deaths, ref: null, refLabel: null, verdict: deaths <= 4 ? 'good' : deaths <= 8 ? 'ok' : 'bad' },
   ];
-  const build = hero ? look.buildFor(hero.id, hero.key).filter((b) => b.share >= 0.4 && (look.itemCost(b.key) ?? 0) >= 1500).slice(0, 3) : [];
+  const build = hero ? look.buildFor(hero.id, hero.key).filter((b) => b.source === 'pro' && b.share >= 0.4 && (look.itemCost(b.key) ?? 0) >= 1500).slice(0, 3) : [];
   for (const b of build) {
     const t = mem.items.get(b.key);
     stats.push({ label: `${look.itemName(b.key)}, мин`, value: t === undefined ? null : Math.round(t / 6) / 10, ref: b.medianMin, refLabel: 'профи патча', verdict: t === undefined ? 'bad' : verdict(t / 60, b.medianMin, false) });

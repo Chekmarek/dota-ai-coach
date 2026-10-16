@@ -33,6 +33,23 @@ export const DETECTION_ITEMS = ['dust', 'ward_sentry', 'ward_dispenser', 'gem'];
 /** Предметы «ключевого окна»: готовность сильно меняет исход драки */
 export const KEY_ITEMS = ['black_king_bar', 'blink', 'refresher', 'sphere', 'aeon_disk', 'manta', 'satanic', 'butterfly', 'abyssal_blade'];
 
+/** Меньше стольких игр профи — сборка по популярным предметам */
+export const PRO_BUILD_MIN = 15;
+/** Примерная минута фаз OpenDota itemPopularity: ранняя 0–10, средняя 10–25, поздняя 25+ */
+const POPULAR_PHASE_MIN: readonly ['early' | 'mid' | 'late', number][] = [
+  ['early', 7],
+  ['mid', 17],
+  ['late', 30],
+];
+
+export interface BuildItem {
+  key: string;
+  share: number;
+  medianMin: number;
+  /** pro — профи патча (точная медиана минуты); popular — популярные предметы (минута примерная) */
+  source: 'pro' | 'popular';
+}
+
 const INVIS_RE = /(станов\w*|оставаясь|делает[^.]{0,40}|там он)\s+невидим/i;
 
 export class CoachLookup {
@@ -89,10 +106,22 @@ export class CoachLookup {
   }
   private components: Set<string> | null = null;
 
-  /** Сборка героя по профессиональным матчам патча: только готовые предметы, по медианной минуте покупки */
-  buildFor(heroId: number | null | undefined, heroKey?: string | null): { key: string; share: number; medianMin: number }[] {
+  /**
+   * Сборка героя: по профессиональным матчам патча (готовые предметы, по медианной минуте покупки).
+   * Героя почти не берут профи (меньше PRO_BUILD_MIN игр) — запасная сборка из популярных предметов OpenDota:
+   * минута там примерная (середина фазы игры), поэтому source = 'popular' и правила «предмет запаздывает» её не берут.
+   */
+  buildFor(heroId: number | null | undefined, heroKey?: string | null): BuildItem[] {
     const st = this.statsFor(heroId, heroKey);
-    return (st?.pro?.build ?? []).filter((b) => !this.isComponent(b.key) && this.itemByKey.has(b.key) && b.share >= 0.2);
+    const pro = (st?.pro?.build ?? []).filter((b) => !this.isComponent(b.key) && this.itemByKey.has(b.key) && b.share >= 0.2);
+    if ((st?.pro?.games ?? 0) >= PRO_BUILD_MIN || !st?.popular) return pro.map((b) => ({ ...b, source: 'pro' as const }));
+    const out: BuildItem[] = [];
+    for (const [phase, min] of POPULAR_PHASE_MIN) {
+      const list = st.popular[phase].filter((x) => !this.isComponent(x.key) && (this.itemCost(x.key) ?? 0) >= 500 && !out.some((o) => o.key === x.key));
+      const top = list[0]?.count ?? 0;
+      for (const x of list.slice(0, phase === 'early' ? 3 : 4)) out.push({ key: x.key, share: top ? Math.round((x.count / top) * 100) / 100 : 0, medianMin: min, source: 'popular' });
+    }
+    return out;
   }
 
   /** Матчап героя a против b по публичным матчам патча: [игр, доля побед a]; null — нет данных */
@@ -104,5 +133,20 @@ export class CoachLookup {
     const m = st?.matchups[String(b.id)];
     if (!st?.pub || !m) return null;
     return { games: m[0], winrate: m[1], base: st.pub.winrate };
+  }
+
+  /** Связка: a и b в одной команде по публичным матчам патча; null — нет данных */
+  synergy(aKey: string, bKey: string): { games: number; winrate: number } | null {
+    const a = this.heroByKey.get(aKey);
+    const b = this.heroByKey.get(bKey);
+    if (!a || !b) return null;
+    const m = this.statsById.get(a.id)?.synergy[String(b.id)];
+    return m ? { games: m[0], winrate: m[1] } : null;
+  }
+
+  /** Общая доля побед героя в публичных матчах патча; null — нет данных */
+  winrate(key: string): number | null {
+    const h = this.heroByKey.get(key);
+    return h ? (this.statsById.get(h.id)?.pub?.winrate ?? null) : null;
   }
 }

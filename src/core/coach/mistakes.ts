@@ -144,7 +144,7 @@ export class MistakeDetector {
     const hero = c.v.me.hero.value;
     if (clock !== null && hero && c.v.me.itemsKnown) {
       const owned = new Set([...c.mem.items.keys(), ...c.v.me.items.map((i) => i.key)]);
-      for (const b of c.look.buildFor(hero.id, hero.key).filter((x) => x.share >= 0.4 && (c.look.itemCost(x.key) ?? 0) >= 1500)) {
+      for (const b of c.look.buildFor(hero.id, hero.key).filter((x) => x.source === 'pro' && x.share >= 0.4 && (c.look.itemCost(x.key) ?? 0) >= 1500)) {
         if (owned.has(b.key) || clock / 60 <= b.medianMin + 6 || c.mem.once.has(`mistake:late:${b.key}`)) continue;
         c.mem.once.add(`mistake:late:${b.key}`);
         const name = c.look.itemName(b.key);

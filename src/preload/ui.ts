@@ -11,6 +11,8 @@ const api: DotaCoachApi = {
     return () => ipcRenderer.removeListener(IPC.coachState, listener);
   },
   showMatchups: () => ipcRenderer.invoke(IPC.coachMatchups),
+  draftSuggest: (req) => ipcRenderer.invoke(IPC.draftSuggest, req),
+  draftLive: () => ipcRenderer.invoke(IPC.draftLive),
   listHistory: () => ipcRenderer.invoke(IPC.historyList),
   getHistory: (id) => ipcRenderer.invoke(IPC.historyGet, id),
   getSettings: () => ipcRenderer.invoke(IPC.settingsGet),

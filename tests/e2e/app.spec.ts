@@ -45,10 +45,10 @@ async function stubDialog(app: ElectronApplication, path: string): Promise<void>
 const TMP_ROOT = join(ROOT, '.tmp/e2e-data');
 const tmp = () => (mkdirSync(TMP_ROOT, { recursive: true }), mkdtempSync(join(TMP_ROOT, 'run-')));
 
-test('приложение запускается, все 11 экранов открываются, нереализованное честно помечено', async () => {
+test('приложение запускается, все 12 экранов открываются, нереализованное честно помечено', async () => {
   const { app, ui } = await launch(tmp());
   try {
-    for (const id of ['dashboard', 'live', 'hud', 'replay', 'match', 'ai', 'history', 'kb', 'voice', 'updates', 'settings']) {
+    for (const id of ['dashboard', 'live', 'hud', 'replay', 'match', 'draft', 'ai', 'history', 'kb', 'voice', 'updates', 'settings']) {
       await ui.click(`[data-testid="nav-${id}"]`);
       await expect(ui.locator(`[data-testid="page-${id}"]`)).toBeVisible();
     }
@@ -62,6 +62,25 @@ test('приложение запускается, все 11 экранов от
     // «Состояние матча» (этап D) реализовано: без источника — пустое состояние, без выдуманных значений
     await ui.click('[data-testid="nav-match"]');
     await expect(ui.locator('[data-testid="match-empty"]')).toHaveText('Запустите живую игру или разбор записи');
+  } finally {
+    await app.close();
+  }
+});
+
+test('драфт: враг добавляется поиском, есть кандидаты и угрозы, «Беру» показывает матчапы', async () => {
+  const { app, ui } = await launch(tmp());
+  try {
+    await ui.click('[data-testid="nav-draft"]');
+    await ui.fill('[data-testid="draft-add-enemies"]', 'Riki');
+    await ui.press('[data-testid="draft-add-enemies"]', 'Enter');
+    await expect(ui.locator('[data-testid="draft-enemies"] .draft-chip')).toHaveCount(1);
+    await expect(ui.locator('[data-testid="draft-candidates"] li')).toHaveCount(12);
+    await expect(ui.locator('[data-testid="draft-threats"]')).toContainText('Невидимость');
+    // без матча взять героев неоткуда — честное сообщение
+    await ui.click('[data-testid="draft-from-match"]');
+    await expect(ui.getByText('Матча сейчас нет')).toBeVisible();
+    await ui.locator('[data-testid="draft-candidates"] .draft-take').first().click();
+    await expect(ui.locator('[data-testid="draft-me-summary"]')).toBeVisible();
   } finally {
     await app.close();
   }
@@ -88,6 +107,8 @@ test('безопасность: в интерфейсе нет доступа к
       'deleteLocalAi',
       'disconnectGsi',
       'downloadLocalAi',
+      'draftLive',
+      'draftSuggest',
       'getAiState',
       'getAppInfo',
       'getGsiSessionMatch',

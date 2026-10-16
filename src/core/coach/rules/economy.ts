@@ -13,12 +13,12 @@ export const GOLD_HIGH = 1800;
 export const IDLE_SEC = 20;
 
 /** Следующий предмет сборки (профи патча), которого у героя ещё нет */
-export function nextItem(c: RuleContext): { key: string; name: string; cost: number | null; medianMin: number; share: number } | null {
+export function nextItem(c: RuleContext): { key: string; name: string; cost: number | null; medianMin: number; share: number; source: 'pro' | 'popular' } | null {
   const hero = c.v.me.hero.value;
   if (!hero) return null;
   const owned = new Set([...c.mem.items.keys(), ...c.v.me.items.map((i) => i.key)]);
   const b = c.look.buildFor(hero.id, hero.key).find((x) => !owned.has(x.key));
-  return b ? { key: b.key, name: c.look.itemName(b.key), cost: c.look.itemCost(b.key), medianMin: b.medianMin, share: b.share } : null;
+  return b ? { key: b.key, name: c.look.itemName(b.key), cost: c.look.itemCost(b.key), medianMin: b.medianMin, share: b.share, source: b.source } : null;
 }
 
 export const gpmRule: Rule = (c) => {
@@ -94,7 +94,7 @@ export const nextItemRule: Rule = (c) => {
     priority: 'info',
     confidence: 0.7,
     short: `Дальше: ${next.name}`,
-    normal: `Следующий предмет: ${next.name} — профи патча берут его к ${Math.round(next.medianMin)} мин.`,
+    normal: next.source === 'pro' ? `Следующий предмет: ${next.name} — профи патча берут его к ${Math.round(next.medianMin)} мин.` : `Следующий предмет: ${next.name} — его чаще всего собирают на этом герое.`,
     facts: [kbFact('next-item', 'Следующий предмет (профи патча)', next.name, false, 'stats'), kbFact('median-min', 'Обычно к минуте', next.medianMin, false, 'stats')],
     ttlSec: 10,
     cooldownSec: 0,
@@ -107,7 +107,8 @@ export const itemTimingRule: Rule = (c) => {
   const hero = c.v.me.hero.value;
   if (!playing(c) || clock === null || !hero || !c.v.me.itemsKnown) return null;
   const owned = new Set([...c.mem.items.keys(), ...c.v.me.items.map((i) => i.key)]);
-  const core = c.look.buildFor(hero.id, hero.key).filter((b) => b.share >= 0.4 && (c.look.itemCost(b.key) ?? 0) >= 1500);
+  // только профи патча: у запасной сборки минута примерная — «запаздывает» по ней не скажешь
+  const core = c.look.buildFor(hero.id, hero.key).filter((b) => b.source === 'pro' && b.share >= 0.4 && (c.look.itemCost(b.key) ?? 0) >= 1500);
   const late = core.find((b) => !owned.has(b.key) && clock / 60 > b.medianMin + 6 && !c.mem.once.has(`late:${b.key}`));
   if (!late) return null;
   c.mem.once.add(`late:${late.key}`);

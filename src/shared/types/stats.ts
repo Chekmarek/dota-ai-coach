@@ -4,6 +4,8 @@ import { z } from 'zod';
 
 const pct = z.object({ p50: z.number().nullable(), p80: z.number().nullable() }).nullable().catch(null);
 
+const popularList = z.array(z.object({ key: z.string(), count: z.number() }));
+
 export const heroStatsSchema = z.object({
   id: z.number().int(),
   key: z.string(),
@@ -11,6 +13,8 @@ export const heroStatsSchema = z.object({
   pub: z.object({ games: z.number(), winrate: z.number() }).nullable().catch(null),
   /** id врага → [игр, доля побед героя против него] */
   matchups: z.record(z.string(), z.tuple([z.number(), z.number()])).catch({}),
+  /** id союзника → [игр в одной команде, доля побед пары] (для драфта); старые stats.json — пусто */
+  synergy: z.record(z.string(), z.tuple([z.number(), z.number()])).catch({}),
   /** Профессиональные матчи патча */
   pro: z
     .object({
@@ -22,7 +26,14 @@ export const heroStatsSchema = z.object({
       skills: z.array(z.object({ key: z.string(), share: z.number() }).nullable()),
       /** lane_role OpenDota (1 — лёгкая, 2 — центр, 3 — сложная, 4 — лес) → медиана добиваний к 10:00 */
       lhAt10: z.record(z.string(), z.object({ median: z.number(), n: z.number() })),
+      /** Доли позиций 1…5 (место по GPM в команде); null — нет данных */
+      positions: z.array(z.number()).length(5).nullable().catch(null),
     })
+    .nullable()
+    .catch(null),
+  /** Запасная сборка для редких в профи героев: популярные предметы по фазам игры (OpenDota, не только этот патч) */
+  popular: z
+    .object({ start: popularList, early: popularList, mid: popularList, late: popularList })
     .nullable()
     .catch(null),
   bench: z.object({ gpm: pct, xpm: pct, lhPerMin: pct }).nullable().catch(null),
