@@ -37,7 +37,7 @@ export const gpmRule: Rule = (c) => {
     normal: `Золото в минуту ${gpm}, на этом герое обычно ${ref}. Больше фарма между драками.`,
     facts: [fact('gpm', 'GPM', c.v.me.gpm), { key: 'gpm-ref', label: 'GPM, медиана (публичные матчи)', value: ref, source: 'stats', ageSec: null, confidence: 0.9, verified: false }],
     ttlSec: 10,
-    cooldownSec: 300,
+    cooldownSec: 600,
   });
 };
 
@@ -242,6 +242,8 @@ export const routeRule: Rule = (c) => {
   if (c.v.team && isOwnBase(c.v.me.zone, c.v.team)) return null;
   const missing = c.v.enemies.filter((e) => e.missing === true).length;
   if (missing > 1) return null;
+  // Маршрут нужен, когда игрок не знает, что делать: стоит без дела
+  if (c.mem.idleSinceMs === null || c.now - c.mem.idleSinceMs < 8000) return null;
   const a = actionChoice(c.v, c.mem, c.look, c.settings.minPercentConfidence);
   if (a.best !== 'farm' || !a.showable) return null;
   const from = c.look.mechanicValue('neutral-stack-window', 'fromSecond');

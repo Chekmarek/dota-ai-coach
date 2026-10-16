@@ -8,8 +8,8 @@ import { CoachMemory } from './memory.ts';
 import { HintQueue, DEFAULT_QUEUE_CONFIG, type QueueConfig } from './queue.ts';
 import { MistakeDetector, MISTAKE_RU, type Mistake } from './mistakes.ts';
 import { deathReview, matchReview, type DeathReview, type MatchReview } from './reviews.ts';
-import { ACTION_RU, actionChoice } from './prob.ts';
-import { buildView, type CoachView } from './view.ts';
+import { ACTION_RU, actionChoice, type ActionChoice } from './prob.ts';
+import { buildView, poolPct, type CoachView } from './view.ts';
 import { draft, mmss, type Rule, type RuleContext } from './rules/context.ts';
 import { FIGHT_RULES, matchupsOnDemand } from './rules/fight.ts';
 import { DANGER_RULES } from './rules/danger.ts';
@@ -33,8 +33,20 @@ import {
 import { PRIORITY_RANK, defaultCoachSettings, type CoachSettings, type Hint, type HintDraft } from './types.ts';
 
 export const ALL_RULES: Rule[] = [...DANGER_RULES, ...FIGHT_RULES, ...MACRO_RULES, ...LANING_RULES, ...ECONOMY_RULES];
-/** Как часто просить у ИИ совет «что делать и куда идти» */
-export const ADVICE_EVERY_MS = 20_000;
+/**
+ * Совет ИИ «что делать и куда идти» — только по событию (см. adviceTrigger), не по таймеру.
+ * Не чаще раза в ADVICE_MIN_GAP_MS; та же обстановка (подпись) не спрашивается повторно ADVICE_SAME_MS;
+ * готовые ответы по подписи берутся из кэша ADVICE_CACHE_MS без обращения к модели.
+ */
+export const ADVICE_MIN_GAP_MS = 10_000;
+export const ADVICE_SAME_MS = 90_000;
+export const ADVICE_CACHE_MS = 180_000;
+/** События, после которых совет повторяем, даже если обстановка та же (из кэша) */
+const ADVICE_REPEAT_REASONS: ReadonlySet<string> = new Set(['respawn', 'fight-over', 'objective', 'building', 'enemies-dead']);
+/** Простой, после которого стоит подсказать, куда идти */
+export const ADVICE_IDLE_MS = 12_000;
+/** Сколько мс новое лучшее действие должно продержаться, чтобы считаться сменой плана */
+export const ADVICE_PLAN_STABLE_MS = 3000;
 /** Ошибки, о которых говорим сразу (остальные — в разборах) */
 const LIVE_MISTAKES = new Set(['missed-fight', 'missed-rune']);
 
@@ -87,7 +99,20 @@ export class CoachEngine {
   private readonly now: () => number;
   private lastView: CoachView | null = null;
   private lastCtx: RuleContext | null = null;
-  private lastAdviceMs = 0;
+  private lastAdviceAskMs = 0;
+  private lastAdviceSig: string | null = null;
+  private lastAdviceSigMs = 0;
+  private adviceCache = new Map<string, { advice: Advice; choice: ActionChoice; ms: number }>();
+  private phraseCache = new Map<string, string>();
+  private planBest: string | null = null;
+  private planSinceMs = 0;
+  private planAdvised: string | null = null;
+  private prevInFight = false;
+  private prevMissing = 0;
+  private prevEnemiesDead = 0;
+  private idleAdvised = false;
+  /** Почему последний раз спрашивали совет (для журнала и тестов) */
+  lastAdviceReason: string | null = null;
   private asyncShown: Hint[] = [];
   private asyncChanged: Hint[] = [];
   private reviewHintSeq: number | null = null;
@@ -165,7 +190,6 @@ export class CoachEngine {
             shown,
           );
         }
-        this.askMistake(m);
       }
     }
 
@@ -223,18 +247,22 @@ export class CoachEngine {
       );
       this.log({ wallMs: v.wallMs, clock: r.durationSec, kind: 'match-review', id: 'match', text: r.why.join('; '), source: 'template' });
       this.askMatch(r);
+      // ошибки ИИ объясняет только в разборе, не во время игры
+      for (const m of r.topMistakes) this.askMistake(m);
     }
 
-    // 5. Совет ИИ «что делать и куда идти» — постоянно, пока герой жив и не в драке
-    if (this.ai && this.settings.aiLive && v.inGame && !v.paused && v.me.alive.value === true && !this.mem.inFight && v.wallMs - this.lastAdviceMs >= ADVICE_EVERY_MS && this.ai.pending('advice') === 0 && this.ai.available) {
-      this.lastAdviceMs = v.wallMs;
-      this.askAdvice(ctx);
-    }
+    // 5. Совет ИИ «что делать и куда идти» — когда что-то изменилось, а не по таймеру
+    if (this.ai && this.settings.aiLive && v.inGame && !v.paused) this.maybeAdvise(ctx);
+    this.prevInFight = this.mem.inFight;
 
-    // 6. Пересказ ИИ для важных советов на экране (если модель свободна)
-    if (this.ai && this.settings.detail !== 'min' && !this.ai.busy && this.ai.available) {
-      const h = shown.find((x) => x.priority === 'advice' && x.textSource === 'template' && x.ttlMs >= 8000 && x.category !== 'review');
-      if (h) this.askPhrase(h);
+    // 6. Пересказ ИИ только для важного с долгим показом; одинаковые тексты — из кэша
+    if (this.ai && this.settings.detail !== 'min') {
+      const h = shown.find((x) => (x.priority === 'advice' || x.priority === 'critical') && x.textSource === 'template' && x.ttlMs >= 8000 && x.category !== 'review' && x.id !== 'ai.advice');
+      if (h) {
+        const cached = this.phraseCache.get(`${h.ruleId}|${h.short}`);
+        if (cached) this.changedText(h.seq, cached, 'normal');
+        else if (!this.ai.busy && this.ai.available) this.askPhrase(h);
+      }
     }
 
     const expired = this.queue.tick(v.wallMs);
@@ -273,9 +301,119 @@ export class CoachEngine {
     }
   }
 
-  private askAdvice(ctx: RuleContext): void {
-    const choice = actionChoice(ctx.v, this.mem, this.look, this.settings.minPercentConfidence);
-    if (!choice.showable) return;
+  /** Подпись обстановки: если она та же, что при прошлом совете, — модель не спрашиваем */
+  private adviceSig(v: CoachView, choice: ActionChoice): string {
+    const hp = poolPct(v.me.hp.value);
+    const missing = v.enemies.filter((e) => e.missing === true).length;
+    const dead = v.enemies.filter((e) => e.alive.value === false).length;
+    const clock = v.clock.value ?? 0;
+    return [
+      choice.best,
+      v.me.zone ?? '-',
+      missing >= 3 ? 'm3' : missing >= 1 ? 'm1' : 'm0',
+      `d${Math.min(dead, 3)}`,
+      hp === null ? 'h?' : hp < 35 ? 'h1' : hp < 70 ? 'h2' : 'h3',
+      clock < 600 ? 'early' : clock < 1500 ? 'mid' : 'late',
+    ].join('|');
+  }
+
+  /** Зачем нужен совет прямо сейчас; null — ничего не изменилось */
+  private adviceTrigger(ctx: RuleContext, choice: ActionChoice): string | null {
+    const { v, ev, now } = ctx;
+    const missing = v.enemies.filter((e) => e.missing === true).length;
+    const dead = v.enemies.filter((e) => e.alive.value === false).length;
+    const prevMissing = this.prevMissing;
+    const prevDead = this.prevEnemiesDead;
+    this.prevMissing = missing;
+    this.prevEnemiesDead = dead;
+    // Смена плана считается, только если новое лучшее действие держится ADVICE_PLAN_STABLE_MS
+    if (choice.best !== this.planBest) {
+      this.planBest = choice.best;
+      this.planSinceMs = now;
+    }
+    const idle = this.mem.idleSinceMs !== null && now - this.mem.idleSinceMs >= ADVICE_IDLE_MS;
+    if (this.mem.idleSinceMs === null) this.idleAdvised = false;
+
+    if (ev.respawned) return 'respawn';
+    if (this.prevInFight && !this.mem.inFight) return 'fight-over';
+    if (ev.levelUp === 6) return 'level6';
+    if (ev.roshanKilled || ev.aegisPicked) return 'objective';
+    const attacked = this.mem.marks.get('bld-attack@');
+    if (attacked !== undefined && attacked === now) return 'building';
+    if (ev.newItems.some((k) => (this.look.itemCost(k) ?? 0) >= 1500 && !this.look.isComponent(k))) return 'item';
+    if (dead >= 2 && prevDead < 2) return 'enemies-dead';
+    if (Math.abs(missing - prevMissing) >= 2) return 'map';
+    if (idle && !this.idleAdvised) {
+      this.idleAdvised = true;
+      return 'idle';
+    }
+    if (this.planAdvised !== null && choice.best !== this.planAdvised && now - this.planSinceMs >= ADVICE_PLAN_STABLE_MS) return 'plan-change';
+    if (this.planAdvised === null && (v.clock.value ?? -1) >= 0) return 'first';
+    return null;
+  }
+
+  private maybeAdvise(ctx: RuleContext): void {
+    const { v, now } = ctx;
+    if (v.me.alive.value !== true || this.mem.inFight) return;
+    const choice = actionChoice(v, this.mem, this.look, this.settings.minPercentConfidence);
+    const reason = this.adviceTrigger(ctx, choice);
+    if (!reason || !choice.showable) return;
+    const sig = this.adviceSig(v, choice);
+    const cached = this.adviceCache.get(sig);
+    // Та же обстановка — совет уже был; после важного события напоминаем его из кэша (модель не спрашиваем)
+    if (sig === this.lastAdviceSig && now - this.lastAdviceSigMs < ADVICE_SAME_MS) {
+      this.planAdvised = choice.best;
+      if (ADVICE_REPEAT_REASONS.has(reason) && cached) {
+        this.lastAdviceReason = reason;
+        this.showAdvice(cached.advice, choice, v.clock.value);
+      }
+      return;
+    }
+    // Готовый ответ для такой обстановки — без обращения к модели
+    if (cached && now - cached.ms < ADVICE_CACHE_MS) {
+      this.markAdvised(sig, choice, now, reason);
+      this.showAdvice(cached.advice, choice, ctx.v.clock.value);
+      return;
+    }
+    if (now - this.lastAdviceAskMs < ADVICE_MIN_GAP_MS || this.ai!.pending('advice') > 0 || !this.ai!.available) return;
+    this.lastAdviceAskMs = now;
+    this.markAdvised(sig, choice, now, reason);
+    this.askAdvice(ctx, choice, sig);
+  }
+
+  private markAdvised(sig: string, choice: ActionChoice, now: number, reason: string): void {
+    this.lastAdviceSig = sig;
+    this.lastAdviceSigMs = now;
+    this.planAdvised = choice.best;
+    this.lastAdviceReason = reason;
+  }
+
+  private showAdvice(value: Advice, choice: ActionChoice, clock: number | null): void {
+    const short = `${ACTION_RU[value.action]}: ${DESTINATION_RU(value.where)}`;
+    const d = draft({
+      id: 'ai.advice',
+      category: 'macro',
+      priority: value.action === 'retreat' ? 'advice' : 'info',
+      confidence: Math.min(0.85, choice.confidence),
+      short,
+      normal: value.say,
+      detailed: `${value.say} · Оценка коуча: ${(Object.keys(choice.percents) as (keyof typeof choice.percents)[]).map((k) => `${ACTION_RU[k].toLowerCase()} ${choice.percents[k]}%`).join(', ')}`,
+      facts: [{ key: 'ai-advice', label: 'Совет ИИ', value: value.say, source: 'derived', ageSec: 0, confidence: choice.confidence, verified: true }],
+      ttlSec: 12,
+      cooldownSec: 0,
+      zone: 'decision',
+    });
+    const r = this.queue.push(d, { now: this.now(), clock, inFight: this.mem.inFight, settings: this.settings });
+    if (!r.hint) return;
+    r.hint.textSource = 'ai';
+    if (r.status === 'shown') {
+      this.asyncShown.push(r.hint);
+      this.log({ wallMs: this.now(), clock, kind: 'hint', id: r.hint.id, text: `${short} — ${value.say}`, source: 'ai' });
+    } else this.asyncChanged.push(r.hint);
+    this.opts.onAsync?.();
+  }
+
+  private askAdvice(ctx: RuleContext, choice: ActionChoice, sig: string): void {
     const opts = adviceOptions(ctx.v, choice);
     const facts = adviceFacts(ctx.v, choice, opts);
     const p = buildAdvicePrompt(facts, opts);
@@ -291,31 +429,13 @@ export class CoachEngine {
       staleMs: 15_000,
       onResult: ({ value }) => {
         const c = this.lastCtx;
-        // Пока ИИ думал, герой умер или начал драку — совет устарел
-        if (!value || !c || this.mem.deaths.length !== deathsAtAsk || this.mem.inFight || c.v.me.alive.value !== true) return;
-        const short = `${ACTION_RU[value.action]}: ${DESTINATION_RU(value.where)}`;
-        const d = draft({
-          id: 'ai.advice',
-          category: 'macro',
-          priority: value.action === 'retreat' ? 'advice' : 'info',
-          confidence: Math.min(0.85, choice.confidence),
-          short,
-          normal: value.say,
-          detailed: `${value.say} · Оценка коуча: ${(Object.keys(choice.percents) as (keyof typeof choice.percents)[]).map((k) => `${ACTION_RU[k].toLowerCase()} ${choice.percents[k]}%`).join(', ')}`,
-          facts: [{ key: 'ai-advice', label: 'Совет ИИ', value: value.say, source: 'derived', ageSec: 0, confidence: choice.confidence, verified: true }],
-          ttlSec: 12,
-          cooldownSec: 15,
-          zone: 'decision',
-        });
-        const r = this.queue.push(d, { now: this.now(), clock: c.v.clock.value, inFight: this.mem.inFight, settings: this.settings });
-        if (r.hint) {
-          r.hint.textSource = 'ai';
-          if (r.status === 'shown') {
-            this.asyncShown.push(r.hint);
-            this.log({ wallMs: this.now(), clock: c.v.clock.value, kind: 'hint', id: r.hint.id, text: `${short} — ${value.say}`, source: 'ai' });
-          } else this.asyncChanged.push(r.hint);
-          this.opts.onAsync?.();
-        }
+        if (!value) return;
+        this.adviceCache.set(sig, { advice: value, choice, ms: this.now() });
+        if (this.adviceCache.size > 40) this.adviceCache.delete(this.adviceCache.keys().next().value!);
+        // Пока ИИ думал, герой умер, начал драку или обстановка сменилась — совет устарел
+        if (!c || this.mem.deaths.length !== deathsAtAsk || this.mem.inFight || c.v.me.alive.value !== true) return;
+        if (this.adviceSig(c.v, actionChoice(c.v, this.mem, this.look, this.settings.minPercentConfidence)) !== sig) return;
+        this.showAdvice(value, choice, c.v.clock.value);
       },
     });
   }
@@ -332,7 +452,10 @@ export class CoachEngine {
       createdMs: this.now(),
       staleMs: Math.max(2000, h.ttlMs - 4000),
       onResult: ({ value }) => {
-        if (value) this.changedText(h.seq, value, 'normal');
+        if (!value) return;
+        this.phraseCache.set(`${h.ruleId}|${h.short}`, value);
+        if (this.phraseCache.size > 100) this.phraseCache.delete(this.phraseCache.keys().next().value!);
+        this.changedText(h.seq, value, 'normal');
       },
     });
   }

@@ -127,3 +127,91 @@ describe('разборы с ИИ', () => {
     expect(e.deathReviewNow?.aiText).toContain('Вас поймали 2 врага');
   });
 });
+
+describe('совет ИИ — по событию, а не по таймеру', () => {
+  const answer = (req: AiRequest) => {
+    const m = /ОДНО действие из: (\w+)[\s\S]*?ОДНО место из: ([\w-]+)/.exec(req.system)!;
+    return `{"action":"${m[1]}","where":"${m[2]}","say":"Делай так"}`;
+  };
+  // Спокойная обстановка: ничего не меняется (герой ходит, но враги и план те же)
+  const calm = (t: number): Partial<SimInput> => ({ pos: { x: -4000 + (t % 10) * 200, y: -4000 }, commands: t, enemies: [5, 6, 7, 8, 9].map((slot) => ({ slot, hero: 'axe', pos: { x: 6000, y: 6000 } })) });
+
+  it('2 минуты без изменений — один совет на старте, дальше модель не спрашиваем', async () => {
+    const p = fake(answer);
+    const ai = new CoachAi({ provider: () => p, now: () => Date.now() });
+    const e = new CoachEngine({ data, ai });
+    await drive(e, 120, calm);
+    expect(p.calls.filter((c) => c.system.includes('куда идти')).length).toBe(1);
+  });
+
+  it('враги пропали с карты — новый совет; возрождение — новый совет', async () => {
+    let now = 0;
+    const p = fake(answer);
+    const ai = new CoachAi({ provider: () => p, now: () => now });
+    const e = new CoachEngine({ data, ai, now: () => now });
+    const frame = (t: number): Partial<SimInput> => {
+      const base = calm(t);
+      if (t >= 30 && t < 60) return { ...base, enemies: [5, 6, 7, 8, 9].map((slot) => ({ slot, hero: 'axe', pos: null, missingForSec: t - 30 })) };
+      if (t >= 60 && t < 75) return { ...base, alive: false, respawnSec: 15 };
+      return base;
+    };
+    const reasons: string[] = [];
+    let shownAdvice = 0;
+    for (let t = 0; t < 90; t++) {
+      now = T0 + t * 1000;
+      const s = sim({ wallMs: now, clock: 900 + t, ...frame(t) });
+      const before = e.lastAdviceReason;
+      const u = e.tick(s.state, s.gsi, now);
+      await tick();
+      if (e.lastAdviceReason !== before) reasons.push(e.lastAdviceReason ?? '');
+      shownAdvice += u.shown.filter((h) => h.id === 'ai.advice').length;
+    }
+    const advice = p.calls.filter((c) => c.system.includes('куда идти')).length;
+    expect(advice).toBeGreaterThanOrEqual(2);
+    expect(advice).toBeLessThanOrEqual(4);
+    expect(shownAdvice).toBeGreaterThanOrEqual(2);
+    expect(reasons).toContain('map');
+    expect(reasons).toContain('respawn');
+  });
+
+  it('та же обстановка позже — ответ из кэша, без обращения к модели', async () => {
+    let now = 0;
+    const p = fake(answer);
+    const ai = new CoachAi({ provider: () => p, now: () => now });
+    const e = new CoachEngine({ data, ai, now: () => now });
+    // спокойно → смерть → возрождение в той же обстановке спустя 100 с
+    const frame = (t: number): Partial<SimInput> => (t >= 20 && t < 120 ? { ...calm(t), alive: false, respawnSec: 120 - t } : calm(t));
+    for (let t = 0; t < 130; t++) {
+      now = T0 + t * 1000;
+      const s = sim({ wallMs: now, clock: 900 + t, ...frame(t) });
+      e.tick(s.state, s.gsi, now);
+      await tick();
+    }
+    expect(p.calls.filter((c) => c.system.includes('куда идти')).length).toBe(1);
+    expect(e.queue.visible().some((h) => h.id === 'ai.advice' && h.textSource === 'ai')).toBe(true);
+  });
+
+  it('бюджет: не больше 4 советов и пересказов в минуту даже в суматохе', async () => {
+    let now = 0;
+    const p = fake((req) => (req.system.includes('куда идти') ? answer(req) : 'Коротко и по делу'));
+    const ai = new CoachAi({ provider: () => p, now: () => now });
+    const e = new CoachEngine({ data, ai, now: () => now });
+    const stamps: number[] = [];
+    for (let t = 0; t < 180; t++) {
+      now = T0 + t * 1000;
+      const phase = Math.floor(t / 7) % 3;
+      const s = sim({
+        wallMs: now,
+        clock: 900 + t,
+        hp: phase === 1 ? 250 : 900,
+        gold: phase === 2 ? 4000 : 500,
+        enemies: [5, 6, 7, 8, 9].map((slot) => ({ slot, hero: 'axe', pos: phase === 0 ? { x: 6000, y: 6000 } : null, missingForSec: 10, alive: phase === 2 && slot < 7 ? false : true, respawnAt: 1200 })),
+      });
+      const n = p.calls.length;
+      e.tick(s.state, s.gsi, now);
+      await tick();
+      for (let i = n; i < p.calls.length; i++) stamps.push(now);
+    }
+    for (const t of stamps) expect(stamps.filter((x) => x > t - 60_000 && x <= t).length).toBeLessThanOrEqual(4);
+  });
+});

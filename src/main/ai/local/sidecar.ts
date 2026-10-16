@@ -27,6 +27,8 @@ export interface SidecarDeps {
   idleStopMs?: number;
   startTimeoutMs?: number;
   threads?: number;
+  /** Идёт матч: меньше потоков (с 0.12.0) */
+  inMatch?: () => boolean;
   /** Подмена запуска (тесты): по аргументам llama-server — что запускать */
   command?: (exe: string, args: string[]) => { file: string; args: string[] };
 }
@@ -77,7 +79,10 @@ export class LlamaSidecar {
 
   /** Сервер с нужной моделью: запускает при необходимости */
   async ensure(model: AiLocalModel, signal?: AbortSignal): Promise<string> {
-    if (this.state.status === 'ready' && this.state.model === model && this.baseUrl) {
+    // Сервер запущен до матча с половиной ядер, а матч уже идёт — перезапускаем с меньшим числом потоков
+    const wantThreads = this.threads();
+    const tooMany = this.deps.threads === undefined && this.state.threads !== null && this.state.threads > wantThreads;
+    if (this.state.status === 'ready' && this.state.model === model && this.baseUrl && !tooMany) {
       this.touch();
       return this.baseUrl;
     }
@@ -98,8 +103,12 @@ export class LlamaSidecar {
     });
   }
 
+  private threads(): number {
+    return this.deps.threads ?? threadsFor(cpus().length, this.deps.inMatch?.() ?? false);
+  }
+
   private async start(model: AiLocalModel): Promise<string> {
-    const threads = this.deps.threads ?? threadsFor(cpus().length);
+    const threads = this.threads();
     const port = await freePort();
     const t0 = Date.now();
     this.tail = [];

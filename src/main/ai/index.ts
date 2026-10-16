@@ -45,6 +45,7 @@ export function setupAi(deps: Deps): AiHandle {
       push();
     },
     log: liveLog,
+    inMatch: deps.inMatch,
   });
   const service = new AiService({
     getSettings: () => deps.settings.get(),

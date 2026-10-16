@@ -94,6 +94,15 @@ export const actionRule: Rule = (c) => {
   if ((c.v.clock.value ?? 0) < 60) return null;
   const a = actionChoice(c.v, c.mem, c.look, c.settings.minPercentConfidence);
   if (!a.showable) return null;
+  // Только когда план сменился (новое лучшее действие держится 3 с), а не по таймеру
+  const ACTIONS = ['fight', 'farm', 'push', 'retreat'] as const;
+  const idx = ACTIONS.indexOf(a.best);
+  if (c.mem.marks.get('action-cand') !== idx) {
+    c.mem.marks.set('action-cand', idx);
+    c.mem.marks.set('action-cand@', c.now);
+  }
+  if (c.mem.marks.get('action-shown') === idx || c.now - (c.mem.marks.get('action-cand@') ?? c.now) < 3000) return null;
+  c.mem.marks.set('action-shown', idx);
   const p = a.percents[a.best];
   const short = `${ACTION_RU[a.best]}: ${p}%`;
   const others = (Object.keys(a.percents) as (keyof typeof a.percents)[])
@@ -111,7 +120,7 @@ export const actionRule: Rule = (c) => {
     detailed: `${short}. Остальное: ${others}.${a.reasons.length ? ` Почему: ${a.reasons.join(', ')}.` : ''}`,
     facts: [derivedFact('action', 'Рекомендация', a.best, a.confidence), derivedFact('action-pct', 'Доля, %', p, a.confidence)],
     ttlSec: 10,
-    cooldownSec: 60,
+    cooldownSec: 20,
   });
 };
 

@@ -59,9 +59,12 @@ export const MODELS: Record<AiLocalModel, PinnedModel> = {
   },
 };
 
-/** Параметры llama-server (решение владельца: CPU, контекст ≤ 4096, половина логических ядер, не меньше 2) */
+/**
+ * Параметры llama-server (решение владельца: CPU, контекст ≤ 4096, половина логических ядер, не меньше 2).
+ * Во время матча — четверть ядер (не меньше 2): игре нужнее процессор, ответ чуть медленнее (с 0.12.0).
+ */
 export const CONTEXT_TOKENS = 4096;
 export const IDLE_STOP_MS = 5 * 60_000;
-export function threadsFor(logicalCores: number): number {
-  return Math.max(2, Math.floor(logicalCores / 2));
+export function threadsFor(logicalCores: number, inMatch = false): number {
+  return Math.max(2, Math.floor(logicalCores / (inMatch ? 4 : 2)));
 }

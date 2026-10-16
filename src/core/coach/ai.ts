@@ -20,11 +20,14 @@ export type AiJobKind = 'death' | 'match' | 'mistake' | 'advice' | 'phrase';
 const JOB_PRIORITY: Record<AiJobKind, number> = { death: 5, match: 5, mistake: 3, advice: 2, phrase: 1 };
 /** Время на ответ целиком (локальная модель на CPU: первый токен 1,3–2,5 с, ~28 токенов/с) */
 export const AI_TIMEOUT_MS: Record<AiJobKind, number> = { death: 25_000, match: 60_000, mistake: 12_000, advice: 12_000, phrase: 10_000 };
-const MAX_TOKENS: Record<AiJobKind, number> = { death: 160, match: 320, mistake: 60, advice: 70, phrase: 50 };
+const MAX_TOKENS: Record<AiJobKind, number> = { death: 160, match: 320, mistake: 60, advice: 60, phrase: 40 };
 /** Пауза после ошибки поставщика, чтобы не долбить недоступную модель */
 export const AI_BACKOFF_MS = 30_000;
+/** Бюджет: не больше стольких советов и пересказов в минуту (разборы смерти и матча — вне бюджета) */
+export const AI_LIVE_PER_MINUTE = 4;
+const BUDGETED: ReadonlySet<AiJobKind> = new Set(['advice', 'phrase']);
 
-export type AiResultReason = 'ok' | 'timeout' | 'error' | 'ungrounded' | 'empty' | 'invalid' | 'stale' | 'no-provider';
+export type AiResultReason = 'ok' | 'timeout' | 'error' | 'ungrounded' | 'empty' | 'invalid' | 'stale' | 'no-provider' | 'budget';
 
 export interface AiJob<T> {
   kind: AiJobKind;
@@ -49,22 +52,32 @@ export interface CoachAiStats {
   lastLatencyMs: number | null;
   busy: boolean;
   available: boolean;
+  /** Всего обращений к модели */
+  calls: number;
 }
 
 export class CoachAi {
   private queue: AiJob<unknown>[] = [];
   private running: { job: AiJob<unknown>; ctrl: AbortController } | null = null;
   private backoffUntil = 0;
-  readonly stats: CoachAiStats = { ok: 0, failed: 0, timeouts: 0, rejected: 0, lastLatencyMs: null, busy: false, available: true };
+  private liveCalls: number[] = [];
+  readonly stats: CoachAiStats = { ok: 0, failed: 0, timeouts: 0, rejected: 0, lastLatencyMs: null, busy: false, available: true, calls: 0 };
 
-  constructor(private readonly deps: { provider: () => AiProvider | null; now: () => number; timeoutMs?: Partial<Record<AiJobKind, number>> }) {}
+  constructor(private readonly deps: { provider: () => AiProvider | null; now: () => number; timeoutMs?: Partial<Record<AiJobKind, number>>; livePerMinute?: number }) {}
+
+  /** Бюджет советов и пересказов на эту минуту ещё есть */
+  get budgetLeft(): boolean {
+    const now = this.deps.now();
+    this.liveCalls = this.liveCalls.filter((t) => now - t < 60_000);
+    return this.liveCalls.length < (this.deps.livePerMinute ?? AI_LIVE_PER_MINUTE);
+  }
 
   get busy(): boolean {
     return this.running !== null;
   }
   /** Есть поставщик и он не в паузе после ошибки */
   get available(): boolean {
-    return this.deps.provider() !== null && this.deps.now() >= this.backoffUntil;
+    return this.deps.provider() !== null && this.deps.now() >= this.backoffUntil && this.budgetLeft;
   }
   pending(kind?: AiJobKind): number {
     return this.queue.filter((j) => !kind || j.kind === kind).length + (this.running && (!kind || this.running.job.kind === kind) ? 1 : 0);
@@ -97,6 +110,14 @@ export class CoachAi {
       job.onResult({ value: null, text: '', reason: 'no-provider', latencyMs: 0 });
       return void this.pump();
     }
+    if (BUDGETED.has(job.kind)) {
+      if (!this.budgetLeft) {
+        job.onResult({ value: null, text: '', reason: 'budget', latencyMs: 0 });
+        return void this.pump();
+      }
+      this.liveCalls.push(now);
+    }
+    this.stats.calls++;
     const ctrl = new AbortController();
     this.running = { job, ctrl };
     this.stats.busy = true;

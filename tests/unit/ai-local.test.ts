@@ -99,6 +99,8 @@ describe('скачивание локального ИИ', () => {
       expect(m.license).toBe('Apache-2.0');
     }
     expect([threadsFor(1), threadsFor(4), threadsFor(12), threadsFor(16)]).toEqual([2, 2, 6, 8]);
+    // во время матча — четверть ядер, не меньше 2
+    expect([threadsFor(4, true), threadsFor(12, true), threadsFor(16, true)]).toEqual([2, 3, 4]);
   });
 });
 
