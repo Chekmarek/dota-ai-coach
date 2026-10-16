@@ -172,7 +172,7 @@ export function HudPreview() {
           </label>
           <label>
             Подробность
-            <select value={detail} onChange={(e) => setDetail(e.target.value as Detail)}>
+            <select value={detail} onChange={(e) => setDetail(e.target.value as Detail)} data-testid="hud-detail">
               {(Object.keys(DETAIL_RU) as Detail[]).map((d) => (
                 <option key={d} value={d}>
                   {DETAIL_RU[d]}

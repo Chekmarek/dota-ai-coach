@@ -106,3 +106,37 @@ test('матч по данным игры: подсказка движка — �
     await app.close();
   }
 });
+
+test('16:9, 21:9 и 4:3, «Подробно»: видимые карточки не заходят на HUD Доты и не выходят из своих зон', async () => {
+  const { app, ui } = await launch(tmp());
+  try {
+    await ui.click('[data-testid="nav-hud"]');
+    await ui.selectOption('[data-testid="hud-detail"]', 'detailed');
+    for (const screen of ['16x9', '21x9', '4x3']) {
+      await ui.selectOption('[data-testid="hud-screen"]', screen);
+      await ui.waitForTimeout(700);
+      const bad = await ui.evaluate(() => {
+        const r = (el: Element) => el.getBoundingClientRect();
+        const hit = (a: DOMRect, b: DOMRect) => a.left < b.right - 0.5 && b.left < a.right - 0.5 && a.top < b.bottom - 0.5 && b.top < a.bottom - 0.5;
+        const forbidden = Array.from(document.querySelectorAll('[data-testid="hud-stage"] .hud-forbidden')).map((el) => ({ name: el.textContent ?? '', rect: r(el) }));
+        const out: string[] = [];
+        let cards = 0;
+        for (const zone of Array.from(document.querySelectorAll('[data-testid="hud-stage"] .hud-zone'))) {
+          const z = r(zone);
+          const id = (zone as HTMLElement).dataset['zone'];
+          for (const card of Array.from(zone.querySelectorAll('.hud-card:not(.hud-overflow)'))) {
+            const c = r(card.querySelector('.hud-frame')!);
+            cards++;
+            if (c.left < z.left - 1 || c.right > z.right + 1 || c.top < z.top - 1 || c.bottom > z.bottom + 1) out.push(`${id}: карточка за зоной`);
+            for (const f of forbidden) if (!(id === 'review' && f.name.startsWith('Центр')) && hit(c, f.rect)) out.push(`${id}: на «${f.name}»`);
+          }
+        }
+        return { out, cards };
+      });
+      expect(bad.out, screen).toEqual([]);
+      expect(bad.cards, screen).toBeGreaterThanOrEqual(3);
+    }
+  } finally {
+    await app.close();
+  }
+});

@@ -143,7 +143,9 @@ export function buildView(s: MatchState, gsi: GsiReading | null, gsiWallMs: numb
   const x = g?.extra;
   const clock = fromTracked(s.match.clock, wallMs);
   const phase = g?.phase ?? null;
-  const inGame = phase !== null ? phase === 'in-progress' : clock.value !== null && clock.value >= 0;
+  // Матч идёт: после горна, а также 90 с до горна (DOTA_GAMERULES_STATE_PRE_GAME: герои на карте, руны в 0:00)
+  const preHorn = g?.gameState === 'DOTA_GAMERULES_STATE_PRE_GAME';
+  const inGame = phase !== null ? phase === 'in-progress' || preHorn : clock.value !== null && clock.value >= -90;
 
   const kda = fromTracked(s.hero.kda, wallMs);
   const farm = fromTracked(s.hero.farm, wallMs);

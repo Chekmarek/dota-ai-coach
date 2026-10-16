@@ -38,6 +38,10 @@ export class CoachService {
   private seenJournal = 0;
   private lastSaveMs = 0;
   private lastHintsKey = '';
+  /** Для live.log: когда пришёл первый снимок, был ли матч, когда последний раз писали о подсказках */
+  private inputs = 0;
+  private loggedInMatch: boolean | null = null;
+  private lastHintLogMs = 0;
   private readonly now: () => number;
 
   constructor(private readonly deps: CoachDeps) {
@@ -77,6 +81,16 @@ export class CoachService {
     if (!e) return null;
     e.setSettings(coachSettings(s));
     const u = e.tick(input.state, input.gsi, input.gsiWallMs);
+    this.inputs++;
+    if (this.inputs === 1) this.deps.log?.('coach первый снимок матча', { gsi: input.gsi !== null, screen: input.state.sources.screen, heroKey: input.gsi?.hero.key ?? null });
+    if (e.inGame !== this.loggedInMatch) {
+      this.loggedInMatch = e.inGame;
+      this.deps.log?.('coach матч', { inGame: e.inGame, gameState: input.gsi?.gameState ?? null, clock: input.gsi?.clock ?? null });
+    }
+    if (u.shown.length && this.now() - this.lastHintLogMs >= 5000) {
+      this.lastHintLogMs = this.now();
+      this.deps.log?.('coach подсказки', { shown: u.shown.map((h) => h.id).slice(0, 6), visible: u.visible.length, rulesMs: Math.round(u.rulesMs) });
+    }
     this.trackHistory(u);
     this.publish();
     return u;
