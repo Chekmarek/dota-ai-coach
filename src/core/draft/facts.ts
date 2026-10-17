@@ -19,6 +19,11 @@ export interface DraftFactsInput {
   itemName?: (key: string) => string;
   /** Сколько кандидатов отдать модели */
   top?: number;
+  /**
+   * Коротко (для уведомления при выборе героев): у кандидата не больше 3 самых сильных причин, без угроз.
+   * Модель читает факты дольше, чем пишет ответ (8B: ~900 токенов фактов — 9 с из 16), поэтому их меньше
+   */
+  compact?: boolean;
 }
 
 const POS_RU = ['керри (1)', 'мид (2)', 'оффлейн (3)', 'частичная поддержка (4)', 'полная поддержка (5)'];
@@ -37,15 +42,34 @@ export function draftFacts(i: DraftFactsInput): string[] {
   if (i.allies.length) out.push(`Союзники: ${i.allies.map(i.name).join(', ')}.`);
   if (i.position) out.push(`Позиция игрока: ${POS_RU[i.position - 1]}.`);
   i.candidates.slice(0, i.top ?? 3).forEach((c, n) => {
-    const parts: string[] = [];
-    for (const v of c.vsEnemies.filter((x) => Math.abs(x.delta) >= 0.001)) parts.push(`против ${i.name(v.hero)} ${pctRu(v.delta)} (${games(v.games)})`);
-    for (const v of c.withAllies.filter((x) => Math.abs(x.delta) >= 0.001)) parts.push(`в связке с ${i.name(v.hero)} ${pctRu(v.delta)} (${games(v.games)})`);
-    if (Math.abs(c.meta) >= 0.001) parts.push(`сила в патче ${pctRu(c.meta)}`);
-    out.push(`Кандидат ${n + 1}: ${c.name}, итог ${pctRu(c.score)}${parts.length ? `: ${parts.join('; ')}` : ''}.`);
+    let parts: { w: number; s: string }[] = [];
+    for (const v of c.vsEnemies.filter((x) => Math.abs(x.delta) >= 0.001)) parts.push({ w: Math.abs(v.delta), s: `против ${i.name(v.hero)} ${pctRu(v.delta)} (${games(v.games)})` });
+    for (const v of c.withAllies.filter((x) => Math.abs(x.delta) >= 0.001)) parts.push({ w: Math.abs(v.delta), s: `в связке с ${i.name(v.hero)} ${pctRu(v.delta)} (${games(v.games)})` });
+    if (Math.abs(c.meta) >= 0.001) parts.push({ w: Math.abs(c.meta), s: `сила в патче ${pctRu(c.meta)}` });
+    if (i.compact) parts = [...parts].sort((a, b) => b.w - a.w).slice(0, 3);
+    out.push(`Кандидат ${n + 1}: ${c.name}, итог ${pctRu(c.score)}${parts.length ? `: ${parts.map((p) => p.s).join('; ')}` : ''}.`);
   });
-  for (const t of i.threats ?? []) {
+  for (const t of i.compact ? [] : (i.threats ?? [])) {
     const items = i.itemName ? t.threat.items.map((x) => i.itemName!(x.key)).join(', ') : '';
     out.push(`Угроза врагов — ${t.threat.nameRu} (${t.heroes.map(i.name).join(', ')}): ${t.threat.whyRu}${items ? `; против неё: ${items}` : ''}.`);
   }
   return out;
+}
+
+/**
+ * Уведомление при выборе героев без ИИ — сразу, за миллисекунды: кого брать и почему, по расчёту правил.
+ * Если последний пик врага известен — совет против него («Враг взял Bristleback → …»). Числа — те же, что в фактах.
+ */
+export function draftNotice(i: { candidates: readonly DraftCandidate[]; name: (key: string) => string; lastEnemy?: string | null }): string | null {
+  const [top, ...rest] = i.candidates;
+  if (!top) return null;
+  const vs = (i.lastEnemy && top.vsEnemies.find((v) => v.hero === i.lastEnemy)) || [...top.vsEnemies].sort((a, b) => b.delta - a.delta)[0];
+  const ally = [...top.withAllies].sort((a, b) => b.delta - a.delta)[0];
+  const why = [
+    vs && vs.delta >= 0.001 ? `против ${i.name(vs.hero)} ${pctRu(vs.delta)} (${gamesRu(vs.games)})` : null,
+    ally && ally.delta >= 0.001 ? `с ${i.name(ally.hero)} ${pctRu(ally.delta)} (${gamesRu(ally.games)})` : null,
+  ].filter(Boolean);
+  const head = i.lastEnemy ? `Враг взял ${i.name(i.lastEnemy)} → берите ${top.name}` : `Берите ${top.name}`;
+  const more = rest.length ? ` Ещё: ${rest.slice(0, 2).map((c) => c.name).join(', ')}.` : '';
+  return `${head}${why.length ? `: ${why.join(', ')}` : ` (итог ${pctRu(top.score)})`}.${more}`;
 }

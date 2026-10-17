@@ -5,8 +5,9 @@ import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { CoachLookup, type CoachData } from '../../src/core/coach/data.ts';
-import { counterDelta, counterItems, draftFacts, enemyThreats, gamesRu, pctRu, suggestHeroes, synergyDelta, THREATS, HERO_THREATS } from '../../src/core/draft/index.ts';
+import { counterDelta, counterItems, draftFacts, draftNotice, enemyThreats, gamesRu, pctRu, suggestHeroes, synergyDelta, THREATS, HERO_THREATS } from '../../src/core/draft/index.ts';
 import { DraftService } from '../../src/main/coach/draft.ts';
+import { checkDraftAnswer } from '../../src/core/ai/draft-check.ts';
 import type { DraftRequest } from '../../src/shared/types/draft.ts';
 import { realData } from './coach-sim.ts';
 
@@ -211,4 +212,22 @@ describe('факты драфта для ИИ: только посчитанно
     const text = real.items.reduce((s, i) => (i.name.length > 3 ? s.split(i.name).join(' ') : s), f.join(' '));
     for (const h of real.heroes) if (!allowed.has(h.name) && h.name.length > 3) expect(text.includes(h.name), h.name).toBe(false);
   });
+});
+
+describe('уведомление при выборе героев без ИИ', () => {
+  const look = new CoachLookup(real);
+  const heroes = real.heroes.map((h) => ({ key: h.key, name: h.name }));
+  it('«Враг взял Bristleback → берите …»: числа и герои из расчёта, проходит ту же проверку, что и ответ ИИ', () => {
+    for (const [enemies, allies] of [[['bristleback'], []], [['bristleback', 'invoker', 'riki'], ['lion']], [['phantom_lancer'], ['axe', 'crystal_maiden']]] as [string[], string[]][]) {
+      const c = suggestHeroes(look, { allies, enemies, limit: 3 });
+      const f = draftFacts({ candidates: c, name: (k) => look.heroName(k), enemies, allies, position: null, patch: '7.41f', statsAt: null, compact: true });
+      const text = draftNotice({ candidates: c, name: (k) => look.heroName(k), lastEnemy: enemies.at(-1) })!;
+      expect(text.startsWith(`Враг взял ${look.heroName(enemies.at(-1)!)} → берите ${c[0]!.name}`), text).toBe(true);
+      const ch = checkDraftAnswer({ answer: text, facts: [...f, `против ${look.heroName(enemies.at(-1)!)}`], heroes, allowedHeroes: [...enemies, ...allies, ...c.map((x) => x.hero)], topHero: c[0]!.hero });
+      expect(ch.inventedNumbers, text).toEqual([]);
+      expect(ch.inventedHeroes, text).toEqual([]);
+      expect(ch.tooLong, text).toBe(false);
+    }
+  });
+  it('без кандидатов — ничего', () => expect(draftNotice({ candidates: [], name: (k) => k })).toBeNull());
 });

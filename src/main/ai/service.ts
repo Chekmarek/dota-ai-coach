@@ -20,8 +20,10 @@ export interface AiTimeouts {
 export const DEFAULT_TIMEOUTS: AiTimeouts = { firstTokenCloudMs: 30_000, firstTokenLocalMs: 120_000, idleMs: 30_000, totalMs: 180_000 };
 
 /** Длина ответа в токенах; во время матча локальная модель отвечает коротко (защита FPS Доты) */
-export const MAX_TOKENS: Record<PromptKind, number> = { ask: 300, summary: 500, card: 60, draft: 120 };
+export const MAX_TOKENS: Record<PromptKind, number> = { ask: 300, summary: 500, card: 60, draft: 80 };
 export const IN_MATCH_MAX_TOKENS = 120;
+/** Самая лёгкая модель, которой можно доверить объяснение драфта (см. localModelFor) */
+export const DRAFT_MIN_MODEL = 'qwen3-4b' as const;
 export const TEMPERATURE = 0.2;
 
 export interface LocalRuntime {
@@ -120,14 +122,18 @@ export class AiService {
   }
 
   /**
-   * Какая локальная модель отвечает: на объяснение драфта — тяжёлая, если выбрана, скачана и сейчас выбор героев;
-   * на всё остальное (и в матче) — обычная из настроек. Так тяжёлая модель в матч не попадает
+   * Какая локальная модель отвечает. На всё, кроме драфта (и в матче), — обычная из настроек: тяжёлая модель в матч не попадает.
+   * На объяснение драфта: тяжёлая (если выбрана, скачана и сейчас выбор героев) → 4B (если скачана) → никакая.
+   * 1.7B драфт не объясняет: на 34 ситуациях годных ответов 5 (повторяет вопрос, пишет списками, путает числа);
+   * 4B — 34 из 34 (tests/ai/draft-eval.eval.ts, docs/LIMITATIONS.md). Нет модели — показывается текст правил.
    */
-  localModelFor(kind: PromptKind): AiModelId {
+  localModelFor(kind: PromptKind): AiModelId | null {
     const s = this.deps.getSettings().ai.local;
-    const heavy = s.draftModel;
-    if (kind === 'draft' && heavy && this.deps.heavyAllowed?.() && this.deps.local?.installed?.(heavy)) return heavy;
-    return s.model;
+    if (kind !== 'draft') return s.model;
+    const installed = (m: AiModelId) => this.deps.local?.installed?.(m) ?? false;
+    if (s.draftModel && this.deps.heavyAllowed?.() && installed(s.draftModel)) return s.draftModel;
+    if (s.model === DRAFT_MIN_MODEL || installed(DRAFT_MIN_MODEL)) return DRAFT_MIN_MODEL;
+    return null;
   }
 
   /** Поставщик по настройкам; ошибки настройки — AiError */
@@ -147,6 +153,7 @@ export class AiService {
     }
     if (!this.deps.local) throw new AiError('unavailable');
     const model = this.localModelFor(kind);
+    if (!model) throw new AiError('local-missing', 'Для объяснения драфта нужна модель Qwen3 4B или 8B — показан текст правил');
     const baseUrl = await this.deps.local.ensure(model, signal);
     return openAiCompatibleProvider({
       id: 'local',

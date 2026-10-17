@@ -1,0 +1,1467 @@
+{
+  "patch": "7.41f",
+  "statsAt": "2026-10-16T19:05:26.088Z",
+  "cases": [
+    {
+      "id": "d01",
+      "enemies": [
+        "bristleback"
+      ],
+      "allies": [],
+      "position": null,
+      "facts": [
+        "Источник: статистика публичных матчей OpenDota, патч 7.41f, от 2026-10-16. Проценты — оценка изменения шанса победы, не гарантия.",
+        "Враги: Bristleback.",
+        "Кандидат 1: Slark, итог +5,6%: против Bristleback +5,7% (18 702 игры).",
+        "Кандидат 2: Viper, итог +4,3%: против Bristleback +5% (13 200 игр); сила в патче −0,6%.",
+        "Кандидат 3: Legion Commander, итог +4,3%: против Bristleback +3,3% (22 847 игр); сила в патче +0,9%."
+      ],
+      "expect": {
+        "topHero": "slark",
+        "topName": "Slark",
+        "allowedHeroes": [
+          "bristleback",
+          "slark",
+          "viper",
+          "legion_commander"
+        ],
+        "threats": [
+          "passives"
+        ],
+        "itemsForTop": [
+          "silver_edge"
+        ]
+      }
+    },
+    {
+      "id": "d02",
+      "enemies": [
+        "phantom_assassin"
+      ],
+      "allies": [],
+      "position": null,
+      "facts": [
+        "Источник: статистика публичных матчей OpenDota, патч 7.41f, от 2026-10-16. Проценты — оценка изменения шанса победы, не гарантия.",
+        "Враги: Phantom Assassin.",
+        "Кандидат 1: Troll Warlord, итог +3,6%: против Phantom Assassin +2,9% (7 352 игры); сила в патче +0,7%.",
+        "Кандидат 2: Wraith King, итог +3,5%: против Phantom Assassin +1,8% (31 663 игры); сила в патче +1,8%.",
+        "Кандидат 3: Axe, итог +3,2%: против Phantom Assassin +3,1% (38 172 игры); сила в патче +0,1%."
+      ],
+      "expect": {
+        "topHero": "troll_warlord",
+        "topName": "Troll Warlord",
+        "allowedHeroes": [
+          "phantom_assassin",
+          "troll_warlord",
+          "skeleton_king",
+          "axe"
+        ],
+        "threats": [
+          "evasion",
+          "physical",
+          "passives"
+        ],
+        "itemsForTop": [
+          "monkey_king_bar",
+          "heavens_halberd",
+          "silver_edge"
+        ]
+      }
+    },
+    {
+      "id": "d03",
+      "enemies": [
+        "riki"
+      ],
+      "allies": [],
+      "position": 5,
+      "facts": [
+        "Источник: статистика публичных матчей OpenDota, патч 7.41f, от 2026-10-16. Проценты — оценка изменения шанса победы, не гарантия.",
+        "Враги: Riki.",
+        "Позиция игрока: полная поддержка (5).",
+        "Кандидат 1: Omniknight, итог +3,2%: против Riki +2,8% (1 867 игр); сила в патче +0,4%.",
+        "Кандидат 2: Techies, итог +1,9%: против Riki +1,5% (10 872 игры); сила в патче +0,4%.",
+        "Кандидат 3: Shadow Shaman, итог +1,9%: против Riki +1,3% (17 382 игры); сила в патче +0,6%."
+      ],
+      "expect": {
+        "topHero": "omniknight",
+        "topName": "Omniknight",
+        "allowedHeroes": [
+          "riki",
+          "omniknight",
+          "techies",
+          "shadow_shaman"
+        ],
+        "threats": [
+          "invis",
+          "evasion"
+        ],
+        "itemsForTop": [
+          "dust"
+        ]
+      }
+    },
+    {
+      "id": "d04",
+      "enemies": [
+        "antimage"
+      ],
+      "allies": [],
+      "position": 2,
+      "facts": [
+        "Источник: статистика публичных матчей OpenDota, патч 7.41f, от 2026-10-16. Проценты — оценка изменения шанса победы, не гарантия.",
+        "Враги: Anti-Mage.",
+        "Позиция игрока: мид (2).",
+        "Кандидат 1: Meepo, итог +7%: против Anti-Mage +5,5% (5 079 игр); сила в патче +1,5%.",
+        "Кандидат 2: Axe, итог +5,7%: против Anti-Mage +5,6% (41 768 игр); сила в патче +0,1%.",
+        "Кандидат 3: Huskar, итог +5,2%: против Anti-Mage +6,8% (11 476 игр); сила в патче −1,6%."
+      ],
+      "expect": {
+        "topHero": "meepo",
+        "topName": "Meepo",
+        "allowedHeroes": [
+          "antimage",
+          "meepo",
+          "axe",
+          "huskar"
+        ],
+        "threats": [
+          "mobile",
+          "physical"
+        ],
+        "itemsForTop": [
+          "orchid",
+          "heavens_halberd"
+        ]
+      }
+    },
+    {
+      "id": "d05",
+      "enemies": [
+        "pudge"
+      ],
+      "allies": [],
+      "position": 4,
+      "facts": [
+        "Источник: статистика публичных матчей OpenDota, патч 7.41f, от 2026-10-16. Проценты — оценка изменения шанса победы, не гарантия.",
+        "Враги: Pudge.",
+        "Позиция игрока: частичная поддержка (4).",
+        "Кандидат 1: Grimstroke, итог +2,9%: против Pudge +2,1% (40 045 игр); сила в патче +0,8%.",
+        "Кандидат 2: Visage, итог +2,4%: сила в патче +1,4%; против Pudge +1,1% (8 470 игр).",
+        "Кандидат 3: Silencer, итог +1,6%: против Pudge +1,4% (52 268 игр); сила в патче +0,2%."
+      ],
+      "expect": {
+        "topHero": "grimstroke",
+        "topName": "Grimstroke",
+        "allowedHeroes": [
+          "pudge",
+          "grimstroke",
+          "visage",
+          "silencer"
+        ],
+        "threats": [],
+        "itemsForTop": []
+      }
+    },
+    {
+      "id": "d06",
+      "enemies": [
+        "invoker"
+      ],
+      "allies": [
+        "lion"
+      ],
+      "position": 1,
+      "facts": [
+        "Источник: статистика публичных матчей OpenDota, патч 7.41f, от 2026-10-16. Проценты — оценка изменения шанса победы, не гарантия.",
+        "Враги: Invoker.",
+        "Союзники: Lion.",
+        "Позиция игрока: керри (1).",
+        "Кандидат 1: Riki, итог +3,3%: против Invoker +2,5% (18 015 игр); сила в патче +1%; в связке с Lion −0,2% (22 662 игры).",
+        "Кандидат 2: Lifestealer, итог +3,2%: против Invoker +2,1% (54 178 игр); сила в патче +0,7%; в связке с Lion +0,4% (71 443 игры).",
+        "Кандидат 3: Phantom Lancer, итог +2,9%: против Invoker +1,5% (43 308 игр); сила в патче +1,2%; в связке с Lion +0,3% (59 269 игр)."
+      ],
+      "expect": {
+        "topHero": "riki",
+        "topName": "Riki",
+        "allowedHeroes": [
+          "invoker",
+          "lion",
+          "riki",
+          "life_stealer",
+          "phantom_lancer"
+        ],
+        "threats": [
+          "invis",
+          "magic"
+        ],
+        "itemsForTop": [
+          "dust",
+          "black_king_bar"
+        ]
+      }
+    },
+    {
+      "id": "d07",
+      "enemies": [
+        "huskar"
+      ],
+      "allies": [],
+      "position": 3,
+      "facts": [
+        "Источник: статистика публичных матчей OpenDota, патч 7.41f, от 2026-10-16. Проценты — оценка изменения шанса победы, не гарантия.",
+        "Враги: Huskar.",
+        "Позиция игрока: оффлейн (3).",
+        "Кандидат 1: Viper, итог +7,3%: против Huskar +7,9% (7 953 игры); сила в патче −0,6%.",
+        "Кандидат 2: Dark Seer, итог +2,6%: против Huskar +2,7% (3 051 игра); сила в патче −0,2%.",
+        "Кандидат 3: Death Prophet, итог +1,7%: против Huskar +2,4% (3 665 игр); сила в патче −0,7%."
+      ],
+      "expect": {
+        "topHero": "viper",
+        "topName": "Viper",
+        "allowedHeroes": [
+          "huskar",
+          "viper",
+          "dark_seer",
+          "death_prophet"
+        ],
+        "threats": [
+          "healing",
+          "passives"
+        ],
+        "itemsForTop": [
+          "shivas_guard",
+          "silver_edge"
+        ]
+      }
+    },
+    {
+      "id": "d08",
+      "enemies": [
+        "meepo"
+      ],
+      "allies": [],
+      "position": null,
+      "facts": [
+        "Источник: статистика публичных матчей OpenDota, патч 7.41f, от 2026-10-16. Проценты — оценка изменения шанса победы, не гарантия.",
+        "Враги: Meepo.",
+        "Кандидат 1: Earthshaker, итог +8,1%: против Meepo +8% (4 892 игры); сила в патче +0,1%.",
+        "Кандидат 2: Techies, итог +6,6%: против Meepo +6,2% (4 227 игр); сила в патче +0,4%.",
+        "Кандидат 3: Leshrac, итог +6,5%: против Meepo +5,7% (725 игр); сила в патче +0,8%."
+      ],
+      "expect": {
+        "topHero": "earthshaker",
+        "topName": "Earthshaker",
+        "allowedHeroes": [
+          "meepo",
+          "earthshaker",
+          "techies",
+          "leshrac"
+        ],
+        "threats": [
+          "illusions"
+        ],
+        "itemsForTop": [
+          "bfury"
+        ]
+      }
+    },
+    {
+      "id": "d09",
+      "enemies": [
+        "bristleback",
+        "invoker"
+      ],
+      "allies": [
+        "lion"
+      ],
+      "position": null,
+      "facts": [
+        "Источник: статистика публичных матчей OpenDota, патч 7.41f, от 2026-10-16. Проценты — оценка изменения шанса победы, не гарантия.",
+        "Враги: Bristleback, Invoker.",
+        "Союзники: Lion.",
+        "Кандидат 1: Anti-Mage, итог +4,6%: против Bristleback +3% (17 450 игр); против Invoker +0,9% (64 009 игр); сила в патче +0,4%.",
+        "Кандидат 2: Slardar, итог +3,9%: против Bristleback +2,1% (8 803 игры); против Invoker +1,8% (22 757 игр); в связке с Lion +0,3% (31 359 игр).",
+        "Кандидат 3: Legion Commander, итог +3,9%: против Bristleback +3,3% (22 847 игр); сила в патче +0,9%; в связке с Lion −0,6% (87 407 игр)."
+      ],
+      "expect": {
+        "topHero": "antimage",
+        "topName": "Anti-Mage",
+        "allowedHeroes": [
+          "bristleback",
+          "invoker",
+          "lion",
+          "antimage",
+          "slardar",
+          "legion_commander"
+        ],
+        "threats": [
+          "invis",
+          "passives",
+          "magic"
+        ],
+        "itemsForTop": [
+          "dust",
+          "silver_edge",
+          "black_king_bar"
+        ]
+      }
+    },
+    {
+      "id": "d10",
+      "enemies": [
+        "phantom_lancer",
+        "crystal_maiden"
+      ],
+      "allies": [],
+      "position": 3,
+      "facts": [
+        "Источник: статистика публичных матчей OpenDota, патч 7.41f, от 2026-10-16. Проценты — оценка изменения шанса победы, не гарантия.",
+        "Враги: Phantom Lancer, Crystal Maiden.",
+        "Позиция игрока: оффлейн (3).",
+        "Кандидат 1: Tidehunter, итог +5,7%: против Phantom Lancer +5,5% (30 095 игр); против Crystal Maiden +0,5% (41 397 игр); сила в патче −0,3%.",
+        "Кандидат 2: Sand King, итог +4,4%: против Phantom Lancer +4,8% (8 333 игры); сила в патче −0,3%; против Crystal Maiden −0,1% (9 728 игр).",
+        "Кандидат 3: Underlord, итог +4,3%: против Phantom Lancer +5,1% (9 946 игр); сила в патче −0,7%; против Crystal Maiden −0,1% (15 641 игра)."
+      ],
+      "expect": {
+        "topHero": "tidehunter",
+        "topName": "Tidehunter",
+        "allowedHeroes": [
+          "phantom_lancer",
+          "crystal_maiden",
+          "tidehunter",
+          "sand_king",
+          "abyssal_underlord"
+        ],
+        "threats": [
+          "illusions",
+          "mobile"
+        ],
+        "itemsForTop": [
+          "bfury",
+          "orchid"
+        ]
+      }
+    },
+    {
+      "id": "d11",
+      "enemies": [
+        "slark",
+        "lion"
+      ],
+      "allies": [
+        "axe"
+      ],
+      "position": 2,
+      "facts": [
+        "Источник: статистика публичных матчей OpenDota, патч 7.41f, от 2026-10-16. Проценты — оценка изменения шанса победы, не гарантия.",
+        "Враги: Slark, Lion.",
+        "Союзники: Axe.",
+        "Позиция игрока: мид (2).",
+        "Кандидат 1: Pugna, итог +5,2%: против Slark +2,3% (9 579 игр); в связке с Axe +2,2% (12 863 игры); против Lion +0,5% (20 702 игры).",
+        "Кандидат 2: Outworld Destroyer, итог +5,1%: против Slark +3% (31 924 игры); сила в патче +1,3%; против Lion +0,7% (58 682 игры).",
+        "Кандидат 3: Leshrac, итог +4,9%: против Slark +2,5% (5 850 игр); в связке с Axe +1,4% (5 767 игр); сила в патче +0,8%."
+      ],
+      "expect": {
+        "topHero": "pugna",
+        "topName": "Pugna",
+        "allowedHeroes": [
+          "slark",
+          "lion",
+          "axe",
+          "pugna",
+          "obsidian_destroyer",
+          "leshrac"
+        ],
+        "threats": [
+          "physical",
+          "mobile",
+          "magic",
+          "disable"
+        ],
+        "itemsForTop": [
+          "heavens_halberd",
+          "orchid",
+          "black_king_bar",
+          "sphere"
+        ]
+      }
+    },
+    {
+      "id": "d12",
+      "enemies": [
+        "templar_assassin",
+        "shadow_shaman"
+      ],
+      "allies": [
+        "juggernaut"
+      ],
+      "position": 5,
+      "facts": [
+        "Источник: статистика публичных матчей OpenDota, патч 7.41f, от 2026-10-16. Проценты — оценка изменения шанса победы, не гарантия.",
+        "Враги: Templar Assassin, Shadow Shaman.",
+        "Союзники: Juggernaut.",
+        "Позиция игрока: полная поддержка (5).",
+        "Кандидат 1: Gyrocopter, итог +3,4%: в связке с Juggernaut +3,3% (9 296 игр); сила в патче −1%; против Templar Assassin +1% (2 617 игр).",
+        "Кандидат 2: Phoenix, итог +2,9%: против Templar Assassin +2,4% (3 790 игр); сила в патче +0,7%; против Shadow Shaman −0,4% (15 771 игра).",
+        "Кандидат 3: Ogre Magi, итог +2,6%: против Templar Assassin +1,9% (12 566 игр); в связке с Juggernaut +0,7% (59 223 игры); против Shadow Shaman −0,2% (59 966 игр)."
+      ],
+      "expect": {
+        "topHero": "gyrocopter",
+        "topName": "Gyrocopter",
+        "allowedHeroes": [
+          "templar_assassin",
+          "shadow_shaman",
+          "juggernaut",
+          "gyrocopter",
+          "phoenix",
+          "ogre_magi"
+        ],
+        "threats": [
+          "invis",
+          "physical",
+          "disable",
+          "summons"
+        ],
+        "itemsForTop": [
+          "dust",
+          "ghost",
+          "lotus_orb"
+        ]
+      }
+    },
+    {
+      "id": "d13",
+      "enemies": [
+        "tinker",
+        "sniper"
+      ],
+      "allies": [],
+      "position": 4,
+      "facts": [
+        "Источник: статистика публичных матчей OpenDota, патч 7.41f, от 2026-10-16. Проценты — оценка изменения шанса победы, не гарантия.",
+        "Враги: Tinker, Sniper.",
+        "Позиция игрока: частичная поддержка (4).",
+        "Кандидат 1: Nyx Assassin, итог +4,2%: против Tinker +1,8% (8 133 игры); против Sniper +1,5% (34 074 игры); сила в патче +0,9%.",
+        "Кандидат 2: Pudge, итог +4,1%: против Sniper +2,4% (94 225 игр); против Tinker +1,4% (25 720 игр); сила в патче +0,4%.",
+        "Кандидат 3: Bounty Hunter, итог +2,2%: против Sniper +1,3% (21 620 игр); сила в патче +0,9%."
+      ],
+      "expect": {
+        "topHero": "nyx_assassin",
+        "topName": "Nyx Assassin",
+        "allowedHeroes": [
+          "tinker",
+          "sniper",
+          "nyx_assassin",
+          "pudge",
+          "bounty_hunter"
+        ],
+        "threats": [
+          "magic",
+          "mobile",
+          "physical"
+        ],
+        "itemsForTop": [
+          "pipe",
+          "cyclone",
+          "ghost"
+        ]
+      }
+    },
+    {
+      "id": "d14",
+      "enemies": [
+        "necrolyte",
+        "drow_ranger"
+      ],
+      "allies": [
+        "earthshaker"
+      ],
+      "position": 1,
+      "facts": [
+        "Источник: статистика публичных матчей OpenDota, патч 7.41f, от 2026-10-16. Проценты — оценка изменения шанса победы, не гарантия.",
+        "Враги: Necrophos, Drow Ranger.",
+        "Союзники: Earthshaker.",
+        "Позиция игрока: керри (1).",
+        "Кандидат 1: Dark Seer, итог +5,6%: против Drow Ranger +2,8% (14 976 игр); против Necrophos +2,3% (12 538 игр); в связке с Earthshaker +0,6% (10 126 игр).",
+        "Кандидат 2: Medusa, итог +4,6%: против Necrophos +3,9% (7 727 игр); в связке с Earthshaker +0,7% (6 675 игр); против Drow Ranger +0,3% (8 147 игр).",
+        "Кандидат 3: Arc Warden, итог +4,1%: против Necrophos +3,3% (11 953 игры); сила в патче +0,9%; в связке с Earthshaker −0,2% (8 912 игр)."
+      ],
+      "expect": {
+        "topHero": "dark_seer",
+        "topName": "Dark Seer",
+        "allowedHeroes": [
+          "necrolyte",
+          "drow_ranger",
+          "earthshaker",
+          "dark_seer",
+          "medusa",
+          "arc_warden"
+        ],
+        "threats": [
+          "healing",
+          "magic",
+          "physical"
+        ],
+        "itemsForTop": [
+          "shivas_guard",
+          "black_king_bar",
+          "heavens_halberd"
+        ]
+      }
+    },
+    {
+      "id": "d15",
+      "enemies": [
+        "ursa",
+        "witch_doctor",
+        "tidehunter"
+      ],
+      "allies": [],
+      "position": null,
+      "facts": [
+        "Источник: статистика публичных матчей OpenDota, патч 7.41f, от 2026-10-16. Проценты — оценка изменения шанса победы, не гарантия.",
+        "Враги: Ursa, Witch Doctor, Tidehunter.",
+        "Кандидат 1: Riki, итог +6,7%: против Ursa +3,3% (6 254 игры); против Witch Doctor +2,2% (17 988 игр); сила в патче +1%.",
+        "Кандидат 2: Muerta, итог +4,5%: против Tidehunter +4% (6 209 игр); против Witch Doctor +1,3% (7 412 игр); сила в патче −0,6%.",
+        "Кандидат 3: Bristleback, итог +4,4%: против Ursa +3,2% (8 661 игра); против Witch Doctor +1,3% (21 172 игры); против Tidehunter +0,5% (17 371 игра)."
+      ],
+      "expect": {
+        "topHero": "riki",
+        "topName": "Riki",
+        "allowedHeroes": [
+          "ursa",
+          "witch_doctor",
+          "tidehunter",
+          "riki",
+          "muerta",
+          "bristleback"
+        ],
+        "threats": [
+          "passives",
+          "physical",
+          "healing"
+        ],
+        "itemsForTop": [
+          "silver_edge",
+          "heavens_halberd",
+          "shivas_guard"
+        ]
+      }
+    },
+    {
+      "id": "d16",
+      "enemies": [
+        "storm_spirit",
+        "faceless_void",
+        "lion"
+      ],
+      "allies": [
+        "crystal_maiden"
+      ],
+      "position": 1,
+      "facts": [
+        "Источник: статистика публичных матчей OpenDota, патч 7.41f, от 2026-10-16. Проценты — оценка изменения шанса победы, не гарантия.",
+        "Враги: Storm Spirit, Faceless Void, Lion.",
+        "Союзники: Crystal Maiden.",
+        "Позиция игрока: керри (1).",
+        "Кандидат 1: Meepo, итог +7,5%: против Faceless Void +3,2% (2 073 игры); против Storm Spirit +3,2% (1 519 игр); сила в патче +1,5%.",
+        "Кандидат 2: Riki, итог +6,4%: против Storm Spirit +2,6% (4 743 игры); против Faceless Void +2,3% (8 122 игры); в связке с Crystal Maiden +1,4% (14 315 игр).",
+        "Кандидат 3: Lone Druid, итог +5,4%: против Faceless Void +3,3% (3 341 игра); против Storm Spirit +2% (2 375 игр); в связке с Crystal Maiden +0,4% (6 535 игр)."
+      ],
+      "expect": {
+        "topHero": "meepo",
+        "topName": "Meepo",
+        "allowedHeroes": [
+          "storm_spirit",
+          "faceless_void",
+          "lion",
+          "crystal_maiden",
+          "meepo",
+          "riki",
+          "lone_druid"
+        ],
+        "threats": [
+          "magic",
+          "disable",
+          "mobile",
+          "physical"
+        ],
+        "itemsForTop": [
+          "black_king_bar",
+          "sphere",
+          "orchid",
+          "heavens_halberd"
+        ]
+      }
+    },
+    {
+      "id": "d17",
+      "enemies": [
+        "spectre",
+        "zuus",
+        "bane"
+      ],
+      "allies": [
+        "pudge",
+        "sven"
+      ],
+      "position": 2,
+      "facts": [
+        "Источник: статистика публичных матчей OpenDota, патч 7.41f, от 2026-10-16. Проценты — оценка изменения шанса победы, не гарантия.",
+        "Враги: Spectre, Zeus, Bane.",
+        "Союзники: Pudge, Sven.",
+        "Позиция игрока: мид (2).",
+        "Кандидат 1: Meepo, итог +12,9%: против Spectre +6,2% (2 580 игр); против Zeus +3,2% (3 637 игр); против Bane +1,9% (999 игр).",
+        "Кандидат 2: Broodmother, итог +6,6%: против Zeus +3,1% (4 427 игр); против Spectre +1,9% (3 337 игр); против Bane +1,5% (1 156 игр).",
+        "Кандидат 3: Lycan, итог +5,3%: в связке с Sven +3,3% (2 788 игр); против Spectre +3,2% (1 922 игры); в связке с Pudge −0,9% (5 446 игр)."
+      ],
+      "expect": {
+        "topHero": "meepo",
+        "topName": "Meepo",
+        "allowedHeroes": [
+          "spectre",
+          "zuus",
+          "bane",
+          "pudge",
+          "sven",
+          "meepo",
+          "broodmother",
+          "lycan"
+        ],
+        "threats": [
+          "passives",
+          "illusions",
+          "magic",
+          "disable"
+        ],
+        "itemsForTop": [
+          "silver_edge",
+          "bfury",
+          "black_king_bar",
+          "sphere"
+        ]
+      }
+    },
+    {
+      "id": "d18",
+      "enemies": [
+        "alchemist",
+        "enigma",
+        "oracle"
+      ],
+      "allies": [
+        "invoker"
+      ],
+      "position": 3,
+      "facts": [
+        "Источник: статистика публичных матчей OpenDota, патч 7.41f, от 2026-10-16. Проценты — оценка изменения шанса победы, не гарантия.",
+        "Враги: Alchemist, Enigma, Oracle.",
+        "Союзники: Invoker.",
+        "Позиция игрока: оффлейн (3).",
+        "Кандидат 1: Bristleback, итог +6%: против Enigma +4,8% (4 058 игр); против Oracle +0,9% (5 358 игр); в связке с Invoker +0,5% (19 233 игры).",
+        "Кандидат 2: Lycan, итог +3,3%: против Oracle +3,2% (1 510 игр); против Alchemist −1,2% (547 игр); против Enigma +0,8% (921 игра).",
+        "Кандидат 3: Undying, итог +3,2%: против Oracle +2,2% (13 686 игр); в связке с Invoker +2,2% (44 990 игр); против Alchemist −0,8% (5 998 игр)."
+      ],
+      "expect": {
+        "topHero": "bristleback",
+        "topName": "Bristleback",
+        "allowedHeroes": [
+          "alchemist",
+          "enigma",
+          "oracle",
+          "invoker",
+          "bristleback",
+          "lycan",
+          "undying"
+        ],
+        "threats": [
+          "healing",
+          "disable",
+          "summons"
+        ],
+        "itemsForTop": [
+          "shivas_guard",
+          "black_king_bar",
+          "crimson_guard"
+        ]
+      }
+    },
+    {
+      "id": "d19",
+      "enemies": [
+        "weaver",
+        "viper",
+        "disruptor"
+      ],
+      "allies": [
+        "mars",
+        "lina"
+      ],
+      "position": 4,
+      "facts": [
+        "Источник: статистика публичных матчей OpenDota, патч 7.41f, от 2026-10-16. Проценты — оценка изменения шанса победы, не гарантия.",
+        "Враги: Weaver, Viper, Disruptor.",
+        "Союзники: Mars, Lina.",
+        "Позиция игрока: частичная поддержка (4).",
+        "Кандидат 1: Gyrocopter, итог +4,8%: в связке с Mars +3% (2 651 игра); против Weaver +1,7% (3 109 игр); против Disruptor +1,7% (5 806 игр).",
+        "Кандидат 2: Bane, итог +4,3%: в связке с Mars +1,6% (1 773 игры); против Weaver +1% (2 147 игр); в связке с Lina +0,9% (6 439 игр).",
+        "Кандидат 3: Chen, итог +4,2%: в связке с Mars +3,4% (256 игр); в связке с Lina +1,7% (793 игры); против Disruptor −1,2% (461 игра)."
+      ],
+      "expect": {
+        "topHero": "gyrocopter",
+        "topName": "Gyrocopter",
+        "allowedHeroes": [
+          "weaver",
+          "viper",
+          "disruptor",
+          "mars",
+          "lina",
+          "gyrocopter",
+          "bane",
+          "chen"
+        ],
+        "threats": [
+          "invis",
+          "mobile",
+          "physical"
+        ],
+        "itemsForTop": [
+          "dust",
+          "cyclone",
+          "ghost"
+        ]
+      }
+    },
+    {
+      "id": "d20",
+      "enemies": [
+        "broodmother",
+        "leshrac",
+        "treant"
+      ],
+      "allies": [],
+      "position": 5,
+      "facts": [
+        "Источник: статистика публичных матчей OpenDota, патч 7.41f, от 2026-10-16. Проценты — оценка изменения шанса победы, не гарантия.",
+        "Враги: Broodmother, Leshrac, Treant Protector.",
+        "Позиция игрока: полная поддержка (5).",
+        "Кандидат 1: Phoenix, итог +4,7%: против Treant Protector +3,4% (2 440 игр); против Broodmother +1,2% (1 850 игр); сила в патче +0,7%.",
+        "Кандидат 2: Warlock, итог +4,1%: против Treant Protector +1,8% (2 859 игр); против Broodmother +1,6% (1 963 игры); против Leshrac +0,7% (2 013 игр).",
+        "Кандидат 3: Undying, итог +3,3%: против Leshrac +3,3% (4 958 игр); против Treant Protector +0,4% (7 013 игр); против Broodmother −0,4% (5 690 игр)."
+      ],
+      "expect": {
+        "topHero": "phoenix",
+        "topName": "Phoenix",
+        "allowedHeroes": [
+          "broodmother",
+          "leshrac",
+          "treant",
+          "phoenix",
+          "warlock",
+          "undying"
+        ],
+        "threats": [
+          "invis",
+          "summons",
+          "magic",
+          "healing"
+        ],
+        "itemsForTop": [
+          "dust",
+          "pipe",
+          "spirit_vessel"
+        ]
+      }
+    },
+    {
+      "id": "d21",
+      "enemies": [
+        "terrorblade",
+        "puck",
+        "centaur",
+        "lich"
+      ],
+      "allies": [
+        "ursa"
+      ],
+      "position": null,
+      "facts": [
+        "Источник: статистика публичных матчей OpenDota, патч 7.41f, от 2026-10-16. Проценты — оценка изменения шанса победы, не гарантия.",
+        "Враги: Terrorblade, Puck, Centaur Warrunner, Lich.",
+        "Союзники: Ursa.",
+        "Кандидат 1: Oracle, итог +6,9%: против Centaur Warrunner +2,8% (4 522 игры); в связке с Ursa +2,1% (6 382 игры); против Puck +1,6% (2 870 игр).",
+        "Кандидат 2: Broodmother, итог +6,4%: против Puck +5,5% (896 игр); в связке с Ursa +1,1% (2 190 игр); против Centaur Warrunner −0,6% (1 677 игр).",
+        "Кандидат 3: Dazzle, итог +6,1%: против Puck +2,5% (2 821 игра); против Centaur Warrunner +1,9% (4 376 игр); против Lich +1% (11 271 игра)."
+      ],
+      "expect": {
+        "topHero": "oracle",
+        "topName": "Oracle",
+        "allowedHeroes": [
+          "terrorblade",
+          "puck",
+          "centaur",
+          "lich",
+          "ursa",
+          "oracle",
+          "broodmother",
+          "dazzle"
+        ],
+        "threats": [
+          "illusions",
+          "physical",
+          "mobile",
+          "magic"
+        ],
+        "itemsForTop": [
+          "ghost",
+          "cyclone",
+          "pipe"
+        ]
+      }
+    },
+    {
+      "id": "d22",
+      "enemies": [
+        "chaos_knight",
+        "void_spirit",
+        "beastmaster",
+        "jakiro"
+      ],
+      "allies": [
+        "windrunner",
+        "shadow_shaman"
+      ],
+      "position": 1,
+      "facts": [
+        "Источник: статистика публичных матчей OpenDota, патч 7.41f, от 2026-10-16. Проценты — оценка изменения шанса победы, не гарантия.",
+        "Враги: Chaos Knight, Void Spirit, Beastmaster, Jakiro.",
+        "Союзники: Windranger, Shadow Shaman.",
+        "Позиция игрока: керри (1).",
+        "Кандидат 1: Medusa, итог +7,8%: против Beastmaster +4,3% (835 игр); против Void Spirit +2,4% (1 580 игр); в связке с Shadow Shaman +1% (7 560 игр).",
+        "Кандидат 2: Troll Warlord, итог +5,6%: против Chaos Knight +2,3% (2 351 игра); в связке с Shadow Shaman +1,5% (8 037 игр); против Void Spirit +1,3% (1 612 игр).",
+        "Кандидат 3: Dragon Knight, итог +4,5%: против Chaos Knight +2,2% (10 503 игры); против Void Spirit +1,3% (10 276 игр); сила в патче +1%."
+      ],
+      "expect": {
+        "topHero": "medusa",
+        "topName": "Medusa",
+        "allowedHeroes": [
+          "chaos_knight",
+          "void_spirit",
+          "beastmaster",
+          "jakiro",
+          "windrunner",
+          "shadow_shaman",
+          "medusa",
+          "troll_warlord",
+          "dragon_knight"
+        ],
+        "threats": [
+          "illusions",
+          "physical",
+          "mobile",
+          "magic",
+          "disable",
+          "summons"
+        ],
+        "itemsForTop": [
+          "bfury",
+          "heavens_halberd",
+          "orchid",
+          "black_king_bar",
+          "sphere",
+          "crimson_guard"
+        ]
+      }
+    },
+    {
+      "id": "d23",
+      "enemies": [
+        "luna",
+        "queenofpain",
+        "dark_seer",
+        "rubick"
+      ],
+      "allies": [
+        "legion_commander"
+      ],
+      "position": 2,
+      "facts": [
+        "Источник: статистика публичных матчей OpenDota, патч 7.41f, от 2026-10-16. Проценты — оценка изменения шанса победы, не гарантия.",
+        "Враги: Luna, Queen of Pain, Dark Seer, Rubick.",
+        "Союзники: Legion Commander.",
+        "Позиция игрока: мид (2).",
+        "Кандидат 1: Elder Titan, итог +6,3%: против Queen of Pain +3,2% (1 279 игр); против Dark Seer −2,2% (687 игр); в связке с Legion Commander +1,8% (1 540 игр).",
+        "Кандидат 2: Ursa, итог +5,7%: против Dark Seer +2,9% (5 202 игры); против Rubick +1,5% (27 014 игр); против Luna +1% (16 294 игры).",
+        "Кандидат 3: Ember Spirit, итог +5,4%: против Queen of Pain +3,1% (12 278 игр); против Dark Seer +1,3% (6 426 игр); против Rubick +1,1% (29 195 игр)."
+      ],
+      "expect": {
+        "topHero": "elder_titan",
+        "topName": "Elder Titan",
+        "allowedHeroes": [
+          "luna",
+          "queenofpain",
+          "dark_seer",
+          "rubick",
+          "legion_commander",
+          "elder_titan",
+          "ursa",
+          "ember_spirit"
+        ],
+        "threats": [
+          "physical",
+          "magic",
+          "mobile"
+        ],
+        "itemsForTop": [
+          "heavens_halberd",
+          "black_king_bar",
+          "orchid"
+        ]
+      }
+    },
+    {
+      "id": "d24",
+      "enemies": [
+        "troll_warlord",
+        "kunkka",
+        "legion_commander",
+        "dazzle",
+        "lion"
+      ],
+      "allies": [],
+      "position": null,
+      "facts": [
+        "Источник: статистика публичных матчей OpenDota, патч 7.41f, от 2026-10-16. Проценты — оценка изменения шанса победы, не гарантия.",
+        "Враги: Troll Warlord, Kunkka, Legion Commander, Dazzle, Lion.",
+        "Кандидат 1: Winter Wyvern, итог +7,8%: против Legion Commander +4,6% (17 070 игр); против Troll Warlord +1,9% (2 219 игр); против Lion +1,2% (31 512 игр).",
+        "Кандидат 2: Omniknight, итог +7,2%: против Legion Commander +4,4% (6 554 игры); против Dazzle +1,4% (1 967 игр); против Lion +1,3% (10 394 игры).",
+        "Кандидат 3: Ancient Apparition, итог +6,5%: против Troll Warlord +3,1% (3 225 игр); против Dazzle +3% (8 969 игр); против Lion −0,7% (43 938 игр)."
+      ],
+      "expect": {
+        "topHero": "winter_wyvern",
+        "topName": "Winter Wyvern",
+        "allowedHeroes": [
+          "troll_warlord",
+          "kunkka",
+          "legion_commander",
+          "dazzle",
+          "lion",
+          "winter_wyvern",
+          "omniknight",
+          "ancient_apparition"
+        ],
+        "threats": [
+          "physical",
+          "disable",
+          "healing",
+          "magic"
+        ],
+        "itemsForTop": [
+          "ghost",
+          "lotus_orb",
+          "spirit_vessel",
+          "pipe"
+        ]
+      }
+    },
+    {
+      "id": "d25",
+      "enemies": [
+        "bristleback",
+        "invoker",
+        "riki",
+        "lion",
+        "faceless_void"
+      ],
+      "allies": [
+        "axe",
+        "crystal_maiden"
+      ],
+      "position": 1,
+      "facts": [
+        "Источник: статистика публичных матчей OpenDota, патч 7.41f, от 2026-10-16. Проценты — оценка изменения шанса победы, не гарантия.",
+        "Враги: Bristleback, Invoker, Riki, Lion, Faceless Void.",
+        "Союзники: Axe, Crystal Maiden.",
+        "Позиция игрока: керри (1).",
+        "Кандидат 1: Meepo, итог +10,4%: против Riki +4,5% (1 398 игр); против Faceless Void +3,2% (2 073 игры); сила в патче +1,5%.",
+        "Кандидат 2: Lone Druid, итог +5%: против Faceless Void +3,3% (3 341 игра); в связке с Axe +1,3% (7 339 игр); против Riki +0,6% (2 283 игры).",
+        "Кандидат 3: Broodmother, итог +4,6%: против Lion −2,2% (10 212 игр); против Faceless Void +2% (2 644 игры); против Riki +1,8% (1 726 игр)."
+      ],
+      "expect": {
+        "topHero": "meepo",
+        "topName": "Meepo",
+        "allowedHeroes": [
+          "bristleback",
+          "invoker",
+          "riki",
+          "lion",
+          "faceless_void",
+          "axe",
+          "crystal_maiden",
+          "meepo",
+          "lone_druid",
+          "broodmother"
+        ],
+        "threats": [
+          "invis",
+          "magic",
+          "disable",
+          "passives",
+          "evasion",
+          "physical"
+        ],
+        "itemsForTop": [
+          "dust",
+          "black_king_bar",
+          "sphere",
+          "silver_edge",
+          "monkey_king_bar",
+          "heavens_halberd"
+        ]
+      }
+    },
+    {
+      "id": "d26",
+      "enemies": [
+        "phantom_lancer",
+        "ember_spirit",
+        "axe",
+        "witch_doctor",
+        "rubick"
+      ],
+      "allies": [
+        "sven",
+        "tinker",
+        "tusk"
+      ],
+      "position": 5,
+      "facts": [
+        "Источник: статистика публичных матчей OpenDota, патч 7.41f, от 2026-10-16. Проценты — оценка изменения шанса победы, не гарантия.",
+        "Враги: Phantom Lancer, Ember Spirit, Axe, Witch Doctor, Rubick.",
+        "Союзники: Sven, Tinker, Tusk.",
+        "Позиция игрока: полная поддержка (5).",
+        "Кандидат 1: Phoenix, итог +8,4%: против Ember Spirit +1,5% (5 955 игр); в связке с Tinker +1,4% (3 687 игр); против Axe +1,4% (15 569 игр).",
+        "Кандидат 2: Oracle, итог +7,6%: против Ember Spirit +6,4% (5 807 игр); против Phantom Lancer +1% (12 476 игр); в связке с Sven +0,9% (10 517 игр).",
+        "Кандидат 3: Abaddon, итог +6,3%: против Phantom Lancer +2% (6 146 игр); против Ember Spirit +1,9% (3 084 игры); в связке с Sven +1,7% (4 625 игр)."
+      ],
+      "expect": {
+        "topHero": "phoenix",
+        "topName": "Phoenix",
+        "allowedHeroes": [
+          "phantom_lancer",
+          "ember_spirit",
+          "axe",
+          "witch_doctor",
+          "rubick",
+          "sven",
+          "tinker",
+          "tusk",
+          "phoenix",
+          "oracle",
+          "abaddon"
+        ],
+        "threats": [
+          "mobile",
+          "illusions",
+          "healing"
+        ],
+        "itemsForTop": [
+          "cyclone",
+          "spirit_vessel"
+        ]
+      }
+    },
+    {
+      "id": "d27",
+      "enemies": [
+        "medusa",
+        "nyx_assassin",
+        "mars",
+        "shadow_shaman",
+        "skywrath_mage"
+      ],
+      "allies": [
+        "slark",
+        "pugna"
+      ],
+      "position": 3,
+      "facts": [
+        "Источник: статистика публичных матчей OpenDota, патч 7.41f, от 2026-10-16. Проценты — оценка изменения шанса победы, не гарантия.",
+        "Враги: Medusa, Nyx Assassin, Mars, Shadow Shaman, Skywrath Mage.",
+        "Союзники: Slark, Pugna.",
+        "Позиция игрока: оффлейн (3).",
+        "Кандидат 1: Dragon Knight, итог +7,3%: против Medusa +1,4% (6 075 игр); в связке с Pugna +1,2% (10 265 игр); против Mars +1,1% (9 823 игры).",
+        "Кандидат 2: Dark Seer, итог +5,4%: против Medusa +2,5% (1 556 игр); против Shadow Shaman +2,3% (13 602 игры); в связке с Slark +1,6% (11 090 игр).",
+        "Кандидат 3: Centaur Warrunner, итог +5%: против Medusa +5,4% (2 394 игры); против Mars −1,1% (4 264 игры); против Nyx Assassin +1% (11 956 игр)."
+      ],
+      "expect": {
+        "topHero": "dragon_knight",
+        "topName": "Dragon Knight",
+        "allowedHeroes": [
+          "medusa",
+          "nyx_assassin",
+          "mars",
+          "shadow_shaman",
+          "skywrath_mage",
+          "slark",
+          "pugna",
+          "dragon_knight",
+          "dark_seer",
+          "centaur"
+        ],
+        "threats": [
+          "invis",
+          "magic",
+          "disable",
+          "summons"
+        ],
+        "itemsForTop": [
+          "dust",
+          "black_king_bar",
+          "sphere",
+          "crimson_guard"
+        ]
+      }
+    },
+    {
+      "id": "d28",
+      "enemies": [
+        "life_stealer",
+        "kez",
+        "abaddon",
+        "oracle",
+        "tidehunter"
+      ],
+      "allies": [
+        "zuus",
+        "pudge",
+        "lich"
+      ],
+      "position": 2,
+      "facts": [
+        "Источник: статистика публичных матчей OpenDota, патч 7.41f, от 2026-10-16. Проценты — оценка изменения шанса победы, не гарантия.",
+        "Враги: Lifestealer, Kez, Abaddon, Oracle, Tidehunter.",
+        "Союзники: Zeus, Pudge, Lich.",
+        "Позиция игрока: мид (2).",
+        "Кандидат 1: Razor, итог +9,9%: против Lifestealer +4,2% (17 705 игр); против Oracle +3,7% (5 102 игры); против Tidehunter +2,1% (19 451 игра).",
+        "Кандидат 2: Outworld Destroyer, итог +9,3%: против Oracle +2% (12 329 игр); против Abaddon +2% (6 517 игр); против Tidehunter +1,5% (36 386 игр).",
+        "Кандидат 3: Riki, итог +8,8%: против Lifestealer +2,7% (13 309 игр); против Kez +1,8% (3 275 игр); против Abaddon +1,5% (2 592 игры)."
+      ],
+      "expect": {
+        "topHero": "razor",
+        "topName": "Razor",
+        "allowedHeroes": [
+          "life_stealer",
+          "kez",
+          "abaddon",
+          "oracle",
+          "tidehunter",
+          "zuus",
+          "pudge",
+          "lich",
+          "razor",
+          "obsidian_destroyer",
+          "riki"
+        ],
+        "threats": [
+          "invis",
+          "healing",
+          "physical",
+          "passives"
+        ],
+        "itemsForTop": [
+          "dust",
+          "shivas_guard",
+          "heavens_halberd",
+          "silver_edge"
+        ]
+      }
+    },
+    {
+      "id": "d29",
+      "enemies": [
+        "juggernaut",
+        "storm_spirit",
+        "sand_king",
+        "vengefulspirit",
+        "treant"
+      ],
+      "allies": [
+        "monkey_king",
+        "enigma",
+        "ogre_magi",
+        "drow_ranger"
+      ],
+      "position": 4,
+      "facts": [
+        "Источник: статистика публичных матчей OpenDota, патч 7.41f, от 2026-10-16. Проценты — оценка изменения шанса победы, не гарантия.",
+        "Враги: Juggernaut, Storm Spirit, Sand King, Vengeful Spirit, Treant Protector.",
+        "Союзники: Monkey King, Enigma, Ogre Magi, Drow Ranger.",
+        "Позиция игрока: частичная поддержка (4).",
+        "Кандидат 1: Omniknight, итог +11,3%: против Juggernaut +3,9% (6 267 игр); против Storm Spirit +2,8% (1 850 игр); в связке с Drow Ranger +1,3% (7 592 игры).",
+        "Кандидат 2: Oracle, итог +7,7%: против Storm Spirit +2,7% (4 953 игры); в связке с Enigma +1,8% (2 748 игр); против Sand King +1,5% (3 022 игры).",
+        "Кандидат 3: Dazzle, итог +4,9%: против Juggernaut +1,6% (14 186 игр); против Sand King +1,2% (3 179 игр); против Storm Spirit +1% (4 966 игр)."
+      ],
+      "expect": {
+        "topHero": "omniknight",
+        "topName": "Omniknight",
+        "allowedHeroes": [
+          "juggernaut",
+          "storm_spirit",
+          "sand_king",
+          "vengefulspirit",
+          "treant",
+          "monkey_king",
+          "enigma",
+          "ogre_magi",
+          "drow_ranger",
+          "omniknight",
+          "oracle",
+          "dazzle"
+        ],
+        "threats": [
+          "invis",
+          "magic",
+          "physical",
+          "mobile",
+          "healing"
+        ],
+        "itemsForTop": [
+          "dust",
+          "pipe",
+          "ghost",
+          "cyclone",
+          "spirit_vessel"
+        ]
+      }
+    },
+    {
+      "id": "d30",
+      "enemies": [
+        "sniper",
+        "templar_assassin",
+        "bounty_hunter",
+        "warlock",
+        "shadow_demon"
+      ],
+      "allies": [
+        "faceless_void",
+        "puck",
+        "magnataur"
+      ],
+      "position": null,
+      "facts": [
+        "Источник: статистика публичных матчей OpenDota, патч 7.41f, от 2026-10-16. Проценты — оценка изменения шанса победы, не гарантия.",
+        "Враги: Sniper, Templar Assassin, Bounty Hunter, Warlock, Shadow Demon.",
+        "Союзники: Faceless Void, Puck, Magnus.",
+        "Кандидат 1: Dark Seer, итог +8%: в связке с Puck +2,9% (2 398 игр); против Templar Assassin +2,9% (3 466 игр); против Shadow Demon +2,2% (1 484 игры).",
+        "Кандидат 2: Slardar, итог +7,4%: против Shadow Demon +1,7% (1 970 игр); против Templar Assassin +1,4% (5 257 игр); в связке с Faceless Void +1,2% (8 158 игр).",
+        "Кандидат 3: Slark, итог +7,4%: против Bounty Hunter +2,8% (20 005 игр); против Sniper +2,3% (50 846 игр); против Templar Assassin +1,7% (10 372 игры)."
+      ],
+      "expect": {
+        "topHero": "dark_seer",
+        "topName": "Dark Seer",
+        "allowedHeroes": [
+          "sniper",
+          "templar_assassin",
+          "bounty_hunter",
+          "warlock",
+          "shadow_demon",
+          "faceless_void",
+          "puck",
+          "magnataur",
+          "dark_seer",
+          "slardar",
+          "slark"
+        ],
+        "threats": [
+          "invis",
+          "physical",
+          "healing",
+          "summons"
+        ],
+        "itemsForTop": [
+          "dust",
+          "heavens_halberd",
+          "shivas_guard",
+          "crimson_guard"
+        ]
+      }
+    },
+    {
+      "id": "d31",
+      "enemies": [
+        "naga_siren",
+        "clinkz",
+        "centaur",
+        "hoodwink",
+        "chen"
+      ],
+      "allies": [
+        "antimage"
+      ],
+      "position": 4,
+      "facts": [
+        "Источник: статистика публичных матчей OpenDota, патч 7.41f, от 2026-10-16. Проценты — оценка изменения шанса победы, не гарантия.",
+        "Враги: Naga Siren, Clinkz, Centaur Warrunner, Hoodwink, Chen.",
+        "Союзники: Anti-Mage.",
+        "Позиция игрока: частичная поддержка (4).",
+        "Кандидат 1: Dazzle, итог +6,9%: против Centaur Warrunner +1,9% (4 376 игр); в связке с Anti-Mage +1,8% (16 576 игр); против Clinkz +1,5% (4 084 игры).",
+        "Кандидат 2: Keeper of the Light, итог +6,6%: против Centaur Warrunner +1,8% (3 774 игры); в связке с Anti-Mage +1,7% (13 477 игр); против Chen +1,4% (298 игр).",
+        "Кандидат 3: Winter Wyvern, итог +4,7%: в связке с Anti-Mage +2,2% (19 980 игр); против Chen +1,8% (434 игры); против Hoodwink −0,8% (14 444 игры)."
+      ],
+      "expect": {
+        "topHero": "dazzle",
+        "topName": "Dazzle",
+        "allowedHeroes": [
+          "naga_siren",
+          "clinkz",
+          "centaur",
+          "hoodwink",
+          "chen",
+          "antimage",
+          "dazzle",
+          "keeper_of_the_light",
+          "winter_wyvern"
+        ],
+        "threats": [
+          "invis",
+          "illusions",
+          "physical",
+          "summons",
+          "healing"
+        ],
+        "itemsForTop": [
+          "dust",
+          "ghost",
+          "spirit_vessel"
+        ]
+      }
+    },
+    {
+      "id": "d32",
+      "enemies": [
+        "skeleton_king",
+        "batrider",
+        "doom_bringer",
+        "undying",
+        "grimstroke"
+      ],
+      "allies": [
+        "gyrocopter",
+        "death_prophet"
+      ],
+      "position": 2,
+      "facts": [
+        "Источник: статистика публичных матчей OpenDota, патч 7.41f, от 2026-10-16. Проценты — оценка изменения шанса победы, не гарантия.",
+        "Враги: Wraith King, Batrider, Doom, Undying, Grimstroke.",
+        "Союзники: Gyrocopter, Death Prophet.",
+        "Позиция игрока: мид (2).",
+        "Кандидат 1: Meepo, итог +11,1%: против Wraith King +4,2% (3 645 игр); против Undying +2,1% (4 681 игра); против Doom +1,9% (1 498 игр).",
+        "Кандидат 2: Medusa, итог +9,6%: против Undying +5,1% (7 828 игр); против Doom +2,9% (3 461 игра); против Grimstroke +2,3% (3 078 игр).",
+        "Кандидат 3: Anti-Mage, итог +7,1%: против Wraith King +4,1% (43 020 игр); против Grimstroke +1,3% (21 531 игра); против Undying +1,1% (37 602 игры)."
+      ],
+      "expect": {
+        "topHero": "meepo",
+        "topName": "Meepo",
+        "allowedHeroes": [
+          "skeleton_king",
+          "batrider",
+          "doom_bringer",
+          "undying",
+          "grimstroke",
+          "gyrocopter",
+          "death_prophet",
+          "meepo",
+          "medusa",
+          "antimage"
+        ],
+        "threats": [
+          "disable"
+        ],
+        "itemsForTop": [
+          "black_king_bar"
+        ]
+      }
+    },
+    {
+      "id": "d33",
+      "enemies": [
+        "morphling",
+        "arc_warden",
+        "primal_beast",
+        "snapfire",
+        "disruptor"
+      ],
+      "allies": [],
+      "position": 5,
+      "facts": [
+        "Источник: статистика публичных матчей OpenDota, патч 7.41f, от 2026-10-16. Проценты — оценка изменения шанса победы, не гарантия.",
+        "Враги: Morphling, Arc Warden, Primal Beast, Snapfire, Disruptor.",
+        "Позиция игрока: полная поддержка (5).",
+        "Кандидат 1: Nyx Assassin, итог +5,9%: против Morphling +4,1% (4 970 игр); против Primal Beast +1,3% (7 590 игр); сила в патче +0,9%.",
+        "Кандидат 2: Visage, итог +3,7%: против Disruptor −2,1% (2 000 игр); против Arc Warden +1,4% (1 531 игра); сила в патче +1,4%.",
+        "Кандидат 3: Oracle, итог +3,6%: против Arc Warden +2% (5 003 игры); против Disruptor +1,1% (7 651 игра); против Primal Beast +0,5% (3 952 игры)."
+      ],
+      "expect": {
+        "topHero": "nyx_assassin",
+        "topName": "Nyx Assassin",
+        "allowedHeroes": [
+          "morphling",
+          "arc_warden",
+          "primal_beast",
+          "snapfire",
+          "disruptor",
+          "nyx_assassin",
+          "visage",
+          "oracle"
+        ],
+        "threats": [],
+        "itemsForTop": []
+      }
+    },
+    {
+      "id": "d34",
+      "enemies": [
+        "marci",
+        "muerta",
+        "dawnbreaker",
+        "ringmaster",
+        "largo"
+      ],
+      "allies": [
+        "lina",
+        "axe"
+      ],
+      "position": 1,
+      "facts": [
+        "Источник: статистика публичных матчей OpenDota, патч 7.41f, от 2026-10-16. Проценты — оценка изменения шанса победы, не гарантия.",
+        "Враги: Marci, Muerta, Dawnbreaker, Ringmaster, Largo.",
+        "Союзники: Lina, Axe.",
+        "Позиция игрока: керри (1).",
+        "Кандидат 1: Leshrac, итог +9%: против Ringmaster +2,9% (1 993 игры); против Largo +1,6% (589 игр); в связке с Axe +1,4% (5 767 игр).",
+        "Кандидат 2: Lycan, итог +6,9%: против Ringmaster +4,4% (1 374 игры); против Marci +1,8% (1 574 игры); в связке с Axe +1,1% (836 игр).",
+        "Кандидат 3: Troll Warlord, итог +6,8%: против Marci +4,6% (3 078 игр); против Muerta −2% (1 029 игр); против Largo +1,5% (590 игр)."
+      ],
+      "expect": {
+        "topHero": "leshrac",
+        "topName": "Leshrac",
+        "allowedHeroes": [
+          "marci",
+          "muerta",
+          "dawnbreaker",
+          "ringmaster",
+          "largo",
+          "lina",
+          "axe",
+          "leshrac",
+          "lycan",
+          "troll_warlord"
+        ],
+        "threats": [],
+        "itemsForTop": []
+      }
+    }
+  ]
+}

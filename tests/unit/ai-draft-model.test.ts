@@ -57,7 +57,7 @@ describe('кто отвечает: тяжёлая модель — только 
     const s = defaultSettings();
     return { ...s, ai: { ...s.ai, provider: 'local', local: { model: 'qwen3-1.7b', draftModel } } };
   };
-  function svc(o: { draftModel?: 'qwen3-8b' | null; allowed: () => boolean; installed?: boolean }) {
+  function svc(o: { draftModel?: 'qwen3-8b' | null; allowed: () => boolean; installed?: boolean | AiModelId[] }) {
     const started: AiModelId[] = [];
     const service = new AiService({
       getSettings: () => settings(o.draftModel === undefined ? 'qwen3-8b' : o.draftModel),
@@ -65,7 +65,8 @@ describe('кто отвечает: тяжёлая модель — только 
       local: {
         ensure: async (m) => (started.push(m), mock.url),
         touch: () => undefined,
-        installed: () => o.installed ?? true,
+        // installed: true — скачано всё; массив — только эти модели
+        installed: (m) => (Array.isArray(o.installed) ? o.installed.includes(m) : (o.installed ?? true)),
       },
       inMatch: () => true, // при выборе героев захват уже видит Доту
       heavyAllowed: o.allowed,
@@ -84,18 +85,23 @@ describe('кто отвечает: тяжёлая модель — только 
     expect(started).toEqual(['qwen3-8b', 'qwen3-1.7b', 'qwen3-1.7b']);
   });
 
-  it('матч начался: даже объяснение драфта — обычная модель', async () => {
+  it('матч начался: 8B больше не отвечает — объяснение драфта отдаёт 4B', async () => {
     let stage: 'draft' | 'match' = 'draft';
     const { service, started } = svc({ allowed: () => stage === 'draft' });
     await ask(service, 'draft');
     stage = 'match';
-    expect((await ask(service, 'draft')).model).toBe('qwen3-1.7b');
-    expect(started).toEqual(['qwen3-8b', 'qwen3-1.7b']);
+    expect((await ask(service, 'draft')).model).toBe('qwen3-4b');
+    expect(started).toEqual(['qwen3-8b', 'qwen3-4b']);
   });
 
-  it('модель драфта не выбрана или не скачана — обычная модель', async () => {
-    expect((await ask(svc({ draftModel: null, allowed: () => true }).service, 'draft')).model).toBe('qwen3-1.7b');
-    expect((await ask(svc({ allowed: () => true, installed: false }).service, 'draft')).model).toBe('qwen3-1.7b');
+  it('8B не выбрана или не скачана — 4B; нет и 4B — ИИ не вызывается (показывается текст правил); 1.7B драфт не объясняет', async () => {
+    expect((await ask(svc({ draftModel: null, allowed: () => true }).service, 'draft')).model).toBe('qwen3-4b');
+    expect((await ask(svc({ allowed: () => true, installed: ['qwen3-1.7b', 'qwen3-4b'] }).service, 'draft')).model).toBe('qwen3-4b');
+    const { service, started } = svc({ allowed: () => true, installed: ['qwen3-1.7b'] });
+    const r = await ask(service, 'draft');
+    expect(r.error?.code).toBe('local-missing');
+    expect(r.error?.message).toContain('текст правил');
+    expect(started).toEqual([]);
   });
 
   it('подсказки движка в матче (coachProvider) — всегда обычная модель', async () => {
