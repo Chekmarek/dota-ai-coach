@@ -91,6 +91,18 @@ describe('скачивание локального ИИ', () => {
     expect(inst.progress.status).toBe('error');
   });
 
+  it('не удаётся записать файл (на месте .part папка) — ошибка по-русски, а не вечное «скачивается»', async () => {
+    const dir = mkdtempSync(join(tmpdir(), 'dc-ai-'));
+    breakFirst = false;
+    const inst = new LocalInstaller(dir, () => undefined, { extract: fakeExtract, retryDelayMs: 1, files: files() });
+    mkdirSync(`${inst.modelPath('qwen3-1.7b')}.part`, { recursive: true });
+    const hang = new Promise<string>((r) => setTimeout(() => r('завис'), 5000));
+    const res = await Promise.race([inst.install('qwen3-1.7b', new AbortController().signal).then(() => 'установлено', (e: Error) => e.message), hang]);
+    expect(res).toMatch(/^Не удалось записать .+ на диск/);
+    expect(inst.progress.status).toBe('error');
+    expect(inst.modelInstalled('qwen3-1.7b')).toBe(false);
+  });
+
   it('манифест: закреплённые версии, размеры и SHA-256; потоки — половина ядер, не меньше 2', () => {
     expect(RUNTIME.url).toContain('/releases/download/b');
     for (const m of Object.values(MODELS)) {

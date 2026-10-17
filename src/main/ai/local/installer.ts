@@ -48,6 +48,11 @@ function russianNetError(err: unknown): string {
   return 'Нет интернета или сервер не отвечает';
 }
 
+function diskError(err: NodeJS.ErrnoException, file: string): string {
+  if (err.code === 'ENOSPC') return `Не хватает места на диске для ${file}`;
+  return `Не удалось записать ${file} на диск (${err.code ?? 'ошибка записи'})`;
+}
+
 export class LocalInstaller {
   readonly dir: string;
   progress: DownloadProgress = { status: 'idle', file: null, received: 0, total: 0, error: null };
@@ -177,6 +182,10 @@ export class LocalInstaller {
     else if (!res.ok) throw new Error(`Сервер ответил кодом ${res.status} на ${f.fileName}`);
     if (!res.body) throw new Error('Пустой ответ сервера');
     const out = createWriteStream(part, { flags: have ? 'a' : 'w' });
+    // ошибка записи (нет места, файл занят, на месте .part папка) — запоминаем: без обработчика поток ронял процесс
+    // или установщик навсегда оставался в «downloading» (ждал drain/close, которых уже не будет)
+    let writeErr: NodeJS.ErrnoException | null = null;
+    out.on('error', (err) => (writeErr ??= err));
     const reader = res.body.getReader();
     let received = have;
     let lastEmit = 0;
@@ -191,17 +200,19 @@ export class LocalInstaller {
         if (r.done) break;
         received += r.value.byteLength;
         if (received > f.sizeBytes) throw new Error(`Файл ${f.fileName} больше ожидаемого`);
-        if (!out.write(r.value)) await once(out, 'drain');
+        if (writeErr || out.destroyed) break;
+        if (!out.write(r.value)) await Promise.race([once(out, 'drain'), once(out, 'close')]).catch(() => undefined);
         if (Date.now() - lastEmit > 250) {
           lastEmit = Date.now();
           this.set({ received });
         }
       }
     } finally {
-      out.end();
-      await once(out, 'close').catch(() => undefined);
+      if (!out.destroyed) out.end();
+      if (!out.closed) await once(out, 'close').catch(() => undefined);
       reader.cancel().catch(() => undefined);
     }
+    if (writeErr) throw new Error(diskError(writeErr, f.fileName));
     this.set({ received });
     if (received !== f.sizeBytes) throw new Error('Связь оборвалась — докачаем');
   }
