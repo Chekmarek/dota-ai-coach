@@ -15,11 +15,19 @@ const pct = (d: number) => {
   const v = Math.round(d * 1000) / 10;
   return `${v > 0 ? '+' : v < 0 ? '−' : ''}${Math.abs(v).toLocaleString('ru-RU')}%`;
 };
+/** «1 104 игры», «13 200 игр» */
+const games = (n: number) => {
+  const m10 = n % 10, m100 = n % 100;
+  const w = m10 === 1 && m100 !== 11 ? 'игра' : m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14) ? 'игры' : 'игр';
+  return `${n.toLocaleString('ru-RU')} ${w}`;
+};
+/** «Bristleback +4,9% (13 200 игр)»: процент всегда с числом игр, по которым он посчитан */
+const reason = (r: DraftReasonView) => `${r.name} ${pct(r.delta)} (${games(r.games)})`;
 const reasons = (list: DraftReasonView[], sign: 1 | -1) =>
   list
     .filter((r) => r.delta * sign > 0.001)
     .slice(0, 3)
-    .map((r) => `${r.name} ${pct(r.delta)}`)
+    .map(reason)
     .join(', ');
 
 export function Draft() {
@@ -130,7 +138,7 @@ export function Draft() {
           {res.hasSynergy === false && req.allies.length > 0 && <p className="muted small">В статистике нет связок союзников — учитываются только враги.</p>}
           <ol className="draft-list" data-testid="draft-candidates">
             {res.candidates.map((c) => (
-              <li key={c.hero}>
+              <li key={c.hero} data-hero={c.hero} data-positions={c.positions.join(',')}>
                 <div className="row gap">
                   <strong>{c.name}</strong>
                   <span className={`pill ${c.score >= 0 ? 'mech-verified' : 'mech-unverified'}`} title="Оценка изменения шанса победы по статистике патча">
@@ -162,11 +170,11 @@ export function Draft() {
           <div data-testid="draft-me-summary">
             <p>
               <span className="muted">Тяжелее всего против: </span>
-              {res.me.worst.length ? res.me.worst.slice(0, 3).map((r) => `${r.name} ${pct(r.delta)}`).join(', ') : 'нет заметно плохих матчапов'}
+              {res.me.worst.length ? res.me.worst.slice(0, 3).map(reason).join(', ') : 'нет заметно плохих матчапов'}
             </p>
             <p>
               <span className="muted">Плюсы: </span>
-              {res.me.best.length ? res.me.best.slice(0, 3).map((r) => `${r.name} ${pct(r.delta)}`).join(', ') : 'нет заметных'}
+              {res.me.best.length ? res.me.best.slice(0, 3).map(reason).join(', ') : 'нет заметных'}
             </p>
             <p className="muted small">Предметы ниже — сначала для роли «{ROLE_RU[res.me.role]}».</p>
           </div>
