@@ -68,10 +68,16 @@ export class DraftService {
       for (const t of threats) t.items.sort((a, b) => Number(mine.has(b.key)) - Number(mine.has(a.key)));
     }
 
+    // Герой без записи в статистике молча выпал бы из расчёта, и подбор выглядел бы полным — называем его
+    const noStats = [...new Set([...req.allies, ...req.enemies, ...(req.me ? [req.me] : [])])]
+      .filter((k) => look.heroByKey.has(k) && look.winrate(k) === null)
+      .map((k) => look.heroName(k));
+
     return {
       candidates,
       threats,
       me,
+      noStats,
       hasSynergy: stats.heroes.some((h) => Object.keys(h.synergy).length > 0),
       patch: stats.patch,
       statsAt: stats.generatedAt,

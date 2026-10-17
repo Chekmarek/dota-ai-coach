@@ -50,6 +50,8 @@ export interface DraftResult {
   me: { hero: string; name: string; role: 'core' | 'support'; worst: DraftReasonView[]; best: DraftReasonView[] } | null;
   /** Есть ли в статистике связки (старый stats.json — нет) */
   hasSynergy: boolean;
+  /** Выбранные герои (союзники, враги, мой), у которых нет записи в статистике: их вклад не учтён. Нет поля — старый main */
+  noStats?: string[];
   patch: string | null;
   statsAt: string | null;
   error: string | null;

@@ -65,6 +65,11 @@ export function Draft() {
         subtitle="Кого взять против врагов и в пару к союзникам, чем опасны враги и что покупать против них. По статистике публичных матчей текущего патча."
       />
       {(kbError || res?.error) && <p className="error">{kbError ?? res?.error}</p>}
+      {res?.noStats && res.noStats.length > 0 && (
+        <p className="muted small" data-testid="draft-no-stats">
+          Нет статистики патча для: {res.noStats.join(', ')} — их влияние на подбор не учтено.
+        </p>
+      )}
 
       <Card
         title="Команды"
