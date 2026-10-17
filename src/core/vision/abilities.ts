@@ -70,8 +70,15 @@ const MIN_BLUE = 0.25;
 const MAX_COOLDOWN_LUM = 110;
 /** Нехватка маны — тёмно-синяя заливка (яркость 22–41); бирюзовая иконка сама по себе (Monkey King, 87) — нет */
 const MAX_NO_MANA_LUM = 60;
-/** Крупная ячейка: высота строки цифр перезарядки — 16 из 51 px (0.31), белое на иконке — от 21 px (0.41) */
-const MAX_DIGITS_HEIGHT = 0.37;
+/**
+ * Крупная ячейка, перезарядка без прочитанных секунд. Цифры всегда стоят в строках 15–30 из 51 (0.29–0.59),
+ * иконка под ними затемнена (яркость 40–75 на 20 ячейках). Белые лезвия и завитки на самих иконках (Queen of Pain,
+ * Juggernaut, Faceless Void, Nature's Prophet) выходят за эту полосу, бывают ниже цифр и светлее (74–132).
+ */
+const DIGITS_BAND = { top: 0.25, bottom: 0.63, minH: 0.22, maxH: 0.37 };
+const WIDE_MAX_COOLDOWN_LUM = 65;
+/** Крупная ячейка: секунды перезарядки принимаются только с такой уверенностью */
+const WIDE_MIN_CD_CONFIDENCE = 0.8;
 
 export function abilitySlotCount(barLeft: number, frameWidth: number, geo: HudGeometry = legacyGeometry(frameWidth, (frameWidth * 9) / 16)): number {
   const k = Math.round((geo.refX(barLeft) - BASE_BAR_LEFT) / STEP);
@@ -139,11 +146,28 @@ export function readAbilities(
 
     let state: AbilityState, confidence: number, cooldown: number | null = null;
     const minWhite = MIN_WHITE * s * sy * kx * ky;
-    const cd = white >= minWhite && cooldownModel ? readCooldown(img, cooldownModel).value : null;
-    // У крупной ячейки белые лезвия и вихри на самой иконке (Queen of Pain, Juggernaut) бывают так же темны, как
-    // перезарядка; цифры же всегда — невысокая строка (16 из 51 px). Без прочитанных секунд перезарядкой считаем
-    // только такую строку
-    const digitLike = P === GRID_PANEL || whiteBottom - whiteTop + 1 <= MAX_DIGITS_HEIGHT * P.icon.h * sy;
+    const read = white >= minWhite && cooldownModel ? readCooldown(img, cooldownModel) : null;
+    let cd = read?.value ?? null;
+    let digitLike = true;
+    let uncertain = false;
+    if (P !== GRID_PANEL) {
+      // Крупная ячейка: белое на самой иконке легко принять за цифры (молния Anti-Mage читалась как «4»
+      // с уверенностью 0.51; настоящие секунды — 0.91–1.0). Секунды берём только уверенные; без них перезарядка —
+      // лишь на затемнённой иконке, и только если цифры прочитались текстом или белое лежит в полосе цифр
+      if (read && read.confidence < WIDE_MIN_CD_CONFIDENCE) cd = null;
+      const iconH = P.icon.h * sy, whiteH = whiteBottom - whiteTop + 1;
+      const inBand =
+        whiteTop >= DIGITS_BAND.top * iconH &&
+        whiteBottom <= DIGITS_BAND.bottom * iconH &&
+        whiteH >= DIGITS_BAND.minH * iconH &&
+        whiteH <= DIGITS_BAND.maxH * iconH;
+      const readAsDigits = !!read && /^\d{1,3}$/.test(read.text);
+      digitLike = lum <= WIDE_MAX_COOLDOWN_LUM && (inBand || readAsDigits);
+      // Белое в центре есть, но перезарядку подтвердить нельзя: это рисунок иконки (молния, лезвие) — или
+      // перезарядка на светлой иконке (E у Zeus: яркость 83–97, цифры сливаются с рисунком). Отличить нельзя —
+      // состояние отдаём с уверенностью 0, модель матча его не примет
+      uncertain = white >= minWhite && cd === null && !digitLike;
+    }
     // Перезарядка: белые цифры на затемнённой иконке (если секунды прочитаны — яркость не важна)
     if (white >= minWhite && (cd !== null || (lum <= MAX_COOLDOWN_LUM && digitLike))) {
       state = 'cooldown';
@@ -159,6 +183,7 @@ export function readAbilities(
       state = 'ready';
       confidence = Math.min(1, (sat - MAX_UNLEARNED_SAT) / 0.3 + 0.5);
     }
+    if (uncertain) confidence = 0;
     slots.push({ index: i, state, cooldown, level, confidence });
   }
   return slots;

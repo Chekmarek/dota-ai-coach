@@ -70,4 +70,17 @@ describe('способности', () => {
     it.skipIf(!existsSync(join(HUD, file)))(`4 крупные ячейки: ${file}`, () => {
       expect(states(file)).toEqual(want);
     });
+
+  // Отложенная проверка: белая молния Anti-Mage (готова) и перезарядка на светлой иконке E у Zeus неотличимы —
+  // такие ячейки отдаются с уверенностью 0 (модель матча их не принимает), но не как неверный ответ
+  const confident = (file: string) =>
+    recognizeHud(frameAccessFromImage(decodePng(readFileSync(join(HUD, file)))), layout, model, 0, { cooldownModel }).abilities?.map((a) =>
+      a.confidence >= 0.5 ? `${a.state}${a.cooldown !== null ? `:${a.cooldown}` : ''}` : '?',
+    );
+  it.skipIf(!existsSync(join(HUD, 'h2-am-1.png')))('4 крупные ячейки: молния Anti-Mage — не перезарядка «4»', () => {
+    expect(confident('h2-am-1.png')?.[1]).toBe('?');
+  });
+  it.skipIf(!existsSync(join(HUD, 'h3-zeus-1.png')))('4 крупные ячейки: перезарядка на светлой иконке Zeus — «не знаю», а не «готова»', () => {
+    expect(confident('h3-zeus-1.png')).toEqual(['?', '?', '?', 'cooldown:122']);
+  });
 });
