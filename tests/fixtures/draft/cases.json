@@ -1,0 +1,43 @@
+{
+  "description": "Ситуации драфта для проверки правил подбора (tests/unit/draft-verify.test.ts). Статистика — resources/data/kb/7.41f/stats.json. Ожидаются свойства, а не точные числа; точные числа — только в handChecked, посчитанные вручную по сырым значениям stats.json.",
+  "cases": [
+    { "id": "empty", "note": "пустой драфт: только сила в патче", "input": { "allies": [], "enemies": [], "bans": [], "position": null, "me": null }, "expect": { "candidates": 12, "scoreIsMetaOnly": true } },
+    { "id": "one-enemy", "note": "один враг", "input": { "allies": [], "enemies": ["bristleback"], "bans": [], "position": null, "me": null }, "expect": { "candidates": 12, "reasonsVs": ["bristleback"] } },
+    { "id": "full-enemies", "note": "пятеро врагов", "input": { "allies": [], "enemies": ["bristleback", "invoker", "riki", "lion", "faceless_void"], "bans": [], "position": null, "me": null }, "expect": { "candidates": 12, "threats": ["invis", "magic", "disable", "passives", "physical", "evasion"] } },
+    { "id": "mixed-bans", "note": "враги, союзники и баны вместе; баны включают лучших кандидатов без банов", "input": { "allies": ["lion"], "enemies": ["bristleback", "invoker"], "bans": ["@top3"], "position": null, "me": null }, "expect": { "candidates": 12 } },
+    { "id": "pos-1", "input": { "allies": ["lion"], "enemies": ["pudge", "invoker"], "bans": [], "position": 1, "me": null }, "expect": { "candidates": 12 } },
+    { "id": "pos-2", "input": { "allies": ["lion"], "enemies": ["pudge", "invoker"], "bans": [], "position": 2, "me": null }, "expect": { "candidates": 12 } },
+    { "id": "pos-3", "input": { "allies": ["lion"], "enemies": ["pudge", "invoker"], "bans": [], "position": 3, "me": null }, "expect": { "candidates": 12 } },
+    { "id": "pos-4", "input": { "allies": ["lion"], "enemies": ["pudge", "invoker"], "bans": [], "position": 4, "me": null }, "expect": { "candidates": 12 } },
+    { "id": "pos-5", "input": { "allies": ["lion"], "enemies": ["pudge", "invoker"], "bans": [], "position": 5, "me": null }, "expect": { "candidates": 12 } },
+    { "id": "me-picked", "note": "мой герой уже выбран: кандидатов нет, есть матчапы и роль", "input": { "allies": ["lion"], "enemies": ["bristleback", "riki"], "bans": [], "position": null, "me": "viper" }, "expect": { "candidates": 0, "meRole": "core", "meWorstOrBest": ["bristleback", "riki", "lion"] } },
+    { "id": "support-items", "note": "саппорт против невидимки и иллюзий: только предметы своей роли", "input": { "allies": [], "enemies": ["riki", "phantom_lancer"], "bans": [], "position": null, "me": "crystal_maiden" }, "expect": { "candidates": 0, "meRole": "support" } },
+    { "id": "core-items", "note": "кор против тех же врагов", "input": { "allies": [], "enemies": ["riki", "phantom_lancer"], "bans": [], "position": null, "me": "juggernaut" }, "expect": { "candidates": 0, "meRole": "core" } },
+    { "id": "few-games", "note": "пары с Chen — меньше 100 игр (batrider–chen 47): вклад 0", "input": { "allies": [], "enemies": ["chen"], "bans": [], "position": null, "me": null }, "expect": { "zeroPairs": [["batrider", "chen"], ["lycan", "chen"], ["naga_siren", "chen"], ["elder_titan", "chen"], ["largo", "chen"]] } },
+    { "id": "hero-without-stats", "note": "у героя нет записи в stats.json (запись удаляется в тесте): не предлагается и назван как «без статистики»", "input": { "allies": [], "enemies": ["viper"], "bans": [], "position": null, "me": null }, "removeStats": ["viper", "bristleback"], "expect": { "noStats": ["viper"], "notSuggested": ["bristleback"] } },
+    { "id": "no-stats-file", "note": "stats.json нет совсем: понятная ошибка", "input": { "allies": [], "enemies": ["riki"], "bans": [], "position": null, "me": null }, "noStatsFile": true, "expect": { "error": "статистики" } }
+  ],
+  "handChecked": [
+    {
+      "id": "viper-vs-bristleback",
+      "what": "counterDelta(viper, bristleback)",
+      "raw": { "viperWinrate": 0.482, "bristlebackWinrate": 0.486, "matchup": [13200, 0.547] },
+      "derivation": "ожидаемое = 0.5 + (0.482 − 0.5) − (0.486 − 0.5) = 0.496; сверх ожидаемого = 0.547 − 0.496 = 0.051; сжатие 13200 / (13200 + 400) = 0.970588; 0.051 × 0.970588 = 0.04950",
+      "expected": 0.0495
+    },
+    {
+      "id": "lion-with-viper",
+      "what": "synergyDelta(lion, viper)",
+      "raw": { "lionWinrate": 0.486, "viperWinrate": 0.482, "synergy": [32092, 0.465] },
+      "derivation": "ожидаемое = 0.5 + (0.486 − 0.5) + (0.482 − 0.5) = 0.468; сверх ожидаемого = 0.465 − 0.468 = −0.003; сжатие 32092 / 32492 = 0.987689; −0.003 × 0.987689 = −0.002963 → округление до 4 знаков −0.003",
+      "expected": -0.003
+    },
+    {
+      "id": "axe-meta-and-vs-chen",
+      "what": "meta(axe) и counterDelta(axe, chen)",
+      "raw": { "axe": { "games": 648291, "winrate": 0.504 }, "chenWinrate": 0.467, "matchup": [1104, 0.554] },
+      "derivation": "meta = 0.35 × 0.004 × 648291 / 648691 = 0.35 × 0.0039975 = 0.001399 → 0.0014; против Chen: ожидаемое = 0.5 + 0.004 − (0.467 − 0.5) = 0.537; 0.554 − 0.537 = 0.017; × 1104 / 1504 = 0.012479 → 0.0125",
+      "expected": { "meta": 0.0014, "vsChen": 0.0125 }
+    }
+  ]
+}
