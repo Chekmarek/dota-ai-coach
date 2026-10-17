@@ -86,15 +86,28 @@ export function selectedUnitRelation(
  * (замеры: 667 — Kez, Shadow Fiend, Monkey King; 696 — Morphling). Найденный край притягивается к ближайшей
  * ступеньке; если до неё дальше 5 px — край найден ненадёжно (например, рамка в посмертной окраске),
  * и опора не используется: лучше не прочитать уровень, чем прочитать его не в том месте.
+ *
+ * Шаг не везде 29 px: у героев с четырьмя способностями (Hero Demo 2026-10-17: Faceless Void, Timbersaw,
+ * Juggernaut, Axe, Queen of Pain, Anti-Mage, Death Prophet, Nature's Prophet, Nyx Assassin) край — 712,
+ * а ячейки способностей у них крупнее (шаг ~65 px вместо 58). Такие края — в EXTRA_EDGES.
  */
 const STEP_BASE = 667;
 const STEP = 29;
 const SNAP_TOLERANCE = 5;
+/** Проверенные края вне сетки 667 + 29·k (координаты 1920×1080) */
+export const EXTRA_EDGES: readonly number[] = [712];
 
 function snapToSteps(x: number, geo: HudGeometry, confidence: number): BarAnchor {
   const ref = geo.refX(x);
   const k = Math.round((ref - STEP_BASE) / STEP);
-  const snapped = STEP_BASE + k * STEP;
-  if (Math.abs(ref - snapped) > SNAP_TOLERANCE || Math.abs(k) > 4) return { barLeft: null, confidence: 0 };
+  const candidates = Math.abs(k) <= 4 ? [STEP_BASE + k * STEP, ...EXTRA_EDGES] : [...EXTRA_EDGES];
+  const snapped = candidates.reduce((a, b) => (Math.abs(ref - b) < Math.abs(ref - a) ? b : a));
+  if (Math.abs(ref - snapped) > SNAP_TOLERANCE) return { barLeft: null, confidence: 0 };
   return { barLeft: Math.round(geo.x(snapped)), confidence };
+}
+
+/** Край панели в координатах 1920×1080 — одна из ступенек 667 + 29·k (а не край из EXTRA_EDGES) */
+export function isGridEdge(barLeft: number, geo: HudGeometry): boolean {
+  const ref = geo.refX(barLeft);
+  return Math.abs(ref - (STEP_BASE + Math.round((ref - STEP_BASE) / STEP) * STEP)) <= 1;
 }

@@ -164,7 +164,7 @@ describe('на всех пропорциях области не выходят 
   });
 });
 
-describe('синтетика: верхняя полоса 1080p в кадрах других пропорций (k = 1)', () => {
+describe('синтетика: верхняя полоса 1080p в кадрах других пропорций высотой 1080 (k = 1)', () => {
   // Полоса x 540…1380, y 0…64 настоящего кадра 1920×1080
   const strip = decodePng(readFileSync(join(ROOT, 'tests/fixtures/topbar/all-alive.png'))) as RgbaImage;
 
@@ -186,7 +186,7 @@ describe('синтетика: верхняя полоса 1080p в кадрах 
     for (const id of ['gameClock', 'scoreRadiant', 'scoreDire'] as const) expect(base.fields[id].validity, id).toBe('valid');
   });
 
-  it.each([[2560, 1080], [1920, 1200]] as const)('%i×%i: время и счёт — как на 16:9', (w, h) => {
+  it.each([[2560, 1080], [1728, 1080], [1440, 1080]] as const)('%i×%i: время и счёт — как на 16:9', (w, h) => {
     const r = read(frame(w, h, true));
     expect(r.supported).toBe(true);
     for (const id of ['gameClock', 'scoreRadiant', 'scoreDire'] as const) {
@@ -195,7 +195,7 @@ describe('синтетика: верхняя полоса 1080p в кадрах 
     }
   });
 
-  it.each([[2560, 1080], [1920, 1200]] as const)('%i×%i без полосы маны — «не поддерживается»', (w, h) => {
+  it.each([[2560, 1080], [1728, 1080], [1440, 1080]] as const)('%i×%i без полосы маны — «не поддерживается»', (w, h) => {
     const r = read(frame(w, h, false));
     expect(r.supported).toBe(false);
     for (const id of ['gameClock', 'scoreRadiant', 'scoreDire'] as const) {
@@ -204,7 +204,7 @@ describe('синтетика: верхняя полоса 1080p в кадрах 
     }
   });
 
-  it.each([[2560, 1080], [1920, 1200]] as const)('%i×%i без опции experimentalAspects — «не поддерживается»', (w, h) => {
+  it.each([[2560, 1080], [1728, 1080], [1440, 1080]] as const)('%i×%i без опции experimentalAspects — «не поддерживается»', (w, h) => {
     expect(read(frame(w, h, true), false).supported).toBe(false);
   });
 });

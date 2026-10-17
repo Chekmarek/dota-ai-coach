@@ -28,3 +28,6 @@ DotaCoach-*-update/
 
 # Кэш npm из .npmrc (путь Windows), если npm запускали не на Windows
 /D:*
+
+# Кадры игры с никами игроков (tests/fixtures/hud/labels.json и PNG): только локально, в git не коммитим
+/tests/fixtures/hud/

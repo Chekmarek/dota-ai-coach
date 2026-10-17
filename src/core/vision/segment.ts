@@ -30,6 +30,11 @@ export interface SegmentOptions {
   firstRun?: boolean;
   /** Разрезать слишком широкие пятна на два символа (для цифр; для букв выключать — M и W широкие) */
   splitWide?: boolean;
+  /**
+   * Постоянный порог вместо порога Оцу. Нужен, когда фон местами так же ярок, как текст (белое имя героя
+   * на голубой воде или светлых камнях): Оцу тогда делит не «текст/фон», а «светлый фон/тёмный фон».
+   */
+  threshold?: number;
 }
 
 export interface Segmentation {
@@ -98,7 +103,7 @@ export function segment(img: RgbaImage, opts: SegmentOptions): Segmentation {
     const cx = (w - 1) / 2, cy = (h - 1) / 2, r = (Math.min(w, h) / 2) * 0.66;
     for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) if ((x - cx) ** 2 + (y - cy) ** 2 > r * r) values[y * w + x] = 0;
   }
-  const { threshold, separation } = otsu(opts.circleMask ? values.filter((v) => v > 0) : values);
+  const { threshold, separation } = opts.threshold !== undefined ? fixedSplit(values, opts.threshold) : otsu(opts.circleMask ? values.filter((v) => v > 0) : values);
   const empty = { glyphs: [], separation, threshold, hasText: false, truncated: false };
   if (w === 0 || h === 0 || separation < (opts.minSeparation ?? 60)) return empty;
 
@@ -227,4 +232,19 @@ function resample(values: Float32Array, w: number, b: Blob, thr: number): Float3
       out[gy * GLYPH_W + gx] = n ? acc / n : 0;
     }
   return out;
+}
+
+/** Разница средних «выше порога» и «не выше» при постоянном пороге (0 — выше порога ничего нет) */
+function fixedSplit(values: Float32Array, threshold: number): { threshold: number; separation: number } {
+  let hi = 0, nHi = 0, lo = 0, nLo = 0;
+  for (const v of values) {
+    if (v > threshold) {
+      hi += v;
+      nHi++;
+    } else {
+      lo += v;
+      nLo++;
+    }
+  }
+  return { threshold, separation: nHi && nLo ? hi / nHi - lo / nLo : 0 };
 }

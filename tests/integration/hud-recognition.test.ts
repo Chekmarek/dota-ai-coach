@@ -15,8 +15,12 @@ const model: GlyphModel = JSON.parse(readFileSync(join(ROOT, 'src/data/hud-layou
 // Кадры с никами игроков в общий репозиторий не входят — без них тест пропускается
 const HAS_FIX = existsSync(join(FIX, 'labels.json'));
 const labels = (HAS_FIX ? JSON.parse(readFileSync(join(FIX, 'labels.json'), 'utf8')) : { frames: [] }) as {
-  frames: { file: string; split: 'train' | 'test'; selectedUnit?: 'ally' | 'enemy' | null; fields: Record<string, string> }[];
+  frames: { file: string; split: 'train' | 'test'; selectedUnit?: 'ally' | 'enemy' | null; fields?: Record<string, string> }[];
 };
+// В labels.json бывают кадры только с именем героя (Hero Demo) — здесь нужны кадры с разметкой полей HUD
+const hudFrames = labels.frames.filter((f): f is typeof f & { fields: Record<string, string> } => f.fields !== undefined);
+const HAS_HUD = hudFrames.length > 0;
+const HAS_GAME4 = hudFrames.some((f) => f.file.startsWith('game4/'));
 
 /** Приводит распознанное значение к строке в формате разметки */
 const asLabel = (id: string, v: unknown) => formatHudLabel(id as HudFieldId, v);
@@ -24,7 +28,7 @@ const asLabel = (id: string, v: unknown) => formatHudLabel(id as HudFieldId, v);
 function evaluate(split: 'train' | 'test') {
   let ok = 0, wrong = 0, missing = 0, confidentWrong = 0;
   const errors: string[] = [];
-  for (const fr of labels.frames.filter((f) => f.split === split)) {
+  for (const fr of hudFrames.filter((f) => f.split === split)) {
     const img = decodePng(readFileSync(join(FIX, fr.file)));
     const r = recognizeHud(frameAccessFromImage(img), layout, model, 0);
     // Чей юнит на панели: ошибиться нельзя (иначе данные врага примутся за данные игрока)
@@ -50,7 +54,7 @@ function evaluate(split: 'train' | 'test') {
   return { ok, wrong, missing, confidentWrong, errors, total: ok + wrong + missing };
 }
 
-describe.skipIf(!HAS_FIX)('распознавание HUD на кадрах из записей пользователя', () => {
+describe.skipIf(!HAS_FIX || !HAS_HUD)('распознавание HUD на кадрах из записей пользователя', () => {
   it('обучающие кадры (запись 1) распознаются полностью', () => {
     const r = evaluate('train');
     expect(r.errors).toEqual([]);
@@ -59,10 +63,10 @@ describe.skipIf(!HAS_FIX)('распознавание HUD на кадрах из
     expect(r.ok / r.total).toBeGreaterThanOrEqual(0.95);
   });
 
-  it('день/ночь по значку над часами и отсчёт до горна (игра 4)', () => {
+  it.skipIf(!HAS_GAME4)('день/ночь по значку над часами и отсчёт до горна (игра 4)', () => {
     const errors: string[] = [];
     let checked = 0, unknown = 0;
-    for (const fr of labels.frames.filter((f) => f.file.startsWith('game4/'))) {
+    for (const fr of hudFrames.filter((f) => f.file.startsWith('game4/'))) {
       const r = recognizeHud(frameAccessFromImage(decodePng(readFileSync(join(FIX, fr.file)))), layout, model, 0);
       const label = fr.fields.gameClock;
       if ((fr as { preHorn?: boolean }).preHorn) {

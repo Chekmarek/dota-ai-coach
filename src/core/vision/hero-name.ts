@@ -22,7 +22,12 @@ export interface HeroIdentity {
 /** Центр имени — на 91 px левее края полосы маны (1920×1080), проверено на Kez, Shadow Fiend, Monkey King, Morphling */
 const NAME_CENTER_FROM_BAR = -91;
 const NAME_RECT = { w: 210, y: 917, h: 18 };
-const MODES: ChannelMode[] = ['luma', 'white', 'saturation'];
+/**
+ * Способы выделения букв. Последний — постоянный порог белизны min(R,G,B) > 200: Оцу ошибается, когда фон
+ * местами ярок, как буквы (голубая вода, светлые камни). 200 выбран только по обучающим кадрам Hero Demo
+ * 2026-10-17 (плато 200–205: 26 из 31 узнано, неверных 0; у 180 — 17, у 220 — 21).
+ */
+export const NAME_PASSES: { mode: ChannelMode; threshold?: number }[] = [{ mode: 'luma' }, { mode: 'white' }, { mode: 'saturation' }, { mode: 'white', threshold: 200 }];
 /** Цена буквы, для которой нет образцов. Калибровка: верная буква ~0.00–0.06, неверная ≥ 0.09 */
 const UNKNOWN_LETTER_COST = 0.075;
 /** Средняя цена выше этой — имя на найденные буквы не похоже */
@@ -68,9 +73,29 @@ interface Scored {
   cost: number;
 }
 
+/**
+ * Как имя может разбиться на слова на экране. Дефис и апостроф — не буквы: keepLetters их отбрасывает,
+ * а на их месте остаётся либо узкий промежуток (слово целое: ANTIMAGE, NATURES), либо широкий
+ * (отдельные слова: ANTI MAGE, NATURE S) — проверено на кадрах Anti-Mage и Nature's Prophet 2026-10-17.
+ */
+export function nameWordVariants(name: string): string[][] {
+  const upper = name.toUpperCase();
+  const joined = upper.split(' ').map((w) => w.replace(/[^A-Z]/g, '')).filter(Boolean);
+  const split = upper.split(/[^A-Z]+/).filter(Boolean);
+  return joined.join(' ') === split.join(' ') ? [joined] : [joined, split];
+}
+
 /** Цена совпадения прочитанных слов с именем героя; null — не совпадает по форме (число слов/букв) */
 export function nameCost(words: Glyph[][], name: string, model: GlyphModel): number | null {
-  const target = name.toUpperCase().split(' ');
+  let best: number | null = null;
+  for (const target of nameWordVariants(name)) {
+    const cost = wordsCost(words, target, model);
+    if (cost !== null && (best === null || cost < best)) best = cost;
+  }
+  return best;
+}
+
+function wordsCost(words: Glyph[][], target: string[], model: GlyphModel): number | null {
   if (target.length !== words.length) return null;
   let total = 0, n = 0;
   for (let w = 0; w < target.length; w++) {
@@ -109,8 +134,8 @@ export function readHeroName(
 
   const region = frame.read(rect);
   let bestResult: HeroNameResult | null = null;
-  for (const mode of MODES) {
-    const seg = segment(region, { mode, splitWide: false, minSeparation: 45, dropBorder: true });
+  for (const pass of NAME_PASSES) {
+    const seg = segment(region, { ...pass, splitWide: false, minSeparation: 45, dropBorder: true });
     if (!seg.hasText) continue;
     const words = splitWords(keepLetters(seg.glyphs));
     const scored: Scored[] = [];

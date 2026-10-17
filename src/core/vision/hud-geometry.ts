@@ -1,8 +1,12 @@
 // Геометрия HUD под пропорции экрана. Все положения в читателях заданы в пикселях кадра 1920×1080 (ref)
 // и переводятся в кадр отсюда.
 // 16:9 — «legacy»: те же формулы, что были всегда (x = ref·w/1920, y = ref·h/1080), результат совпадает до пикселя.
-// Другие пропорции: HUD Доты вписан в кадр 16:9 (масштаб k = min(h, w·9/16)/1080) и прижат к краям —
+// Другие пропорции: HUD Доты масштабируется по высоте кадра (k = h/1080) и прижат к краям —
 // панели слева остаются слева, справа — справа, нижняя панель — по центру внизу.
+// Замеры в Hero Demo 2026-10-17 (полоса маны у Phoenix; на 16:9 — край 699, верхняя строка 1046):
+// 1920×1200 → 670 и 1162 (k = 1,111), 1440×1080 → 459 и 1046 (k = 1), 1834×786 → 725 и 761 (k = 0,728) —
+// совпадает с k = h/1080 до 1–3 px. Вариант «вписать в 16:9», k = min(h, w·9/16)/1080, на 16:10 и 4:3 промахивается
+// на 30–60 px.
 // Список пропорций — src/data/hud-layouts/aspects.json; всё, кроме 16:9, на настоящей игре не проверено.
 
 export const REF_W = 1920;
@@ -71,7 +75,7 @@ export function legacyGeometry(w: number, h: number, aspect: AspectDef | null = 
 export function hudGeometry(w: number, h: number, aspects: readonly AspectDef[] = [ASPECT_16_9]): HudGeometry {
   const aspect = matchAspect(w, h, aspects);
   if (!aspect || aspect.id === ASPECT_16_9.id) return legacyGeometry(w, h, aspect);
-  const k = Math.min(h, (w * 9) / 16) / REF_H;
+  const k = h / REF_H;
   return {
     aspect,
     legacy: false,

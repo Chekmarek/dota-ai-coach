@@ -8,7 +8,7 @@ import { decodePng } from './png.mjs';
 import { crop, frameAccessFromImage, type RgbaImage } from '../src/core/vision/image.ts';
 import { segment, GLYPH_H, GLYPH_W } from '../src/core/vision/segment.ts';
 import { findBarAnchor } from '../src/core/vision/hud-anchors.ts';
-import { heroNameRect, keepLetters, readHeroName, splitWords, type HeroNameEntry } from '../src/core/vision/hero-name.ts';
+import { heroNameRect, keepLetters, NAME_PASSES, nameWordVariants, readHeroName, splitWords, type HeroNameEntry } from '../src/core/vision/hero-name.ts';
 import type { GlyphModel, GlyphSample } from '../src/core/ocr/glyph-ocr.ts';
 
 const root = join(import.meta.dirname, '..');
@@ -24,11 +24,12 @@ export function samplesFrom(file: string, heroName: string): GlyphSample[] {
   const anchor = findBarAnchor(frameAccessFromImage(img));
   if (anchor.barLeft === null) return [];
   const region = crop(img, heroNameRect(img.width, img.height, anchor.barLeft));
-  const target = heroName.toUpperCase().split(' ');
-  for (const mode of ['luma', 'white', 'saturation'] as const) {
-    const seg = segment(region, { mode, splitWide: false, minSeparation: 45, dropBorder: true });
+  for (const pass of NAME_PASSES) {
+    const seg = segment(region, { ...pass, splitWide: false, minSeparation: 45, dropBorder: true });
     const words = splitWords(keepLetters(seg.glyphs));
-    if (words.length !== target.length || words.some((w, i) => w.length !== target[i]!.length)) continue;
+    // Дефис и апостроф не буквы: имя может разбиться на слова по-разному (см. nameWordVariants)
+    const target = nameWordVariants(heroName).find((t) => t.length === words.length && words.every((w, i) => w.length === t[i]!.length));
+    if (!target) continue;
     return words.flatMap((w, wi) =>
       w.map((g, i) => ({
         ch: target[wi]![i]!,

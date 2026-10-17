@@ -6,7 +6,7 @@ import { readText, type GlyphModel } from '../ocr/glyph-ocr.ts';
 import type { FrameAccess } from './image.ts';
 import { layoutFits, scaleRect, type HudLayout } from './hud-layout.ts';
 import { HUD_FIELDS, PARSERS, type HudFieldId, type HudValues, type ParseResult } from './hud-fields.ts';
-import { findBarAnchor, selectedUnitRelation, type UnitRelation } from './hud-anchors.ts';
+import { findBarAnchor, isGridEdge, selectedUnitRelation, type UnitRelation } from './hud-anchors.ts';
 import { readHeroName, type HeroIdentity, type HeroNameEntry } from './hero-name.ts';
 import { isPreHorn, readDayNight, type DayNight } from './day-night.ts';
 import { readAbilities, type AbilitySlot } from './abilities.ts';
@@ -34,7 +34,7 @@ export interface HudReading {
   heroName: Observed<HeroIdentity>;
   /** День или ночь — по значку над часами. Ночь при времени ≤ 1:30 — отсчёт до горна, gameClock < 0 */
   dayNight: Observed<DayNight>;
-  /** Способности выбранного юнита (null — панель не найдена). Чьи они — см. selectedUnit и heroName */
+  /** Способности выбранного юнита (null — панель не найдена или её ячейки не размечены). Чьи они — см. selectedUnit и heroName */
   abilities: AbilitySlot[] | null;
   /** Инвентарь выбранного юнита: 6 ячеек и рюкзак (null — панель не найдена или нет шаблонов) */
   items: ItemSlot[] | null;
@@ -185,7 +185,10 @@ export function recognizeHud(
     heroName: name.observed,
     heroNameCandidates: name.candidates,
     dayNight,
-    abilities: supported && anchor.barLeft !== null ? readAbilities(frame, anchor.barLeft, opts.cooldownModel ?? null, geo) : null,
+    // Ячейки способностей размечены для панели с 5–7 ячейками (шаг 58 px); у панели с краем 712 (4 способности)
+    // ячейки крупнее — их геометрия не размечена, поэтому способности не читаем, а не читаем «не там»
+    abilities:
+      supported && anchor.barLeft !== null && isGridEdge(anchor.barLeft, geo) ? readAbilities(frame, anchor.barLeft, opts.cooldownModel ?? null, geo) : null,
     items: supported && anchor.barLeft !== null && opts.itemTemplates ? readItems(frame, anchor.barLeft, opts.itemTemplates, geo) : null,
     durationMs: now() - t0,
   };
