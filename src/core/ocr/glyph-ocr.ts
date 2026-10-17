@@ -54,25 +54,74 @@ export function glyphDistance(g: Pick<Glyph, 'vec' | 'aspect' | 'relH' | 'relTop
  */
 const MAX_DIST = 0.25;
 
+/** Образцы модели в удобном для перебора виде: векторы — Float64Array (те же числа), символ — номер */
+interface Prepared {
+  vecs: Float64Array[];
+  extras: { aspect: number; relH: number; relTop: number }[];
+  chIndex: Int32Array;
+  chars: string[];
+}
+const prepared = new WeakMap<GlyphModel, Prepared>();
+function prepare(model: GlyphModel): Prepared {
+  let p = prepared.get(model);
+  if (p && p.vecs.length === model.samples.length) return p;
+  const chars: string[] = [];
+  const chIndex = new Int32Array(model.samples.length);
+  model.samples.forEach((s, i) => {
+    let k = chars.indexOf(s.ch);
+    if (k < 0) k = chars.push(s.ch) - 1;
+    chIndex[i] = k;
+  });
+  p = { vecs: model.samples.map((s) => Float64Array.from(s.vec)), extras: model.samples.map((s) => ({ aspect: s.aspect, relH: s.relH, relTop: s.relTop })), chIndex, chars };
+  prepared.set(model, p);
+  return p;
+}
+
+/**
+ * Ближайший образец. Результат тот же, что у полного перебора glyphDistance по всем образцам (проверяется тестом):
+ * образец бросаем досрочно, только когда частичная сумма уже не меньше лучшего расстояния для его символа —
+ * оставшиеся слагаемые неотрицательны, поэтому ни лучший символ, ни второй (для margin) от него не изменились бы.
+ */
 export function classify(model: GlyphModel, g: Glyph): { ch: string; score: number; margin: number } {
-  let best = Infinity, bestCh = '?';
-  const perChar = new Map<string, number>();
-  for (const s of model.samples) {
-    const d = glyphDistance(g, s);
-    if (d < (perChar.get(s.ch) ?? Infinity)) perChar.set(s.ch, d);
+  const p = prepare(model);
+  const v = g.vec;
+  const n = v.length;
+  const perChar = new Float64Array(p.chars.length).fill(Infinity);
+  let best = Infinity, bestK = -1;
+  for (let i = 0; i < p.vecs.length; i++) {
+    const s = p.vecs[i]!;
+    const e = p.extras[i]!;
+    const k = p.chIndex[i]!;
+    // те же слагаемые и тот же порядок сложения, что в glyphDistance, — результат совпадает до бита
+    const a = 0.05 * (g.aspect - e.aspect) ** 2, b = 0.1 * (g.relH - e.relH) ** 2, c = 0.1 * (g.relTop - e.relTop) ** 2;
+    const limit = perChar[k]!;
+    let d = 0;
+    let j = 0;
+    let dropped = false;
+    while (j < n) {
+      const stop = Math.min(n, j + 14);
+      for (; j < stop; j++) d += (v[j]! - s[j]!) ** 2;
+      if (d / n + a + b + c >= limit) {
+        dropped = true;
+        break;
+      }
+    }
+    if (dropped) continue;
+    d = d / n + a + b + c;
+    perChar[k] = d;
     if (d < best) {
       best = d;
-      bestCh = s.ch;
+      bestK = k;
     }
   }
   let second = Infinity;
-  for (const [ch, d] of perChar) if (ch !== bestCh && d < second) second = d;
+  for (let k = 0; k < perChar.length; k++) if (k !== bestK && perChar[k]! < second) second = perChar[k]!;
   // margin: насколько лучший вариант лучше ближайшего другого символа (0 — неразличимы, 1 — явно)
   const margin = Number.isFinite(second) ? Math.max(0, Math.min(1, 1 - best / Math.max(second, 1e-9))) : 1;
   // Уверенность: главное — отрыв от второго варианта; плюс штраф, если символ вообще не похож на образцы
   const likeness = Math.max(0, 1 - best / MAX_DIST);
   const score = Math.min(Math.sqrt(margin), likeness);
-  return { ch: bestCh, score, margin };
+  return { ch: bestK < 0 ? '?' : p.chars[bestK]!, score, margin };
 }
 
 export function readText(model: GlyphModel, img: RgbaImage, opts: SegmentOptions): ReadResult {
