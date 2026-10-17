@@ -1,4 +1,5 @@
 import type { FrameAccess } from './image.ts';
+import { legacyGeometry, type HudGeometry } from './hud-geometry.ts';
 
 export type DayNight = 'day' | 'night';
 
@@ -11,9 +12,12 @@ export const DAY_NIGHT_RECT = { x: 940, y: 4, w: 40, h: 20 };
 const MIN_SUN = 8;
 const MIN_MOON = 30;
 
-export function readDayNight(frame: FrameAccess): { value: DayNight | null; confidence: number; rect: typeof DAY_NIGHT_RECT } {
-  const s = frame.width / 1920, sy = frame.height / 1080;
-  const rect = { x: Math.round(DAY_NIGHT_RECT.x * s), y: Math.round(DAY_NIGHT_RECT.y * sy), w: Math.round(DAY_NIGHT_RECT.w * s), h: Math.round(DAY_NIGHT_RECT.h * sy) };
+export function readDayNight(
+  frame: FrameAccess,
+  geo: HudGeometry = legacyGeometry(frame.width, frame.height),
+): { value: DayNight | null; confidence: number; rect: typeof DAY_NIGHT_RECT } {
+  const s = geo.s, sy = geo.sy;
+  const rect = dayNightRect(geo);
   const img = frame.read(rect);
   let sun = 0, moon = 0;
   for (let i = 0; i < img.width * img.height; i++) {
@@ -26,6 +30,12 @@ export function readDayNight(frame: FrameAccess): { value: DayNight | null; conf
   if (sun >= MIN_SUN * k && moon < 5 * k) return { value: 'day', confidence: Math.min(1, sun / (15 * k)), rect };
   if (moon >= MIN_MOON * k && sun < 3 * k) return { value: 'night', confidence: Math.min(1, moon / (90 * k)), rect };
   return { value: null, confidence: 0, rect };
+}
+
+/** Область значка дня/ночи в кадре: по центру вверху, над часами */
+export function dayNightRect(geo: HudGeometry): typeof DAY_NIGHT_RECT {
+  const r = DAY_NIGHT_RECT;
+  return { x: Math.round(geo.x(r.x)), y: Math.round(geo.y(r.y)), w: Math.round(r.w * geo.s), h: Math.round(r.h * geo.sy) };
 }
 
 /**

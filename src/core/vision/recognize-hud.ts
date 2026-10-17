@@ -11,6 +11,7 @@ import { readHeroName, type HeroIdentity, type HeroNameEntry } from './hero-name
 import { isPreHorn, readDayNight, type DayNight } from './day-night.ts';
 import { readAbilities, type AbilitySlot } from './abilities.ts';
 import { readItems, type ItemSlot, type ItemTemplates } from './items.ts';
+import { hudGeometry, legacyGeometry, type AspectDef, type HudGeometry } from './hud-geometry.ts';
 
 /** Ниже этой уверенности распознанное значение не принимается (value = null) */
 export const MIN_CONFIDENCE = 0.5;
@@ -21,6 +22,8 @@ export interface HudReading {
   layoutId: string;
   frameSize: { w: number; h: number };
   supported: boolean;
+  /** Пропорция кадра из списка aspects ('16:9', '16:10'…); null — неизвестная. Нет поля — старый формат */
+  aspect?: string | null;
   fields: HudObservations;
   /**
    * Чья панель внизу: нижний HUD показывает ВЫБРАННОГО юнита. Если выбран враг (красная полоса HP) —
@@ -53,6 +56,13 @@ export interface RecognizeOptions {
   cooldownModel?: GlyphModel;
   /** Шаблоны иконок предметов; без них инвентарь не распознаётся */
   itemTemplates?: ItemTemplates;
+  /** Известные пропорции экрана (src/data/hud-layouts/aspects.json); без списка известна только 16:9 */
+  aspects?: AspectDef[];
+  /**
+   * Только для проверки: читать и пропорции, не проверенные на настоящей игре (verified: false).
+   * Даже тогда кадр читается, лишь если полоса маны нашлась там, где её ждёт раскладка.
+   */
+  experimentalAspects?: boolean;
   now?: () => number;
 }
 
@@ -71,17 +81,15 @@ export function recognizeHud(
   const now = opts.now ?? (() => performance.now());
   const t0 = now();
   const frameSize = { w: frame.width, h: frame.height };
-  const supported = layoutFits(layout, frame.width, frame.height);
+  const { supported, geo, anchor } = resolveGeometry(frame, layout, opts);
   const fields = {} as Record<HudFieldId, Observed<unknown>>;
-  const anchor = supported ? findBarAnchor(frame) : { barLeft: null, confidence: 0 };
-  const sx = frame.width / layout.reference.w;
 
   for (const id of HUD_FIELDS) {
     const def = layout.regions[id];
     if (!def) throw new Error(`В раскладке ${layout.id} нет области ${id}`);
-    const rect = scaleRect(layout, def, frame.width, frame.height);
+    const rect = scaleRect(layout, def, frame.width, frame.height, geo);
     if (def.anchor === 'barLeft' && anchor.barLeft !== null && layout.anchors?.barLeft !== undefined) {
-      rect.x += anchor.barLeft - Math.round(layout.anchors.barLeft * sx);
+      rect.x += anchor.barLeft - Math.round(geo.x(layout.anchors.barLeft));
     }
     const base = {
       observedAt,
@@ -121,7 +129,7 @@ export function recognizeHud(
   }
 
   // Чей юнит выбран — по цвету полосы здоровья
-  const relRect = { x: anchor.barLeft ?? 0, y: Math.round(1024 * (frame.height / layout.reference.h)), w: Math.round(44 * sx), h: Math.round(12 * sx) };
+  const relRect = { x: anchor.barLeft ?? 0, y: Math.round(geo.y(1024)), w: Math.round(44 * geo.s), h: Math.round(12 * geo.s) };
   const relBase = {
     observedAt,
     sourceRegion: { layoutId: layout.id, regionId: 'selectedUnit', rect: relRect, frameSize },
@@ -132,12 +140,12 @@ export function recognizeHud(
   if (!supported) selectedUnit = { ...relBase, value: null, confidence: 0, validity: 'unsupported' };
   else if (anchor.barLeft === null) selectedUnit = { ...relBase, value: null, confidence: 0, validity: 'absent' };
   else {
-    const rel = selectedUnitRelation(frame, anchor.barLeft);
+    const rel = selectedUnitRelation(frame, anchor.barLeft, geo);
     selectedUnit = { ...relBase, value: rel.value, confidence: rel.confidence, validity: rel.value ? 'valid' : 'absent', raw: rel.value ?? '' };
   }
 
   // День/ночь по значку над часами; до горна часы идут обратным отсчётом без минуса — ставим его сами
-  const dn = supported ? readDayNight(frame) : { value: null, confidence: 0, rect: { x: 0, y: 0, w: 0, h: 0 } };
+  const dn = supported ? readDayNight(frame, geo) : { value: null, confidence: 0, rect: { x: 0, y: 0, w: 0, h: 0 } };
   const dayNight: Observed<DayNight> = {
     observedAt,
     sourceRegion: { layoutId: layout.id, regionId: 'dayNight', rect: dn.rect, frameSize },
@@ -153,7 +161,7 @@ export function recognizeHud(
   // Имя героя над портретом (позиция тоже зависит от ширины панели)
   const name =
     supported && opts.heroName
-      ? readHeroName(frame, anchor.barLeft, opts.heroName.model, opts.heroName.names, observedAt, layout.id, layout.schemaVersion)
+      ? readHeroName(frame, anchor.barLeft, opts.heroName.model, opts.heroName.names, observedAt, layout.id, layout.schemaVersion, geo)
       : {
           observed: {
             observedAt,
@@ -171,15 +179,40 @@ export function recognizeHud(
     layoutId: layout.id,
     frameSize,
     supported,
+    aspect: geo.aspect?.id ?? null,
     fields: fields as HudObservations,
     selectedUnit,
     heroName: name.observed,
     heroNameCandidates: name.candidates,
     dayNight,
-    abilities: supported && anchor.barLeft !== null ? readAbilities(frame, anchor.barLeft, opts.cooldownModel ?? null) : null,
-    items: supported && anchor.barLeft !== null && opts.itemTemplates ? readItems(frame, anchor.barLeft, opts.itemTemplates) : null,
+    abilities: supported && anchor.barLeft !== null ? readAbilities(frame, anchor.barLeft, opts.cooldownModel ?? null, geo) : null,
+    items: supported && anchor.barLeft !== null && opts.itemTemplates ? readItems(frame, anchor.barLeft, opts.itemTemplates, geo) : null,
     durationMs: now() - t0,
   };
+}
+
+/**
+ * Поддерживается ли кадр и в какой геометрии его читать.
+ * 16:9 — как всегда (layoutFits). Другая известная пропорция — только если она проверена на игре или включена
+ * опцией experimentalAspects, и только если полоса маны нашлась там, где её ждёт раскладка; иначе весь кадр
+ * «не поддерживается». Для неподдерживаемого кадра области в sourceRegion — прежнее растяжение.
+ */
+function resolveGeometry(
+  frame: FrameAccess,
+  layout: HudLayout,
+  opts: RecognizeOptions,
+): { supported: boolean; geo: HudGeometry; anchor: { barLeft: number | null; confidence: number } } {
+  const none = { barLeft: null, confidence: 0 };
+  const detected = hudGeometry(frame.width, frame.height, opts.aspects);
+  if (layoutFits(layout, frame.width, frame.height)) {
+    const geo = legacyGeometry(frame.width, frame.height, detected.aspect);
+    return { supported: true, geo, anchor: findBarAnchor(frame, geo) };
+  }
+  const fallback = { supported: false, geo: legacyGeometry(frame.width, frame.height, detected.aspect), anchor: none };
+  if (!detected.aspect || detected.legacy || !(detected.aspect.verified || opts.experimentalAspects)) return fallback;
+  const anchor = findBarAnchor(frame, detected);
+  if (anchor.barLeft === null) return fallback;
+  return { supported: true, geo: detected, anchor };
 }
 
 /** Сравнение результатов: принятое значение лучше отклонённого, затем — по уверенности */

@@ -3,6 +3,7 @@
 // Опора — левый край полосы маны: от него до центра кружка уровня всегда ~191 px (при 1920×1080),
 // проверено на Kez, Shadow Fiend, Monkey King, Morphling.
 import type { FrameAccess } from './image.ts';
+import { legacyGeometry, type HudGeometry } from './hud-geometry.ts';
 
 export interface BarAnchor {
   /** x левого края полосы маны в координатах кадра; null — не найден */
@@ -22,12 +23,11 @@ function isManaPixel(r: number, g: number, b: number): boolean {
 
 /**
  * Ищет левый край полосы маны: идём от заведомо внутренней точки полосы влево,
- * пока столбцы в основном «синие». Масштаб — относительно 1920×1080.
+ * пока столбцы в основном «синие». Координаты — в 1920×1080, в кадр их переводит geo (по умолчанию — растяжение 16:9).
  */
-export function findBarAnchor(frame: FrameAccess): BarAnchor {
-  const s = frame.width / 1920;
-  const y0 = Math.round(1052 * (frame.height / 1080)), y1 = Math.round(1064 * (frame.height / 1080));
-  const xFrom = Math.round(800 * s), xTo = Math.round(560 * s);
+export function findBarAnchor(frame: FrameAccess, geo: HudGeometry = legacyGeometry(frame.width, frame.height)): BarAnchor {
+  const y0 = Math.round(geo.y(1052)), y1 = Math.round(geo.y(1064));
+  const xFrom = Math.round(geo.x(800)), xTo = Math.round(geo.x(560));
   const strip = frame.read({ x: xTo, y: y0, w: xFrom - xTo, h: y1 - y0 });
   const colFrac = (x: number) => {
     let n = 0;
@@ -48,7 +48,7 @@ export function findBarAnchor(frame: FrameAccess): BarAnchor {
         // Край должен быть резким: левее несколько столбцов подряд не «синие»
         let outside = 0;
         for (let k = x; k >= Math.max(0, x - 6); k--) if (colFrac(k) < 0.3) outside++;
-        return snapToSteps(xTo + edge, s, outside >= 5 ? 0.95 : 0.6);
+        return snapToSteps(xTo + edge, geo, outside >= 5 ? 0.95 : 0.6);
       }
     } else misses = 0;
   }
@@ -61,9 +61,13 @@ export type UnitRelation = 'ally' | 'enemy';
  * Чей юнит выбран: полоса здоровья зелёная — свой герой или союзник, красная — враг.
  * Пустая полоса (0 HP, тёмная) — определить нельзя.
  */
-export function selectedUnitRelation(frame: FrameAccess, barLeft: number): { value: UnitRelation | null; confidence: number } {
-  const s = frame.width / 1920, sy = frame.height / 1080;
-  const strip = frame.read({ x: barLeft + Math.round(4 * s), y: Math.round(1024 * sy), w: Math.round(40 * s), h: Math.round(12 * sy) });
+export function selectedUnitRelation(
+  frame: FrameAccess,
+  barLeft: number,
+  geo: HudGeometry = legacyGeometry(frame.width, frame.height),
+): { value: UnitRelation | null; confidence: number } {
+  const s = geo.s, sy = geo.sy;
+  const strip = frame.read({ x: barLeft + Math.round(4 * s), y: Math.round(geo.y(1024)), w: Math.round(40 * s), h: Math.round(12 * sy) });
   let green = 0, red = 0;
   const n = strip.width * strip.height;
   for (let i = 0; i < n; i++) {
@@ -87,10 +91,10 @@ const STEP_BASE = 667;
 const STEP = 29;
 const SNAP_TOLERANCE = 5;
 
-function snapToSteps(x: number, scale: number, confidence: number): BarAnchor {
-  const ref = x / scale;
+function snapToSteps(x: number, geo: HudGeometry, confidence: number): BarAnchor {
+  const ref = geo.refX(x);
   const k = Math.round((ref - STEP_BASE) / STEP);
   const snapped = STEP_BASE + k * STEP;
   if (Math.abs(ref - snapped) > SNAP_TOLERANCE || Math.abs(k) > 4) return { barLeft: null, confidence: 0 };
-  return { barLeft: Math.round(snapped * scale), confidence };
+  return { barLeft: Math.round(geo.x(snapped)), confidence };
 }

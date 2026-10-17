@@ -2,6 +2,7 @@
 // с шаблонами иконок (src/data/item-templates.json). Панель показывает ВЫБРАННОГО юнита — см. selectedUnit.
 import type { FrameAccess } from './image.ts';
 import { gridColors, gridDistance, normalizeGrid } from './item-grid.ts';
+import { legacyGeometry, type HudGeometry } from './hud-geometry.ts';
 
 export interface ItemTemplates {
   patch: string;
@@ -39,16 +40,21 @@ const CLOSE_GAP = 0.1;
 const MAX_DIST = 0.35;
 const MIN_GAP = 0.2;
 
-export function readItems(frame: FrameAccess, barLeft: number, templates: ItemTemplates): ItemSlot[] {
-  const s = frame.width / 1920, sy = frame.height / 1080;
-  const shift = barLeft - Math.round(BASE_BAR_LEFT * s);
+export function readItems(
+  frame: FrameAccess,
+  barLeft: number,
+  templates: ItemTemplates,
+  geo: HudGeometry = legacyGeometry(frame.width, frame.height),
+): ItemSlot[] {
+  const s = geo.s, sy = geo.sy;
+  const shift = barLeft - Math.round(geo.x(BASE_BAR_LEFT));
   const cells: { slot: string; x: number; y: number; w: number; h: number }[] = [];
   for (let r = 0; r < 2; r++)
     for (let c = 0; c < 3; c++) cells.push({ slot: `inv${r * 3 + c + 1}`, x: X0 + DX * c, y: Y0 + DY * r, w: W, h: H });
   for (let c = 0; c < 3; c++) cells.push({ slot: `bp${c + 1}`, x: X0 + DX * c, y: BP_Y, w: W, h: BP_H });
 
   return cells.map((cell) => {
-    const rect = { x: Math.round(cell.x * s) - shift, y: Math.round(cell.y * sy), w: Math.round(cell.w * s), h: Math.round(cell.h * sy) };
+    const rect = { x: Math.round(geo.x(cell.x)) - shift, y: Math.round(geo.y(cell.y)), w: Math.round(cell.w * s), h: Math.round(cell.h * sy) };
     const raw = gridColors(frame.read(rect));
     let mean = 0;
     for (let i = 0; i < raw.length; i++) mean += raw[i]!;

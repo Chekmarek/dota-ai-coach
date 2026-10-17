@@ -6,6 +6,7 @@ import type { Observed, Rect } from '../../shared/types/observation.ts';
 import { glyphDistance, type GlyphModel } from '../ocr/glyph-ocr.ts';
 import { segment, type Glyph } from './segment.ts';
 import type { ChannelMode, FrameAccess } from './image.ts';
+import { legacyGeometry, type HudGeometry } from './hud-geometry.ts';
 
 export interface HeroNameEntry {
   id: number;
@@ -27,10 +28,10 @@ const UNKNOWN_LETTER_COST = 0.075;
 /** Средняя цена выше этой — имя на найденные буквы не похоже */
 const MAX_MEAN_COST = 0.07;
 
-export function heroNameRect(frameW: number, frameH: number, barLeft: number): Rect {
-  const s = frameW / 1920, sy = frameH / 1080;
+export function heroNameRect(frameW: number, frameH: number, barLeft: number, geo: HudGeometry = legacyGeometry(frameW, frameH)): Rect {
+  const s = geo.s, sy = geo.sy;
   const cx = barLeft + NAME_CENTER_FROM_BAR * s;
-  return { x: Math.round(cx - (NAME_RECT.w / 2) * s), y: Math.round(NAME_RECT.y * sy), w: Math.round(NAME_RECT.w * s), h: Math.round(NAME_RECT.h * sy) };
+  return { x: Math.round(cx - (NAME_RECT.w / 2) * s), y: Math.round(geo.y(NAME_RECT.y)), w: Math.round(NAME_RECT.w * s), h: Math.round(NAME_RECT.h * sy) };
 }
 
 /**
@@ -99,9 +100,10 @@ export function readHeroName(
   observedAt: number,
   layoutId: string,
   schemaVersion: string,
+  geo: HudGeometry = legacyGeometry(frame.width, frame.height),
 ): HeroNameResult {
   const frameSize = { w: frame.width, h: frame.height };
-  const rect = barLeft === null ? { x: 0, y: 0, w: 0, h: 0 } : heroNameRect(frame.width, frame.height, barLeft);
+  const rect = barLeft === null ? { x: 0, y: 0, w: 0, h: 0 } : heroNameRect(frame.width, frame.height, barLeft, geo);
   const base = { observedAt, sourceRegion: { layoutId, regionId: 'heroName', rect, frameSize }, schemaVersion };
   if (barLeft === null) return { observed: { ...base, value: null, confidence: 0, validity: 'absent', raw: '' }, candidates: [] };
 

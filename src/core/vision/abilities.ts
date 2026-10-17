@@ -2,6 +2,7 @@
 // Панель показывает ВЫБРАННОГО юнита: если выбран не свой герой, это его способности (см. selectedUnit).
 import { readText, type GlyphModel } from '../ocr/glyph-ocr.ts';
 import type { FrameAccess, RgbaImage } from './image.ts';
+import { legacyGeometry, type HudGeometry } from './hud-geometry.ts';
 
 export type AbilityState = 'ready' | 'cooldown' | 'no-mana' | 'unlearned';
 
@@ -41,8 +42,8 @@ const MAX_COOLDOWN_LUM = 110;
 /** Нехватка маны — тёмно-синяя заливка (яркость 22–41); бирюзовая иконка сама по себе (Monkey King, 87) — нет */
 const MAX_NO_MANA_LUM = 60;
 
-export function abilitySlotCount(barLeft: number, frameWidth: number): number {
-  const k = Math.round((barLeft / (frameWidth / 1920) - BASE_BAR_LEFT) / STEP);
+export function abilitySlotCount(barLeft: number, frameWidth: number, geo: HudGeometry = legacyGeometry(frameWidth, (frameWidth * 9) / 16)): number {
+  const k = Math.round((geo.refX(barLeft) - BASE_BAR_LEFT) / STEP);
   return Math.max(1, Math.min(8, BASE_SLOTS - k));
 }
 
@@ -64,13 +65,18 @@ function cropImage(img: RgbaImage, x: number, y: number, w: number, h: number): 
   return { width: w, height: h, data };
 }
 
-export function readAbilities(frame: FrameAccess, barLeft: number, cooldownModel: GlyphModel | null): AbilitySlot[] {
-  const s = frame.width / 1920, sy = frame.height / 1080;
-  const n = abilitySlotCount(barLeft, frame.width);
+export function readAbilities(
+  frame: FrameAccess,
+  barLeft: number,
+  cooldownModel: GlyphModel | null,
+  geo: HudGeometry = legacyGeometry(frame.width, frame.height),
+): AbilitySlot[] {
+  const s = geo.s, sy = geo.sy;
+  const n = abilitySlotCount(barLeft, frame.width, geo);
   const slots: AbilitySlot[] = [];
   for (let i = 0; i < n; i++) {
     const left = barLeft + Math.round((FIRST + PITCH * i) * s);
-    const rect = { x: left + Math.round(ICON.dx * s), y: Math.round(ICON.y * sy), w: Math.round(ICON.w * s), h: Math.round(ICON.h * sy) };
+    const rect = { x: left + Math.round(ICON.dx * s), y: Math.round(geo.y(ICON.y)), w: Math.round(ICON.w * s), h: Math.round(ICON.h * sy) };
     const img = frame.read(rect);
     let sat = 0, lum = 0, white = 0, blue = 0;
     const W = img.width, H = img.height;
@@ -89,7 +95,7 @@ export function readAbilities(frame: FrameAccess, barLeft: number, cooldownModel
     sat /= area;
     lum /= area;
     const blueShare = blue / area;
-    const level = countPips(frame, left, Math.round(56 * s), Math.round(PIP_Y * sy));
+    const level = countPips(frame, left, Math.round(56 * s), Math.round(geo.y(PIP_Y)), geo);
 
     let state: AbilityState, confidence: number, cooldown: number | null = null;
     const cd = white >= MIN_WHITE * s * sy && cooldownModel ? readCooldown(img, cooldownModel).value : null;
@@ -128,9 +134,9 @@ function onlyWhite(img: RgbaImage): RgbaImage {
 }
 
 /** Горящие точки уровня: светлые чёрточки длиной ≥ 4 px в строке под ячейкой */
-function countPips(frame: FrameAccess, left: number, width: number, y: number): number {
+function countPips(frame: FrameAccess, left: number, width: number, y: number, geo: HudGeometry = legacyGeometry(frame.width, frame.height)): number {
   const row = frame.read({ x: left, y, w: width, h: 1 });
-  const minRun = Math.max(2, Math.round(4 * (frame.width / 1920)));
+  const minRun = Math.max(2, Math.round(4 * geo.s));
   let pips = 0, run = 0;
   for (let x = 0; x < row.width; x++) {
     const p = x * 4;

@@ -2,6 +2,7 @@ import type { Rect } from '../../shared/types/observation.ts';
 import type { ChannelMode } from './image.ts';
 import type { MinimapLayout } from './minimap.ts';
 import type { HealthBarsLayout } from './health-bars.ts';
+import type { AnchorX, AnchorY, HudGeometry } from './hud-geometry.ts';
 
 export interface HudRegionDef {
   rect: [number, number, number, number];
@@ -13,6 +14,10 @@ export interface HudRegionDef {
   firstRun?: boolean;
   /** Область привязана к опоре: x сдвигается на (найденная опора − эталонная) */
   anchor?: 'barLeft';
+  /** К какому краю прижата область при пропорциях, отличных от 16:9 (src/core/vision/hud-geometry.ts); по умолчанию — центр */
+  ax?: AnchorX;
+  /** По умолчанию — к верху, если область в верхней половине, иначе к низу */
+  ay?: AnchorY;
   label: string;
 }
 
@@ -55,8 +60,15 @@ export function layoutFits(layout: HudLayout, w: number, h: number): boolean {
   return w > 0 && h > 0 && Math.abs(w / h - ref) / ref <= layout.aspectTolerance;
 }
 
-/** Переводит область из эталонного разрешения в разрешение кадра */
-export function scaleRect(layout: HudLayout, def: HudRegionDef, w: number, h: number): Rect {
+/**
+ * Переводит область из эталонного разрешения в разрешение кадра.
+ * geo — геометрия под пропорцию кадра; без неё или для 16:9 — прежнее растяжение по осям.
+ */
+export function scaleRect(layout: HudLayout, def: HudRegionDef, w: number, h: number, geo?: HudGeometry): Rect {
+  if (geo && !geo.legacy) {
+    const [x, y, rw, rh] = def.rect;
+    return { x: Math.round(geo.x(x, def.ax)), y: Math.round(geo.y(y, def.ay)), w: Math.round(rw * geo.s), h: Math.round(rh * geo.sy) };
+  }
   const sx = w / layout.reference.w, sy = h / layout.reference.h;
   const [x, y, rw, rh] = def.rect;
   return { x: Math.round(x * sx), y: Math.round(y * sy), w: Math.round(rw * sx), h: Math.round(rh * sy) };

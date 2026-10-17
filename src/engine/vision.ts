@@ -12,7 +12,9 @@ import itemTemplatesJson from '../data/item-templates.json';
 import type { ItemTemplates } from '@core/vision/items.ts';
 import heroNamesJson from '../data/hero-names.json';
 import type { HeroNameEntry } from '@core/vision/hero-name.ts';
-import { DAY_NIGHT_RECT } from '@core/vision/day-night.ts';
+import { dayNightRect } from '@core/vision/day-night.ts';
+import { legacyGeometry, type AspectDef, type HudGeometry } from '@core/vision/hud-geometry.ts';
+import aspectsJson from '../data/hud-layouts/aspects.json';
 import { readTopBar, type PortraitTemplates } from '@core/vision/top-bar.ts';
 import portraitsJson from '../data/hero-portraits.json';
 import { decodeMinimapBackground, minimapRect, readMinimap } from '@core/vision/minimap.ts';
@@ -27,6 +29,7 @@ const nameModel = nameModelJson as unknown as GlyphModel;
 const cooldownModel = cooldownModelJson as unknown as GlyphModel;
 const itemTemplates = itemTemplatesJson as unknown as ItemTemplates;
 const heroNames = heroNamesJson.names as HeroNameEntry[];
+const aspects = aspectsJson.aspects as AspectDef[];
 const portraits = portraitsJson as unknown as PortraitTemplates;
 const minimapBackground = decodeMinimapBackground(backgroundJson as unknown as Parameters<typeof decodeMinimapBackground>[0]);
 /** Не чаще этого (мс) искать свой значок для самокалибровки мини-карты: это две большие копии углов кадра */
@@ -73,7 +76,7 @@ export class VisionStage {
         return this.copy(bitmap, r); // область вне полос — отдельная копия
       },
     };
-    const hud = recognizeHud(access, layout, model, observedAt, { heroName: { model: nameModel, names: heroNames }, cooldownModel, itemTemplates });
+    const hud = recognizeHud(access, layout, model, observedAt, { heroName: { model: nameModel, names: heroNames }, cooldownModel, itemTemplates, aspects });
     // Верхняя панель (этап 1): герои обеих команд, смерть и таймер возрождения; время — в общем durationMs
     const t0 = performance.now();
     hud.topBar = readTopBar(access, layout, portraits, model);
@@ -94,18 +97,22 @@ export class VisionStage {
 
   private bandsCache: { key: string; bands: Rect[] } | null = null;
 
-  /** Две полосы: объединение областей в верхней и в нижней половине кадра */
-  private bandsFor(w: number, h: number): Rect[] {
-    const key = `${w}x${h}`;
+  /**
+   * Две полосы: объединение областей в верхней и в нижней половине кадра.
+   * geo — геометрия HUD; по умолчанию растяжение 16:9 (другие пропорции движок не читает — «не поддерживается»).
+   * Область вне полос всё равно читается — отдельной копией, так что неточная полоса стоит лишь скорости.
+   */
+  private bandsFor(w: number, h: number, geo: HudGeometry = legacyGeometry(w, h)): Rect[] {
+    const key = `${w}x${h}${geo.legacy ? '' : ':' + geo.aspect?.id}`;
     if (this.bandsCache?.key === key) return this.bandsCache.bands;
     const s = w / layout.reference.w, sy = h / layout.reference.h;
     const rects = [
-      ...Object.values(layout.regions).map((d) => scaleRect(layout, d, w, h)),
+      ...Object.values(layout.regions).map((d) => scaleRect(layout, d, w, h, geo)),
       // имя героя и сдвигаемые от опоры элементы — тоже в нижнюю полосу, чтобы не делать лишних копий
-      { x: Math.round(NAME_BAND.x * s), y: Math.round(NAME_BAND.y * sy), w: Math.round(NAME_BAND.w * s), h: Math.round(NAME_BAND.h * sy) },
+      { x: Math.round(geo.x(NAME_BAND.x)), y: Math.round(geo.y(NAME_BAND.y)), w: Math.round(NAME_BAND.w * geo.s), h: Math.round(NAME_BAND.h * geo.sy) },
       // значок дня/ночи над часами — в верхнюю полосу (ячейки способностей и так внутри нижней)
-      { x: Math.round(DAY_NIGHT_RECT.x * s), y: Math.round(DAY_NIGHT_RECT.y * sy), w: Math.round(DAY_NIGHT_RECT.w * s), h: Math.round(DAY_NIGHT_RECT.h * sy) },
-      // верхняя панель с портретами — тоже в верхнюю полосу (иначе отдельная копия на каждый кадр)
+      dayNightRect(geo),
+      // верхняя панель с портретами — тоже в верхнюю полосу (иначе отдельная копия на каждый кадр); она и мини-карта — только 16:9
       ...(layout.topBar ? [topBarRect(layout.topBar, s, sy)] : []),
       // мини-карта по умолчанию — в нижнюю полосу (своя калибровка в другом месте даст отдельную копию)
       ...(layout.minimap ? [minimapRect(layout.minimap.default, layout.minimap.world, w, h)] : []),
