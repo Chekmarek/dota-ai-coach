@@ -50,7 +50,9 @@ export interface BuildItem {
   source: 'pro' | 'popular';
 }
 
-const INVIS_RE = /(станов\w*|оставаясь|делает[^.]{0,40}|там он)\s+невидим/i;
+// «Становится невидимым», «оставаясь невидимым», «делает … невидимым», «получает невидимость».
+// Не \w: в JavaScript он не совпадает с русскими буквами («станов\w*» не ловило «становится»)
+const INVIS_RE = /(станов[а-яё]*|оставаясь|делает[^.]{0,40}|там он|получает)\s+невидим/i;
 
 export class CoachLookup {
   readonly heroByKey = new Map<string, KbHero>();
