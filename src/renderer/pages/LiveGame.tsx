@@ -5,6 +5,7 @@ import { useSettings } from '../hooks/useSettings';
 import { Card, PageHeader, Stat } from '../components/ui';
 import { HudRecognition, RegionOverlay } from '../components/HudRecognition';
 import { LIVE_HINT, LivePill, isLive, startLive } from '../components/live';
+import { PreviewImage } from '../components/preview';
 import { HintsFeed, HintsToggles } from '../components/hints';
 import { GsiCard } from '../components/gsi';
 import { engine } from '../hooks/useEngine';
@@ -106,7 +107,7 @@ export function LiveGame({ onNavigate }: PageProps) {
           <div className="preview overlay-host">
             {showFrame ? (
               <>
-                <img src={preview.url} alt="Кадр из Доты" data-testid="live-preview" />
+                <PreviewImage blob={preview.blob} label="Кадр из Доты" testId="live-preview" />
                 {settings?.ui.showRegions && vision && <RegionOverlay reading={vision.reading} />}
               </>
             ) : (

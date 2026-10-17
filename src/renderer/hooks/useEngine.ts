@@ -6,7 +6,8 @@ import type { MatchState } from '@core/match-state/index.ts';
 import type { AgreementReport } from '@core/gsi/agreement.ts';
 
 export interface PreviewFrame {
-  url: string;
+  /** JPEG кадра; показывать через PreviewImage (canvas), не через blob-ссылку в <img> */
+  blob: Blob;
   width: number;
   height: number;
   frameIndex: number;
@@ -67,10 +68,7 @@ class EngineClient {
       this.status = msg.status;
       this.statusPort = this.port;
       // Новый запуск — старое превью больше не относится к источнику
-      if (msg.status.state === 'starting' && this.preview) {
-        URL.revokeObjectURL(this.preview.url);
-        this.preview = null;
-      }
+      if (msg.status.state === 'starting') this.preview = null;
       if (msg.status.state === 'starting') this.vision = null;
     } else if (msg.type === 'vision') {
       this.vision = msg;
@@ -79,9 +77,7 @@ class EngineClient {
       this.match = msg.state;
       this.agreement = msg.agreement;
     } else if (msg.type === 'preview') {
-      const url = URL.createObjectURL(new Blob([msg.jpeg], { type: 'image/jpeg' }));
-      if (this.preview) URL.revokeObjectURL(this.preview.url);
-      this.preview = { url, width: msg.width, height: msg.height, frameIndex: msg.frameIndex, sourceTimeMs: msg.sourceTimeMs };
+      this.preview = { blob: new Blob([msg.jpeg], { type: 'image/jpeg' }), width: msg.width, height: msg.height, frameIndex: msg.frameIndex, sourceTimeMs: msg.sourceTimeMs };
     }
     this.emit();
   }

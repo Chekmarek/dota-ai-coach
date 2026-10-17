@@ -5,6 +5,7 @@ import { useSettings } from '../hooks/useSettings';
 import { Card, PageHeader, StatePill, Stat } from '../components/ui';
 import { HudRecognition, RegionOverlay } from '../components/HudRecognition';
 import { isLive } from '../components/live';
+import { PreviewImage } from '../components/preview';
 import { AskCoach, MatchSummary } from '../components/ask';
 import { usePageFacts } from '../hooks/useFacts';
 import { afterMatchFromState } from '@core/ai/after-match.ts';
@@ -110,7 +111,7 @@ export function ReplayMode() {
           <div className="preview overlay-host">
             {preview && (active || state === 'ended') ? (
               <>
-                <img src={preview.url} alt="Текущий кадр" data-testid="preview-img" />
+                <PreviewImage blob={preview.blob} label="Текущий кадр" testId="preview-img" />
                 {settings?.ui.showRegions && vision && <RegionOverlay reading={vision.reading} />}
               </>
             ) : (

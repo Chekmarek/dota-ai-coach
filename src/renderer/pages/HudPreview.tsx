@@ -7,6 +7,7 @@ import '../../hud/schematic.css';
 import { useSettings } from '../hooks/useSettings';
 import { useEngine } from '../hooks/useEngine';
 import { isLive } from '../components/live';
+import { drawBlob } from '../components/preview';
 import { Card, PageHeader } from '../components/ui';
 import { HudView, DEFAULT_LAYOUT } from '../../hud/view';
 import { schematic } from '../../hud/schematic';
@@ -79,15 +80,24 @@ export function HudPreview() {
     const el = bgRef.current;
     if (!el) return;
     el.replaceChildren();
-    const url = bg === 'live' ? (preview?.url ?? null) : bg === 'file' ? fileUrl : null;
-    if (url) {
+    let stale = false;
+    if (bg === 'live' && preview) {
+      // кадр игры — на canvas (см. components/preview.tsx: <img> с blob-ссылками копит память)
+      const c = document.createElement('canvas');
+      c.className = 'hudp-bgimg';
+      el.append(c);
+      void drawBlob(c, preview.blob, () => stale);
+    } else if (bg === 'file' && fileUrl) {
       const img = document.createElement('img');
-      img.src = url;
+      img.src = fileUrl;
       img.className = 'hudp-bgimg';
       img.alt = '';
       el.append(img);
     } else el.append(schematic(DEFAULT_LAYOUT, screen.width, screen.height));
-  }, [bg, preview?.url, fileUrl, screen]);
+    return () => {
+      stale = true;
+    };
+  }, [bg, preview?.blob, fileUrl, screen]);
 
   useEffect(() => () => void (fileUrl && URL.revokeObjectURL(fileUrl)), [fileUrl]);
 
