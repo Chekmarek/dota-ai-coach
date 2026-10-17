@@ -2,7 +2,7 @@
 // локального ИИ, чат «Спроси коуча» и «Разбор матча» по записанным сессиям GSI.
 // ИИ ничего не считает сам: он пересказывает факты коуча, числа в ответе сверяются с ними.
 import { useEffect, useState } from 'react';
-import type { AiLocalModel, Settings, SettingsPatch } from '@shared/schemas/settings';
+import type { AiDraftModel, AiLocalModel, Settings, SettingsPatch } from '@shared/schemas/settings';
 import type { AiUiState } from '@shared/types/ai';
 import type { GsiSessionInfo } from '@shared/ipc';
 import { afterMatchFromGsi } from '@core/ai/after-match.ts';
@@ -48,6 +48,46 @@ function ProviderChoice({ settings, update }: { settings: Settings; update: (p: 
         </label>
       </div>
     </Card>
+  );
+}
+
+/**
+ * Модель для выбора героев (Qwen3 8B): объясняет советы драфта, пока идёт выбор героев. В матче не используется —
+ * при начале матча коуч её выгружает и отвечает обычной моделью выше.
+ */
+function DraftModelRow({ ai, settings, update, downloading }: { ai: AiUiState; settings: Settings; update: (p: SettingsPatch) => Promise<void>; downloading: boolean }) {
+  const l = ai.local;
+  const chosen = settings.ai.local.draftModel;
+  const m = l.draftModels!.find((x) => x.id === chosen) ?? null;
+  return (
+    <div className="form" data-testid="ai-draft-model">
+      <label>
+        Модель для выбора героев
+        <select
+          value={chosen ?? ''}
+          onChange={(e) => void update({ ai: { local: { draftModel: (e.target.value || null) as AiDraftModel | null } } })}
+          disabled={downloading}
+          data-testid="ai-draft-model-select"
+        >
+          <option value="">та же, что выше</option>
+          {l.draftModels!.map((x) => (
+            <option key={x.id} value={x.id}>
+              {x.nameRu} — {formatBytes(x.sizeBytes)}
+              {x.installed ? ' · скачана' : ''}
+            </option>
+          ))}
+        </select>
+      </label>
+      <p className="muted small">
+        Только на время выбора героев: объясняет, кого брать. Когда начинается матч, коуч выгружает её и дальше отвечает моделью выше. Памяти нужно
+        около 6 ГБ; на слабых ПК не проверено.
+      </p>
+      {m && !m.installed && (
+        <button disabled={downloading} onClick={() => void window.dotacoach.downloadLocalAi(m.id).then(setAiState)} data-testid="ai-draft-download">
+          ⬇ Скачать {m.nameRu} ({formatBytes(m.sizeBytes)})
+        </button>
+      )}
+    </div>
   );
 }
 
@@ -123,6 +163,7 @@ function LocalCard({ ai, settings, update }: { ai: AiUiState; settings: Settings
           Сервер запускается при первом вопросе с пониженным приоритетом и останавливается после 5 минут простоя. Во время матча ответы короче, чтобы не
           мешать игре.
         </p>
+        {l.draftModels && l.draftModels.length > 0 && <DraftModelRow ai={ai} settings={settings} update={update} downloading={downloading} />}
       </div>
     </Card>
   );

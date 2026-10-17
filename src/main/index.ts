@@ -12,6 +12,7 @@ import { liveSeesDota, onLiveSettingsChanged, setupLive, showHudDemo } from './l
 import { setupAi } from './ai';
 import { setupCoach, type CoachHandle } from './coach';
 import { gsiPhase } from '@core/gsi/map.ts';
+import { gameStage, type GameStage } from '@core/ai/draft-model.ts';
 import { setupUpdater } from './live/updater';
 import { setupGsi } from './gsi';
 import { setupDevDataset } from './dev';
@@ -39,6 +40,8 @@ if (!app.requestSingleInstanceLock()) {
   let engine: EngineLink | null = null;
   /** Когда GSI последний раз сообщил идущий матч (для ИИ: во время матча локальная модель отвечает коротко) */
   let gsiInMatchAt = 0;
+  // Последняя стадия игры из GSI (выбор героев / матч) — для тяжёлой модели драфта (src/core/ai/draft-model.ts)
+  let gsiStage: { stage: GameStage; at: number } | null = null;
 
   app.on('second-instance', () => {
     if (!ui) return;
@@ -62,7 +65,9 @@ if (!app.requestSingleInstanceLock()) {
       isTrustedSender,
       forward: (body, wallMs) => {
         const map = body.map as { game_state?: unknown } | undefined;
-        if (gsiPhase(typeof map?.game_state === 'string' ? map.game_state : null) === 'in-progress') gsiInMatchAt = Date.now();
+        const gameState = typeof map?.game_state === 'string' ? map.game_state : null;
+        if (gsiPhase(gameState) === 'in-progress') gsiInMatchAt = Date.now();
+        if (gameState) gsiStage = { stage: gameStage(gameState), at: Date.now() };
         dataset.noteGsi(body, wallMs);
         engine?.sendGsi(body, wallMs);
       },
@@ -95,6 +100,7 @@ if (!app.requestSingleInstanceLock()) {
       getUi: () => ui,
       isTrustedSender,
       inMatch: () => liveSeesDota() || Date.now() - gsiInMatchAt < 10_000,
+      stageInfo: () => ({ stage: gsiStage?.stage ?? null, at: gsiStage?.at ?? null, dotaOnScreen: liveSeesDota() }),
     });
     app.on('will-quit', () => ai.dispose());
 

@@ -5,8 +5,8 @@ import { createReadStream, createWriteStream, existsSync, mkdirSync, readFileSyn
 import { once } from 'node:events';
 import { execFile } from 'node:child_process';
 import { join } from 'node:path';
-import type { AiLocalModel } from '@shared/schemas/settings';
-import { MODELS, RUNTIME, type PinnedFile } from './manifest';
+import type { AiModelId } from '@shared/schemas/settings';
+import { ALL_MODELS, RUNTIME, type PinnedFile } from './manifest';
 
 export interface DownloadProgress {
   status: 'idle' | 'downloading' | 'verifying' | 'extracting' | 'error' | 'done';
@@ -22,7 +22,8 @@ export interface InstallerDeps {
   extract?: (zip: string, dir: string) => Promise<void>;
   /** Пауза перед повтором, мс */
   retryDelayMs?: number;
-  files?: { runtime: typeof RUNTIME; models: Record<AiLocalModel, PinnedFile & { nameRu: string; id: AiLocalModel }> };
+  /** Модели, которые можно скачать; в тестах — свой набор (не обязательно все) */
+  files?: { runtime: typeof RUNTIME; models: Partial<Record<AiModelId, PinnedFile & { nameRu: string; id: AiModelId }>> };
 }
 
 const ATTEMPTS = 4;
@@ -58,32 +59,36 @@ export class LocalInstaller {
     private readonly deps: InstallerDeps = {},
   ) {
     this.dir = join(dataDir, 'ai');
-    this.files = deps.files ?? { runtime: RUNTIME, models: MODELS };
+    this.files = deps.files ?? { runtime: RUNTIME, models: ALL_MODELS };
   }
 
   get runtime() {
     return this.files.runtime;
   }
 
-  model(id: AiLocalModel) {
-    return this.files.models[id];
+  model(id: AiModelId) {
+    const m = this.files.models[id];
+    if (!m) throw new Error(`Неизвестная модель ${id}`);
+    return m;
   }
 
   serverExe(): string {
     return join(this.dir, this.files.runtime.dir, this.files.runtime.exe);
   }
 
-  modelPath(id: AiLocalModel): string {
-    return join(this.dir, this.files.models[id].fileName);
+  modelPath(id: AiModelId): string {
+    return join(this.dir, this.model(id).fileName);
   }
 
   runtimeInstalled(): boolean {
     return existsSync(this.serverExe()) && this.verifiedMark(join(this.dir, this.files.runtime.dir), this.files.runtime);
   }
 
-  modelInstalled(id: AiLocalModel): boolean {
-    const p = this.modelPath(id);
-    return existsSync(p) && this.verifiedMark(p, this.files.models[id]);
+  modelInstalled(id: AiModelId): boolean {
+    const m = this.files.models[id];
+    if (!m) return false;
+    const p = join(this.dir, m.fileName);
+    return existsSync(p) && this.verifiedMark(p, m);
   }
 
   /** Отметка «проверено» рядом с файлом: хэш не пересчитываем при каждом запуске */
@@ -101,7 +106,7 @@ export class LocalInstaller {
   }
 
   /** Скачивает недостающее: сборку llama.cpp и выбранную модель */
-  async install(model: AiLocalModel, signal: AbortSignal): Promise<void> {
+  async install(model: AiModelId, signal: AbortSignal): Promise<void> {
     mkdirSync(this.dir, { recursive: true });
     try {
       if (!this.runtimeInstalled()) {
@@ -116,7 +121,7 @@ export class LocalInstaller {
         rmSync(zip, { force: true });
       }
       if (!this.modelInstalled(model)) {
-        const f = this.files.models[model];
+        const f = this.model(model);
         const path = await this.fetchVerified(f, signal);
         writeFileSync(`${path}.sha256`, f.sha256);
       }

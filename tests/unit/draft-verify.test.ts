@@ -5,7 +5,7 @@ import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { CoachLookup, type CoachData } from '../../src/core/coach/data.ts';
-import { counterDelta, counterItems, enemyThreats, suggestHeroes, synergyDelta, THREATS, HERO_THREATS } from '../../src/core/draft/index.ts';
+import { counterDelta, counterItems, draftFacts, enemyThreats, gamesRu, pctRu, suggestHeroes, synergyDelta, THREATS, HERO_THREATS } from '../../src/core/draft/index.ts';
 import { DraftService } from '../../src/main/coach/draft.ts';
 import type { DraftRequest } from '../../src/shared/types/draft.ts';
 import { realData } from './coach-sim.ts';
@@ -179,5 +179,36 @@ describe('угрозы: предметы по роли и невидимость
     // раскрывают невидимость, а не дают её
     for (const k of ['zuus', 'slardar', 'drow_ranger', 'bloodseeker', 'ringmaster']) expect(look.invisHeroes.has(k), k).toBe(false);
     expect(enemyThreats(['kez'], look.invisHeroes).map((t) => t.threat.id)).toContain('invis');
+  });
+});
+
+describe('факты драфта для ИИ: только посчитанное правилами', () => {
+  const look = new CoachLookup(real);
+  const enemies = ['bristleback', 'riki'];
+  const allies = ['lion'];
+  const c = suggestHeroes(look, { allies, enemies, limit: 3 });
+  const f = draftFacts({ candidates: c, name: (k) => look.heroName(k), enemies, allies, position: 2, patch: '7.41f', statsAt: '2026-10-16T19:05:26.088Z', threats: enemyThreats(enemies, look.invisHeroes), itemName: (k) => look.itemName(k) });
+
+  it('источник, патч, дата и «не гарантия»', () => {
+    expect(f[0]).toContain('OpenDota');
+    expect(f[0]).toContain('патч 7.41f');
+    expect(f[0]).toContain('2026-10-16');
+    expect(f[0]).toContain('не гарантия');
+    expect(f.some((l) => l.includes('мид (2)'))).toBe(true);
+  });
+
+  it('у каждого кандидата — итог и вклады с числом игр, ровно как посчитано', () => {
+    c.forEach((x, n) => {
+      const line = f.find((l) => l.startsWith(`Кандидат ${n + 1}: ${x.name},`))!;
+      expect(line).toContain(`итог ${pctRu(x.score)}`);
+      for (const v of x.vsEnemies.filter((r) => Math.abs(r.delta) >= 0.001)) expect(line).toContain(`против ${look.heroName(v.hero)} ${pctRu(v.delta)} (${gamesRu(v.games)})`);
+    });
+  });
+
+  it('в фактах нет героев, кроме выбранных и кандидатов', () => {
+    const allowed = new Set([...enemies, ...allies, ...c.map((x) => x.hero)].map((k) => look.heroName(k)));
+    // названия предметов вроде Monkey King Bar содержат имена героев — их из текста убираем
+    const text = real.items.reduce((s, i) => (i.name.length > 3 ? s.split(i.name).join(' ') : s), f.join(' '));
+    for (const h of real.heroes) if (!allowed.has(h.name) && h.name.length > 3) expect(text.includes(h.name), h.name).toBe(false);
   });
 });

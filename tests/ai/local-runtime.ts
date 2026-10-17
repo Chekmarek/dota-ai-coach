@@ -6,24 +6,28 @@ import { execFile } from 'node:child_process';
 import { join, resolve } from 'node:path';
 import { LocalInstaller } from '../../src/main/ai/local/installer';
 import { LlamaSidecar } from '../../src/main/ai/local/sidecar';
-import { MODELS, RUNTIME } from '../../src/main/ai/local/manifest';
+import { ALL_MODELS, RUNTIME } from '../../src/main/ai/local/manifest';
 import { AiService } from '../../src/main/ai/service';
-import { defaultSettings, type AiLocalModel, type Settings } from '../../src/shared/schemas/settings';
+import { AI_DRAFT_MODELS, defaultSettings, type AiDraftModel, type AiLocalModel, type AiModelId, type Settings } from '../../src/shared/schemas/settings';
 
 const ROOT = resolve(import.meta.dirname, '../..');
 
-export function localModels(): AiLocalModel[] {
+export function localModels(): AiModelId[] {
   const env = process.env.DOTACOACH_AI_MODELS;
   if (env === 'all') return ['qwen3-1.7b', 'qwen3-4b'];
-  return env ? (env.split(',') as AiLocalModel[]) : ['qwen3-1.7b'];
+  return env ? (env.split(',') as AiModelId[]) : ['qwen3-1.7b'];
 }
 
-export async function prepareLocal(model: AiLocalModel, inMatch = false) {
+/**
+ * Модель драфта (8B) проверяется так же, как в приложении: обычная модель 1.7B в настройках, тяжёлая — моделью
+ * драфта, стадия «выбор героев» (heavyAllowed). Отвечает тяжёлая только на kind = 'draft'.
+ */
+export async function prepareLocal(model: AiModelId, inMatch = false, threads?: number) {
   const dataDir = process.env.DOTACOACH_AI_DATA ?? join(ROOT, '.tmp/ai-local-data');
   const aiDir = join(dataDir, 'ai');
   mkdirSync(aiDir, { recursive: true });
   const cache = join(ROOT, '.tmp/ai-dl');
-  for (const f of [RUNTIME.fileName, MODELS[model].fileName]) {
+  for (const f of [RUNTIME.fileName, ALL_MODELS[model].fileName]) {
     const src = join(cache, f);
     if (existsSync(src) && !existsSync(join(aiDir, f)) && !existsSync(join(aiDir, `${f}.part`))) copyFileSync(src, join(aiDir, `${f}.part`));
   }
@@ -36,14 +40,18 @@ export async function prepareLocal(model: AiLocalModel, inMatch = false) {
     modelPath: (m) => installer.modelPath(m),
     installed: (m) => installer.runtimeInstalled() && installer.modelInstalled(m),
     log: (l) => console.log(l),
+    threads,
   });
   const s = defaultSettings();
-  const settings: Settings = { ...s, ai: { ...s.ai, provider: 'local', local: { model } } };
+  const heavy = (AI_DRAFT_MODELS as readonly string[]).includes(model);
+  const local = heavy ? { model: 'qwen3-1.7b' as AiLocalModel, draftModel: model as AiDraftModel } : { model: model as AiLocalModel, draftModel: null };
+  const settings: Settings = { ...s, ai: { ...s.ai, provider: 'local', local } };
   const service = new AiService({
     getSettings: () => settings,
     keys: { get: () => null },
-    local: { ensure: (m, signal) => sidecar.ensure(m, signal), touch: () => sidecar.touch() },
+    local: { ensure: (m, signal) => sidecar.ensure(m, signal), touch: () => sidecar.touch(), installed: (m) => installer.runtimeInstalled() && installer.modelInstalled(m) },
     inMatch: () => inMatch,
+    heavyAllowed: () => heavy && !inMatch,
     log: (l) => console.log(l),
   });
   return { installer, sidecar, service };

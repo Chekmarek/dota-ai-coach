@@ -191,7 +191,7 @@ export interface DotaCoachApi {
   setAiKey(key: string): Promise<AiUiState>;
   clearAiKey(): Promise<AiUiState>;
   sendAiFeedback(f: AiFeedback): Promise<void>;
-  downloadLocalAi(model: AiLocalModel): Promise<AiUiState>;
+  downloadLocalAi(model: import('./schemas/settings').AiModelId): Promise<AiUiState>;
   cancelLocalAiDownload(): Promise<AiUiState>;
   deleteLocalAi(): Promise<AiUiState>;
   stopLocalAi(): Promise<AiUiState>;

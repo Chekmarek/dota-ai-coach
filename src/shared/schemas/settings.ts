@@ -43,6 +43,15 @@ export const AI_PROVIDER_SETTINGS = ['off', 'local', 'gigachat', 'openai-compati
 export type AiProviderSetting = (typeof AI_PROVIDER_SETTINGS)[number];
 export const AI_LOCAL_MODELS = ['qwen3-1.7b', 'qwen3-4b'] as const;
 export type AiLocalModel = (typeof AI_LOCAL_MODELS)[number];
+/**
+ * Тяжёлые модели только для выбора героев (решение владельца, 0.13.x): в матче не используются никогда,
+ * при начале матча выгружаются. Отдельно от AI_LOCAL_MODELS — их нельзя выбрать моделью для матча.
+ */
+export const AI_DRAFT_MODELS = ['qwen3-8b'] as const;
+export type AiDraftModel = (typeof AI_DRAFT_MODELS)[number];
+/** Любая локальная модель (для скачивания и запуска llama-server) */
+export type AiModelId = AiLocalModel | AiDraftModel;
+export const AI_ALL_MODELS: readonly AiModelId[] = [...AI_LOCAL_MODELS, ...AI_DRAFT_MODELS];
 
 /** Адрес облачного ИИ: https://…; http — только для сервера на этом ПК (127.0.0.1, localhost) */
 export function isAllowedAiBaseUrl(raw: string): boolean {
@@ -60,6 +69,8 @@ const aiFields = {
   /** Кто отвечает: off — ИИ выключен; gigachat пока недоступен (нужен корневой сертификат Минцифры, его не встраиваем) */
   provider: z.enum(AI_PROVIDER_SETTINGS),
   localModel: z.enum(AI_LOCAL_MODELS),
+  /** Модель для объяснений во время выбора героев; null — та же, что для матча */
+  draftModel: z.enum(AI_DRAFT_MODELS).nullable(),
   /** Пусто — не задан */
   cloudBaseUrl: z.union([z.literal(''), z.string().max(500).refine(isAllowedAiBaseUrl, 'Адрес должен начинаться с https://')]),
   cloudModel: z.string().max(200),
@@ -68,13 +79,14 @@ const aiFields = {
 };
 
 // ИИ-помощник (0.11.0): по умолчанию выключен; облако — только с согласием пользователя (docs/POLICY.md)
-const D_AI = { provider: 'off', local: { model: 'qwen3-1.7b' }, cloud: { baseUrl: '', model: '' }, sendToCloudConsent: false } as const;
+const D_AI = { provider: 'off', local: { model: 'qwen3-1.7b', draftModel: null }, cloud: { baseUrl: '', model: '' }, sendToCloudConsent: false } as const;
 
 /** Терпимый раздел ai: плохое поле → значение по умолчанию, остальные сохраняются */
 const aiTolerant = z
   .object({
     provider: aiFields.provider.catch(D_AI.provider),
-    local: z.object({ model: aiFields.localModel.catch(D_AI.local.model) }).catch(() => ({ ...D_AI.local })),
+    // draftModel появился в 0.13.x: в старых settings.json его нет — тогда null
+    local: z.object({ model: aiFields.localModel.catch(D_AI.local.model), draftModel: aiFields.draftModel.catch(null) }).catch(() => ({ ...D_AI.local })),
     cloud: z
       .object({ baseUrl: aiFields.cloudBaseUrl.catch(''), model: aiFields.cloudModel.catch('') })
       .catch(() => ({ ...D_AI.cloud })),
@@ -219,7 +231,7 @@ export const settingsPatchSchema = z
     ai: z
       .object({
         provider: z.enum(['off', 'local', 'openai-compatible']),
-        local: z.object({ model: aiFields.localModel }).strict(),
+        local: z.object({ model: aiFields.localModel, draftModel: aiFields.draftModel }).partial().strict(),
         cloud: z.object({ baseUrl: aiFields.cloudBaseUrl, model: aiFields.cloudModel }).partial().strict(),
         sendToCloudConsent: aiFields.sendToCloudConsent,
       })

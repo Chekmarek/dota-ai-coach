@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import type { AiErrorCode } from '../../core/ai/provider.ts';
-import type { AiLocalModel, AiProviderSetting } from '../schemas/settings';
+import type { AiDraftModel, AiLocalModel, AiModelId, AiProviderSetting } from '../schemas/settings';
 
 // ИИ-помощник: обмен интерфейса с main. Ключи облака сюда не попадают никогда — только «ключ сохранён: да/нет».
 
@@ -59,6 +59,8 @@ export interface AiLocalState {
   /** Что скачано */
   runtimeInstalled: boolean;
   models: { id: AiLocalModel; nameRu: string; sizeBytes: number; installed: boolean }[];
+  /** Тяжёлые модели только для выбора героев (0.13.x); нет поля — старый main */
+  draftModels?: { id: AiDraftModel; nameRu: string; sizeBytes: number; installed: boolean }[];
   /** Размер сборки llama.cpp */
   runtimeSizeBytes: number;
   download: {
@@ -70,7 +72,7 @@ export interface AiLocalState {
   };
   server: {
     status: 'stopped' | 'starting' | 'ready' | 'error';
-    model: AiLocalModel | null;
+    model: AiModelId | null;
     error: string | null;
     /** Время загрузки модели, мс */
     loadMs: number | null;

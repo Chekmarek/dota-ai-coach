@@ -5,12 +5,12 @@ import { spawn, execFile, type ChildProcess } from 'node:child_process';
 import { createServer } from 'node:net';
 import { cpus, setPriority, constants } from 'node:os';
 import { AiError } from '@core/ai/provider.ts';
-import type { AiLocalModel } from '@shared/schemas/settings';
+import type { AiModelId } from '@shared/schemas/settings';
 import { CONTEXT_TOKENS, IDLE_STOP_MS, threadsFor } from './manifest';
 
 export interface SidecarState {
   status: 'stopped' | 'starting' | 'ready' | 'error';
-  model: AiLocalModel | null;
+  model: AiModelId | null;
   error: string | null;
   loadMs: number | null;
   pid: number | null;
@@ -20,8 +20,8 @@ export interface SidecarState {
 
 export interface SidecarDeps {
   exe: () => string;
-  modelPath: (m: AiLocalModel) => string;
-  installed: (m: AiLocalModel) => boolean;
+  modelPath: (m: AiModelId) => string;
+  installed: (m: AiModelId) => boolean;
   onState?: (s: SidecarState) => void;
   log?: (line: string) => void;
   idleStopMs?: number;
@@ -78,7 +78,7 @@ export class LlamaSidecar {
   }
 
   /** Сервер с нужной моделью: запускает при необходимости */
-  async ensure(model: AiLocalModel, signal?: AbortSignal): Promise<string> {
+  async ensure(model: AiModelId, signal?: AbortSignal): Promise<string> {
     // Сервер запущен до матча с половиной ядер, а матч уже идёт — перезапускаем с меньшим числом потоков
     const wantThreads = this.threads();
     const tooMany = this.deps.threads === undefined && this.state.threads !== null && this.state.threads > wantThreads;
@@ -107,7 +107,7 @@ export class LlamaSidecar {
     return this.deps.threads ?? threadsFor(cpus().length, this.deps.inMatch?.() ?? false);
   }
 
-  private async start(model: AiLocalModel): Promise<string> {
+  private async start(model: AiModelId): Promise<string> {
     const threads = this.threads();
     const port = await freePort();
     const t0 = Date.now();

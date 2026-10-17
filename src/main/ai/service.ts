@@ -1,9 +1,9 @@
 // Запросы к ИИ в main: выбор поставщика по настройкам, согласие на облако, таймауты, «Стоп», один запрос за раз.
 // Без Electron (зависимости передаются снаружи) — проверяется unit-тестами с поддельным сервером на 127.0.0.1.
 import { AiError, toAiError, type AiErrorCode, type AiMessage, type AiProvider } from '@core/ai/provider.ts';
-import { NO_FACTS_ANSWER, buildAskPrompt, buildCardPrompt, buildSummaryPrompt, trimToSentence, type BuiltPrompt, type PromptKind } from '@core/ai/prompt.ts';
+import { NO_FACTS_ANSWER, buildAskPrompt, buildCardPrompt, buildDraftPrompt, buildSummaryPrompt, trimToSentence, type BuiltPrompt, type PromptKind } from '@core/ai/prompt.ts';
 import { cleanAnswer } from '@core/ai/stream.ts';
-import type { AiLocalModel, Settings } from '@shared/schemas/settings';
+import type { AiModelId, Settings } from '@shared/schemas/settings';
 import { openAiCompatibleProvider } from './openai-client';
 import type { KeyProvider } from './keys';
 
@@ -20,13 +20,15 @@ export interface AiTimeouts {
 export const DEFAULT_TIMEOUTS: AiTimeouts = { firstTokenCloudMs: 30_000, firstTokenLocalMs: 120_000, idleMs: 30_000, totalMs: 180_000 };
 
 /** Длина ответа в токенах; во время матча локальная модель отвечает коротко (защита FPS Доты) */
-export const MAX_TOKENS: Record<PromptKind, number> = { ask: 300, summary: 500, card: 60 };
+export const MAX_TOKENS: Record<PromptKind, number> = { ask: 300, summary: 500, card: 60, draft: 120 };
 export const IN_MATCH_MAX_TOKENS = 120;
 export const TEMPERATURE = 0.2;
 
 export interface LocalRuntime {
   /** Запускает llama-server (если ещё не запущен) и возвращает базовый адрес …/v1. Ошибки — AiError */
-  ensure(model: AiLocalModel, signal: AbortSignal): Promise<string>;
+  ensure(model: AiModelId, signal: AbortSignal): Promise<string>;
+  /** Модель скачана и проверена (для тяжёлой модели драфта: нет — берём обычную) */
+  installed?(model: AiModelId): boolean;
   /** Отметка использования (отсчёт простоя до остановки) */
   touch(): void;
 }
@@ -37,6 +39,8 @@ export interface AiServiceDeps {
   local: LocalRuntime | null;
   /** Живой захват или GSI видят идущий матч Доты */
   inMatch(): boolean;
+  /** Можно ли сейчас держать тяжёлую модель драфта (src/core/ai/draft-model.ts); нет функции — нельзя */
+  heavyAllowed?(): boolean;
   log(line: string): void;
   fetchImpl?: typeof fetch;
   timeouts?: Partial<AiTimeouts>;
@@ -65,10 +69,13 @@ export interface AskResult {
   totalMs: number;
   /** Ответ укорочен: идёт матч, локальная модель */
   limited: boolean;
+  /** Какая локальная модель отвечала (null — облако или не дошло до модели) */
+  model?: AiModelId | null;
 }
 
 function buildPrompt(input: AskInput, short: boolean): BuiltPrompt {
   if (input.kind === 'summary') return buildSummaryPrompt(input.facts);
+  if (input.kind === 'draft') return buildDraftPrompt(input.facts);
   if (input.kind === 'card') return buildCardPrompt(input.card?.type ?? 'hint', input.facts, input.card?.severity ?? 'info');
   return buildAskPrompt(input.question ?? '', input.facts, input.history ?? [], short);
 }
@@ -104,15 +111,27 @@ export class AiService {
     return {
       id: s.provider === 'local' ? 'local' : 'openai-compatible',
       async *generate(req) {
-        const p = await self.provider(self.deps.getSettings().ai, req.signal ?? new AbortController().signal);
+        // подсказки матча — всегда обычная модель (тяжёлая только для выбора героев)
+        const p = await self.provider(self.deps.getSettings().ai, req.signal ?? new AbortController().signal, 'ask');
         yield* p.generate(req);
         self.deps.local?.touch();
       },
     };
   }
 
+  /**
+   * Какая локальная модель отвечает: на объяснение драфта — тяжёлая, если выбрана, скачана и сейчас выбор героев;
+   * на всё остальное (и в матче) — обычная из настроек. Так тяжёлая модель в матч не попадает
+   */
+  localModelFor(kind: PromptKind): AiModelId {
+    const s = this.deps.getSettings().ai.local;
+    const heavy = s.draftModel;
+    if (kind === 'draft' && heavy && this.deps.heavyAllowed?.() && this.deps.local?.installed?.(heavy)) return heavy;
+    return s.model;
+  }
+
   /** Поставщик по настройкам; ошибки настройки — AiError */
-  private async provider(s: Settings['ai'], signal: AbortSignal): Promise<AiProvider> {
+  private async provider(s: Settings['ai'], signal: AbortSignal, kind: PromptKind): Promise<AiProvider> {
     if (s.provider === 'off') throw new AiError('not-configured');
     if (s.provider === 'gigachat') throw new AiError('unavailable', 'GigaChat пока недоступен: ему нужен отдельный корневой сертификат, коуч его не устанавливает');
     if (s.provider === 'openai-compatible') {
@@ -127,11 +146,12 @@ export class AiService {
       });
     }
     if (!this.deps.local) throw new AiError('unavailable');
-    const baseUrl = await this.deps.local.ensure(s.local.model, signal);
+    const model = this.localModelFor(kind);
+    const baseUrl = await this.deps.local.ensure(model, signal);
     return openAiCompatibleProvider({
       id: 'local',
       baseUrl,
-      model: s.local.model,
+      model,
       apiKey: null,
       // Qwen3 без размышлений: быстрее и короче
       extraBody: { chat_template_kwargs: { enable_thinking: false } },
@@ -167,7 +187,8 @@ export class AiService {
     let firstChunkMs: number | null = null;
     let limited = false;
     try {
-      const provider = await this.provider(settings, ctrl.signal);
+      const provider = await this.provider(settings, ctrl.signal, input.kind);
+      if (provider.id === 'local') base.model = this.localModelFor(input.kind);
       const local = provider.id === 'local';
       let maxTokens = MAX_TOKENS[input.kind];
       if (local && this.deps.inMatch() && maxTokens > IN_MATCH_MAX_TOKENS) {

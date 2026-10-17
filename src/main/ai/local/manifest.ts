@@ -8,7 +8,7 @@
 //  - 4B — официальный репозиторий Qwen;
 //  - 1.7B — у Qwen в GGUF только Q8_0 (1,8 ГБ), поэтому Q4_K_M из unsloth/Qwen3-1.7B-GGUF (та же модель и лицензия).
 // Ссылки закреплены на коммит репозитория Hugging Face (resolve/<sha>/…), а не на «main».
-import type { AiLocalModel } from '@shared/schemas/settings';
+import type { AiDraftModel, AiLocalModel, AiModelId } from '@shared/schemas/settings';
 
 export interface PinnedFile {
   url: string;
@@ -30,7 +30,7 @@ export const RUNTIME: PinnedFile & { exe: string; dir: string } = {
 };
 
 export interface PinnedModel extends PinnedFile {
-  id: AiLocalModel;
+  id: AiModelId;
   nameRu: string;
   license: string;
   source: string;
@@ -58,6 +58,27 @@ export const MODELS: Record<AiLocalModel, PinnedModel> = {
     source: 'Qwen/Qwen3-4B-GGUF',
   },
 };
+
+/**
+ * Модель только для выбора героев (решение владельца): Qwen3 8B, официальный репозиторий Qwen, Q4_K_M.
+ * Размер и SHA-256 — по скачанному файлу (посчитаны на этом ПК 2026-10-17, совпали с LFS-хешем Hugging Face).
+ * В матче не используется; при начале матча llama-server с ней останавливается (src/core/ai/draft-model.ts).
+ */
+export const DRAFT_MODELS: Record<AiDraftModel, PinnedModel> = {
+  'qwen3-8b': {
+    id: 'qwen3-8b',
+    nameRu: 'Qwen3 8B (только для выбора героев)',
+    url: 'https://huggingface.co/Qwen/Qwen3-8B-GGUF/resolve/7c41481f57cb95916b40956ab2f0b139b296d974/Qwen3-8B-Q4_K_M.gguf',
+    fileName: 'Qwen3-8B-Q4_K_M.gguf',
+    sizeBytes: 5_027_783_488,
+    sha256: 'd98cdcbd03e17ce47681435b5150e34c1417f50b5c0019dd560e4882c5745785',
+    license: 'Apache-2.0',
+    source: 'Qwen/Qwen3-8B-GGUF',
+  },
+};
+
+/** Все модели: для скачивания и запуска llama-server */
+export const ALL_MODELS: Record<AiModelId, PinnedModel> = { ...MODELS, ...DRAFT_MODELS };
 
 /**
  * Параметры llama-server (решение владельца: CPU, контекст ≤ 4096, половина логических ядер, не меньше 2).

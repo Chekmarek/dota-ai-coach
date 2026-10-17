@@ -226,9 +226,9 @@ describe('ключи и настройки ИИ', () => {
   });
 
   it('старый settings.json без раздела ai читается; плохие поля → по умолчанию', () => {
-    expect(settingsSchema.parse({ live: { fps: 5 } }).ai).toEqual({ provider: 'off', local: { model: 'qwen3-1.7b' }, cloud: { baseUrl: '', model: '' }, sendToCloudConsent: false });
+    expect(settingsSchema.parse({ live: { fps: 5 } }).ai).toEqual({ provider: 'off', local: { model: 'qwen3-1.7b', draftModel: null }, cloud: { baseUrl: '', model: '' }, sendToCloudConsent: false });
     const s = settingsSchema.parse({ ai: { provider: 'gpt-9', local: { model: 'qwen3-4b' }, cloud: { baseUrl: 'ftp://x', model: 'm' }, sendToCloudConsent: 'да' } });
-    expect(s.ai).toEqual({ provider: 'off', local: { model: 'qwen3-4b' }, cloud: { baseUrl: '', model: 'm' }, sendToCloudConsent: false });
+    expect(s.ai).toEqual({ provider: 'off', local: { model: 'qwen3-4b', draftModel: null }, cloud: { baseUrl: '', model: 'm' }, sendToCloudConsent: false });
   });
 
   it('патч ИИ строгий: ключ и GigaChat через него не задать, http — только для этого ПК', () => {

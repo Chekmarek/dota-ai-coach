@@ -6,7 +6,8 @@ import { appendFileSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { IPC } from '@shared/ipc';
 import { aiAskPayloadSchema, aiFeedbackSchema, aiKeyPayloadSchema, type AiAskResult, type AiUiState } from '@shared/types/ai';
-import { AI_LOCAL_MODELS } from '@shared/schemas/settings';
+import { AI_ALL_MODELS, AI_DRAFT_MODELS, AI_LOCAL_MODELS } from '@shared/schemas/settings';
+import { heavyModelAllowed, inDraftStage, shouldUnloadHeavy, type StageInfo } from '@core/ai/draft-model.ts';
 import { z } from 'zod';
 import type { SettingsStore } from '../settings/store';
 import { liveLog } from '../live/live';
@@ -14,7 +15,7 @@ import { AiService } from './service';
 import { KeyStore } from './keys';
 import { LocalInstaller } from './local/installer';
 import { LlamaSidecar } from './local/sidecar';
-import { MODELS } from './local/manifest';
+import { DRAFT_MODELS, MODELS } from './local/manifest';
 import { listSessions, readSessionMatch } from './sessions';
 
 interface Deps {
@@ -23,7 +24,12 @@ interface Deps {
   getUi: () => BrowserWindow | null;
   isTrustedSender: (e: IpcMainInvokeEvent) => boolean;
   inMatch: () => boolean;
+  /** Стадия игры из GSI и видна ли Дота — для тяжёлой модели выбора героев; нет — тяжёлая модель не запускается */
+  stageInfo?: () => StageInfo;
 }
+
+/** Как часто проверять, не пора ли выгрузить тяжёлую модель (начался матч) */
+export const HEAVY_GUARD_MS = 2000;
 
 export interface AiHandle {
   /** Поставщик для движка подсказок; null — ИИ выключен */
@@ -48,15 +54,28 @@ export function setupAi(deps: Deps): AiHandle {
       push();
     },
     log: liveLog,
-    inMatch: deps.inMatch,
+    // Потоков в матче — четверть ядер. При выборе героев (по GSI) — половина: FPS на экране выбора не важен,
+    // а на четверти ядер Qwen3 8B отвечает ~59 с вместо ~16 с (замер 2026-10-17, docs/LIMITATIONS.md)
+    inMatch: () => deps.inMatch() && !(deps.stageInfo && inDraftStage(deps.stageInfo(), Date.now())),
   });
   const service = new AiService({
     getSettings: () => deps.settings.get(),
     keys,
-    local: { ensure: (m, signal) => sidecar.ensure(m, signal), touch: () => sidecar.touch() },
+    local: { ensure: (m, signal) => sidecar.ensure(m, signal), touch: () => sidecar.touch(), installed: (m) => installer.runtimeInstalled() && installer.modelInstalled(m) },
     inMatch: deps.inMatch,
+    heavyAllowed: () => !!deps.stageInfo && heavyModelAllowed(deps.stageInfo(), Date.now()),
     log: liveLog,
   });
+
+  // Тяжёлая модель драфта не остаётся в памяти, когда начался матч: раз в 2 с — проверка и остановка llama-server
+  const heavyGuard = setInterval(() => {
+    const allowed = !!deps.stageInfo && heavyModelAllowed(deps.stageInfo(), Date.now());
+    if (shouldUnloadHeavy(sidecar.state.model, AI_DRAFT_MODELS, allowed) && sidecar.state.status !== 'stopped') {
+      liveLog(`ai тяжёлая модель ${sidecar.state.model} выгружена: выбор героев закончился`);
+      sidecar.stop();
+    }
+  }, HEAVY_GUARD_MS);
+  heavyGuard.unref?.();
 
   function state(): AiUiState {
     const sc = sidecar.state;
@@ -69,6 +88,7 @@ export function setupAi(deps: Deps): AiHandle {
         runtimeInstalled: installer.runtimeInstalled(),
         runtimeSizeBytes: installer.runtime.sizeBytes,
         models: AI_LOCAL_MODELS.map((id) => ({ id, nameRu: MODELS[id].nameRu, sizeBytes: MODELS[id].sizeBytes, installed: installer.modelInstalled(id) })),
+        draftModels: AI_DRAFT_MODELS.map((id) => ({ id, nameRu: DRAFT_MODELS[id].nameRu, sizeBytes: DRAFT_MODELS[id].sizeBytes, installed: installer.modelInstalled(id) })),
         download: { ...installer.progress },
         server: { status: sc.status, model: sc.model, error: sc.error, loadMs: sc.loadMs, tokensPerSec, ramBytes, threads: sc.threads },
       },
@@ -135,7 +155,7 @@ export function setupAi(deps: Deps): AiHandle {
   });
 
   handle(IPC.aiLocalDownload, async (_e, arg) => {
-    const model = z.enum(AI_LOCAL_MODELS).parse(arg);
+    const model = z.enum(AI_ALL_MODELS as [string, ...string[]]).parse(arg) as (typeof AI_ALL_MODELS)[number];
     if (downloadCtrl) return state();
     downloadCtrl = new AbortController();
     liveLog(`ai скачивание локального ИИ: ${model}`);
@@ -182,6 +202,7 @@ export function setupAi(deps: Deps): AiHandle {
   return {
     coachProvider: () => service.coachProvider(),
     dispose: () => {
+      clearInterval(heavyGuard);
       downloadCtrl?.abort();
       service.cancel();
       sidecar.stop();

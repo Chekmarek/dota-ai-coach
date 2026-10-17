@@ -7,6 +7,8 @@ import { afterAll, it } from 'vitest';
 import { cpuMs, localModels, prepareLocal } from './local-runtime';
 import { loadQuestions, promptFacts } from './eval';
 import { processRamBytes } from '../../src/main/ai/local/sidecar';
+import { threadsFor } from '../../src/main/ai/local/manifest';
+import { AI_DRAFT_MODELS } from '../../src/shared/schemas/settings';
 
 const ROOT = resolve(import.meta.dirname, '../..');
 const results: Record<string, unknown>[] = [];
@@ -18,9 +20,22 @@ afterAll(() => {
 const ids = ['live-blink-gold', 'mech-roshan', 'live-enemy-dead', 'item-bkb-parts', 'hero-pudge-ms'];
 
 for (const model of localModels()) {
-  for (const inMatch of [true, false]) {
-    it(`${model}${inMatch ? ' (во время матча)' : ''}`, async () => {
-      const { sidecar, service } = await prepareLocal(model, inMatch);
+  // Модель драфта: отвечает только на kind = 'draft' и не в матче. Во время выбора героев захват видит Доту —
+  // потоков четверть ядер (как в матче); без Доты — половина
+  const heavy = (AI_DRAFT_MODELS as readonly string[]).includes(model);
+  const kind = heavy ? ('draft' as const) : ('ask' as const);
+  const configs = heavy
+    ? [
+        { label: ' (выбор героев, ¼ ядер)', inMatch: false, threads: threadsFor(cpus().length, true) },
+        { label: ' (Дота закрыта, ½ ядер)', inMatch: false, threads: threadsFor(cpus().length, false) },
+      ]
+    : [
+        { label: ' (во время матча)', inMatch: true, threads: undefined },
+        { label: '', inMatch: false, threads: undefined },
+      ];
+  for (const { label, inMatch, threads } of configs) {
+    it(`${model}${label}`, async () => {
+      const { sidecar, service } = await prepareLocal(model, inMatch, threads);
       try {
         const qs = loadQuestions().filter((q) => ids.includes(q.id));
         const t0 = Date.now();
@@ -33,7 +48,8 @@ for (const model of localModels()) {
           const pid = sidecar.state.pid!;
           const c0 = await cpuMs(pid);
           const w0 = Date.now();
-          const r = await service.ask({ requestId: q.id, kind: 'ask', question: q.question, facts: promptFacts(q) }, () => undefined);
+          const r = await service.ask({ requestId: q.id, kind, question: q.question, facts: promptFacts(q) }, () => undefined);
+          if (r.model && r.model !== model) throw new Error(`${q.id}: ответила ${r.model}, а не ${model}`);
           const w1 = Date.now();
           const c1 = await cpuMs(pid);
           if (r.error) throw new Error(`${q.id}: ${r.error.message}`);
@@ -48,6 +64,7 @@ for (const model of localModels()) {
         const ram = await processRamBytes(sidecar.state.pid!);
         results.push({
           model,
+          mode: label.trim() || 'обычный',
           inMatch,
           threads: sidecar.state.threads,
           cores: cpus().length,

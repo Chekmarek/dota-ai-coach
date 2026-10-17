@@ -10,7 +10,7 @@ export const MAX_QUESTION_CHARS = 500;
 /** Сколько прошлых реплик чата отдаём модели */
 export const MAX_HISTORY = 4;
 
-export type PromptKind = 'ask' | 'summary' | 'card';
+export type PromptKind = 'ask' | 'summary' | 'card' | 'draft';
 
 export interface BuiltPrompt {
   system: string;
@@ -75,6 +75,23 @@ export function buildSummaryPrompt(facts: readonly string[]): BuiltPrompt {
     factBlock(f),
   ].join('\n');
   return { system, messages: [{ role: 'user', content: 'Сделай разбор этого матча.' }], facts: f };
+}
+
+/**
+ * Выбор героев: короткое уведомление поверх игры. Кого брать и почему — уже посчитали правила (src/core/draft);
+ * модель только пересказывает: числа, герои, патч и число игр — дословно из фактов.
+ */
+export function buildDraftPrompt(facts: readonly string[]): BuiltPrompt {
+  const f = limitFacts(facts);
+  const system = [
+    ...COMMON,
+    'Идёт выбор героев. Перескажи совет одним-двумя короткими предложениями для уведомления поверх игры.',
+    'Начни с героя, которого советуют факты первым. Называй только героев из фактов, проценты и число игр пиши так же, как в фактах.',
+    'Не говори, что победа гарантирована: проценты — оценка по статистике патча.',
+    '',
+    factBlock(f),
+  ].join('\n');
+  return { system, messages: [{ role: 'user', content: 'Кого сейчас взять?' }], facts: f };
 }
 
 /** Подсказка-карточка (будущие детекторы ошибок): одна фраза до 15 слов */
