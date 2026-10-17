@@ -53,4 +53,21 @@ describe('способности', () => {
   it.skipIf(!existsSync(join(HUD, 'v3-t01.png')))('Monkey King: бирюзовая иконка — не «нет маны»', () => {
     expect(states('v3-t01.png')?.every((s) => s.startsWith('ready'))).toBe(true);
   });
+
+  // Панель из 4 крупных ячеек (край 712), Hero Demo 2026-10-17; эталон — по вырезам ячеек.
+  // Белое лезвие Queen of Pain и вихрь Juggernaut — не перезарядка; синие иконки при нехватке маны — «нет маны»
+  const WIDE: [string, string[]][] = [
+    ['ab-jugg-1.png', ['ready/1', 'ready/1', 'unlearned/0', 'unlearned/0']],
+    ['ab-jugg-2.png', ['cooldown:21/1', 'cooldown:53/1', 'unlearned/0', 'unlearned/0']],
+    ['ab-qop-1.png', ['ready/1', 'ready/1', 'ready/1', 'unlearned/0']],
+    ['ab-qop-4.png', ['ready/1', 'cooldown:1/1', 'ready/1', 'unlearned/0']],
+    ['ab-qop-7.png', ['no-mana/1', 'no-mana/1', 'cooldown:1/1', 'unlearned/0']],
+    ['ab-qop-8.png', ['no-mana/1', 'ready/1', 'no-mana/1', 'unlearned/0']],
+    ['ab-qop-10.png', ['ready/4', 'ready/4', 'ready/4', 'no-mana/3']],
+    ['ab-qop-11.png', ['ready/4', 'ready/4', 'ready/4', 'cooldown:70/3']],
+  ];
+  for (const [file, want] of WIDE)
+    it.skipIf(!existsSync(join(HUD, file)))(`4 крупные ячейки: ${file}`, () => {
+      expect(states(file)).toEqual(want);
+    });
 });

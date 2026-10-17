@@ -6,10 +6,10 @@ import { readText, type GlyphModel } from '../ocr/glyph-ocr.ts';
 import type { FrameAccess } from './image.ts';
 import { layoutFits, scaleRect, type HudLayout } from './hud-layout.ts';
 import { HUD_FIELDS, PARSERS, type HudFieldId, type HudValues, type ParseResult } from './hud-fields.ts';
-import { findBarAnchor, isGridEdge, selectedUnitRelation, type UnitRelation } from './hud-anchors.ts';
+import { findBarAnchor, selectedUnitRelation, type UnitRelation } from './hud-anchors.ts';
 import { readHeroName, type HeroIdentity, type HeroNameEntry } from './hero-name.ts';
 import { isPreHorn, readDayNight, type DayNight } from './day-night.ts';
-import { readAbilities, type AbilitySlot } from './abilities.ts';
+import { abilityPanel, readAbilities, type AbilitySlot } from './abilities.ts';
 import { readItems, type ItemSlot, type ItemTemplates } from './items.ts';
 import { hudGeometry, legacyGeometry, type AspectDef, type HudGeometry } from './hud-geometry.ts';
 
@@ -185,10 +185,12 @@ export function recognizeHud(
     heroName: name.observed,
     heroNameCandidates: name.candidates,
     dayNight,
-    // Ячейки способностей размечены для панели с 5–7 ячейками (шаг 58 px); у панели с краем 712 (4 способности)
-    // ячейки крупнее — их геометрия не размечена, поэтому способности не читаем, а не читаем «не там»
+    // Ячейки размечены для панели из 5–7 ячеек (шаг 58 px) и из 4 крупных (край 712, шаг 65 px);
+    // край вне известных — способности не читаем, чтобы не читать «не там»
     abilities:
-      supported && anchor.barLeft !== null && isGridEdge(anchor.barLeft, geo) ? readAbilities(frame, anchor.barLeft, opts.cooldownModel ?? null, geo) : null,
+      supported && anchor.barLeft !== null && abilityPanel(anchor.barLeft, geo)
+        ? readAbilities(frame, anchor.barLeft, opts.cooldownModel ?? null, geo)
+        : null,
     items: supported && anchor.barLeft !== null && opts.itemTemplates ? readItems(frame, anchor.barLeft, opts.itemTemplates, geo) : null,
     durationMs: now() - t0,
   };

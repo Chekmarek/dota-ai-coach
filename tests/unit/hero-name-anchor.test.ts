@@ -7,6 +7,7 @@ import { nameCost, nameWordVariants } from '../../src/core/vision/hero-name.ts';
 import { EXTRA_EDGES, findBarAnchor, isGridEdge } from '../../src/core/vision/hud-anchors.ts';
 import { legacyGeometry } from '../../src/core/vision/hud-geometry.ts';
 import { recognizeHud } from '../../src/core/vision/recognize-hud.ts';
+import { abilityPanel, GRID_PANEL, WIDE_PANEL } from '../../src/core/vision/abilities.ts';
 import type { HudLayout } from '../../src/core/vision/hud-layout.ts';
 import type { GlyphModel } from '../../src/core/ocr/glyph-ocr.ts';
 
@@ -76,10 +77,14 @@ describe('опора: край панели у героев с четырьмя 
     expect(findBarAnchor(frameAccessFromImage(withBars(704))).barLeft).toBeNull();
   });
 
-  it('на краю 712 способности не читаются (ячейки другого размера), а панель и уровень — да', () => {
+  it('на краю 712 — четыре крупные ячейки способностей; панель и уровень сдвинуты вместе с краем', () => {
     const r = recognizeHud(frameAccessFromImage(withBars(712)), layout, model, 0);
     expect(r.selectedUnit.value).toBe('ally');
-    expect(r.abilities).toBeNull();
+    expect(r.abilities).toHaveLength(4);
+    expect(abilityPanel(712, legacyGeometry(1920, 1080))?.panel).toBe(WIDE_PANEL);
+    expect(abilityPanel(667, legacyGeometry(1920, 1080))?.panel).toBe(GRID_PANEL);
+    // Край вне известных — способности не читаются
+    expect(abilityPanel(704, legacyGeometry(1920, 1080))).toBeNull();
     // Кружок уровня сдвинут вместе с краем панели: 458 + (712 − 667)
     expect(r.fields.level.sourceRegion.rect.x).toBe(503);
     expect(recognizeHud(frameAccessFromImage(withBars(667)), layout, model, 0).abilities).not.toBeNull();

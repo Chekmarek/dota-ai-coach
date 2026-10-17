@@ -3,6 +3,7 @@
 import { readText, type GlyphModel } from '../ocr/glyph-ocr.ts';
 import type { FrameAccess, RgbaImage } from './image.ts';
 import { legacyGeometry, type HudGeometry } from './hud-geometry.ts';
+import { EXTRA_EDGES, isGridEdge } from './hud-anchors.ts';
 
 export type AbilityState = 'ready' | 'cooldown' | 'no-mana' | 'unlearned';
 
@@ -32,6 +33,34 @@ const PITCH = 58;
 const ICON = { dx: 3, y: 949, w: 48, h: 45 };
 const PIP_Y = 1004;
 
+/** Раскладка ячеек способностей на нижней панели (координаты 1920×1080, от края полосы маны) */
+export interface AbilityPanel {
+  first: number;
+  pitch: number;
+  icon: { dx: number; y: number; w: number; h: number };
+  pipY: number;
+  /** Ширина строки, в которой считаются точки уровня одной ячейки */
+  pipW: number;
+}
+
+/** Панель из 5–7 ячеек: края 667 + 29·k */
+export const GRID_PANEL: AbilityPanel = { first: FIRST, pitch: PITCH, icon: ICON, pipY: PIP_Y, pipW: 56 };
+
+/**
+ * Панель из 4 ячеек (край 712; Hero Demo 2026-10-17: Queen of Pain, Juggernaut, Axe, Faceless Void):
+ * ячейки крупнее — первая так же на 113 px правее края, но шаг 65 px, иконка 56×51 (y 949–1000),
+ * точки уровня (8 px, шаг 12 px) — строка y ≈ 1008.
+ */
+export const WIDE_PANEL: AbilityPanel = { first: 113, pitch: 65, icon: { dx: 3, y: 949, w: 56, h: 51 }, pipY: 1008, pipW: 60 };
+
+/** Раскладка ячеек для найденного края панели; null — край вне известных (способности не читаем) */
+export function abilityPanel(barLeft: number, geo: HudGeometry): { panel: AbilityPanel; slots: number } | null {
+  if (isGridEdge(barLeft, geo)) return { panel: GRID_PANEL, slots: abilitySlotCount(barLeft, 0, geo) };
+  const ref = geo.refX(barLeft);
+  if (EXTRA_EDGES.some((e) => Math.abs(ref - e) <= 1)) return { panel: WIDE_PANEL, slots: 4 };
+  return null;
+}
+
 /** Пороги по 1290 ячейкам игры 4: перезарядка — белых пикселей ≥ 17 (у прочих ≤ 12, это стоимость маны);
  *  не изучена — средняя насыщенность < 0.22; нехватка маны — синих пикселей ≥ 25 % (у прочих ~0 %, у синих ≥ 30 %) */
 const MIN_WHITE = 15;
@@ -41,6 +70,8 @@ const MIN_BLUE = 0.25;
 const MAX_COOLDOWN_LUM = 110;
 /** Нехватка маны — тёмно-синяя заливка (яркость 22–41); бирюзовая иконка сама по себе (Monkey King, 87) — нет */
 const MAX_NO_MANA_LUM = 60;
+/** Крупная ячейка: высота строки цифр перезарядки — 16 из 51 px (0.31), белое на иконке — от 21 px (0.41) */
+const MAX_DIGITS_HEIGHT = 0.37;
 
 export function abilitySlotCount(barLeft: number, frameWidth: number, geo: HudGeometry = legacyGeometry(frameWidth, (frameWidth * 9) / 16)): number {
   const k = Math.round((geo.refX(barLeft) - BASE_BAR_LEFT) / STEP);
@@ -72,13 +103,18 @@ export function readAbilities(
   geo: HudGeometry = legacyGeometry(frame.width, frame.height),
 ): AbilitySlot[] {
   const s = geo.s, sy = geo.sy;
-  const n = abilitySlotCount(barLeft, frame.width, geo);
+  // Край вне известных — как раньше, по сетке (вызывающий код сам решает, читать ли: см. abilityPanel)
+  const known = abilityPanel(barLeft, geo);
+  const P = known?.panel ?? GRID_PANEL;
+  const n = known?.slots ?? abilitySlotCount(barLeft, frame.width, geo);
+  // Пороги заданы для иконки 48×45; у крупной ячейки поля и площадь цифр пропорционально больше
+  const kx = P.icon.w / ICON.w, ky = P.icon.h / ICON.h;
   const slots: AbilitySlot[] = [];
   for (let i = 0; i < n; i++) {
-    const left = barLeft + Math.round((FIRST + PITCH * i) * s);
-    const rect = { x: left + Math.round(ICON.dx * s), y: Math.round(geo.y(ICON.y)), w: Math.round(ICON.w * s), h: Math.round(ICON.h * sy) };
+    const left = barLeft + Math.round((P.first + P.pitch * i) * s);
+    const rect = { x: left + Math.round(P.icon.dx * s), y: Math.round(geo.y(P.icon.y)), w: Math.round(P.icon.w * s), h: Math.round(P.icon.h * sy) };
     const img = frame.read(rect);
-    let sat = 0, lum = 0, white = 0, blue = 0;
+    let sat = 0, lum = 0, white = 0, blue = 0, whiteTop = Infinity, whiteBottom = -1;
     const W = img.width, H = img.height;
     for (let y = 0; y < H; y++)
       for (let x = 0; x < W; x++) {
@@ -88,21 +124,30 @@ export function readAbilities(
         sat += mx ? (mx - mn) / mx : 0;
         lum += 0.299 * r + 0.587 * g + 0.114 * b;
         // Цифры перезарядки — в центре; низ ячейки занят стоимостью маны, угол — буквой клавиши
-        if (x > 8 * s && x < W - 8 * s && y > 6 * sy && y < H - 14 * sy && r > 200 && g > 200 && b > 200) white++;
+        if (x > 8 * kx * s && x < W - 8 * kx * s && y > 6 * ky * sy && y < H - 14 * ky * sy && r > 200 && g > 200 && b > 200) {
+          white++;
+          whiteTop = Math.min(whiteTop, y);
+          whiteBottom = Math.max(whiteBottom, y);
+        }
         if (b > r + 15 && b >= g) blue++;
       }
     const area = W * H;
     sat /= area;
     lum /= area;
     const blueShare = blue / area;
-    const level = countPips(frame, left, Math.round(56 * s), Math.round(geo.y(PIP_Y)), geo);
+    const level = countPips(frame, left, Math.round(P.pipW * s), Math.round(geo.y(P.pipY)), geo);
 
     let state: AbilityState, confidence: number, cooldown: number | null = null;
-    const cd = white >= MIN_WHITE * s * sy && cooldownModel ? readCooldown(img, cooldownModel).value : null;
+    const minWhite = MIN_WHITE * s * sy * kx * ky;
+    const cd = white >= minWhite && cooldownModel ? readCooldown(img, cooldownModel).value : null;
+    // У крупной ячейки белые лезвия и вихри на самой иконке (Queen of Pain, Juggernaut) бывают так же темны, как
+    // перезарядка; цифры же всегда — невысокая строка (16 из 51 px). Без прочитанных секунд перезарядкой считаем
+    // только такую строку
+    const digitLike = P === GRID_PANEL || whiteBottom - whiteTop + 1 <= MAX_DIGITS_HEIGHT * P.icon.h * sy;
     // Перезарядка: белые цифры на затемнённой иконке (если секунды прочитаны — яркость не важна)
-    if (white >= MIN_WHITE * s * sy && (cd !== null || lum <= MAX_COOLDOWN_LUM)) {
+    if (white >= minWhite && (cd !== null || (lum <= MAX_COOLDOWN_LUM && digitLike))) {
       state = 'cooldown';
-      confidence = cd !== null ? 1 : Math.min(1, white / (30 * s * sy));
+      confidence = cd !== null ? 1 : Math.min(1, white / (30 * s * sy * kx * ky));
       cooldown = cd;
     } else if (sat < MAX_UNLEARNED_SAT) {
       state = 'unlearned';
