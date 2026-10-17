@@ -12,7 +12,7 @@ const FRAMES = join(ROOT, 'tests/fixtures/frames/synthetic');
  */
 async function launch(dataDir: string, opts: { live?: boolean; env?: Record<string, string> } = {}): Promise<{ app: ElectronApplication; ui: Page }> {
   const settingsFile = join(dataDir, 'settings.json');
-  if (!opts.live && !existsSync(settingsFile)) writeFileSync(settingsFile, JSON.stringify({ live: { autoStart: false } }));
+  if (!existsSync(settingsFile)) writeFileSync(settingsFile, JSON.stringify({ ...(opts.live ? {} : { live: { autoStart: false } }), gsi: { dotaDir: noDota(dataDir) } }));
   const app = await electron.launch({
     args: ['.'],
     cwd: ROOT,
@@ -44,6 +44,9 @@ async function stubDialog(app: ElectronApplication, path: string): Promise<void>
 // Не в test-results: Playwright очищает ту папку перед каждым запуском.
 const TMP_ROOT = join(ROOT, '.tmp/e2e-data');
 const tmp = () => (mkdirSync(TMP_ROOT, { recursive: true }), mkdtempSync(join(TMP_ROOT, 'run-')));
+
+/** Папка «Доты» для тестов — пустая временная: иначе коуч находит настоящую Доту и переписывает её файл GSI своим секретом */
+const noDota = (dataDir: string) => (mkdirSync(join(dataDir, 'no-dota'), { recursive: true }), join(dataDir, 'no-dota'));
 
 test('приложение запускается, все 12 экранов открываются, нереализованное честно помечено', async () => {
   const { app, ui } = await launch(tmp());
@@ -469,7 +472,7 @@ const GSI_TOKEN = 'e2e0'.repeat(16);
 
 /** Настройки для теста GSI: свой порт и секрет, папка Dota — временная (настоящую Dota тесты не трогают) */
 function gsiSettings(dataDir: string, port: number, dotaDir?: string): void {
-  writeFileSync(join(dataDir, 'settings.json'), JSON.stringify({ live: { autoStart: false }, gsi: { port, token: GSI_TOKEN, record: true, dotaDir: dotaDir ?? null } }));
+  writeFileSync(join(dataDir, 'settings.json'), JSON.stringify({ live: { autoStart: false }, gsi: { port, token: GSI_TOKEN, record: true, dotaDir: dotaDir ?? noDota(dataDir) } }));
 }
 
 test('GSI: карточка, подтверждение с путём, файл пишется и удаляется только во временной папке Dota', async () => {

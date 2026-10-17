@@ -9,11 +9,14 @@ import { startMockOpenAi, type MockServer } from '../ai/mock-openai';
 const ROOT = resolve(import.meta.dirname, '../..');
 const TMP_ROOT = join(ROOT, '.tmp/e2e-data');
 const tmp = () => (mkdirSync(TMP_ROOT, { recursive: true }), mkdtempSync(join(TMP_ROOT, 'ai-')));
+
+/** Папка «Доты» для тестов — пустая временная: иначе коуч находит настоящую Доту и переписывает её файл GSI своим секретом */
+const noDota = (dataDir: string) => (mkdirSync(join(dataDir, 'no-dota'), { recursive: true }), join(dataDir, 'no-dota'));
 const KEY = 'sk-e2e-SECRET-0123456789';
 
 async function launch(dataDir: string): Promise<{ app: ElectronApplication; ui: Page }> {
   const settingsFile = join(dataDir, 'settings.json');
-  if (!existsSync(settingsFile)) writeFileSync(settingsFile, JSON.stringify({ live: { autoStart: false } }));
+  if (!existsSync(settingsFile)) writeFileSync(settingsFile, JSON.stringify({ live: { autoStart: false }, gsi: { dotaDir: noDota(dataDir) } }));
   const app = await electron.launch({
     args: ['.'],
     cwd: ROOT,

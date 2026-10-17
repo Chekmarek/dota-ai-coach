@@ -10,9 +10,12 @@ const TMP_ROOT = join(ROOT, '.tmp/e2e-data');
 const SHOTS = join(ROOT, '.tmp/draft-screens');
 const tmp = () => (mkdirSync(TMP_ROOT, { recursive: true }), mkdtempSync(join(TMP_ROOT, 'draft-')));
 
+/** Папка «Доты» для тестов — пустая временная: иначе коуч находит настоящую Доту и переписывает её файл GSI своим секретом */
+const noDota = (dataDir: string) => (mkdirSync(join(dataDir, 'no-dota'), { recursive: true }), join(dataDir, 'no-dota'));
+
 async function launch(env: Record<string, string> = {}): Promise<{ app: ElectronApplication; ui: Page }> {
   const dataDir = tmp();
-  writeFileSync(join(dataDir, 'settings.json'), JSON.stringify({ live: { autoStart: false } }));
+  writeFileSync(join(dataDir, 'settings.json'), JSON.stringify({ live: { autoStart: false }, gsi: { dotaDir: noDota(dataDir) } }));
   const app = await electron.launch({
     args: ['.'],
     cwd: ROOT,
@@ -113,7 +116,7 @@ test('драфт: нет статистики патча — предупреж�
   writeFileSync(join(dir, '7.41f', 'meta.json'), JSON.stringify({ ...meta, generatedAt: '2099-01-01T00:00:00.000Z' }));
 
   const dataDir = tmp();
-  writeFileSync(join(dataDir, 'settings.json'), JSON.stringify({ live: { autoStart: false } }));
+  writeFileSync(join(dataDir, 'settings.json'), JSON.stringify({ live: { autoStart: false }, gsi: { dotaDir: noDota(dataDir) } }));
   const app = await electron.launch({
     args: ['.'],
     cwd: ROOT,

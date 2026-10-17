@@ -8,9 +8,12 @@ const ROOT = resolve(import.meta.dirname, '../..');
 const TMP_ROOT = join(ROOT, '.tmp/e2e-data');
 const tmp = () => (mkdirSync(TMP_ROOT, { recursive: true }), mkdtempSync(join(TMP_ROOT, 'hud-')));
 
+/** Папка «Доты» для тестов — пустая временная: иначе коуч находит настоящую Доту и переписывает её файл GSI своим секретом */
+const noDota = (dataDir: string) => (mkdirSync(join(dataDir, 'no-dota'), { recursive: true }), join(dataDir, 'no-dota'));
+
 async function launch(dataDir: string): Promise<{ app: ElectronApplication; ui: Page }> {
   const settingsFile = join(dataDir, 'settings.json');
-  if (!existsSync(settingsFile)) writeFileSync(settingsFile, JSON.stringify({ live: { autoStart: false } }));
+  if (!existsSync(settingsFile)) writeFileSync(settingsFile, JSON.stringify({ live: { autoStart: false }, gsi: { dotaDir: noDota(dataDir) } }));
   const app = await electron.launch({
     args: ['.'],
     cwd: ROOT,
@@ -88,7 +91,7 @@ test('матч по данным игры: подсказка движка — �
   const dataDir = tmp();
   const port = 54131;
   const token = 'e2e1'.repeat(16);
-  writeFileSync(join(dataDir, 'settings.json'), JSON.stringify({ live: { autoStart: false }, gsi: { port, token, record: false, dotaDir: null } }));
+  writeFileSync(join(dataDir, 'settings.json'), JSON.stringify({ live: { autoStart: false }, gsi: { port, token, record: false, dotaDir: noDota(dataDir) } }));
   const { app, ui } = await launch(dataDir);
   try {
     await ui.click('[data-testid="nav-live"]');
