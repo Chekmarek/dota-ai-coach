@@ -185,7 +185,8 @@ export class MistakeDetector {
     const actives = readyActiveNames(c.look, d);
     const ultInActives = (d.readyActives ?? []).some((a) => a.kind === 'ability');
     // Town Portal Scroll — только если до смерти было время на телепорт (3 с) после начала урона
-    const tpUsable = d.tpReady === true && (d.dropSec ?? 0) >= TP_CHANNEL_SEC + 1;
+    // (как в разборе смерти, reviews.ts: телепорт 3 с + запас на то, чтобы заметить урон)
+    const tpUsable = d.tpReady === true && (d.dropSec ?? 0) >= TP_CHANNEL_SEC + 2;
     const unused = [...new Set([...actives, d.ultReady && !ultInActives ? 'ульта' : null, ...d.keyItemsReady.map((k) => c.look.itemName(k)), tpUsable ? 'Town Portal Scroll' : null].filter((x): x is string => x !== null))];
     const facts = [derivedFact('enemies-near', 'Врагов рядом при смерти', d.enemiesNear, 0.75), derivedFact('drop', 'Здоровье упало за, с', d.dropSec === null ? null : Math.round(d.dropSec), 0.7)];
     if (unused.length && (d.dropSec ?? 0) >= 2) {

@@ -5,7 +5,8 @@ import { goalFor, MISTAKE_RU, type Mistake, type MistakeType } from './mistakes.
 import { readyActiveNames, type CoachMemory, type DeathRecord } from './memory.ts';
 import type { CoachLookup } from './data.ts';
 import type { CoachView } from './view.ts';
-import { mmss } from './rules/context.ts';
+import { game, mmss } from './rules/context.ts';
+import type { GameStage } from './game-context.ts';
 import { laneRole } from './rules/laning.ts';
 import type { RuleContext } from './rules/context.ts';
 
@@ -47,23 +48,106 @@ export interface MatchReview {
   aiText: string | null;
 }
 
-export function deathReview(c: RuleContext, d: DeathRecord, index: number, mistakes: readonly Mistake[]): DeathReview {
-  const why: string[] = [];
-  // Первым — то, что было готово и не нажато: это игрок может исправить сам
-  const unusedActives = readyActiveNames(c.look, d);
-  if (unusedActives.length === 1) why.push(`${unusedActives[0]} был готов, но не использован`);
-  else if (unusedActives.length > 1) why.push(`Были готовы, но не использованы: ${unusedActives.join(', ')}`);
-  if (d.enemiesNear >= 2) why.push(`Вас поймали ${d.enemiesNear} ${d.enemiesNear >= 5 ? 'врагов' : 'врага'}`);
-  else if (d.enemiesNear === 1) why.push('Вас убил один враг');
-  if (d.hpBefore !== null && d.dropSec !== null && d.dropSec <= 3 && d.hpBefore >= 50) why.push(`Здоровье упало с ${Math.round(d.hpBefore)}% за ${Math.max(1, Math.round(d.dropSec))} с — сильный урон разом`);
-  if (d.side === 'enemy') why.push(`Смерть на стороне врага (${d.zone ? MAP_ZONE_RU[d.zone] : 'место неизвестно'})`);
-  if (d.enemiesMissing >= 2) why.push(`${d.enemiesMissing} врагов не было видно на мини-карте`);
-  if (d.night) why.push('Была ночь — обзор меньше');
-  if (!why.length) why.push('Точную причину по данным коуча не определить');
+/** Причина смерти: текст и что делать в следующий раз */
+interface DeathCause {
+  id: 'outnumbered' | 'position' | 'unused' | 'escape' | 'power' | 'regen';
+  why: string;
+  tip: string;
+}
 
+/**
+ * Причины смерти по порядку важности (этап 4 «понимания игры»). Каждая проверка — только по тому, что коуч знал в
+ * момент смерти; не знает — причины нет (лучше «не уверен», чем выдумка):
+ *  1. меньшинство — врагов рядом больше, чем вас с союзниками;
+ *  2. позиция — на стороне врага без союзников или без обзора (враги пропали), ночью;
+ *  3. готовое и не нажатое, что могло спасти (Black King Bar, Blade Mail, спасительные способности);
+ *  4. мог уйти — Town Portal Scroll был готов, а здоровье падало дольше, чем идёт телепорт;
+ *  5. разница в силе — враги рядом выше уровнем;
+ *  расходники (Tango, Healing Salve) — только в лайнинге и только если здоровье падало медленно.
+ * В лейте сначала позиция и обзор: там решает, где вас поймали, а не «нажал ли кнопку».
+ */
+export function deathCauses(d: DeathRecord, stage: GameStage, look: Pick<CoachLookup, 'itemName' | 'abilityByKey'>): DeathCause[] {
+  const out: DeathCause[] = [];
+  const allies = d.alliesNear;
+  const enemies = d.enemiesNear;
+  const drop = d.dropSec;
+  // 1. меньшинство (вы + союзники против врагов рядом)
+  if (enemies >= 2 && enemies > allies + 1) {
+    out.push({
+      id: 'outnumbered',
+      why: `Вы были в меньшинстве: ${enemies} ${enemies >= 5 ? 'врагов' : 'врага'} против ${allies === 0 ? 'вас одного' : `вас и ${allies} ${allies === 1 ? 'союзника' : 'союзников'}`}`,
+      tip: 'Отходите заранее, когда врагов рядом больше, чем вас: смотрите на мини-карту перед тем, как зайти.',
+    });
+  }
+  // 2. позиция: чужая сторона без союзников, или враги пропали, или ночь в одиночку
+  if (d.side === 'enemy' && (allies === 0 || d.enemiesMissing >= 2)) {
+    const where = d.zone ? MAP_ZONE_RU[d.zone] : 'сторона врага';
+    const parts = [allies === 0 ? 'без союзников' : '', d.enemiesMissing >= 2 ? `${d.enemiesMissing} врагов не было видно` : '', d.night ? 'ночью' : ''].filter(Boolean);
+    out.push({
+      id: 'position',
+      why: `Позиция: вы были на стороне врага (${where}) — ${parts.join(', ')}`,
+      tip: stage === 'late' ? 'В лейте без обзора не заходите на половину врага: сначала варды, потом фарм рядом с командой.' : 'Без обзора держитесь своей половины карты, пока не знаете, где враги.',
+    });
+  }
+  // 3. готовое и не нажатое
+  const unused = readyActiveNames(look, d);
+  if (unused.length) {
+    out.push({
+      id: 'unused',
+      why: unused.length === 1 ? `${unused[0]} был готов, но не нажат` : `Были готовы, но не нажаты: ${unused.join(', ')}`,
+      tip: 'Нажимайте спасительные предметы и способности в начале драки, а не когда здоровья почти не осталось.',
+    });
+  }
+  // 4. мог уйти: телепорт готов, а здоровье падало дольше телепорта (3 с) с запасом
+  if (d.tpReady === true && drop !== null && drop >= 5) {
+    out.push({
+      id: 'escape',
+      why: `Можно было уйти: Town Portal Scroll был готов, а здоровье падало ${Math.round(drop)} с`,
+      tip: 'Когда здоровье падает и врагов больше — телепортируйтесь сразу, пока не поймали в контроль.',
+    });
+  }
+  // 5. разница в силе: средний уровень врагов рядом выше на 2+
+  const lv = d.enemyLevels ?? [];
+  if (d.myLevel != null && lv.length) {
+    const avg = lv.reduce((a, b) => a + b, 0) / lv.length;
+    if (avg - d.myLevel >= 2) {
+      out.push({
+        id: 'power',
+        why: `Враги были сильнее: уровень ${Math.round(avg)} против вашего ${d.myLevel}`,
+        tip: 'Пока враги выше уровнем, не деритесь с ними — фармите безопасно и ждите своих предметов.',
+      });
+    }
+  }
+  // Расходники: только лайнинг, только если были и здоровье падало медленно (было время съесть или выпить)
+  const regen = d.regenItems ?? [];
+  if (stage === 'laning' && regen.length && drop !== null && drop >= 8) {
+    out.push({
+      id: 'regen',
+      why: `В инвентаре был ${regen.map((k) => look.itemName(k)).join(' и ')}, а здоровье падало ${Math.round(drop)} с — можно было подлечиться`,
+      tip: 'На линии лечитесь заранее, не дожидаясь, пока здоровья станет мало.',
+    });
+  }
+  // В лейте сначала позиция: там решает, где вас поймали
+  if (stage === 'late') out.sort((a, b) => Number(b.id === 'position') - Number(a.id === 'position'));
+  return out;
+}
+
+export function deathReview(c: RuleContext, d: DeathRecord, index: number, mistakes: readonly Mistake[]): DeathReview {
+  const stage = game(c).stage;
+  const causes = deathCauses(d, stage, c.look);
+  // Одна главная причина и не больше одной дополнительной; нет ни одной — честно «не уверен»
+  const why = causes.slice(0, 2).map((x) => x.why);
+  if (!why.length) {
+    why.push(
+      d.enemiesNear === 0
+        ? 'Коуч не уверен в причине: не было видно, кто и сколько врагов было рядом'
+        : d.hpBefore !== null && d.dropSec !== null && d.dropSec <= 2 && d.hpBefore >= 70
+          ? `Коуч не уверен в причине: здоровье упало с ${Math.round(d.hpBefore)}% за ${Math.max(1, Math.round(d.dropSec))} с — вероятно, вас поймали из тумана`
+          : 'Коуч не уверен в причине: ни меньшинства, ни плохой позиции, ни неиспользованных предметов не видно',
+    );
+  }
   const own = mistakes.filter((m) => m.deathIndex === index);
-  const tips = [...new Set(own.sort((a, b) => b.severity - a.severity).map((m) => m.instead))].slice(0, 3);
-  if (!tips.length) tips.push(d.enemiesNear >= 2 ? 'Следите за мини-картой: отходите, когда врагов рядом больше, чем союзников.' : 'Держитесь ближе к своим башням, пока не знаете, где враги.');
+  const tips = causes.length ? [causes[0]!.tip] : ['Держитесь ближе к своим башням, пока не знаете, где враги.'];
 
   const respawn = d.respawnSec;
   let buyback: DeathReview['buyback'];

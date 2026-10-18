@@ -96,7 +96,7 @@ describe('3. разбор смерти: готовое и не нажатое', 
     const e = dieWith([BB, { slot: 'inv1', key: 'heart', passive: true }], passiveUlt);
     const r = e.deathReviewNow!;
     expect(r).not.toBeNull();
-    expect(r.why[0]).toBe('Blade Mail был готов, но не использован');
+    expect(r.why[0]).toBe('Blade Mail был готов, но не нажат');
     const m = e.mistakes.list.find((x) => x.type === 'died-unused')!;
     expect(m.text).toContain('Blade Mail');
     expect(m.text).not.toContain('ульта');

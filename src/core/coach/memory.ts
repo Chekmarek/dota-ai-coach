@@ -58,6 +58,11 @@ export interface DeathRecord {
   respawnSec: number | null;
   /** Оценка «вступать» в начале драки, если была */
   engageAtEntry: number | null;
+  /** Ваш уровень и уровни врагов рядом (полоски на экране) в последний миг перед смертью; [] — не видно */
+  myLevel?: number | null;
+  enemyLevels?: number[];
+  /** Лечилки здоровья в инвентаре (Tango, Healing Salve) — для разбора в лайнинге */
+  regenItems?: string[];
 }
 
 export interface MemoryEvents {
@@ -255,6 +260,12 @@ export class CoachMemory {
         // В первый миг смерти GSI ещё присылает 0 (через секунду — 73): 0 — «ещё не известно»
         respawnSec: (v.me.respawnSec.value ?? 0) > 0 ? v.me.respawnSec.value : null,
         engageAtEntry: this.engageAtEntry,
+        myLevel: p.me.level.value,
+        enemyLevels: [
+          ...p.enemies.filter((e) => enemyNear(e, p.me.pos.value) && e.barLevel !== null).map((e) => e.barLevel!),
+          ...(p.enemies.some((e) => enemyNear(e, p.me.pos.value) && e.barLevel !== null) ? [] : nearEnemyBars(p).map((b) => b.level).filter((x): x is number => x !== null)),
+        ],
+        regenItems: [...new Set(p.me.items.filter((i) => /^inv\d$/.test(i.slot) && REGEN_ITEMS[i.key] === 'hp' && i.key !== 'faerie_fire' && (i.charges === null || i.charges > 0)).map((i) => i.key))],
       });
       ev.died = this.deaths[this.deaths.length - 1]!;
     }

@@ -90,10 +90,10 @@ describe('разбор смерти', () => {
     expect(JSON.stringify(e.deathReviewNow)).not.toContain('через 0 с');
     expect(e.mem.deaths[0]!.respawnSec).toBe(73);
   });
-  it('5 врагов — «Вас поймали 5 врагов» (было «5 врага»)', () => {
+  it('5 врагов на одного — главная причина: меньшинство, «5 врагов» (было «5 врага»)', () => {
     const enemies = [5, 6, 7, 8, 9].map((slot, k) => ({ slot, hero: ['lina', 'rubick', 'nevermore', 'dark_willow', 'disruptor'][k]!, pos: { x: 100 + k * 50, y: 0 } }));
     const e = die({ enemies });
-    expect(e.deathReviewNow!.why).toContain('Вас поймали 5 врагов');
+    expect(e.deathReviewNow!.why[0]).toBe('Вы были в меньшинстве: 5 врагов против вас одного');
   });
   it('выкуп в Турбо: цена, золото и время возрождения — вместо «совет не проверен»', () => {
     const e = new CoachEngine({ data, now: () => 0, settings: { ...defaultCoachSettings(), gameMode: 'turbo' } });
