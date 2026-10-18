@@ -1,0 +1,20 @@
+{
+ "patch": "7.41f",
+ "source": {
+  "name": "Файлы Dota 2: maps/dota.vpk → maps/dota/entities/default_ents.vents_c (npc_dota_watch_tower)",
+  "extractedAt": "2026-10-18"
+ },
+ "noteRu": "Координаты мира (как xpos/ypos в GSI). Чей аванпост сейчас, GSI игрока не сообщает.",
+ "outposts": [
+  {
+   "id": "npc_dota_watch_tower_bottom",
+   "x": -4096,
+   "y": -448
+  },
+  {
+   "id": "npc_dota_watch_tower_top",
+   "x": 3392,
+   "y": -448
+  }
+ ]
+}

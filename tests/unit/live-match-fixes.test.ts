@@ -303,3 +303,31 @@ describe('7. предметы: что купить дальше и что лиш
     expect(sellRule((await ctx({ clock: 27 * 60, heroKey: 'bristleback', items: full.slice(3) }, true)) as never)).toBeNull();
   });
 });
+
+describe('6. аванпост', () => {
+  it('координаты из файлов карты: два аванпоста, в пределах карты', async () => {
+    const { OUTPOSTS } = await import('../../src/core/coach/rules/macro.ts');
+    expect(OUTPOSTS.map((o) => o.id).sort()).toEqual(['npc_dota_watch_tower_bottom', 'npc_dota_watch_tower_top']);
+    for (const o of OUTPOSTS) expect(Math.abs(o.x) < 8800 && Math.abs(o.y) < 8800).toBe(true);
+  });
+  it('герой у аванпоста, врагов рядом нет → «захватите, если вражеский»; враг рядом — молчит', async () => {
+    const { outpostRule } = await import('../../src/core/coach/rules/macro.ts');
+    const ctx = (enemies: SimInput['enemies']) => {
+      const s = sim({ wallMs: T0, clock: 900, pos: { x: -4000, y: -500 }, enemies });
+      const v = buildView(s.state, s.gsi, T0);
+      const mem = new CoachMemory();
+      return { v, mem, ev: mem.ingest(v, 1800), look, settings: defaultCoachSettings(), now: T0 } as never;
+    };
+    const h = outpostRule(ctx([])) as { short: string; detail: { normal: string } } | null;
+    expect(h?.short).toBe('Аванпост рядом — захватите, если вражеский');
+    expect(h?.detail.normal).toContain('6 с');
+    expect(outpostRule(ctx([{ slot: 5, hero: 'lina', pos: { x: -3900, y: -500 } }]))).toBeNull();
+  });
+  it('далеко от аванпостов — молчит', async () => {
+    const { outpostRule } = await import('../../src/core/coach/rules/macro.ts');
+    const s = sim({ wallMs: T0, clock: 900, pos: { x: 0, y: -6000 }, enemies: [] });
+    const v = buildView(s.state, s.gsi, T0);
+    const mem = new CoachMemory();
+    expect(outpostRule({ v, mem, ev: mem.ingest(v, 1800), look, settings: defaultCoachSettings(), now: T0 } as never)).toBeNull();
+  });
+});

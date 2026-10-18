@@ -1,11 +1,12 @@
 // E. Макро и цели: окно для пуша (враги мертвы), сбор команды, помощь в драке союзников, Рошан, тайминги карты.
 import { upcomingEvents } from '../../knowledge-base/timers.ts';
 import { MAP_ZONE_RU, mapZone } from '../../match-state/map-zones.ts';
-import { tpReady } from '../memory.ts';
+import { nearEnemyCount, tpReady } from '../memory.ts';
 import { NEAR_UNITS, dist } from '../geo.ts';
 import { derivedFact, fact, kbFact } from '../view.ts';
 import { draft, mmss, playing, plural, type Rule } from './context.ts';
 import type { HintDraft } from '../types.ts';
+import outpostsJson from '../../../data/outposts.json';
 
 const freshPos = (p: { pos: { value: unknown; ageSec: number | null } }) => p.pos.value !== null && (p.pos.ageSec ?? 99) <= 3;
 
@@ -147,4 +148,32 @@ export const timersRule: Rule = (c) => {
   return out;
 };
 
-export const MACRO_RULES: Rule[] = [helpRule, pushWindowRule, roshanKilledRule, groupRule, timersRule];
+/**
+ * Аванпосты — координаты из файлов карты Dota 2 (src/data/outposts.json, scripts/extract-outposts.mjs).
+ * Чей аванпост сейчас, GSI игрока не сообщает, поэтому подсказка условная: «если он вражеский — захватите».
+ */
+export const OUTPOSTS: readonly { id: string; x: number; y: number }[] = outpostsJson.outposts;
+/** Ближе этого к аванпосту — «рядом» (захват — стоять у него 6 с) */
+export const OUTPOST_NEAR_UNITS = 1200;
+
+export const outpostRule: Rule = (c) => {
+  const me = c.v.me.pos.value;
+  if (!playing(c) || !me || c.v.me.alive.value !== true || c.mem.inFight || nearEnemyCount(c.v) > 0) return null;
+  const o = OUTPOSTS.find((p) => dist(p, me) <= OUTPOST_NEAR_UNITS);
+  if (!o) return null;
+  const capture = c.look.mechanicValue('outpost', 'capture');
+  return draft({
+    id: `macro.outpost:${o.id}`,
+    ruleId: 'macro.outpost',
+    category: 'macro',
+    priority: 'info',
+    confidence: 0.6,
+    short: 'Аванпост рядом — захватите, если вражеский',
+    normal: `Рядом аванпост. Если он вражеский, захватите его${capture !== null ? ` (стоять у него ${capture} с)` : ''}: обзор и телепорт для команды. Врагов рядом не видно.`,
+    facts: [derivedFact('outpost-distance', 'До аванпоста', Math.round(dist(o, me)), 0.9), kbFact('outpost-capture', 'Захват, с', capture, false)],
+    ttlSec: 8,
+    cooldownSec: 300,
+  });
+};
+
+export const MACRO_RULES: Rule[] = [helpRule, pushWindowRule, roshanKilledRule, groupRule, outpostRule, timersRule];
