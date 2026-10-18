@@ -16,6 +16,8 @@ export interface CoachData {
   kbVerified: boolean;
   /** Справочник Турбо (src/data/modes/turbo.json); нет — в Турбо вся механика «не проверено» */
   turbo?: ModeOverrides | null;
+  /** Статистика публичных матчей Турбо (stats-turbo.json): матчапы, связки, доля побед; нет — в Турбо их нет */
+  statsTurbo?: KbStats | null;
 }
 
 /** Аегис исчезает через (обычная игра), с */
@@ -66,6 +68,7 @@ export class CoachLookup {
   readonly heroById = new Map<number, KbHero>();
   readonly itemByKey = new Map<string, KbItem>();
   readonly statsById = new Map<number, HeroStats>();
+  readonly turboStatsById = new Map<number, HeroStats>();
   readonly invisHeroes = new Set<string>();
   readonly abilityByKey = new Map<string, { hero: KbHero; name: string; innate: boolean }>();
 
@@ -84,6 +87,7 @@ export class CoachLookup {
     }
     for (const i of data.items) this.itemByKey.set(i.key, i);
     for (const s of data.stats?.heroes ?? []) this.statsById.set(s.id, s);
+    for (const s of data.statsTurbo?.heroes ?? []) this.turboStatsById.set(s.id, s);
   }
 
   heroName(key: string | null): string {
@@ -164,12 +168,23 @@ export class CoachLookup {
     return out;
   }
 
+  /**
+   * Статистика публичных матчей режима: в Турбо — только stats-turbo.json (матчи другого режима не подставляем),
+   * иначе — рейтинговый All Pick. Сборки, позиции и нормы (statsFor) — всегда из обычной статистики.
+   */
+  get pubStats(): KbStats | null {
+    return this.isTurbo ? (this.data.statsTurbo ?? null) : this.data.stats;
+  }
+  private pubById(id: number): HeroStats | undefined {
+    return (this.isTurbo ? this.turboStatsById : this.statsById).get(id);
+  }
+
   /** Матчап героя a против b по публичным матчам патча: [игр, доля побед a]; null — нет данных */
   matchup(aKey: string, bKey: string): { games: number; winrate: number; base: number } | null {
     const a = this.heroByKey.get(aKey);
     const b = this.heroByKey.get(bKey);
     if (!a || !b) return null;
-    const st = this.statsById.get(a.id);
+    const st = this.pubById(a.id);
     const m = st?.matchups[String(b.id)];
     if (!st?.pub || !m) return null;
     return { games: m[0], winrate: m[1], base: st.pub.winrate };
@@ -180,13 +195,19 @@ export class CoachLookup {
     const a = this.heroByKey.get(aKey);
     const b = this.heroByKey.get(bKey);
     if (!a || !b) return null;
-    const m = this.statsById.get(a.id)?.synergy[String(b.id)];
+    const m = this.pubById(a.id)?.synergy[String(b.id)];
     return m ? { games: m[0], winrate: m[1] } : null;
   }
 
   /** Общая доля побед героя в публичных матчах патча; null — нет данных */
   winrate(key: string): number | null {
     const h = this.heroByKey.get(key);
-    return h ? (this.statsById.get(h.id)?.pub?.winrate ?? null) : null;
+    return h ? (this.pubById(h.id)?.pub?.winrate ?? null) : null;
+  }
+
+  /** Сколько публичных матчей героя в статистике режима (для доверия к доле побед); 0 — нет данных */
+  pubGames(key: string): number {
+    const h = this.heroByKey.get(key);
+    return h ? (this.pubById(h.id)?.pub?.games ?? 0) : 0;
   }
 }

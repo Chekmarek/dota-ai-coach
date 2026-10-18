@@ -216,3 +216,7 @@ button.link { background: none; border: none; padding: 0; color: var(--accent-2)
 }
 @keyframes fadein { from { opacity: 0; } }
 @keyframes fadeout { to { opacity: 0; } }
+
+/* Драфт: выбор статистики (обычные матчи / Турбо) рядом с режимом игры */
+.draft-stats-mode { margin-left: 14px; }
+.draft-stats-mode select { margin-left: 4px; }

@@ -104,7 +104,7 @@ export function suggestHeroes(look: CoachLookup, input: DraftInput): DraftCandid
     const wi = input.allies.map((a) => synergyDelta(look, h.key, a)).filter((x): x is DraftReason => x !== null);
     const wr = look.winrate(h.key);
     if (wr === null) continue;
-    const meta = r4(META_WEIGHT * shrink(wr - 0.5, look.statsFor(h.id)?.pub?.games ?? 0));
+    const meta = r4(META_WEIGHT * shrink(wr - 0.5, look.pubGames(h.key)));
     const score = r4(vs.reduce((s, x) => s + x.delta, 0) + wi.reduce((s, x) => s + x.delta, 0) + meta);
     out.push({
       hero: h.key,

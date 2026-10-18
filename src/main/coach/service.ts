@@ -25,7 +25,7 @@ export const MODE_STABLE_MS = 1500;
 
 export interface CoachDeps {
   settings: { get(): Settings };
-  kb: { get(): KnowledgeBase | { error: string }; stats(): KbStats | null };
+  kb: { get(): KnowledgeBase | { error: string }; stats(): KbStats | null; statsTurbo?(): KbStats | null };
   aiProvider: () => AiProvider | null;
   history: { save(m: HistoryMatch): void };
   /** Подсказки на экране сейчас (пусто — нечего показывать); inMatch — матч идёт по данным игры */
@@ -78,6 +78,7 @@ export class CoachService {
       items: kb.items,
       mechanics: kb.mechanics,
       stats: this.deps.kb.stats(),
+      statsTurbo: this.deps.kb.statsTurbo?.() ?? null,
       kbVerified: kb.meta.verification === 'verified',
       turbo: TURBO,
     };

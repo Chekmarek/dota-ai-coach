@@ -11,11 +11,18 @@
 // Все значения — imported-unverified (собраны автоматически, вручную не сверены).
 //   node scripts/import-stats.mjs
 // Результат: resources/data/kb/<патч>/stats.json
+//   node scripts/import-stats.mjs --turbo
+// Турбо (0.13.3): публичные матчи Турбо (OpenDota: lobby_type 0, game_mode 23) — только матчапы, связки и доля побед.
+// Профи в Турбо не играют, а /benchmarks и /itemPopularity по режимам не делятся — этих разделов в файле нет.
+// Результат: resources/data/kb/<патч>/stats-turbo.json (тот же формат, mode: "turbo")
 import { readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
+const TURBO = process.argv.includes('--turbo');
+/** Какие публичные матчи: рейтинговый All Pick или Турбо (обычное лобби) — проверено запросом к OpenDota 2026-10-18 */
+const PUB_FILTER = TURBO ? 'lobby_type = 0 and game_mode = 23' : 'lobby_type = 7 and game_mode = 22';
 const VALVE = 'https://www.dota2.com/datafeed';
 const OD = 'https://api.opendota.com/api';
 const MATCHUP_DAYS = 7;
@@ -90,7 +97,7 @@ const soloAcc = new Map(); // a → [игр, побед]
 let pubMatches = 0;
 const STEP = 6 * 3600;
 for (let from = since; from < now; from += STEP) {
-  const pub = `public_matches where start_time >= ${from} and start_time < ${Math.min(from + STEP, now)} and lobby_type = 7 and game_mode = 22`;
+  const pub = `public_matches where start_time >= ${from} and start_time < ${Math.min(from + STEP, now)} and ${PUB_FILTER}`;
   const pairs = await sql(
     `select a, b, sum(n) n, sum(w) w from (
        select a, b, count(*) n, sum(case when radiant_win then 1 else 0 end) w
@@ -153,6 +160,27 @@ for (const [k, [n, w]] of allyAcc) {
   h.synergy[b] = [n, r3(w / n)];
 }
 console.log(`Публичных матчей: ${pubMatches}, пар героев: ${pairAcc.size}, связок: ${allyAcc.size}`);
+
+if (TURBO) {
+  const stats = {
+    schema: 'dota-coach.kb-stats',
+    version: 1,
+    mode: 'turbo',
+    patch,
+    patchStart: new Date(patchStart * 1000).toISOString(),
+    generatedAt: new Date().toISOString(),
+    verification: 'imported-unverified',
+    note: 'Турбо: собрано автоматически из OpenDota по публичным матчам Турбо текущего патча за последние дни. Только матчапы, связки и доля побед.',
+    sources: [
+      { name: 'OpenDota explorer: public_matches (Турбо: lobby_type 0, game_mode 23)', covers: ['matchups', 'winrate'], since: new Date(since * 1000).toISOString(), matches: pubMatches },
+      { name: 'OpenDota explorer: public_matches (Турбо, одна команда)', covers: ['synergy'], since: new Date(since * 1000).toISOString(), matches: pubMatches },
+    ],
+    heroes: [...out.values()],
+  };
+  writeFileSync(join(kbDir, 'stats-turbo.json'), JSON.stringify(stats));
+  console.log(`Готово: ${join(kbDir, 'stats-turbo.json')}`);
+  process.exit(0);
+}
 
 // --- Профессиональные матчи патча: сборки, навыки, добивания ---
 const proRows = [];

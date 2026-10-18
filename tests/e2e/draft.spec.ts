@@ -85,11 +85,20 @@ test('драфт: после каждого пика и бана подбор п
     }
     await ui.locator('[data-testid="draft-position"] button', { hasText: 'любая' }).click();
 
-    // Источник: патч, дата статистики, «ориентир, а не обещание»
+    // Источник: режим статистики, патч, число игр, дата статистики, «ориентир, а не обещание»
     const src = ui.locator('[data-testid="draft-source"]');
-    await expect(src).toContainText('Патч 7.41f');
-    await expect(src).toContainText(/статистика OpenDota от \d{2}\.\d{2}\.\d{4}/);
+    await expect(src).toContainText('Рейтинговый All Pick, патч 7.41f');
+    await expect(src).toContainText(/\d игр/);
+    await expect(src).toContainText(/статистика OpenDota\s+от \d{2}\.\d{2}\.\d{4}/);
     await expect(src).toContainText('ориентир, а не обещание');
+    // Статистика Турбо выбирается вручную (без данных игры режим неизвестен → обычные матчи)
+    const before = await candidates(ui);
+    await ui.selectOption('[data-testid="draft-stats-mode"]', 'turbo');
+    await expect(ui.locator('[data-testid="draft-source-mode"]')).toHaveText('Турбо');
+    await expect.poll(() => candidates(ui)).not.toEqual(before);
+    await ui.screenshot({ path: join(ROOT, 'test-results/draft-turbo.png') });
+    await ui.selectOption('[data-testid="draft-stats-mode"]', 'auto');
+    await expect(ui.locator('[data-testid="draft-source-mode"]')).toHaveText('Рейтинговый All Pick');
 
     // «Беру»: матчапы моего героя с числом игр, позиция и список кандидатов скрыты, предметы — под роль
     await ui.locator('[data-testid="draft-candidates"] .draft-take').first().click();

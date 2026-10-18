@@ -88,7 +88,14 @@ function draftCases(): string {
   const d = realData();
   const service = new DraftService({ get: () => ({ meta: { patch: d.patch, verification: 'imported-unverified' }, heroes: d.heroes, items: d.items, mechanics: d.mechanics }) as never, stats: () => d.stats });
   const fixture = JSON.parse(readFileSync(join(ROOT, 'tests/fixtures/draft/cases.json'), 'utf8')) as { cases: { id: string; input: DraftRequest }[] };
-  const out = fixture.cases.filter((c) => !c.input.bans.includes('@top3')).map((c) => ({ id: c.id, result: service.suggest(c.input) }));
+  // Поля 0.13.3 «режим статистики» (mode, statsMatches) — вне снимка: снимок сверяет подбор, угрозы и проценты
+  const out = fixture.cases
+    .filter((c) => !c.input.bans.includes('@top3'))
+    .map((c) => {
+      const { mode, statsMatches: _n, ...result } = service.suggest(c.input);
+      if (mode !== 'normal') throw new Error(`${c.id}: режим статистики ${mode}, ждали normal`);
+      return { id: c.id, result };
+    });
   return JSON.stringify(out, null, 1) + '\n';
 }
 

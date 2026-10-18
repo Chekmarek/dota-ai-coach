@@ -44,10 +44,14 @@ export type HeroStats = z.infer<typeof heroStatsSchema>;
 export const kbStatsSchema = z.object({
   schema: z.literal('dota-coach.kb-stats'),
   version: z.literal(1),
+  /** turbo — stats-turbo.json (публичные матчи Турбо: только матчапы, связки, доля побед); нет поля — обычная статистика */
+  mode: z.literal('turbo').optional(),
   patch: z.string(),
   patchStart: z.string(),
   generatedAt: z.string(),
   verification: z.string(),
+  /** Откуда и сколько матчей (scripts/import-stats.mjs); старые файлы — без поля */
+  sources: z.array(z.object({ name: z.string(), covers: z.array(z.string()), matches: z.number().optional() }).passthrough()).optional().catch(undefined),
   heroes: z.array(z.unknown()).transform((arr) =>
     arr.flatMap((h) => {
       const r = heroStatsSchema.safeParse(h);
@@ -58,10 +62,17 @@ export const kbStatsSchema = z.object({
 
 export type KbStats = z.infer<typeof kbStatsSchema>;
 
-/** Разбор stats.json; null — файла нет, другой патч или не та схема */
-export function parseKbStats(raw: unknown, expectedPatch: string | null): KbStats | null {
+/** Разбор stats.json (или stats-turbo.json при mode = 'turbo'); null — файла нет, другой патч, режим или схема */
+export function parseKbStats(raw: unknown, expectedPatch: string | null, mode: 'normal' | 'turbo' = 'normal'): KbStats | null {
   const r = kbStatsSchema.safeParse(raw);
   if (!r.success) return null;
   if (expectedPatch !== null && r.data.patch !== expectedPatch) return null;
+  if ((r.data.mode ?? 'normal') !== mode) return null;
   return r.data;
+}
+
+/** Сколько матчей в статистике матчапов (по источникам файла); null — не указано */
+export function statsMatches(s: KbStats | null): number | null {
+  const m = s?.sources?.find((x) => x.covers.includes('matchups'))?.matches;
+  return typeof m === 'number' ? m : null;
 }

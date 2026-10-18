@@ -11,6 +11,8 @@ export const draftRequestSchema = z.object({
   position: z.number().int().min(1).max(5).nullable().default(null),
   /** Мой герой (если уже выбран) — для предметов против врагов и слабых матчапов */
   me: heroKey.nullable().default(null),
+  /** Чья статистика: обычные матчи (рейтинговый All Pick) или Турбо; интерфейс берёт режим игры, его можно сменить; нет поля — обычные */
+  mode: z.enum(['normal', 'turbo']).optional(),
 });
 
 export type DraftRequest = z.infer<typeof draftRequestSchema>;
@@ -52,6 +54,9 @@ export interface DraftResult {
   hasSynergy: boolean;
   /** Выбранные герои (союзники, враги, мой), у которых нет записи в статистике: их вклад не учтён. Нет поля — старый main */
   noStats?: string[];
+  /** Режим статистики и сколько в ней матчей (подпись «Турбо, патч X, N игр»); нет полей — старый main */
+  mode?: 'normal' | 'turbo';
+  statsMatches?: number | null;
   patch: string | null;
   statsAt: string | null;
   error: string | null;

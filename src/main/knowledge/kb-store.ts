@@ -44,24 +44,34 @@ export class KbStore {
   private error: string | null = null;
   private dir: string | null = null;
   private statsCache: KbStats | null | undefined = undefined;
+  private statsTurboCache: KbStats | null | undefined = undefined;
 
   /**
    * Статистика патча (stats.json) из той же копии базы; null — нет файла или он для другого патча.
    * В интерфейс не отдаётся (≈ 0,5 МБ) — нужна только движку подсказок в main.
    */
   stats(): KbStats | null {
-    if (this.statsCache !== undefined) return this.statsCache;
+    if (this.statsCache === undefined) this.statsCache = this.readStats('stats.json', 'normal');
+    return this.statsCache;
+  }
+
+  /** Статистика Турбо (stats-turbo.json) той же копии базы; null — нет файла или он для другого патча */
+  statsTurbo(): KbStats | null {
+    if (this.statsTurboCache === undefined) this.statsTurboCache = this.readStats('stats-turbo.json', 'turbo');
+    return this.statsTurboCache;
+  }
+
+  private readStats(name: string, mode: 'normal' | 'turbo'): KbStats | null {
     const kb = this.get();
-    this.statsCache = null;
     if ('error' in kb || !this.dir) return null;
-    const file = join(this.dir, 'stats.json');
+    const file = join(this.dir, name);
     if (!existsSync(file)) return null;
     try {
-      this.statsCache = parseKbStats(JSON.parse(readFileSync(file, 'utf8')), kb.meta.patch);
+      return parseKbStats(JSON.parse(readFileSync(file, 'utf8')), kb.meta.patch, mode);
     } catch (e) {
-      console.warn(`[kb] stats.json не читается: ${(e as Error).message}`);
+      console.warn(`[kb] ${name} не читается: ${(e as Error).message}`);
+      return null;
     }
-    return this.statsCache;
   }
 
   get(): KnowledgeBase | { error: string } {

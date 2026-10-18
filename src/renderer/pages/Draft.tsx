@@ -2,7 +2,8 @@ import { useEffect, useMemo, useState } from 'react';
 import type { DraftRequest, DraftResult, DraftReasonView } from '@shared/types/draft';
 import type { KbHero } from '@shared/types/kb';
 import { Card, PageHeader } from '../components/ui';
-import { GameModeBadge } from '../components/gsi';
+import { GameModeBadge, currentGameMode } from '../components/gsi';
+import { useGsi } from '../hooks/useGsi';
 import { useKnowledgeBase } from '../hooks/useKnowledgeBase';
 
 type Side = 'allies' | 'enemies' | 'bans';
@@ -36,6 +37,10 @@ export function Draft() {
   const [req, setReq] = useState<DraftRequest>({ allies: [], enemies: [], bans: [], position: null, me: null });
   const [res, setRes] = useState<DraftResult | null>(null);
   const [liveNote, setLiveNote] = useState<string | null>(null);
+  // Чья статистика: по режиму игры (Турбо — статистика Турбо) или выбранная вручную
+  const [statsPick, setStatsPick] = useState<'auto' | 'normal' | 'turbo'>('auto');
+  const gameTurbo = currentGameMode(useGsi(), Date.now()).mode === 'turbo';
+  const statsMode: 'normal' | 'turbo' = statsPick === 'auto' ? (gameTurbo ? 'turbo' : 'normal') : statsPick;
 
   const heroes = useMemo(() => [...(kb?.heroes ?? [])].sort((a, b) => a.name.localeCompare(b.name)), [kb]);
   const byKey = useMemo(() => new Map(heroes.map((h) => [h.key, h])), [heroes]);
@@ -45,13 +50,13 @@ export function Draft() {
   useEffect(() => {
     let alive = true;
     const t = setTimeout(() => {
-      void window.dotacoach.draftSuggest(req).then((r) => alive && setRes(r));
+      void window.dotacoach.draftSuggest({ ...req, mode: statsMode }).then((r) => alive && setRes(r));
     }, 150);
     return () => {
       alive = false;
       clearTimeout(t);
     };
-  }, [req]);
+  }, [req, statsMode]);
 
   const add = (side: Side, key: string) =>
     setReq((r) => (r[side].length >= SIDE_LIMIT[side] || taken.has(key) ? r : { ...r, [side]: [...r[side], key] }));
@@ -75,6 +80,14 @@ export function Draft() {
       />
       <p className="game-mode-row muted small">
         Режим игры: <GameModeBadge testId="draft-game-mode" />
+        <label className="draft-stats-mode">
+          Статистика:{' '}
+          <select value={statsPick} onChange={(e) => setStatsPick(e.target.value as typeof statsPick)} data-testid="draft-stats-mode">
+            <option value="auto">по режиму игры ({gameTurbo ? 'Турбо' : 'обычные матчи'})</option>
+            <option value="normal">обычные матчи (рейтинговый All Pick)</option>
+            <option value="turbo">Турбо</option>
+          </select>
+        </label>
       </p>
       {(kbError || res?.error) && <p className="error">{kbError ?? res?.error}</p>}
       {res?.noStats && res.noStats.length > 0 && (
@@ -211,8 +224,10 @@ export function Draft() {
 
       {res?.patch && (
         <p className="muted small" data-testid="draft-source">
-          Патч {res.patch}, статистика OpenDota{res.statsAt ? ` от ${new Date(res.statsAt).toLocaleDateString('ru-RU')}` : ''}: проценты — оценка изменения шанса победы,
-          это ориентир, а не обещание. Угрозы героев составлены вручную.
+          <b data-testid="draft-source-mode">{res.mode === 'turbo' ? 'Турбо' : 'Рейтинговый All Pick'}</b>, патч {res.patch}
+          {typeof res.statsMatches === 'number' ? `, ${res.statsMatches.toLocaleString('ru-RU')} игр` : ''} — статистика OpenDota
+          {res.statsAt ? ` от ${new Date(res.statsAt).toLocaleDateString('ru-RU')}` : ''}: проценты — оценка изменения шанса победы, это ориентир, а не
+          обещание. Угрозы героев составлены вручную.
         </p>
       )}
     </>

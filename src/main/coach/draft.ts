@@ -4,14 +4,14 @@ import { CoachLookup, type CoachData } from '@core/coach/data.ts';
 import { counterDelta, counterItems, enemyThreats, itemRole, suggestHeroes, synergyDelta, type DraftReason } from '@core/draft/index.ts';
 import type { CoachView } from '@core/coach/view.ts';
 import type { KnowledgeBase } from '@shared/types/kb';
-import type { KbStats } from '@shared/types/stats';
+import { statsMatches, type KbStats } from '@shared/types/stats';
 import type { DraftLiveHeroes, DraftReasonView, DraftRequest, DraftResult } from '@shared/types/draft';
 
 export class DraftService {
   private look: CoachLookup | null = null;
   private error: string | null = null;
 
-  constructor(private readonly kb: { get(): KnowledgeBase | { error: string }; stats(): KbStats | null }) {}
+  constructor(private readonly kb: { get(): KnowledgeBase | { error: string }; stats(): KbStats | null; statsTurbo?(): KbStats | null }) {}
 
   private lookup(): CoachLookup | null {
     if (this.look || this.error) return this.look;
@@ -20,7 +20,15 @@ export class DraftService {
       this.error = kb.error;
       return null;
     }
-    const data: CoachData = { patch: kb.meta.patch, heroes: kb.heroes, items: kb.items, mechanics: kb.mechanics, stats: this.kb.stats(), kbVerified: kb.meta.verification === 'verified' };
+    const data: CoachData = {
+      patch: kb.meta.patch,
+      heroes: kb.heroes,
+      items: kb.items,
+      mechanics: kb.mechanics,
+      stats: this.kb.stats(),
+      statsTurbo: this.kb.statsTurbo?.() ?? null,
+      kbVerified: kb.meta.verification === 'verified',
+    };
     this.look = new CoachLookup(data);
     return this.look;
   }
@@ -29,8 +37,16 @@ export class DraftService {
     const look = this.lookup();
     const empty: DraftResult = { candidates: [], threats: [], me: null, hasSynergy: false, patch: null, statsAt: null, error: this.error };
     if (!look) return empty;
-    const stats = look.data.stats;
-    if (!stats) return { ...empty, patch: look.data.patch, error: 'Нет статистики патча (stats.json): подбор героя недоступен.' };
+    // Матчапы, связки и доля побед — из статистики выбранного режима; сборки и позиции — из обычной
+    look.setMode(req.mode === 'turbo' ? { mode: 'turbo', source: 'manual', raw: null } : { mode: 'all-pick', source: 'manual', raw: null });
+    const stats = look.pubStats;
+    if (!stats)
+      return {
+        ...empty,
+        mode: req.mode ?? 'normal',
+        patch: look.data.patch,
+        error: req.mode === 'turbo' ? 'Нет статистики Турбо (stats-turbo.json): подбор героя для Турбо недоступен.' : 'Нет статистики патча (stats.json): подбор героя недоступен.',
+      };
     const view = (r: DraftReason): DraftReasonView => ({ hero: r.hero, name: look.heroName(r.hero), delta: r.delta, games: r.games });
 
     const allies = req.me && !req.allies.includes(req.me) ? [...req.allies, req.me] : req.allies;
@@ -79,6 +95,8 @@ export class DraftService {
       me,
       noStats,
       hasSynergy: stats.heroes.some((h) => Object.keys(h.synergy).length > 0),
+      mode: req.mode ?? 'normal',
+      statsMatches: statsMatches(stats),
       patch: stats.patch,
       statsAt: stats.generatedAt,
       error: null,
