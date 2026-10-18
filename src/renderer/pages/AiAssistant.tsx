@@ -13,6 +13,7 @@ import { useSettings } from '../hooks/useSettings';
 import { formatBytes, setAiState, useAiState } from '../hooks/useAi';
 import { usePageFacts } from '../hooks/useFacts';
 import type { PageProps } from './types';
+import { Icon } from '../components/icons';
 
 const DL_STATUS: Record<string, string> = {
   downloading: 'Скачивается',
@@ -122,7 +123,8 @@ function LocalCard({ ai, settings, update }: { ai: AiUiState; settings: Settings
         <div className="row">
           {downloading ? (
             <button onClick={() => void act(window.dotacoach.cancelLocalAiDownload)} data-testid="ai-download-cancel">
-              ■ Остановить скачивание
+              <Icon name="stop" size={12} />
+              Остановить скачивание
             </button>
           ) : (
             <button className="primary" disabled={ready} onClick={() => void act(() => window.dotacoach.downloadLocalAi(model))} data-testid="ai-download">

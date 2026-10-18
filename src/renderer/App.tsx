@@ -19,23 +19,26 @@ import { ReplayMode } from './pages/ReplayMode';
 import { AiAssistant } from './pages/AiAssistant';
 import { HudPreview } from './pages/HudPreview';
 import { Draft } from './pages/Draft';
+import { BrandMark, Icon, type IconName } from './components/icons';
 
 // Вкладка «Диагностика зрения» убрана в обновлении 0.5.0 (решение команды): распознавание HUD теперь
 // показывается в «Живой игре» и в «Разборе записи».
-const PAGES: readonly { id: PageId; label: string; icon: string; Component: ComponentType<PageProps> }[] = [
-  { id: 'dashboard', label: 'Обзор', icon: '◈', Component: Dashboard },
-  { id: 'live', label: 'Живая игра', icon: '●', Component: LiveGame },
-  { id: 'hud', label: 'Предпросмотр подсказок', icon: '◇', Component: HudPreview },
-  { id: 'replay', label: 'Разбор записи', icon: '▶', Component: ReplayMode },
-  { id: 'match', label: 'Состояние матча', icon: '▦', Component: MatchState },
-  { id: 'draft', label: 'Драфт', icon: '⚔', Component: Draft },
-  { id: 'ai', label: 'ИИ-помощник', icon: '✦', Component: AiAssistant },
-  { id: 'history', label: 'История советов', icon: '☰', Component: History },
-  { id: 'kb', label: 'База знаний', icon: '◆', Component: KnowledgeBase },
-  { id: 'voice', label: 'Голос', icon: '♪', Component: VoiceSettings },
-  { id: 'updates', label: 'Обновления', icon: '⬆', Component: UpdatesPage },
-  { id: 'settings', label: 'Настройки', icon: '⚙', Component: AppSettings },
+// Меню — группами: игра сейчас, разбор после, справка, система.
+const PAGES: readonly { id: PageId; label: string; icon: IconName; group: string; Component: ComponentType<PageProps> }[] = [
+  { id: 'dashboard', label: 'Обзор', icon: 'dashboard', group: 'Игра', Component: Dashboard },
+  { id: 'live', label: 'Живая игра', icon: 'live', group: 'Игра', Component: LiveGame },
+  { id: 'match', label: 'Состояние матча', icon: 'match', group: 'Игра', Component: MatchState },
+  { id: 'draft', label: 'Драфт', icon: 'draft', group: 'Игра', Component: Draft },
+  { id: 'hud', label: 'Подсказки в игре', icon: 'layers', group: 'Игра', Component: HudPreview },
+  { id: 'replay', label: 'Разбор записи', icon: 'replay', group: 'Разбор', Component: ReplayMode },
+  { id: 'history', label: 'История советов', icon: 'history', group: 'Разбор', Component: History },
+  { id: 'ai', label: 'ИИ-помощник', icon: 'sparkles', group: 'Разбор', Component: AiAssistant },
+  { id: 'kb', label: 'База знаний', icon: 'book', group: 'Разбор', Component: KnowledgeBase },
+  { id: 'voice', label: 'Голос', icon: 'mic', group: 'Система', Component: VoiceSettings },
+  { id: 'updates', label: 'Обновления', icon: 'download', group: 'Система', Component: UpdatesPage },
+  { id: 'settings', label: 'Настройки', icon: 'settings', group: 'Система', Component: AppSettings },
 ];
+const GROUPS = [...new Set(PAGES.map((p) => p.group))];
 
 export function App() {
   const [page, setPage] = useState<PageId>('dashboard');
@@ -51,21 +54,30 @@ export function App() {
     <div className="shell">
       <aside className="sidebar">
         <div className="brand">
-          <span className="brand-mark">D</span>
+          <BrandMark />
           <div>
             <div className="brand-name">Dota AI Coach</div>
             <div className="brand-sub">{liveOn ? 'живой режим' : 'режим записей'}</div>
           </div>
         </div>
         <nav>
-          {PAGES.map((p) => (
-            <button key={p.id} className={`nav-item${p.id === page ? ' active' : ''}`} onClick={() => setPage(p.id)} data-testid={`nav-${p.id}`}>
-              <span className="nav-icon" aria-hidden>
-                {p.icon}
-              </span>
-              {p.label}
-              {p.id === 'updates' && updateAvailable && <span className="nav-dot" data-testid="nav-update-dot" title="Доступно обновление" />}
-            </button>
+          {GROUPS.map((g) => (
+            <div className="nav-group" key={g}>
+              <div className="nav-group-label">{g}</div>
+              {PAGES.filter((p) => p.group === g).map((p) => (
+                <button
+                  key={p.id}
+                  className={`nav-item${p.id === page ? ' active' : ''}`}
+                  onClick={() => setPage(p.id)}
+                  aria-current={p.id === page ? 'page' : undefined}
+                  data-testid={`nav-${p.id}`}
+                >
+                  <Icon name={p.icon} className="nav-icon" />
+                  {p.label}
+                  {p.id === 'updates' && updateAvailable && <span className="nav-dot" data-testid="nav-update-dot" title="Доступно обновление" />}
+                </button>
+              ))}
+            </div>
           ))}
         </nav>
         <div className="sidebar-foot">

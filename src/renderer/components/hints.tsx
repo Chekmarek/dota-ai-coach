@@ -1,6 +1,6 @@
 // Переключатели live-подсказок (решение владельца 2026-10-13, docs/POLICY.md) и настройки подсказок этапа 4:
 // подробность, категории, ИИ во время матча, лента в окне коуча. Одни и те же — в «Настройках» и на «Живой игре»;
-// сохраняются сразу в settings.hints. Вид подсказок поверх игры — на странице «Предпросмотр подсказок».
+// сохраняются сразу в settings.hints. Вид подсказок поверх игры — на странице «Подсказки в игре».
 import { useEffect, useState } from 'react';
 import type { HintCategories, HintDetail, Settings, SettingsPatch } from '@shared/schemas/settings';
 import type { CoachStateMessage } from '@shared/ipc';
@@ -93,7 +93,7 @@ export function HintsToggles({ settings, update, testIdPrefix = 'setting-hints' 
       </label>
       <label className="check">
         <input type="checkbox" checked={settings.hud.enabled} disabled={!h.enabled} onChange={(e) => void update({ hud: { enabled: e.target.checked } })} data-testid={`${testIdPrefix}-hud`} />
-        Показывать подсказки поверх игры (вид — «Предпросмотр подсказок»)
+        Показывать подсказки поверх игры (вид — раздел «Подсказки в игре»)
       </label>
     </>
   );

@@ -7,6 +7,7 @@ import type { AiMessage } from '@core/ai/provider.ts';
 import { checkGrounding, highlightUnverified } from '@core/ai/grounding.ts';
 import { askAi, newRequestId } from '../hooks/useAi';
 import { useSettings } from '../hooks/useSettings';
+import { Icon } from './icons';
 
 interface Turn {
   id: string;
@@ -164,7 +165,8 @@ export function AskCoach({
         <input value={q} onChange={(e) => setQ(e.target.value)} placeholder={placeholder} maxLength={500} data-testid="ask-input" aria-label="Вопрос коучу" />
         {busy ? (
           <button type="button" onClick={() => current.current && void window.dotacoach.cancelAi(current.current)} data-testid="ask-stop">
-            ■ Стоп
+            <Icon name="stop" size={12} />
+            Стоп
           </button>
         ) : (
           <button type="submit" className="primary" disabled={!q.trim()} data-testid="ask-submit">
@@ -211,7 +213,7 @@ export function MatchSummary({ label, lines, testId = 'match-summary' }: { label
       </ul>
       <div className="row">
         {busy ? (
-          <button onClick={() => idRef.current && void window.dotacoach.cancelAi(idRef.current)}>■ Стоп</button>
+          <button onClick={() => idRef.current && void window.dotacoach.cancelAi(idRef.current)}><Icon name="stop" size={12} />Стоп</button>
         ) : (
           <button className="primary" onClick={() => void run()} disabled={!lines.length} data-testid="summary-ai">
             Написать разбор (ИИ)

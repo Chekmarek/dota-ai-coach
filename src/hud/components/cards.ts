@@ -3,7 +3,7 @@
 // Вид — только классы hud-* и CSS-переменные темы (hud.css, theme/), никаких цветов и размеров здесь.
 import type { HudHint } from '../../shared/types/hud.ts';
 import { h } from './dom.ts';
-import { aiMark, cornerOrnament, emblem, severityIcon } from './icons.ts';
+import { aiMark, emblem, severityIcon } from './icons.ts';
 
 export type CardKind = 'card' | 'alert' | 'decision' | 'review';
 
@@ -16,12 +16,11 @@ export function kindOf(hint: HudHint): CardKind {
 }
 
 function head(hint: HudHint, title = hint.title): HTMLElement[] {
-  return [
-    h('div', 'hud-head', emblem(), h('span', 'hud-title', title), hint.source === 'ai' ? aiMark() : null, severityIcon(hint.priority)),
-    // резной разделитель с ромбом-руной
-    h('div', 'hud-sep', h('i', null)),
-  ];
+  return [h('div', 'hud-head', emblem(), h('span', 'hud-title', title), hint.source === 'ai' ? aiMark() : null, severityIcon(hint.priority))];
 }
+
+/** Сколько факторов процента показывать: самые сильные, чтобы карточка оставалась маленькой */
+const MAX_FACTORS = 3;
 
 /** Полоска «сколько ещё будет на экране» — CSS-анимация transform (видеокарта) */
 function ttlBar(hint: HudHint): HTMLElement | null {
@@ -31,14 +30,15 @@ function ttlBar(hint: HudHint): HTMLElement | null {
   return h('div', 'hud-ttl', i);
 }
 
-/** Процент — рунный медальон (кольцо заполнено на value %), уверенность — тонкий жёлоб с магическим светом */
+/** Процент — кольцо (заполнено на value %), уверенность — тонкая полоса, ниже — самые сильные факторы */
 function percentBlock(p: NonNullable<HudHint['percent']>): HTMLElement {
   const medal = h('div', 'hud-medal', h('span', 'hud-pct-num', `${Math.round(p.value)}%`));
   medal.style.setProperty('--p', String(Math.max(0, Math.min(100, p.value))));
   const fill = h('i', null);
   fill.style.transform = `scaleX(${Math.max(0, Math.min(1, p.confidence))})`;
-  const factors = p.factors.length
-    ? h('ul', 'hud-factors', ...p.factors.map((f) => h('li', f.effect >= 0 ? 'hud-f-plus' : 'hud-f-minus', h('span', null, f.label), h('b', null, `${f.effect > 0 ? '+' : ''}${Math.round(f.effect)}`))))
+  const top = [...p.factors].sort((a, b) => Math.abs(b.effect) - Math.abs(a.effect)).slice(0, MAX_FACTORS);
+  const factors = top.length
+    ? h('ul', 'hud-factors', ...top.map((f) => h('li', f.effect >= 0 ? 'hud-f-plus' : 'hud-f-minus', h('span', null, f.label), h('b', null, `${f.effect > 0 ? '+' : ''}${Math.round(f.effect)}`))))
     : null;
   const side = h('div', 'hud-pct-side', h('span', 'hud-pct-label', p.label), h('span', 'hud-conf', `уверенность ${Math.round(p.confidence * 100)}%`), h('div', 'hud-bar', fill));
   return h('div', 'hud-pctbox', h('div', 'hud-pct', medal, side), factors);
@@ -74,14 +74,7 @@ export function cardContent(hint: HudHint): Element[] {
     const ttl = ttlBar(hint);
     if (ttl) body.append(ttl);
   }
-  return [
-    h('div', 'hud-glow', null),
-    h('div', 'hud-frame', body),
-    cornerOrnament('tl'),
-    cornerOrnament('tr'),
-    cornerOrnament('bl'),
-    cornerOrnament('br'),
-  ];
+  return [h('div', 'hud-glow', null), h('div', 'hud-frame', body)];
 }
 
 /** Корень карточки: вид зависит от важности и типа */

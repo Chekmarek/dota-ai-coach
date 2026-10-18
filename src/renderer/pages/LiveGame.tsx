@@ -12,6 +12,7 @@ import { engine } from '../hooks/useEngine';
 import { AskCoach } from '../components/ask';
 import { usePageFacts } from '../hooks/useFacts';
 import type { PageProps } from './types';
+import { Icon } from '../components/icons';
 
 export function LiveGame({ onNavigate }: PageProps) {
   const { status, preview, vision } = useEngine();
@@ -42,13 +43,15 @@ export function LiveGame({ onNavigate }: PageProps) {
         actions={
           <>
             <button className="primary" onClick={() => startLive(settings)} disabled={on || !settings} data-testid="live-start">
-              ▶ Включить
+              <Icon name="play" size={14} />
+              Включить
             </button>
             <button onClick={() => engine.send({ type: 'live:stop' })} disabled={!on} data-testid="live-stop">
-              ■ Выключить
+              <Icon name="stop" size={14} />
+              Выключить
             </button>
-            <button onClick={() => onNavigate('settings')} title="Настройки живой игры" data-testid="live-settings">
-              ⚙
+            <button onClick={() => onNavigate('settings')} title="Настройки живой игры" aria-label="Настройки живой игры" data-testid="live-settings">
+              <Icon name="settings" size={16} />
             </button>
           </>
         }
