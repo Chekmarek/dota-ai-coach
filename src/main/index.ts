@@ -5,6 +5,7 @@ import { resolveDataDir } from './application/paths';
 import { createUiWindow, harden, pageUrl, preloadDir } from './application/windows';
 import { SettingsStore } from './settings/store';
 import { KbStore } from './knowledge/kb-store';
+import { StratzSync } from './knowledge/stratz-sync';
 import { registerIpc } from './ipc/register';
 import { EngineLink } from './lifecycle/engine-link';
 import { handleMediaProtocol, registerMediaScheme } from './media/media-protocol';
@@ -78,7 +79,8 @@ if (!app.requestSingleInstanceLock()) {
         engine?.sendGsi(body, wallMs);
       },
     });
-    const kb = new KbStore();
+    const kbCacheDir = join(dataDir, 'kb-cache');
+    const kb = new KbStore({ cacheDir: kbCacheDir });
     let coach: CoachHandle | null = null;
     registerIpc({
       settings,
@@ -113,6 +115,20 @@ if (!app.requestSingleInstanceLock()) {
     // Подсказки во время матча (этап 4): правила + ИИ → окно поверх игры, лента, «История советов»
     coach = setupCoach({ settings, kb, dataDir, aiProvider: () => ai.coachProvider(), getUi: () => ui, isTrustedSender });
     app.on('will-quit', () => coach?.dispose());
+
+    // Данные STRATZ (как играют сильные игроки рейтинга): обновить кэш, если на ПК есть токен и кэш старше 3 дней.
+    // Через 2 минуты после запуска и только вне матча; новые данные подхватятся при следующем запуске коуча
+    if (!process.env.DOTACOACH_NO_UPDATE_CHECK) {
+      const stratz = new StratzSync({
+        cacheDir: kbCacheDir,
+        patch: () => { const k = kb.get(); return 'error' in k ? null : k.meta.patch; },
+        heroes: () => { const k = kb.get(); return 'error' in k ? [] : k.heroes.map((h) => ({ id: h.id, key: h.key })); },
+        items: () => { const k = kb.get(); return 'error' in k ? [] : k.items.map((i) => ({ id: i.id, key: i.key })); },
+        inMatch: () => liveSeesDota() || Date.now() - gsiInMatchAt < 60_000,
+        log: (...a) => liveLog(...a),
+      });
+      setTimeout(() => void stratz.refreshIfStale().then((r) => liveLog('stratz', { result: r })), 120_000).unref();
+    }
 
     engine = new EngineLink(ui);
     engine.setDatasetConfig(dataset.config(settings.get()));

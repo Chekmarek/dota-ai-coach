@@ -5,6 +5,7 @@ import type { CoachLookup } from '../data.ts';
 import type { CoachSettings, FactRef, HintCategory, HintDraft, HintPriority } from '../types.ts';
 import { MAP_ZONE_RU, type MapZone } from '../../match-state/map-zones.ts';
 import { buildGameContext, type GameContext } from '../game-context.ts';
+import { buildMatchKnowledge, knowledgeSig, type MatchKnowledge } from '../knowledge.ts';
 
 export interface RuleContext {
   v: CoachView;
@@ -16,12 +17,22 @@ export interface RuleContext {
   now: number;
   /** Контекст игры (стадия, позиция, герой) — движок считает раз за тик; читать через game(c) */
   g?: GameContext;
+  /** Знания на матч (кэш движка, пересобирается при смене состава); читать через knowledge(c) */
+  k?: MatchKnowledge;
 }
 
 /** Контекст игры тика: посчитан движком или (в тестах отдельных правил) — здесь, один раз */
 export function game(c: RuleContext): GameContext {
   c.g ??= buildGameContext(c.v, c.mem, c.look, c.settings.position ?? 'auto');
   return c.g;
+}
+
+/** Знания на матч: от движка (кэш на матч) или собранные здесь (тесты отдельных правил) */
+export function knowledge(c: RuleContext): MatchKnowledge {
+  const g = game(c);
+  const sig = knowledgeSig(c.v, g);
+  if (!c.k || c.k.sig !== sig) c.k = buildMatchKnowledge(c.v, g, c.look);
+  return c.k;
 }
 
 export type Rule = (c: RuleContext) => HintDraft | HintDraft[] | null;

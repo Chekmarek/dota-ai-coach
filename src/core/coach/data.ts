@@ -229,6 +229,34 @@ export class CoachLookup {
   }
 
   /**
+   * Сборка для героя на позиции: рейтинг на этой позиции → рейтинг на соседней позиции той же роли (4↔5, 1/2/3) →
+   * профи патча, только если профи сами чаще играют героя в этой роли (Ogre Magi у профи — центр: Bottle пятёрке не
+   * советуем) → []. Позиция не известна — профи, как раньше.
+   */
+  buildForPosition(heroId: number | null | undefined, heroKey: string | null, position: number | null): BuildItem[] {
+    if (position === null) return this.buildFor(heroId, heroKey);
+    const own = this.rankedBuild(heroKey, position);
+    if (own.length >= 3) return own;
+    const sameRole = position >= 4 ? [4, 5] : [1, 2, 3];
+    const m = this.ranked(heroKey)?.matches ?? {};
+    for (const p of sameRole.filter((x) => x !== position).sort((a, b) => (m[String(b)] ?? 0) - (m[String(a)] ?? 0))) {
+      const other = this.rankedBuild(heroKey, p);
+      if (other.length >= 3) return other;
+    }
+    const shares = this.statsFor(heroId, heroKey)?.pro?.positions ?? null;
+    const roleShare = shares ? (position >= 4 ? shares[3]! + shares[4]! : shares[0]! + shares[1]! + shares[2]!) : 0;
+    return roleShare >= 0.5 ? this.buildFor(heroId, heroKey) : [];
+  }
+
+  /** Самая частая позиция героя у сильных игроков рейтинга (по числу матчей); null — нет данных */
+  rankedMainPosition(heroKey: string | null): number | null {
+    const m = this.ranked(heroKey)?.matches;
+    if (!m) return null;
+    const best = Object.entries(m).sort((a, b) => b[1] - a[1])[0];
+    return best ? Number(best[0]) : null;
+  }
+
+  /**
    * Что покупают сильные игроки рейтинга на этом герое и позиции (по медианной минуте); [] — нет данных.
    * Составные части и дешёвое (< 500) не берём — как и в сборке профи.
    */

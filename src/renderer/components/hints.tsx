@@ -9,7 +9,7 @@ import { GameModeBadge, currentGameMode } from './gsi';
 import { showModeToast } from './mode-toast';
 import { useGsi } from '../hooks/useGsi';
 import { modeBannerText, resolveGameMode } from '@core/gsi/mode.ts';
-import { POSITION_OVERRIDES, type PositionOverride } from '@core/coach/game-context.ts';
+import { POSITION_OVERRIDES, type PositionOverride } from '@core/coach/position.ts';
 
 const POSITION_OPTION_RU: Record<PositionOverride, string> = {
   auto: 'Определять сама (по герою и линии)',

@@ -7,6 +7,7 @@ import { selectKbCopy, type KbCopyOrigin } from '@core/knowledge-base/select.ts'
 import { parseMechanics } from '@shared/types/mechanics';
 import { parseKbStats, type KbStats } from '@shared/types/stats';
 import { parseStatsRanked, type StatsRanked } from '@shared/types/stats-ranked';
+import { readStratzCache } from './stratz-sync';
 
 interface KbCopy {
   origin: KbCopyOrigin;
@@ -41,6 +42,9 @@ function probe(origin: KbCopyOrigin, base: string): KbCopy {
 
 /** Загружает базу знаний текущего патча (один раз, лениво) из более новой из двух копий */
 export class KbStore {
+  /** cacheDir — кэш STRATZ (stratz-sync.ts); без него — только файлы базы знаний */
+  constructor(private readonly opts: { cacheDir?: string } = {}) {}
+
   private cache: KnowledgeBase | null = null;
   private error: string | null = null;
   private dir: string | null = null;
@@ -62,19 +66,26 @@ export class KbStore {
     return this.statsTurboCache;
   }
 
-  /** Как играют сильные игроки в рейтинге (stats-ranked.json, STRATZ); null — нет файла или он для другого патча */
+  /**
+   * Как играют сильные игроки в рейтинге (STRATZ): кэш коуча (<папка данных>/kb-cache, обновляется при наличии токена)
+   * или файл базы знаний — что свежее и того же патча; null — ни того, ни другого.
+   */
   statsRanked(): StatsRanked | null {
     if (this.statsRankedCache !== undefined) return this.statsRankedCache;
     const kb = this.get();
     this.statsRankedCache = null;
     if ('error' in kb || !this.dir) return null;
+    let bundled: StatsRanked | null = null;
     const file = join(this.dir, 'stats-ranked.json');
-    if (!existsSync(file)) return null;
-    try {
-      this.statsRankedCache = parseStatsRanked(JSON.parse(readFileSync(file, 'utf8')), kb.meta.patch);
-    } catch (e) {
-      console.warn(`[kb] stats-ranked.json не читается: ${(e as Error).message}`);
+    if (existsSync(file)) {
+      try {
+        bundled = parseStatsRanked(JSON.parse(readFileSync(file, 'utf8')), kb.meta.patch);
+      } catch (e) {
+        console.warn(`[kb] stats-ranked.json не читается: ${(e as Error).message}`);
+      }
     }
+    const cached = this.opts.cacheDir ? readStratzCache(this.opts.cacheDir, kb.meta.patch) : null;
+    this.statsRankedCache = cached && (!bundled || cached.generatedAt > bundled.generatedAt) && cached.heroes.length >= 100 ? cached : bundled;
     return this.statsRankedCache;
   }
   private statsRankedCache: StatsRanked | null | undefined = undefined;

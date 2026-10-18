@@ -1,0 +1,358 @@
+[
+ {
+  "clock": 180,
+  "stage": "laning",
+  "stageWhy": "время 3 мин",
+  "position": 4,
+  "positionSource": "lane",
+  "hero": {
+   "key": "ogre_magi",
+   "name": "Ogre Magi",
+   "ultPassive": true
+  },
+  "lost": {
+   "t1": 0,
+   "t2": 0,
+   "t3": 0,
+   "rax": 0
+  },
+  "now": {
+   "clock": 180,
+   "alive": true,
+   "level": 4,
+   "hpPct": 72.69874476987448,
+   "manaPct": 14.080459770114942,
+   "gold": 384,
+   "buyback": {
+    "cost": 604,
+    "cooldownSec": 0,
+    "affordable": false
+   },
+   "items": [
+    {
+     "key": "boots",
+     "ready": null
+    },
+    {
+     "key": "gloves",
+     "ready": null
+    },
+    {
+     "key": "tpscroll",
+     "ready": true
+    }
+   ],
+   "abilities": [
+    {
+     "key": "ogre_magi_fireblast",
+     "level": 1,
+     "ready": false,
+     "ultimate": false
+    },
+    {
+     "key": "ogre_magi_ignite",
+     "level": 2,
+     "ready": false,
+     "ultimate": false
+    },
+    {
+     "key": "ogre_magi_bloodlust",
+     "level": 1,
+     "ready": false,
+     "ultimate": false
+    },
+    {
+     "key": "ogre_magi_multicast",
+     "level": 0,
+     "ready": false,
+     "ultimate": true
+    }
+   ],
+   "enemiesNear": 0,
+   "alliesNear": 0,
+   "missing": [],
+   "enemiesDead": 0,
+   "alliesDead": 0,
+   "zone": "bot-lane",
+   "side": "own",
+   "rune": {
+    "kind": "bounty",
+    "dist": 5536,
+    "runSec": 17
+   },
+   "outpost": {
+    "dist": 4757,
+    "enemyHalf": false
+   },
+   "roshan": {
+    "dist": 3661,
+    "killedAt": null,
+    "aegisOurs": null
+   },
+   "inFight": false
+  },
+  "knowledge": {
+   "me": {
+    "key": "ogre_magi",
+    "position": 4,
+    "build": [
+     "soul_ring@5м (ranked)",
+     "hand_of_midas@18м (ranked)",
+     "blink@24м (ranked)",
+     "glimmer_cape@24м (ranked)",
+     "aether_lens@26м (ranked)",
+     "ultimate_scepter@30м (ranked)"
+    ],
+    "benchmark": null
+   },
+   "enemies": [],
+   "threats": []
+  }
+ },
+ {
+  "clock": 599,
+  "stage": "mid",
+  "stageWhy": "время 10 мин",
+  "position": 4,
+  "positionSource": "lane",
+  "hero": {
+   "key": "ogre_magi",
+   "name": "Ogre Magi",
+   "ultPassive": true
+  },
+  "lost": {
+   "t1": 1,
+   "t2": 0,
+   "t3": 0,
+   "rax": 0
+  },
+  "now": {
+   "clock": 599.45,
+   "alive": true,
+   "level": 12,
+   "hpPct": 77.55813953488372,
+   "manaPct": 15.520833333333334,
+   "gold": 936,
+   "buyback": {
+    "cost": 1650,
+    "cooldownSec": 0,
+    "affordable": false
+   },
+   "items": [
+    {
+     "key": "hand_of_midas",
+     "ready": true
+    },
+    {
+     "key": "reaver",
+     "ready": null
+    },
+    {
+     "key": "power_treads",
+     "ready": true
+    },
+    {
+     "key": "chipped_vest",
+     "ready": null
+    }
+   ],
+   "abilities": [
+    {
+     "key": "ogre_magi_fireblast",
+     "level": 4,
+     "ready": true,
+     "ultimate": false
+    },
+    {
+     "key": "ogre_magi_ignite",
+     "level": 2,
+     "ready": true,
+     "ultimate": false
+    },
+    {
+     "key": "ogre_magi_bloodlust",
+     "level": 4,
+     "ready": true,
+     "ultimate": false
+    },
+    {
+     "key": "ogre_magi_multicast",
+     "level": 2,
+     "ready": true,
+     "ultimate": true
+    }
+   ],
+   "enemiesNear": 0,
+   "alliesNear": 0,
+   "missing": [],
+   "enemiesDead": 0,
+   "alliesDead": 0,
+   "zone": "mid-lane",
+   "side": "own",
+   "rune": {
+    "kind": "power",
+    "dist": 1811,
+    "runSec": 6
+   },
+   "outpost": {
+    "dist": 2789,
+    "enemyHalf": false
+   },
+   "roshan": {
+    "dist": 3874,
+    "killedAt": null,
+    "aegisOurs": null
+   },
+   "inFight": false
+  },
+  "knowledge": {
+   "me": {
+    "key": "ogre_magi",
+    "position": 4,
+    "build": [
+     "soul_ring@5м (ranked)",
+     "hand_of_midas@18м (ranked)",
+     "blink@24м (ranked)",
+     "glimmer_cape@24м (ranked)",
+     "aether_lens@26м (ranked)",
+     "ultimate_scepter@30м (ranked)"
+    ],
+    "benchmark": null
+   },
+   "enemies": [],
+   "threats": []
+  }
+ },
+ {
+  "clock": 1079,
+  "stage": "late",
+  "stageWhy": "время 18 мин",
+  "position": 4,
+  "positionSource": "lane",
+  "hero": {
+   "key": "ogre_magi",
+   "name": "Ogre Magi",
+   "ultPassive": true
+  },
+  "lost": {
+   "t1": 2,
+   "t2": 0,
+   "t3": 0,
+   "rax": 0
+  },
+  "now": {
+   "clock": 1079.108,
+   "alive": true,
+   "level": 26,
+   "hpPct": 100,
+   "manaPct": 43.82892057026477,
+   "gold": 690,
+   "buyback": {
+    "cost": 4330,
+    "cooldownSec": 0,
+    "affordable": false
+   },
+   "items": [
+    {
+     "key": "blade_mail",
+     "ready": true
+    },
+    {
+     "key": "hand_of_midas",
+     "ready": true
+    },
+    {
+     "key": "heart",
+     "ready": null
+    },
+    {
+     "key": "heart",
+     "ready": null
+    },
+    {
+     "key": "ultimate_scepter",
+     "ready": null
+    },
+    {
+     "key": "power_treads",
+     "ready": true
+    },
+    {
+     "key": "chipped_vest",
+     "ready": null
+    }
+   ],
+   "abilities": [
+    {
+     "key": "ogre_magi_fireblast",
+     "level": 4,
+     "ready": true,
+     "ultimate": false
+    },
+    {
+     "key": "ogre_magi_ignite",
+     "level": 4,
+     "ready": true,
+     "ultimate": false
+    },
+    {
+     "key": "ogre_magi_bloodlust",
+     "level": 4,
+     "ready": true,
+     "ultimate": false
+    },
+    {
+     "key": "ogre_magi_unrefined_fireblast",
+     "level": 1,
+     "ready": true,
+     "ultimate": false
+    },
+    {
+     "key": "ogre_magi_multicast",
+     "level": 3,
+     "ready": true,
+     "ultimate": true
+    }
+   ],
+   "enemiesNear": 0,
+   "alliesNear": 0,
+   "missing": [],
+   "enemiesDead": 0,
+   "alliesDead": 0,
+   "zone": "mid-lane",
+   "side": "enemy",
+   "rune": {
+    "kind": "bounty",
+    "dist": 3626,
+    "runSec": 11
+   },
+   "outpost": {
+    "dist": 2806,
+    "enemyHalf": true
+   },
+   "roshan": {
+    "dist": 5315,
+    "killedAt": null,
+    "aegisOurs": null
+   },
+   "inFight": false
+  },
+  "knowledge": {
+   "me": {
+    "key": "ogre_magi",
+    "position": 4,
+    "build": [
+     "soul_ring@5м (ranked)",
+     "hand_of_midas@18м (ranked)",
+     "blink@24м (ranked)",
+     "glimmer_cape@24м (ranked)",
+     "aether_lens@26м (ranked)",
+     "ultimate_scepter@30м (ranked)"
+    ],
+    "benchmark": null
+   },
+   "enemies": [],
+   "threats": []
+  }
+ }
+]

@@ -1,18 +1,30 @@
 // Контекст игры для всех советов (этап 2 «понимания игры»): стадия, позиция 1–5, герой. Считается один раз за тик
 // из снимка матча и памяти; каждое правило сначала смотрит сюда — «в лайнинге керри в лес не зовём», «в лейте Tango
 // не причина смерти». Чистое ядро.
-import type { CoachView } from './view.ts';
-import type { CoachMemory } from './memory.ts';
+import { poolPct, type CoachView } from './view.ts';
+import { nearEnemyCount, type CoachMemory } from './memory.ts';
 import type { CoachLookup } from './data.ts';
 import { mapZone } from '../match-state/map-zones.ts';
+import { NEAR_UNITS, dist, mapSide } from './geo.ts';
+import mapPointsJson from '../../data/map-points.json';
+import outpostsJson from '../../data/outposts.json';
+
+/** Точки карты из файлов Dota 2 (scripts/extract-map-points.mjs): руны, Рошан, Мучитель, лотосы, башни */
+export const MAP_POINTS = mapPointsJson as {
+  runes: { power: { x: number; y: number }[]; bounty: { x: number; y: number }[] };
+  roshan: { x: number; y: number }[];
+  tormentor: { x: number; y: number }[];
+  lotus: { x: number; y: number }[];
+  wisdom: { x: number; y: number }[];
+  towers: { team: 'radiant' | 'dire'; tier: number; lane: string | null; x: number; y: number }[];
+};
+const OUTPOSTS_ALL: readonly { x: number; y: number }[] = outpostsJson.outposts;
 
 export type GameStage = 'laning' | 'mid' | 'late';
-export type Position = 1 | 2 | 3 | 4 | 5;
-export const POSITION_OVERRIDES = ['auto', '1', '2', '3', '4', '5'] as const;
-export type PositionOverride = (typeof POSITION_OVERRIDES)[number];
+import type { Position, PositionOverride } from './position.ts';
+export { POSITION_OVERRIDES, POSITION_RU, type Position, type PositionOverride } from './position.ts';
 
 export const STAGE_RU: Record<GameStage, string> = { laning: 'лайнинг', mid: 'мидгейм', late: 'лейт' };
-export const POSITION_RU: Record<Position, string> = { 1: 'позиция 1 (керри)', 2: 'позиция 2 (центр)', 3: 'позиция 3 (оффлейн)', 4: 'позиция 4', 5: 'позиция 5' };
 
 /**
  * Границы стадий в минутах обычной игры. В Турбо игра идёт примерно вдвое быстрее — минуты делятся на 2.
@@ -46,6 +58,75 @@ export interface GameContext {
   };
   /** Своих зданий потеряно: башни по уровням, казармы */
   lost: { t1: number; t2: number; t3: number; rax: number } | null;
+  /** Ситуация прямо сейчас — одно место для всех анализаторов (ночная задача, этап 2) */
+  now: Situation;
+}
+
+/** Ситуация в матче прямо сейчас: всё, что нужно анализаторам, в одном объекте */
+export interface Situation {
+  clock: number | null;
+  alive: boolean | null;
+  level: number | null;
+  hpPct: number | null;
+  manaPct: number | null;
+  gold: number | null;
+  buyback: { cost: number | null; cooldownSec: number | null; affordable: boolean | null };
+  /** Предметы в инвентаре: ключ и готов ли (перезарядка 0) */
+  items: { key: string; ready: boolean | null }[];
+  /** Способности: ключ, уровень, готова ли, ульта ли */
+  abilities: { key: string | null; level: number | null; ready: boolean | null; ultimate: boolean }[];
+  enemiesNear: number;
+  alliesNear: number;
+  /** Враги, пропавшие с мини-карты (ключи героев), и мёртвые */
+  missing: string[];
+  enemiesDead: number;
+  alliesDead: number;
+  /** Где герой: зона карты и сторона */
+  zone: string | null;
+  side: 'own' | 'river' | 'enemy' | null;
+  /** Ближайшая точка руны и сколько секунд бега до неё (≈ 320 ед./с); null — позиция неизвестна */
+  rune: { kind: 'power' | 'bounty'; dist: number; runSec: number } | null;
+  /** Ближайший аванпост: расстояние и на чьей он половине */
+  outpost: { dist: number; enemyHalf: boolean } | null;
+  /** Логово Рошана: расстояние; Рошан убит в (игровое время), наш ли Аегис */
+  roshan: { dist: number | null; killedAt: number | null; aegisOurs: boolean | null };
+  inFight: boolean;
+}
+
+/** Скорость бега для «успею ли» — средняя скорость героя с ботинками (ед./с) */
+export const RUN_SPEED = 320;
+
+export function situation(v: CoachView, mem: CoachMemory): Situation {
+  const me = v.me.pos.value;
+  const near = (pts: readonly { x: number; y: number }[]) => (me && pts.length ? Math.min(...pts.map((p) => dist(p, me))) : null);
+  const powerD = near(MAP_POINTS.runes.power);
+  const bountyD = near(MAP_POINTS.runes.bounty);
+  const rune = powerD === null || bountyD === null ? null : powerD <= bountyD ? { kind: 'power' as const, dist: Math.round(powerD), runSec: Math.round(powerD / RUN_SPEED) } : { kind: 'bounty' as const, dist: Math.round(bountyD), runSec: Math.round(bountyD / RUN_SPEED) };
+  const op = me && v.team ? OUTPOSTS_ALL.map((o) => ({ dist: dist(o, me), enemyHalf: mapSide(o, v.team!) === 'enemy' })).sort((a, b) => a.dist - b.dist)[0] ?? null : null;
+  const cost = v.me.buybackCost.value;
+  const gold = v.me.gold.value;
+  return {
+    clock: v.clock.value,
+    alive: v.me.alive.value,
+    level: v.me.level.value,
+    hpPct: poolPct(v.me.hp.value),
+    manaPct: (v.me.mana.value?.max ?? 0) > 0 ? poolPct(v.me.mana.value) : null,
+    gold,
+    buyback: { cost, cooldownSec: v.me.buybackCooldown.value, affordable: cost === null || gold === null ? null : gold >= cost && (v.me.buybackCooldown.value ?? 0) === 0 },
+    items: v.me.items.filter((i) => /^inv\d$|^neutral$|^tp$/.test(i.slot)).map((i) => ({ key: i.key, ready: i.cooldownSec === null ? null : i.cooldownSec === 0 })),
+    abilities: v.me.abilities.map((a) => ({ key: a.key, level: a.level, ready: a.state === null ? null : a.state === 'ready', ultimate: a.ultimate })),
+    enemiesNear: nearEnemyCount(v),
+    alliesNear: me ? v.allies.filter((a) => a.alive.value !== false && a.pos.value && (a.pos.ageSec ?? 99) <= 3 && dist(a.pos.value, me) <= NEAR_UNITS).length : 0,
+    missing: v.enemies.filter((e) => e.missing === true && e.hero.value).map((e) => e.hero.value!),
+    enemiesDead: v.enemies.filter((e) => e.alive.value === false).length,
+    alliesDead: v.allies.filter((e) => e.alive.value === false).length,
+    zone: v.me.zone,
+    side: me && v.team ? mapSide(me, v.team) : null,
+    rune,
+    outpost: op ? { dist: Math.round(op.dist), enemyHalf: op.enemyHalf } : null,
+    roshan: { dist: near(MAP_POINTS.roshan) === null ? null : Math.round(near(MAP_POINTS.roshan)!), killedAt: mem.roshanKilledAt, aegisOurs: mem.aegisOurs },
+    inFight: mem.inFight,
+  };
 }
 
 /** Потерянные здания своей команды: GSI присылает только живые здания своей стороны */
@@ -155,5 +236,6 @@ export function buildGameContext(v: CoachView, mem: CoachMemory, look: CoachLook
     core: pos.position === null ? null : pos.position <= 3,
     hero: { key: h?.key ?? null, name: h?.name ?? null, ultPassive: ult ? (ult.passive ?? null) : null },
     lost: lostBuildings(v),
+    now: situation(v, mem),
   };
 }

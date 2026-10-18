@@ -1,0 +1,218 @@
+{
+ "patch": "7.41f",
+ "source": {
+  "name": "Файлы Dota 2: maps/dota.vpk → maps/dota/entities/default_ents.vents_c",
+  "extractedAt": "2026-10-18"
+ },
+ "noteRu": "Координаты мира (как xpos/ypos в GSI).",
+ "runes": {
+  "power": [
+   {
+    "x": -1640,
+    "y": 1112
+   },
+   {
+    "x": 1180,
+    "y": -1216
+   }
+  ],
+  "bounty": [
+   {
+    "x": -996,
+    "y": 4431
+   },
+   {
+    "x": 595,
+    "y": -4660
+   }
+  ]
+ },
+ "roshan": [
+  {
+   "x": 2831,
+   "y": -2740
+  }
+ ],
+ "tormentor": [
+  {
+   "x": -7680,
+   "y": 6336
+  }
+ ],
+ "lotus": [
+  {
+   "x": -7548,
+   "y": 4209
+  },
+  {
+   "x": 7504,
+   "y": -4405
+  }
+ ],
+ "wisdom": [
+  {
+   "x": -8088,
+   "y": 768
+  },
+  {
+   "x": 8167,
+   "y": -1142
+  }
+ ],
+ "towers": [
+  {
+   "team": "radiant",
+   "tier": 3,
+   "lane": "bot",
+   "x": -3952,
+   "y": -6112
+  },
+  {
+   "team": "radiant",
+   "tier": 3,
+   "lane": "mid",
+   "x": -4640,
+   "y": -4144
+  },
+  {
+   "team": "radiant",
+   "tier": 3,
+   "lane": "top",
+   "x": -6592,
+   "y": -3408
+  },
+  {
+   "team": "radiant",
+   "tier": 2,
+   "lane": "bot",
+   "x": -360,
+   "y": -6256
+  },
+  {
+   "team": "radiant",
+   "tier": 1,
+   "lane": "bot",
+   "x": 4860,
+   "y": -6379
+  },
+  {
+   "team": "radiant",
+   "tier": 2,
+   "lane": "mid",
+   "x": -3190,
+   "y": -2926
+  },
+  {
+   "team": "radiant",
+   "tier": 2,
+   "lane": "top",
+   "x": -6501,
+   "y": -872
+  },
+  {
+   "team": "radiant",
+   "tier": 1,
+   "lane": "top",
+   "x": -6336,
+   "y": 1856
+  },
+  {
+   "team": "radiant",
+   "tier": 4,
+   "lane": "top",
+   "x": -5712,
+   "y": -4864
+  },
+  {
+   "team": "dire",
+   "tier": 4,
+   "lane": "top",
+   "x": 4944,
+   "y": 4776
+  },
+  {
+   "team": "dire",
+   "tier": 2,
+   "lane": "top",
+   "x": -128,
+   "y": 6016
+  },
+  {
+   "team": "dire",
+   "tier": 1,
+   "lane": "top",
+   "x": -5275,
+   "y": 6036
+  },
+  {
+   "team": "dire",
+   "tier": 2,
+   "lane": "mid",
+   "x": 2496,
+   "y": 2112
+  },
+  {
+   "team": "dire",
+   "tier": 1,
+   "lane": "mid",
+   "x": 524,
+   "y": 652
+  },
+  {
+   "team": "dire",
+   "tier": 2,
+   "lane": "bot",
+   "x": 6400,
+   "y": 384
+  },
+  {
+   "team": "dire",
+   "tier": 3,
+   "lane": "bot",
+   "x": 6336,
+   "y": 3032
+  },
+  {
+   "team": "dire",
+   "tier": 3,
+   "lane": "top",
+   "x": 3552,
+   "y": 5776
+  },
+  {
+   "team": "dire",
+   "tier": 3,
+   "lane": "mid",
+   "x": 4272,
+   "y": 3759
+  },
+  {
+   "team": "dire",
+   "tier": 4,
+   "lane": "bot",
+   "x": 5280,
+   "y": 4432
+  },
+  {
+   "team": "radiant",
+   "tier": 4,
+   "lane": "bot",
+   "x": -5392,
+   "y": -5192
+  },
+  {
+   "team": "radiant",
+   "tier": 1,
+   "lane": "mid",
+   "x": -1544,
+   "y": -1408
+  },
+  {
+   "team": "dire",
+   "tier": 1,
+   "lane": "bot",
+   "x": 6269,
+   "y": -2240
+  }
+ ]
+}

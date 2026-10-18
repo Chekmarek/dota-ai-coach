@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { HUD_ZONE_IDS, zoneOverridesSchema, type HudZoneId, type ZoneOverrides } from '../../core/hud/layout.ts';
 import { HUD_THEME_IDS, type HudThemeId } from '../types/hud.ts';
 import { GAME_MODE_OVERRIDES, type GameModeOverride } from '../../core/gsi/mode.ts';
-import { POSITION_OVERRIDES, type PositionOverride } from '../../core/coach/game-context.ts';
+import { POSITION_OVERRIDES, type PositionOverride } from '../../core/coach/position.ts';
 
 export type HintDetail = 'min' | 'normal' | 'detailed';
 export type HintCategories = Record<'fight' | 'danger' | 'laning' | 'economy' | 'macro' | 'timing' | 'mistake' | 'review', boolean>;

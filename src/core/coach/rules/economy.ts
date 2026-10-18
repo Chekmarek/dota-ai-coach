@@ -46,8 +46,7 @@ export function nextItem(c: RuleContext): NextItem | null {
   const scale = c.look.isTurbo ? 0.5 : 1;
   const passed = (x: { key: string; medianMin: number }) => (c.look.itemCost(x.key) ?? Infinity) < EARLY_ITEM_COST && min > x.medianMin * scale + EARLY_ITEM_LATE_MIN;
   // Сборка — сильных игроков рейтинга на вашей позиции (STRATZ), если позиция известна и данные есть; иначе — профи
-  const ranked = c.look.rankedBuild(hero.key, game(c).position);
-  const build = ranked.length >= 3 ? ranked : c.look.buildFor(hero.id, hero.key);
+  const build = c.look.buildForPosition(hero.id, hero.key, game(c).position);
   const left = build.filter((x) => !owned.has(x.key) && !passed(x));
   const out = (b: (typeof left)[number], vs: NextItem['vs']): NextItem => ({ key: b.key, name: c.look.itemName(b.key), cost: c.look.itemCost(b.key), medianMin: b.medianMin, share: b.share, source: b.source, vs });
   const enemies = [...new Set(c.v.enemies.map((e) => e.hero.value).filter((k): k is string => !!k))];

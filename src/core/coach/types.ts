@@ -1,6 +1,6 @@
 // Типы движка подсказок (этап 2). Чистое ядро: без Electron, DOM, сети и файлов; время передаётся снаружи.
 import type { GameModeOverride } from '../gsi/mode.ts';
-import type { PositionOverride } from './game-context.ts';
+import type { PositionOverride } from './position.ts';
 
 /** Категории подсказок; каждую можно выключить в настройках */
 export const HINT_CATEGORIES = ['fight', 'danger', 'laning', 'economy', 'macro', 'timing', 'mistake', 'review'] as const;

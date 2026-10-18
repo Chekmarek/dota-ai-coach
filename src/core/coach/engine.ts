@@ -10,7 +10,8 @@ import { MistakeDetector, MISTAKE_RU, type Mistake } from './mistakes.ts';
 import { deathReview, matchReview, type DeathReview, type MatchReview } from './reviews.ts';
 import { ACTION_RU, actionChoice, type ActionChoice } from './prob.ts';
 import { buildView, poolPct, type CoachView } from './view.ts';
-import { draft, game, mmss, type Rule, type RuleContext } from './rules/context.ts';
+import { draft, game, knowledge, mmss, type Rule, type RuleContext } from './rules/context.ts';
+import type { MatchKnowledge } from './knowledge.ts';
 
 /** Порядок категорий при равной важности (этап 5): что важно прямо сейчас — раньше */
 const CATEGORY_RANK: Record<HintDraft['category'], number> = { review: 8, danger: 7, fight: 6, timing: 5, macro: 4, laning: 3, economy: 2, mistake: 1 };
@@ -106,6 +107,8 @@ export class CoachEngine {
   deathReviewNow: DeathReview | null = null;
   /** Контекст игры последнего тика (стадия, позиция) — для журнала и интерфейса */
   game: GameContext | null = null;
+  /** Знания на этот матч (сборка, враги, угрозы) — кэш, пересобирается при смене состава */
+  knowledgeCache: MatchKnowledge | null = null;
   matchReviewNow: MatchReview | null = null;
   private readonly ai: CoachAi | null;
   private readonly now: () => number;
@@ -185,8 +188,10 @@ export class CoachEngine {
       this.ai?.cancelAll();
     }
     const g = buildGameContext(v, this.mem, this.look, this.settings.position ?? 'auto');
-    const ctx: RuleContext = { v, mem: this.mem, ev, look: this.look, settings: this.settings, now: v.wallMs, g };
+    // Знания на матч — кэш между тиками: пересобираются, только когда меняется состав (knowledge(c) сверяет подпись)
+    const ctx: RuleContext = { v, mem: this.mem, ev, look: this.look, settings: this.settings, now: v.wallMs, g, k: ev.matchReset ? undefined : (this.knowledgeCache ?? undefined) };
     this.game = g;
+    if (v.inGame) this.knowledgeCache = knowledge(ctx);
     this.lastView = v;
     this.lastCtx = ctx;
     const shown: Hint[] = [...this.asyncShown];
