@@ -12,12 +12,20 @@ import { draft, playing, type Rule, type RuleContext } from './context.ts';
 export const GOLD_HIGH = 1800;
 export const IDLE_SEC = 20;
 
-/** Следующий предмет сборки (профи патча), которого у героя ещё нет */
+/** Дешёвый ранний предмет сборки, чьё время прошло на столько минут, больше не советуется (Soul Ring на 18-й минуте) */
+export const EARLY_ITEM_COST = 1500;
+export const EARLY_ITEM_LATE_MIN = 6;
+
+/** Следующий предмет сборки (профи патча), которого у героя ещё нет; ранние дешёвые, чьё время прошло, пропускаются */
 export function nextItem(c: RuleContext): { key: string; name: string; cost: number | null; medianMin: number; share: number; source: 'pro' | 'popular' } | null {
   const hero = c.v.me.hero.value;
   if (!hero) return null;
   const owned = new Set([...c.mem.items.keys(), ...c.v.me.items.map((i) => i.key)]);
-  const b = c.look.buildFor(hero.id, hero.key).find((x) => !owned.has(x.key));
+  const min = (c.v.clock.value ?? 0) / 60;
+  // Минуты сборки — из обычных матчей; в Турбо игра идёт примерно вдвое быстрее (золото и опыт ×2)
+  const scale = c.look.isTurbo ? 0.5 : 1;
+  const passed = (x: { key: string; medianMin: number }) => (c.look.itemCost(x.key) ?? Infinity) < EARLY_ITEM_COST && min > x.medianMin * scale + EARLY_ITEM_LATE_MIN;
+  const b = c.look.buildFor(hero.id, hero.key).find((x) => !owned.has(x.key) && !passed(x));
   return b ? { key: b.key, name: c.look.itemName(b.key), cost: c.look.itemCost(b.key), medianMin: b.medianMin, share: b.share, source: b.source } : null;
 }
 
@@ -80,12 +88,18 @@ export const goldRule: Rule = (c) => {
   });
 };
 
+/** Сколько после покупки совет «что дальше» ждёт места в очереди (одна подсказка экономики — раз в 20 с) */
+export const NEXT_ITEM_WAIT_MS = 90_000;
+
 export const nextItemRule: Rule = (c) => {
-  if (!c.v.inGame || c.ev.newItems.length === 0) return null;
+  if (!c.v.inGame) return null;
+  // Совет — после покупки; если очередь занята другой подсказкой экономики, он ждёт, а не теряется
+  if (c.ev.newItems.length) c.mem.marks.set('next-item@', c.now);
+  const boughtAt = c.mem.marks.get('next-item@');
+  if (boughtAt === undefined || c.now - boughtAt > NEXT_ITEM_WAIT_MS) return null;
   const hero = c.v.me.hero.value;
   if (!hero) return null;
-  const build = new Set(c.look.buildFor(hero.id, hero.key).map((b) => b.key));
-  if (!c.ev.newItems.some((k) => build.has(k))) return null;
+  // После любой покупки (а не только предмета из сборки профи): своя сборка тоже получает совет, что дальше
   const next = nextItem(c);
   if (!next) return null;
   return draft({
@@ -102,7 +116,8 @@ export const nextItemRule: Rule = (c) => {
         : `Следующий предмет: ${next.name} — его чаще всего собирают на этом герое.`,
     facts: [kbFact('next-item', 'Следующий предмет (профи патча)', next.name, false, 'stats'), ...(c.look.hasNorms ? [kbFact('median-min', 'Обычно к минуте', next.medianMin, false, 'stats')] : [])],
     ttlSec: 10,
-    cooldownSec: 0,
+    // Тот же совет не повторяется: правило держится минуту после покупки
+    cooldownSec: 300,
     icon: `item:${next.key}`,
   });
 };
@@ -243,6 +258,53 @@ export const neutralRule: Rule = (c) => {
   });
 };
 
+/**
+ * Предметы, которые к этой минуте (обычная игра; в Турбо — вдвое раньше) обычно уже лишние: занимают ячейку
+ * и почти ничего не дают. Эвристика коуча, не статистика: совет «продайте», а не приказ.
+ */
+export const OUTGROWN_ITEMS: Record<string, number> = {
+  tango: 15,
+  clarity: 15,
+  faerie_fire: 15,
+  enchanted_mango: 15,
+  flask: 20,
+  branches: 25,
+  quelling_blade: 25,
+  orb_of_venom: 20,
+  magic_stick: 25,
+  boots: 25,
+  bracer: 30,
+  wraith_band: 30,
+  null_talisman: 30,
+  soul_ring: 35,
+};
+/** Совет продать — только когда основной инвентарь почти полон (ячейка нужна) */
+export const SELL_WHEN_FULL = 5;
+
+export const sellRule: Rule = (c) => {
+  const clock = c.v.clock.value;
+  if (!playing(c) || clock === null || !c.v.me.itemsKnown || c.mem.inFight) return null;
+  const inv = c.v.me.items.filter((i) => /^inv\d$/.test(i.slot));
+  if (inv.length < SELL_WHEN_FULL) return null;
+  const scale = c.look.isTurbo ? 0.5 : 1;
+  const extra = inv.filter((i) => OUTGROWN_ITEMS[i.key] !== undefined && clock / 60 >= OUTGROWN_ITEMS[i.key]! * scale);
+  if (!extra.length) return null;
+  const names = [...new Set(extra.map((i) => c.look.itemName(i.key)))];
+  return draft({
+    id: `economy.sell:${extra.map((i) => i.key).sort().join(',')}`,
+    ruleId: 'economy.sell',
+    category: 'economy',
+    priority: 'info',
+    confidence: 0.6,
+    short: `Лишнее: ${names.slice(0, 2).join(', ')} — продайте`,
+    normal: `${names.join(', ')} к ${Math.floor(clock / 60)}-й минуте почти ничего не дают, а инвентарь почти полон. Продайте и освободите ячейку под предмет посильнее.`,
+    facts: [derivedFact('outgrown', 'Лишние предметы', names.join(', '), 0.6), fact('clock', 'Игровое время, с', c.v.clock)],
+    ttlSec: 10,
+    cooldownSec: 300,
+    icon: `item:${extra[0]!.key}`,
+  });
+};
+
 export const routeRule: Rule = (c) => {
   const clock = c.v.clock.value;
   if (!playing(c) || clock === null || clock < 10 * 60 || c.mem.inFight || nearEnemyCount(c.v) > 0) return null;
@@ -267,5 +329,5 @@ export const routeRule: Rule = (c) => {
   });
 };
 
-export const ECONOMY_RULES: Rule[] = [goldRule, tpRule, skillRule, idleRule, nextItemRule, itemTimingRule, gpmRule, wardsRule, neutralRule, routeRule];
+export const ECONOMY_RULES: Rule[] = [goldRule, tpRule, skillRule, idleRule, nextItemRule, itemTimingRule, gpmRule, wardsRule, neutralRule, sellRule, routeRule];
 

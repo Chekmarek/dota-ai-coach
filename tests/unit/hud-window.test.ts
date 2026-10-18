@@ -13,13 +13,30 @@ describe('положение окна Доты', () => {
     expect(hwndFromSourceId('window:abc:0')).toBeNull();
   });
   it('строки помощника: прямоугольник, свёрнуто, окно закрыто, мусор', () => {
-    expect(parseRectLine('0 0 1920 1080 0')).toEqual({ x: 0, y: 0, width: 1920, height: 1080, minimized: false });
-    expect(parseRectLine('-1920 0 2560 1440 0\r')).toEqual({ x: -1920, y: 0, width: 2560, height: 1440, minimized: false });
-    expect(parseRectLine('-32000 -32000 0 0 1')).toEqual({ x: -32000, y: -32000, width: 0, height: 0, minimized: true });
+    expect(parseRectLine('0 0 1920 1080 0')).toEqual({ x: 0, y: 0, width: 1920, height: 1080, minimized: false, active: null });
+    expect(parseRectLine('-1920 0 2560 1440 0\r')).toEqual({ x: -1920, y: 0, width: 2560, height: 1440, minimized: false, active: null });
+    expect(parseRectLine('-32000 -32000 0 0 1')).toEqual({ x: -32000, y: -32000, width: 0, height: 0, minimized: true, active: null });
     expect(parseRectLine('gone')).toBe('gone');
     expect(parseRectLine('Exception: ...')).toBeNull();
     expect(parseRectLine('10 10 50 50 0')).toBeNull();
   });
+  it('активно ли окно Доты: шестое поле помощника (Telegram на переднем плане → 0)', () => {
+    expect(parseRectLine('0 0 1920 1080 0 1')).toMatchObject({ minimized: false, active: true });
+    expect(parseRectLine('0 0 1920 1080 0 0')).toMatchObject({ minimized: false, active: false });
+    expect(rectScript(1, 1000)).toContain('GetForegroundWindow');
+  });
+  it.runIf(process.platform === 'win32')('настоящая Windows: помощник печатает прямоугольник и «активно» для живого окна', async () => {
+    const { spawnSync } = await import('node:child_process');
+    const list = spawnSync('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command', '(Get-Process | Where-Object { $_.MainWindowHandle -ne 0 } | Select-Object -First 1).MainWindowHandle.ToInt64()'], { encoding: 'utf8' });
+    const hwnd = Number(list.stdout.trim());
+    expect(hwnd).toBeGreaterThan(0);
+    const script = rectScript(hwnd, 200).replace('while ($true)', 'for ($i = 0; $i -lt 2; $i++)');
+    const r = spawnSync('powershell.exe', ['-NoProfile', '-NonInteractive', '-ExecutionPolicy', 'Bypass', '-Command', script], { encoding: 'utf8', timeout: 30_000 });
+    const lines = r.stdout.split(/\r?\n/).filter(Boolean).map(parseRectLine).filter((x) => x !== null && x !== 'gone');
+    expect(r.stderr).toBe('');
+    expect(lines.length).toBeGreaterThan(0);
+    for (const l of lines) expect(typeof (l as { active: unknown }).active).toBe('boolean');
+  }, 40_000);
   it('скрипт только читает: GetClientRect / ClientToScreen / IsIconic, без записи и без процесса игры', () => {
     const s = rectScript(132456, 1000);
     expect(s).toContain('[IntPtr]::new(132456)');

@@ -21,12 +21,15 @@ export const coachInputSchema = z.object({
   }),
   gsi: z.looseObject({ hero: z.looseObject({ key: z.string() }), abilities: z.array(z.unknown()).max(40) }).nullable(),
   gsiWallMs: z.number().nullable(),
+  /** GSI идёт без своего героя (наблюдение за чужим матчем): подсказок нет */
+  notOwnMatch: z.boolean().optional(),
 });
 
 export interface CoachInput {
   state: MatchState;
   gsi: GsiReading | null;
   gsiWallMs: number | null;
+  notOwnMatch?: boolean;
 }
 
 /** Разбор входа; null — не та форма или слишком большой */

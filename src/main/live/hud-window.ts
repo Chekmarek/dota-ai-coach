@@ -10,7 +10,7 @@ import { LIVE_IPC } from '@shared/ipc';
 import { DEFAULT_HUD_OPTIONS, MODE_BANNER_MS, hudStateSchema, type HudHint, type HudOptions, type HudState, type ModeBanner } from '@shared/types/hud';
 import type { Settings } from '@shared/schemas/settings';
 import { sampleHints, type SampleScene } from '@shared/hud-samples';
-import { WindowRectTracker, hwndFromSourceId, type WindowRect } from './window-rect';
+import { WindowRectTracker, hudShouldShow, hwndFromSourceId, type WindowRect } from './window-rect';
 
 const HUD_LEVEL = 'screen-saver' as const;
 const ASSERT_MS = 1500;
@@ -121,7 +121,9 @@ export class HudOverlay {
     const s = this.deps.settings.get();
     const list = this.demoHints ?? (this.seeing || this.inMatch ? this.hints : []);
     const banner = this.demoHints === null && (this.seeing || this.inMatch) && this.modeBanner !== null;
-    const visible = s.hud.enabled && (list.length > 0 || banner) && !(this.tracker.rect?.minimized ?? false);
+    // Дота свёрнута или активно другое окно (Telegram, браузер) — поверх него подсказки не рисуем;
+    // вернулись в игру — показываем то, что ещё актуально (устаревшее очередь подсказок уже убрала)
+    const visible = hudShouldShow({ enabled: s.hud.enabled, hasContent: list.length > 0 || banner, demo: this.demoHints !== null, rect: this.tracker.rect });
     if (!visible) {
       // отправляем пустой список (карточки и индикатор уходят анимацией), потом прячем окно
       if (this.win && !this.win.isDestroyed() && this.win.isVisible()) {

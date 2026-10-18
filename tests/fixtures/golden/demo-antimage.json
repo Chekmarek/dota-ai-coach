@@ -66,9 +66,119 @@
   }
  },
  {
-  "t": 1791911654024,
+  "t": 1791911643966,
   "tick": {
-   "wallMs": 1791911654024,
+   "wallMs": 1791911643966,
+   "shown": [
+    {
+     "id": "economy.next:wraith_band",
+     "ruleId": "economy.next",
+     "category": "economy",
+     "priority": "info",
+     "confidence": 0.7,
+     "short": "Дальше: Wraith Band",
+     "detail": {
+      "normal": "Следующий предмет: Wraith Band — профи патча берут его к 2 мин.",
+      "detailed": "Следующий предмет: Wraith Band — профи патча берут его к 2 мин. · Следующий предмет (профи патча): Wraith Band (статистика патча, не проверено) · Обычно к минуте: 2.4 (статистика патча, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "next-item",
+       "label": "Следующий предмет (профи патча)",
+       "value": "Wraith Band",
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      },
+      {
+       "key": "median-min",
+       "label": "Обычно к минуте",
+       "value": 2.4,
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 300000,
+     "zone": "timing",
+     "icon": "item:wraith_band",
+     "seq": 1,
+     "createdWallMs": 1791911643966,
+     "expiresWallMs": 1791911714338,
+     "clock": 0.591,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "economy.next:wraith_band"
+   ]
+  }
+ },
+ {
+  "t": 1791911664088,
+  "tick": {
+   "wallMs": 1791911664088,
+   "shown": [
+    {
+     "id": "economy.idle",
+     "ruleId": "economy.idle",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.75,
+     "short": "Простой 151 с — идите фармить",
+     "detail": {
+      "normal": "Вы 151 с на одном месте без приказов. Каждая минута простоя — потерянное золото.",
+      "detailed": "Вы 151 с на одном месте без приказов. Каждая минута простоя — потерянное золото. · Без движения, с: 151 (вывод, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "idle",
+       "label": "Без движения, с",
+       "value": 151,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.75,
+       "verified": true
+      }
+     ],
+     "ttlMs": 8000,
+     "cooldownMs": 60000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 2,
+     "createdWallMs": 1791911664088,
+     "expiresWallMs": 1791911802696,
+     "clock": 20.834,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "economy.idle",
+    "economy.next:wraith_band"
+   ]
+  }
+ },
+ {
+  "t": 1791911684386,
+  "tick": {
+   "wallMs": 1791911684386,
    "shown": [
     {
      "id": "economy.skill",
@@ -106,129 +216,10 @@
      "cooldownMs": 45000,
      "zone": "timing",
      "icon": null,
-     "seq": 1,
-     "createdWallMs": 1791911654024,
-     "expiresWallMs": 1791912803995,
-     "clock": 10.728,
-     "textSource": "template"
-    }
-   ],
-   "expired": [],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
-   "visible": [
-    "economy.skill"
-   ]
-  }
- },
- {
-  "t": 1791911674157,
-  "tick": {
-   "wallMs": 1791911674157,
-   "shown": [
-    {
-     "id": "economy.idle",
-     "ruleId": "economy.idle",
-     "category": "economy",
-     "priority": "advice",
-     "confidence": 0.75,
-     "short": "Простой 151 с — идите фармить",
-     "detail": {
-      "normal": "Вы 151 с на одном месте без приказов. Каждая минута простоя — потерянное золото.",
-      "detailed": "Вы 151 с на одном месте без приказов. Каждая минута простоя — потерянное золото. · Без движения, с: 151 (вывод, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "idle",
-       "label": "Без движения, с",
-       "value": 151,
-       "source": "derived",
-       "ageSec": 0,
-       "confidence": 0.75,
-       "verified": true
-      }
-     ],
-     "ttlMs": 8000,
-     "cooldownMs": 60000,
-     "zone": "timing",
-     "icon": null,
-     "seq": 2,
-     "createdWallMs": 1791911674157,
-     "expiresWallMs": 1791911802696,
-     "clock": 30.903,
-     "textSource": "template"
-    }
-   ],
-   "expired": [],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
-   "visible": [
-    "economy.skill",
-    "economy.idle"
-   ]
-  }
- },
- {
-  "t": 1791911694321,
-  "tick": {
-   "wallMs": 1791911694321,
-   "shown": [
-    {
-     "id": "economy.gold",
-     "ruleId": "economy.gold",
-     "category": "economy",
-     "priority": "advice",
-     "confidence": 0.8,
-     "short": "Золото 99999: купите Wraith Band",
-     "detail": {
-      "normal": "99999 золота лежит без дела. Следующий предмет по сборке профи патча — Wraith Band (505).",
-      "detailed": "99999 золота лежит без дела. Следующий предмет по сборке профи патча — Wraith Band (505). · Золото: 99999 (игра, 0 с) · Следующий предмет (профи патча): Wraith Band (статистика патча, не проверено) · Цена: 505 (база, не проверено)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "gold",
-       "label": "Золото",
-       "value": 99999,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      },
-      {
-       "key": "next-item",
-       "label": "Следующий предмет (профи патча)",
-       "value": "Wraith Band",
-       "source": "stats",
-       "ageSec": null,
-       "confidence": 1,
-       "verified": false
-      },
-      {
-       "key": "item-cost",
-       "label": "Цена",
-       "value": 505,
-       "source": "kb",
-       "ageSec": null,
-       "confidence": 1,
-       "verified": false
-      }
-     ],
-     "ttlMs": 10000,
-     "cooldownMs": 90000,
-     "zone": "timing",
-     "icon": "item:wraith_band",
      "seq": 3,
-     "createdWallMs": 1791911694321,
+     "createdWallMs": 1791911684386,
      "expiresWallMs": 1791912803995,
-     "clock": 51.067,
+     "clock": 41.132000000000005,
      "textSource": "template"
     }
    ],
@@ -239,9 +230,9 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "economy.skill",
     "economy.idle",
-    "economy.gold"
+    "economy.skill",
+    "economy.next:wraith_band"
    ]
   }
  },
@@ -665,6 +656,76 @@
      }
     ]
    }
+  }
+ },
+ {
+  "t": 1791911704620,
+  "tick": {
+   "wallMs": 1791911704620,
+   "shown": [
+    {
+     "id": "economy.gold",
+     "ruleId": "economy.gold",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.8,
+     "short": "Золото 99999: купите Battle Fury",
+     "detail": {
+      "normal": "99999 золота лежит без дела. Следующий предмет по сборке профи патча — Battle Fury (3900).",
+      "detailed": "99999 золота лежит без дела. Следующий предмет по сборке профи патча — Battle Fury (3900). · Золото: 99999 (игра, 0 с) · Следующий предмет (профи патча): Battle Fury (статистика патча, не проверено) · Цена: 3900 (база, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "gold",
+       "label": "Золото",
+       "value": 99999,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      },
+      {
+       "key": "next-item",
+       "label": "Следующий предмет (профи патча)",
+       "value": "Battle Fury",
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      },
+      {
+       "key": "item-cost",
+       "label": "Цена",
+       "value": 3900,
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 90000,
+     "zone": "timing",
+     "icon": "item:bfury",
+     "seq": 4,
+     "createdWallMs": 1791911704620,
+     "expiresWallMs": 1791912803995,
+     "clock": 61.366,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "economy.idle",
+    "economy.skill",
+    "economy.gold"
+   ]
   }
  },
  {
@@ -1122,8 +1183,8 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "economy.skill",
     "economy.idle",
+    "economy.skill",
     "economy.gold"
    ]
   }
@@ -1161,8 +1222,8 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "economy.skill",
     "economy.idle",
+    "economy.skill",
     "economy.gold"
    ]
   }
@@ -1201,9 +1262,9 @@
      "zone": "timing",
      "icon": null,
      "seq": 2,
-     "createdWallMs": 1791911674157,
+     "createdWallMs": 1791911664088,
      "expiresWallMs": 1791911802696,
-     "clock": 30.903,
+     "clock": 20.834,
      "textSource": "template"
     }
    ],
@@ -1250,7 +1311,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 4,
+     "seq": 5,
      "createdWallMs": 1791911812249,
      "expiresWallMs": 1791911820249,
      "clock": 165.034,
@@ -1725,7 +1786,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 4,
+     "seq": 5,
      "createdWallMs": 1791911812249,
      "expiresWallMs": 1791911820249,
      "clock": 165.034,
@@ -1784,7 +1845,7 @@
      "cooldownMs": 300000,
      "zone": "timing",
      "icon": null,
-     "seq": 5,
+     "seq": 6,
      "createdWallMs": 1791911827458,
      "expiresWallMs": 1791911864546,
      "clock": 180.243,
@@ -1836,7 +1897,7 @@
      "cooldownMs": 60000,
      "zone": "timing",
      "icon": null,
-     "seq": 6,
+     "seq": 7,
      "createdWallMs": 1791911854863,
      "expiresWallMs": 1791912801995,
      "clock": 207.655,
@@ -8611,24 +8672,32 @@
  {
   "journal": [
    {
-    "wallMs": 1791911654024,
-    "clock": 10.728,
+    "wallMs": 1791911643966,
+    "clock": 0.591,
+    "kind": "hint",
+    "id": "economy.next:wraith_band",
+    "text": "Дальше: Wraith Band",
+    "source": "template"
+   },
+   {
+    "wallMs": 1791911664088,
+    "clock": 20.834,
+    "kind": "hint",
+    "id": "economy.idle",
+    "text": "Простой 20 с — идите фармить",
+    "source": "template"
+   },
+   {
+    "wallMs": 1791911684386,
+    "clock": 41.132000000000005,
     "kind": "hint",
     "id": "economy.skill",
     "text": "Очко навыка: Mana Break",
     "source": "template"
    },
    {
-    "wallMs": 1791911674157,
-    "clock": 30.903,
-    "kind": "hint",
-    "id": "economy.idle",
-    "text": "Простой 30 с — идите фармить",
-    "source": "template"
-   },
-   {
-    "wallMs": 1791911694321,
-    "clock": 51.067,
+    "wallMs": 1791911704620,
+    "clock": 61.366,
     "kind": "hint",
     "id": "economy.gold",
     "text": "Золото 99999: купите Wraith Band",

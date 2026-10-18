@@ -1950,6 +1950,69 @@
   }
  },
  {
+  "t": 63,
+  "tick": {
+   "wallMs": 5063000,
+   "shown": [
+    {
+     "id": "economy.next:wraith_band",
+     "ruleId": "economy.next",
+     "category": "economy",
+     "priority": "info",
+     "confidence": 0.7,
+     "short": "Дальше: Wraith Band",
+     "detail": {
+      "normal": "Следующий предмет: Wraith Band — профи патча берут его к 2 мин.",
+      "detailed": "Следующий предмет: Wraith Band — профи патча берут его к 2 мин. · Следующий предмет (профи патча): Wraith Band (статистика патча, не проверено) · Обычно к минуте: 2.4 (статистика патча, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "next-item",
+       "label": "Следующий предмет (профи патча)",
+       "value": "Wraith Band",
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      },
+      {
+       "key": "median-min",
+       "label": "Обычно к минуте",
+       "value": 2.4,
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 300000,
+     "zone": "timing",
+     "icon": "item:wraith_band",
+     "seq": 12,
+     "createdWallMs": 5063000,
+     "expiresWallMs": 5140000,
+     "clock": 363,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "economy.tp",
+    "laning.buy-regen",
+    "danger.missing",
+    "danger.invis:riki",
+    "economy.next:wraith_band"
+   ]
+  }
+ },
+ {
   "t": 70,
   "tick": {
    "wallMs": 5070000,
@@ -2008,7 +2071,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 12,
+     "seq": 13,
      "createdWallMs": 5070000,
      "expiresWallMs": 5084000,
      "clock": 370,
@@ -2025,7 +2088,8 @@
     "danger.low-hp",
     "economy.tp",
     "laning.buy-regen",
-    "danger.invis:riki"
+    "danger.invis:riki",
+    "economy.next:wraith_band"
    ]
   }
  },
@@ -2061,7 +2125,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 13,
+     "seq": 14,
      "createdWallMs": 5076000,
      "expiresWallMs": 5084000,
      "clock": 376,
@@ -2078,70 +2142,8 @@
     "danger.building:tower1_mid",
     "economy.tp",
     "laning.buy-regen",
-    "danger.invis:riki"
-   ]
-  }
- },
- {
-  "t": 80,
-  "tick": {
-   "wallMs": 5080000,
-   "shown": [
-    {
-     "id": "economy.neutral",
-     "ruleId": "economy.neutral",
-     "category": "economy",
-     "priority": "info",
-     "confidence": 0.8,
-     "short": "Пустой слот нейтрального предмета",
-     "detail": {
-      "normal": "Слот нейтрального предмета пуст — выберите предмет текущего уровня.",
-      "detailed": "Слот нейтрального предмета пуст — выберите предмет текущего уровня. · Нейтральный слот: пусто (игра, 0 с) · Нейтральные предметы с, с: 0 (база)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "neutral",
-       "label": "Нейтральный слот",
-       "value": "пусто",
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      },
-      {
-       "key": "neutral-t1",
-       "label": "Нейтральные предметы с, с",
-       "value": 0,
-       "source": "kb",
-       "ageSec": null,
-       "confidence": 1,
-       "verified": true
-      }
-     ],
-     "ttlMs": 10000,
-     "cooldownMs": 300000,
-     "zone": "timing",
-     "icon": null,
-     "seq": 14,
-     "createdWallMs": 5080000,
-     "expiresWallMs": 5209000,
-     "clock": 380,
-     "textSource": "template"
-    }
-   ],
-   "expired": [],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
-   "visible": [
-    "danger.building:tower1_mid",
-    "economy.tp",
-    "laning.buy-regen",
     "danger.invis:riki",
-    "economy.neutral"
+    "economy.next:wraith_band"
    ]
   }
  },
@@ -2212,7 +2214,7 @@
     "danger.building:tower1_mid",
     "economy.tp",
     "danger.invis:riki",
-    "economy.neutral"
+    "economy.next:wraith_band"
    ]
   }
  },
@@ -2249,7 +2251,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 13,
+     "seq": 14,
      "createdWallMs": 5076000,
      "expiresWallMs": 5084000,
      "clock": 376,
@@ -2264,7 +2266,7 @@
    "visible": [
     "economy.tp",
     "danger.invis:riki",
-    "economy.neutral"
+    "economy.next:wraith_band"
    ]
   }
  },
@@ -2345,55 +2347,55 @@
    "inFight": false,
    "visible": [
     "danger.invis:riki",
-    "economy.neutral"
+    "economy.next:wraith_band"
    ]
   }
  },
  {
-  "t": 105,
+  "t": 90,
   "tick": {
-   "wallMs": 5105000,
+   "wallMs": 5090000,
    "shown": [
     {
-     "id": "timing.shrine-of-wisdom",
-     "ruleId": "timing.shrine-of-wisdom",
-     "category": "timing",
+     "id": "economy.neutral",
+     "ruleId": "economy.neutral",
+     "category": "economy",
      "priority": "info",
      "confidence": 0.8,
-     "short": "Святилище мудрости через 15 с",
+     "short": "Пустой слот нейтрального предмета",
      "detail": {
-      "normal": "Святилище мудрости через 15 с (7:00).",
-      "detailed": "Святилище мудрости через 15 с (7:00). · Святилище мудрости: 7:00 (база, не проверено) · Игровое время, с: 405 (игра, 0 с)"
+      "normal": "Слот нейтрального предмета пуст — выберите предмет текущего уровня.",
+      "detailed": "Слот нейтрального предмета пуст — выберите предмет текущего уровня. · Нейтральный слот: пусто (игра, 0 с) · Нейтральные предметы с, с: 0 (база)"
      },
      "percent": null,
      "facts": [
       {
-       "key": "shrine-of-wisdom",
-       "label": "Святилище мудрости",
-       "value": "7:00",
-       "source": "kb",
-       "ageSec": null,
-       "confidence": 1,
-       "verified": false
-      },
-      {
-       "key": "clock",
-       "label": "Игровое время, с",
-       "value": 405,
+       "key": "neutral",
+       "label": "Нейтральный слот",
+       "value": "пусто",
        "source": "gsi",
        "ageSec": 0,
        "confidence": 1,
        "verified": true
+      },
+      {
+       "key": "neutral-t1",
+       "label": "Нейтральные предметы с, с",
+       "value": 0,
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": true
       }
      ],
-     "ttlMs": 15000,
-     "cooldownMs": 0,
+     "ttlMs": 10000,
+     "cooldownMs": 300000,
      "zone": "timing",
      "icon": null,
      "seq": 15,
-     "createdWallMs": 5105000,
-     "expiresWallMs": 5120000,
-     "clock": 405,
+     "createdWallMs": 5090000,
+     "expiresWallMs": 5209000,
+     "clock": 390,
      "textSource": "template"
     }
    ],
@@ -2405,67 +2407,7 @@
    "inFight": false,
    "visible": [
     "danger.invis:riki",
-    "economy.neutral",
-    "timing.shrine-of-wisdom"
-   ]
-  }
- },
- {
-  "t": 120,
-  "tick": {
-   "wallMs": 5120000,
-   "shown": [],
-   "expired": [
-    {
-     "id": "timing.shrine-of-wisdom",
-     "ruleId": "timing.shrine-of-wisdom",
-     "category": "timing",
-     "priority": "info",
-     "confidence": 0.8,
-     "short": "Святилище мудрости через 15 с",
-     "detail": {
-      "normal": "Святилище мудрости через 15 с (7:00).",
-      "detailed": "Святилище мудрости через 15 с (7:00). · Святилище мудрости: 7:00 (база, не проверено) · Игровое время, с: 405 (игра, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "shrine-of-wisdom",
-       "label": "Святилище мудрости",
-       "value": "7:00",
-       "source": "kb",
-       "ageSec": null,
-       "confidence": 1,
-       "verified": false
-      },
-      {
-       "key": "clock",
-       "label": "Игровое время, с",
-       "value": 405,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      }
-     ],
-     "ttlMs": 15000,
-     "cooldownMs": 0,
-     "zone": "timing",
-     "icon": null,
-     "seq": 15,
-     "createdWallMs": 5105000,
-     "expiresWallMs": 5120000,
-     "clock": 405,
-     "textSource": "template"
-    }
-   ],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
-   "visible": [
-    "danger.invis:riki",
+    "economy.next:wraith_band",
     "economy.neutral"
    ]
   }
@@ -2875,6 +2817,66 @@
      }
     ]
    }
+  }
+ },
+ {
+  "t": 140,
+  "tick": {
+   "wallMs": 5140000,
+   "shown": [],
+   "expired": [
+    {
+     "id": "economy.next:wraith_band",
+     "ruleId": "economy.next",
+     "category": "economy",
+     "priority": "info",
+     "confidence": 0.7,
+     "short": "Дальше: Wraith Band",
+     "detail": {
+      "normal": "Следующий предмет: Wraith Band — профи патча берут его к 2 мин.",
+      "detailed": "Следующий предмет: Wraith Band — профи патча берут его к 2 мин. · Следующий предмет (профи патча): Wraith Band (статистика патча, не проверено) · Обычно к минуте: 2.4 (статистика патча, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "next-item",
+       "label": "Следующий предмет (профи патча)",
+       "value": "Wraith Band",
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      },
+      {
+       "key": "median-min",
+       "label": "Обычно к минуте",
+       "value": 2.4,
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 300000,
+     "zone": "timing",
+     "icon": "item:wraith_band",
+     "seq": 12,
+     "createdWallMs": 5063000,
+     "expiresWallMs": 5140000,
+     "clock": 363,
+     "textSource": "template"
+    }
+   ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "danger.invis:riki",
+    "economy.neutral"
+   ]
   }
  },
  {
@@ -4110,10 +4112,10 @@
      "cooldownMs": 300000,
      "zone": "timing",
      "icon": null,
-     "seq": 14,
-     "createdWallMs": 5080000,
+     "seq": 15,
+     "createdWallMs": 5090000,
      "expiresWallMs": 5209000,
-     "clock": 380,
+     "clock": 390,
      "textSource": "template"
     }
    ],
@@ -28028,6 +28030,14 @@
     "source": "template"
    },
    {
+    "wallMs": 5063000,
+    "clock": 363,
+    "kind": "hint",
+    "id": "economy.next:wraith_band",
+    "text": "Дальше: Wraith Band",
+    "source": "template"
+   },
+   {
     "wallMs": 5070000,
     "clock": 370,
     "kind": "hint",
@@ -28044,14 +28054,6 @@
     "source": "template"
    },
    {
-    "wallMs": 5080000,
-    "clock": 380,
-    "kind": "hint",
-    "id": "economy.neutral",
-    "text": "Пустой слот нейтрального предмета",
-    "source": "template"
-   },
-   {
     "wallMs": 5089000,
     "clock": 360,
     "kind": "mistake",
@@ -28060,11 +28062,11 @@
     "source": "template"
    },
    {
-    "wallMs": 5105000,
-    "clock": 405,
+    "wallMs": 5090000,
+    "clock": 390,
     "kind": "hint",
-    "id": "timing.shrine-of-wisdom",
-    "text": "Святилище мудрости через 15 с",
+    "id": "economy.neutral",
+    "text": "Пустой слот нейтрального предмета",
     "source": "template"
    },
    {

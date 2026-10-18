@@ -12,6 +12,19 @@ export interface WindowRect {
   width: number;
   height: number;
   minimized: boolean;
+  /** Окно Доты активно (на переднем плане); null — помощник старой версии не сообщил */
+  active?: boolean | null;
+}
+
+/**
+ * Показывать ли подсказки поверх игры: есть что показать, и Дота не свёрнута и активна. Пока активно другое окно
+ * (Telegram, браузер), оверлей спрятан; демо из «Предпросмотра» показывается всегда (его включают из окна коуча).
+ * Положение окна не известно (помощник не запустился) — как раньше: показываем.
+ */
+export function hudShouldShow(o: { enabled: boolean; hasContent: boolean; demo: boolean; rect: WindowRect | null }): boolean {
+  if (!o.enabled || !o.hasContent) return false;
+  if (o.demo) return true;
+  return !(o.rect?.minimized === true || o.rect?.active === false);
 }
 
 /** Номер окна из id источника desktopCapturer: «window:132456:0» → 132456 */
@@ -22,15 +35,16 @@ export function hwndFromSourceId(id: string | null | undefined): number | null {
   return Number.isSafeInteger(n) && n > 0 ? n : null;
 }
 
-/** Строка помощника: «x y w h minimized» или «gone» */
+/** Строка помощника: «x y w h minimized active» (active — необязательно) или «gone» */
 export function parseRectLine(line: string): WindowRect | 'gone' | null {
   const t = line.trim();
   if (t === 'gone') return 'gone';
-  const m = /^(-?\d+) (-?\d+) (\d+) (\d+) ([01])$/.exec(t);
+  const m = /^(-?\d+) (-?\d+) (\d+) (\d+) ([01])(?: ([01]))?$/.exec(t);
   if (!m) return null;
   const [x, y, width, height] = [m[1], m[2], m[3], m[4]].map(Number) as [number, number, number, number];
-  if (width < 200 || height < 150) return m[5] === '1' ? { x, y, width, height, minimized: true } : null;
-  return { x, y, width, height, minimized: m[5] === '1' };
+  const active = m[6] === undefined ? null : m[6] === '1';
+  if (width < 200 || height < 150) return m[5] === '1' ? { x, y, width, height, minimized: true, active } : null;
+  return { x, y, width, height, minimized: m[5] === '1', active };
 }
 
 /** Скрипт PowerShell: только чтение положения окна hwnd, раз в intervalMs */
@@ -44,6 +58,7 @@ export function rectScript(hwnd: number, intervalMs: number): string {
     '  [StructLayout(LayoutKind.Sequential)] public struct P { public int X, Y; }',
     '  [DllImport("user32.dll")] public static extern bool IsWindow(IntPtr h);',
     '  [DllImport("user32.dll")] public static extern bool IsIconic(IntPtr h);',
+    '  [DllImport("user32.dll")] public static extern IntPtr GetForegroundWindow();',
     '  [DllImport("user32.dll")] public static extern bool GetClientRect(IntPtr h, out R r);',
     '  [DllImport("user32.dll")] public static extern bool ClientToScreen(IntPtr h, ref P p);',
     '}',
@@ -53,7 +68,7 @@ export function rectScript(hwnd: number, intervalMs: number): string {
     "  if (-not [DcWin]::IsWindow($h)) { [Console]::Out.WriteLine('gone'); [Console]::Out.Flush(); break }",
     '  $r = New-Object DcWin+R; $p = New-Object DcWin+P',
     '  [void][DcWin]::GetClientRect($h, [ref]$r); [void][DcWin]::ClientToScreen($h, [ref]$p)',
-    "  [Console]::Out.WriteLine(('{0} {1} {2} {3} {4}' -f $p.X, $p.Y, ($r.Rt - $r.L), ($r.B - $r.T), [int][DcWin]::IsIconic($h)))",
+    "  [Console]::Out.WriteLine(('{0} {1} {2} {3} {4} {5}' -f $p.X, $p.Y, ($r.Rt - $r.L), ($r.B - $r.T), [int][DcWin]::IsIconic($h), [int]([DcWin]::GetForegroundWindow() -eq $h)))",
     '  [Console]::Out.Flush()',
     `  Start-Sleep -Milliseconds ${intervalMs}`,
     '}',

@@ -174,3 +174,132 @@ describe('5. язык: всё по-русски, предметы — как в 
     expect(bad).toEqual([]);
   });
 });
+
+describe('8. подсказки только в своём матче и только когда Дота активна', () => {
+  const kb = {
+    get: () => ({ meta: { patch: '7.41f', verification: 'imported-unverified' }, heroes: data.heroes, items: data.items, mechanics: data.mechanics }) as never,
+    stats: () => data.stats,
+  };
+  async function service() {
+    const { CoachService } = await import('../../src/main/coach/service');
+    const { defaultSettings } = await import('../../src/shared/schemas/settings');
+    let now = T0;
+    const out: { n: number; inMatch: boolean }[] = [];
+    const svc = new CoachService({ settings: { get: () => defaultSettings() }, kb, aiProvider: () => null, history: { save() {} }, onHints: (h, inMatch) => out.push({ n: h.length, inMatch }), now: () => now });
+    return { svc, out, at: (t: number) => (now = t) };
+  }
+  it('Дота открыта, матча нет (GSI молчит, часы на экране давно не видны) → подсказок нет', async () => {
+    const { svc, out, at } = await service();
+    // минуту назад был матч (часы 17:46), теперь меню: часы последний раз видели 60 с назад
+    for (let t = 0; t < 20; t++) {
+      const w = T0 + 60_000 + t * 1000;
+      at(w);
+      const s = sim({ wallMs: w, clock: 1066 + 60 + t, noGsi: true });
+      s.state.match.clock = { ...s.state.match.clock, lastSeenWallMs: T0, tag: 'inferred' };
+      s.state.sources = { gsi: false, screen: false };
+      svc.ingest({ state: s.state, gsi: null, gsiWallMs: null });
+    }
+    expect(out.every((o) => o.n === 0 && !o.inMatch)).toBe(true);
+  });
+  it('после конца матча (последнее чтение GSI — POST_GAME) → подсказок о рунах нет', async () => {
+    const { svc, out, at } = await service();
+    const ended = sim({ wallMs: T0, clock: 1784, phase: 'post-game', winTeam: 'radiant' });
+    for (let t = 0; t < 30; t++) {
+      const w = T0 + 10_000 + t * 1000;
+      at(w);
+      const s = sim({ wallMs: w, clock: 1794 + t, noGsi: true });
+      s.state.sources = { gsi: false, screen: true };
+      svc.ingest({ state: s.state, gsi: ended.gsi, gsiWallMs: T0 });
+    }
+    expect(out.filter((o) => o.inMatch)).toEqual([]);
+  });
+  it('чужой матч (GSI наблюдателя, своего героя нет) → подсказок нет', async () => {
+    const { svc, out, at } = await service();
+    for (let t = 0; t < 10; t++) {
+      const w = T0 + t * 1000;
+      at(w);
+      const s = sim({ wallMs: w, clock: 100 + t, noGsi: true });
+      svc.ingest({ state: s.state, gsi: null, gsiWallMs: null, notOwnMatch: true });
+    }
+    expect(out.every((o) => o.n === 0 && !o.inMatch)).toBe(true);
+  });
+  it('матч идёт, но активно другое окно (или Дота свёрнута) → оверлей не показывается; вернулись — показывается', async () => {
+    const { hudShouldShow } = await import('../../src/main/live/window-rect');
+    const dota = { x: 0, y: 0, width: 1920, height: 1080, minimized: false };
+    const base = { enabled: true, hasContent: true, demo: false };
+    expect(hudShouldShow({ ...base, rect: { ...dota, active: false } })).toBe(false);
+    expect(hudShouldShow({ ...base, rect: { ...dota, minimized: true, active: false } })).toBe(false);
+    expect(hudShouldShow({ ...base, rect: { ...dota, active: true } })).toBe(true);
+    // положение окна не известно (не Windows / PowerShell запрещён) — как раньше, показываем
+    expect(hudShouldShow({ ...base, rect: null })).toBe(true);
+    // демо из «Предпросмотра» включают из окна коуча — показывается, хотя Дота не активна
+    expect(hudShouldShow({ ...base, demo: true, rect: { ...dota, active: false } })).toBe(true);
+    expect(hudShouldShow({ ...base, hasContent: false, rect: { ...dota, active: true } })).toBe(false);
+  });
+  it('таймеры — от часов матча: Руна богатства в настоящем матче — за 15 с до 0:00 и каждые 4 мин игрового времени', () => {
+    const entries = readFileSync(join(import.meta.dirname, '../fixtures/gsi/recorded/turbo-bristleback.jsonl'), 'utf8').split(/\r?\n/).filter(Boolean).map((l) => JSON.parse(l) as { t: number; body: unknown });
+    const tracker = new GameModeTracker();
+    const model = new MatchStateModel();
+    let now = 0;
+    const engine = new CoachEngine({ data, now: () => now, settings: { ...defaultCoachSettings(), gameMode: 'auto' } });
+    let last: GsiReading | null = null;
+    let lastMs: number | null = null;
+    for (const e of entries) {
+      now = e.t;
+      const mode = tracker.feed(e.body, e.t);
+      const r = mapGsi(e.body);
+      if (r) {
+        model.ingestGsi({ ...r, gameMode: mode }, e.t);
+        last = r;
+        lastMs = e.t;
+      }
+      engine.tick(model.snapshot(e.t), last, lastMs);
+    }
+    const runes = engine.journal.filter((j) => j.id === 'timing.rune-bounty').map((j) => j.clock!);
+    expect(runes.length).toBeGreaterThan(3);
+    for (const c of runes) expect(Math.ceil(c / 240) * 240 - c, `подсказка в ${c} с`).toBeLessThanOrEqual(16);
+  });
+});
+
+describe('7. предметы: что купить дальше и что лишнее', () => {
+  const ctx = async (i: Partial<SimInput>, turbo = false) => {
+    const { CoachLookup: L } = await import('../../src/core/coach/data.ts');
+    const s = sim({ wallMs: T0, ...i } as SimInput);
+    const v = buildView(s.state, s.gsi, T0);
+    const look = new L(data);
+    if (turbo) look.setMode({ mode: 'turbo', source: 'clock', raw: 'start -1:00' });
+    const mem = new CoachMemory();
+    return { v, mem, ev: mem.ingest(v, 1800), look, settings: defaultCoachSettings(), now: T0 };
+  };
+  it('ранний дешёвый предмет, время которого прошло, не советуется (Soul Ring на 18-й минуте Турбо)', async () => {
+    const { nextItem } = await import('../../src/core/coach/rules/economy.ts');
+    const c = await ctx({ clock: 18 * 60, heroKey: 'bristleback', heroId: 99, items: [{ slot: 'inv1', key: 'power_treads' }, { slot: 'inv2', key: 'blade_mail' }] }, true);
+    const n = nextItem(c as never);
+    expect(n?.key).not.toBe('soul_ring');
+    if (n) expect((c.look.itemCost(n.key) ?? 0) >= 1500 || n.medianMin * 0.5 + 6 >= 18).toBe(true);
+  });
+  it('после покупки не из сборки профи тоже есть совет «Дальше: …»', () => {
+    let now = T0;
+    const e = new CoachEngine({ data, now: () => now });
+    const base = { heroKey: 'bristleback', heroId: 99 } as const;
+    // «Нет Town Portal Scroll» (0 с) и «Простой» (20 с) занимают очередь экономики — совет ждёт и выходит в 40 с
+    for (let t = 0; t < 50; t++) {
+      now = T0 + t * 1000;
+      // Consecrated Wraps — не из сборки профи Bristleback (там Bracer, Soul Ring, Raindrop, Power Treads);
+      // Bracer (к 2,5 мин) на 10-й минуте уже не советуется — следующий Soul Ring
+      const items = t < 2 ? [{ slot: 'inv1', key: 'power_treads' }] : [{ slot: 'inv1', key: 'power_treads' }, { slot: 'inv2', key: 'consecrated_wraps' }];
+      const s = sim({ wallMs: T0 + t * 1000, ...base, clock: 600 + t, items });
+      e.tick(s.state, s.gsi, T0 + t * 1000);
+    }
+    expect(e.journal.find((j) => j.id.startsWith('economy.next:'))?.text, JSON.stringify(e.journal.map((j) => `${Math.round(j.clock ?? -1)} ${j.id}`)) + JSON.stringify(e.queue.dropped)).toBe('Дальше: Soul Ring');
+  });
+  it('лишнее в полном инвентаре: Bracer к 27-й минуте Турбо — «продайте»; в начале игры — молчит', async () => {
+    const { sellRule } = await import('../../src/core/coach/rules/economy.ts');
+    const full = [{ slot: 'inv1', key: 'consecrated_wraps' }, { slot: 'inv2', key: 'blade_mail' }, { slot: 'inv3', key: 'heart' }, { slot: 'inv4', key: 'power_treads' }, { slot: 'inv5', key: 'assault' }, { slot: 'inv6', key: 'bracer' }];
+    const late = sellRule((await ctx({ clock: 27 * 60, heroKey: 'bristleback', items: full }, true)) as never);
+    expect((late as { short?: string } | null)?.short).toBe('Лишнее: Bracer — продайте');
+    expect(sellRule((await ctx({ clock: 5 * 60, heroKey: 'bristleback', items: full }, true)) as never)).toBeNull();
+    // инвентарь не полон — ячейка не нужна, не советуем
+    expect(sellRule((await ctx({ clock: 27 * 60, heroKey: 'bristleback', items: full.slice(3) }, true)) as never)).toBeNull();
+  });
+});

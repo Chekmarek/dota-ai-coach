@@ -95,6 +95,15 @@ export class CoachService {
       this.emit([], false);
       return null;
     }
+    // Чужой матч (наблюдение, повтор): GSI идёт без своего героя — подсказок нет, история не пишется
+    if (input.notOwnMatch) {
+      if (this.loggedInMatch !== false) {
+        this.loggedInMatch = false;
+        this.deps.log?.('coach матч', { inGame: false, reason: 'не свой матч (GSI без своего героя)' });
+      }
+      this.emit([], false);
+      return null;
+    }
     const e = this.ensure();
     if (!e) return null;
     e.setSettings(coachSettings(s));

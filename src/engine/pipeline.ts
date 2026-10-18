@@ -233,7 +233,10 @@ export class Pipeline {
     const gsiFresh = this.lastGsiAt !== null && wallMs - this.lastGsiAt < GSI_PUBLISH_MS;
     if (!this.isLive() && !gsiFresh) return;
     this.lastCoachAt = wallMs;
-    api.reportCoach({ state, gsi: gsiFresh ? this.lastReading : null, gsiWallMs: gsiFresh ? this.lastReadingAt : null });
+    // GSI идёт, а своего героя в нём нет (наблюдение за чужим матчем, повтор): матч не свой — коуч молчит,
+    // даже если на экране видны часы (в 0.13.2 при просмотре матча шли подсказки про руны)
+    const notOwnMatch = gsiFresh && (this.lastReadingAt === null || wallMs - this.lastReadingAt >= GSI_LIVE_MS);
+    api.reportCoach({ state, gsi: gsiFresh ? this.lastReading : null, gsiWallMs: gsiFresh ? this.lastReadingAt : null, notOwnMatch });
   }
 
   /** Новый источник или остановка — состояние прошлого матча больше не относится к делу (кроме матча из GSI) */
