@@ -212,7 +212,8 @@ export class CoachService {
     }
     const m = this.match;
     m.matchId ??= matchId;
-    m.heroName ??= e.heroName;
+    // Герой — по последним данным: в первом снимке (выбор героев) GSI мог прислать другого (Techies вместо Bristleback)
+  m.heroName = e.heroName ?? m.heroName;
     // Режим: известный не затирается «неизвестным» (GSI замолчал), ручной выбор пользователя — важнее
     if (mode.mode !== 'unknown' || !m.gameMode) m.gameMode = mode;
     // новые записи журнала

@@ -53,7 +53,7 @@ export function deathReview(c: RuleContext, d: DeathRecord, index: number, mista
   const unusedActives = readyActiveNames(c.look, d);
   if (unusedActives.length === 1) why.push(`${unusedActives[0]} был готов, но не использован`);
   else if (unusedActives.length > 1) why.push(`Были готовы, но не использованы: ${unusedActives.join(', ')}`);
-  if (d.enemiesNear >= 2) why.push(`Вас поймали ${d.enemiesNear} врага`);
+  if (d.enemiesNear >= 2) why.push(`Вас поймали ${d.enemiesNear} ${d.enemiesNear >= 5 ? 'врагов' : 'врага'}`);
   else if (d.enemiesNear === 1) why.push('Вас убил один враг');
   if (d.hpBefore !== null && d.dropSec !== null && d.dropSec <= 3 && d.hpBefore >= 50) why.push(`Здоровье упало с ${Math.round(d.hpBefore)}% за ${Math.max(1, Math.round(d.dropSec))} с — сильный урон разом`);
   if (d.side === 'enemy') why.push(`Смерть на стороне врага (${d.zone ? MAP_ZONE_RU[d.zone] : 'место неизвестно'})`);
@@ -76,7 +76,8 @@ export function deathReview(c: RuleContext, d: DeathRecord, index: number, mista
     const attackedAt = c.mem.marks.get('bld-attack@');
     const baseUnderAttack = attackedAt !== undefined && c.now - attackedAt <= 20_000;
     // Порог 30 минут — для обычной игры; в Турбо (матч ~25 мин) правило не проверено
-    if (c.look.isTurbo) buyback = { advice: 'unknown', text: 'В Турбо совет по выкупу не проверен.' };
+    // Совета «выкупаться или нет» в Турбо нет — но цена, золото и время возрождения игроку нужны
+    if (c.look.isTurbo) buyback = { advice: 'unknown', text: `Выкуп ${d.buybackCost}, у вас ${d.gold} — хватает${respawn !== null ? `; возрождение через ${respawn} с` : ''}.` };
     else if (clock >= 30 * 60 && baseUnderAttack) buyback = { advice: 'buy', text: `Выкупитесь (${d.buybackCost}): бьют ваши здания.` };
     else buyback = { advice: 'save', text: `Сохраните ${d.buybackCost} золота: выкуп сейчас не решает.` };
   }

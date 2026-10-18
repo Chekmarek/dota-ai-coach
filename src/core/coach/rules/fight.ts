@@ -5,6 +5,9 @@ import { derivedFact, fact, kbFact, poolPct } from '../view.ts';
 import { draft, playing, plural, type Rule } from './context.ts';
 import type { HintDraft } from '../types.ts';
 
+/** Сколько после «Отходи» не советовать «Вступать» */
+export const DISENGAGE_HOLD_MS = 10_000;
+
 export const engageRule: Rule = (c) => {
   if (!playing(c)) return null;
   // Врагов рядом — по мини-карте и полоскам на экране (на мини-карте двое рядом сливаются в один значок)
@@ -14,6 +17,9 @@ export const engageRule: Rule = (c) => {
   if (c.mem.inFight && c.mem.engageAtEntry === null) c.mem.engageAtEntry = e.value;
   if (!e.showable) return null;
   const enemies = `${n} ${plural(n, 'враг', 'врага', 'врагов')} рядом`;
+  // Только что сказали «Отходи» — «Вступать» сразу после него противоречит; ждём DISENGAGE_HOLD_MS
+  const disengagedAt = c.mem.marks.get('disengage@');
+  if (e.value >= 60 && disengagedAt !== undefined && c.now - disengagedAt < DISENGAGE_HOLD_MS) return null;
   const go = e.value >= 60;
   const no = e.value <= 40;
   const short = go ? `Вступать: шанс ${e.value}%` : no ? `Не вступать: шанс ${e.value}%` : `Драка на равных: ${e.value}%`;
@@ -195,6 +201,11 @@ export const disengageRule: Rule = (c) => {
   const reinforce = before >= 1 && now - before >= 2;
   const allyLost = c.ev.allyDied.length > 0 && me !== null;
   if (!reinforce && !allyLost) return null;
+  // «Отходи» — только когда врагов рядом больше, чем вас с союзниками: иначе это противоречило «Вступать: 95%»
+  // секундой раньше (матч 9051402480: 21:52, 22:10, 23:45, 26:07)
+  const allies = c.mem.samples[c.mem.samples.length - 1]?.alliesNear ?? 0;
+  if (now <= allies + 1) return null;
+  c.mem.marks.set('disengage@', c.now);
   const short = reinforce ? 'Отходи: пришли ещё враги' : 'Отходи: союзник погиб';
   return draft({
     id: 'fight.disengage',
@@ -216,6 +227,8 @@ export const buybackRule: Rule = (c) => {
   const cost = c.v.me.buybackCost.value;
   const gold = c.v.me.gold.value;
   if (clock === null || clock < 25 * 60 || cost === null || gold === null) return null;
+  // Только что выкупились — выкуп на перезарядке: «выкуп X, у вас Y» тогда сбивает с толку (матч 9051402480, 32:10)
+  if ((c.v.me.buybackCooldown.value ?? 0) > 0) return null;
   const facts = [fact('gold', 'Золото', c.v.me.gold), fact('buyback', 'Цена выкупа', c.v.me.buybackCost)];
   if (gold < cost && (c.mem.inFight || nearEnemyCount(c.v) > 0)) {
     return draft({

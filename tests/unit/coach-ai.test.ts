@@ -57,7 +57,7 @@ describe('совет ИИ «что делать и куда идти»', () => {
     expect(all.every((h) => h.textSource === 'template')).toBe(true);
   });
 
-  it('модель отвечает верно — совет показан, текст от ИИ', async () => {
+  it('модель отвечает верно — совет показан: выбор ИИ и оценка коуча, свободная фраза модели на экран не идёт', async () => {
     const p = fake(() => '{"action":"farm","where":"radiant-jungle","say":"Фарми свой лес, враги далеко"}');
     const ai = new CoachAi({ provider: () => p, now: () => Date.now() });
     const e = new CoachEngine({ data, ai });
@@ -66,7 +66,8 @@ describe('совет ИИ «что делать и куда идти»', () => {
     expect(p.calls.length).toBeGreaterThan(0);
     expect(h?.textSource).toBe('ai');
     expect(h?.short).toBe('Фармить: лес Сил Света');
-    expect(h?.detail.normal).toBe('Фарми свой лес, враги далеко');
+    expect(h?.detail.normal).toMatch(/^Фармить: лес Сил Света\. Оценка коуча: /);
+    expect(h?.detail.normal).not.toContain('Фарми свой лес');
   });
 
   it('модель медленная — тик не ждёт её, по таймауту остаётся шаблон', async () => {

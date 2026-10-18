@@ -87,8 +87,15 @@ export function enemyNear(p: ViewPlayer, me: MapPoint | null): boolean {
  */
 export function nearEnemyCount(v: CoachView): number {
   const map = v.enemies.filter((e) => enemyNear(e, v.me.pos.value)).length;
-  const bars = v.screen?.meOnScreen ? v.screen.enemyBars.length : 0;
+  // Иллюзии (Phantom Lancer, Naga, Manta) рисуют такие же полоски, как герой: полосок бывает 11 при 5 врагах.
+  // Отличить иллюзию по полоске нельзя — счёт не больше числа живых врагов
+  const bars = Math.min(v.screen?.meOnScreen ? v.screen.enemyBars.length : 0, enemiesAliveCap(v));
   return Math.max(map, bars);
+}
+
+/** Сколько врагов может быть рядом: 5 минус точно мёртвые (состав врага бывает известен не весь) */
+export function enemiesAliveCap(v: CoachView): number {
+  return Math.max(0, 5 - v.enemies.filter((e) => e.alive.value === false).length);
 }
 
 /** Вражеские полоски на экране рядом с героем (камера у героя); [] — не видно или камера в другом месте */
@@ -112,7 +119,8 @@ export interface ReadyActive {
 }
 
 /** Нажимаются не в драке (ботинки-переключатель, варды, ТП — у ТП своя проверка) — в «не использовал» не попадают */
-const NOT_FIGHT_ACTIVES = new Set(['power_treads', 'tpscroll', 'travel_boots', 'travel_boots_2', 'ward_observer', 'ward_sentry', 'ward_dispenser', 'smoke_of_deceit', 'dust', 'tome_of_knowledge', 'courier']);
+// Реген, который сбивается уроном или долго действует (Tango, Healing Salve, Clarity), и ветка — тоже не «не нажал в драке»
+const NOT_FIGHT_ACTIVES = new Set(['power_treads', 'tpscroll', 'travel_boots', 'travel_boots_2', 'ward_observer', 'ward_sentry', 'ward_dispenser', 'smoke_of_deceit', 'dust', 'tome_of_knowledge', 'courier', 'tango', 'tango_single', 'flask', 'clarity', 'branches', 'aegis', 'cheese']);
 /** Короткие способности (перезарядка меньше) жмутся постоянно — их «готовность» в момент смерти ничего не значит */
 const LONG_COOLDOWN_SEC = 15;
 
@@ -214,7 +222,9 @@ export class CoachMemory {
 
     // Смерть / возрождение
     const alive = v.me.alive.value;
-    if (p && p.me.alive.value === true && alive === false) {
+    // С Aegis герой возрождается на месте — игра не считает это смертью, разбор не нужен
+    const reincarnation = p !== null && p.me.items.some((i) => i.key === 'aegis');
+    if (p && p.me.alive.value === true && alive === false && !reincarnation) {
       const hist = this.last(10, v.wallMs);
       const hpVals = hist.map((s) => s.hpPct).filter((x): x is number => x !== null);
       const maxHp = hpVals.length ? Math.max(...hpVals) : null;
@@ -242,11 +252,14 @@ export class CoachMemory {
         buybackReady: cost !== null && bbCd !== null && gold !== null ? bbCd === 0 && gold >= cost : null,
         gold,
         buybackCost: cost,
-        respawnSec: v.me.respawnSec.value,
+        // В первый миг смерти GSI ещё присылает 0 (через секунду — 73): 0 — «ещё не известно»
+        respawnSec: (v.me.respawnSec.value ?? 0) > 0 ? v.me.respawnSec.value : null,
         engageAtEntry: this.engageAtEntry,
       });
       ev.died = this.deaths[this.deaths.length - 1]!;
     }
+    const lastDeath = this.deaths[this.deaths.length - 1];
+    if (alive === false && lastDeath && lastDeath.respawnSec === null && (v.me.respawnSec.value ?? 0) > 0) lastDeath.respawnSec = v.me.respawnSec.value;
     if (p && p.me.alive.value === false && alive === true) ev.respawned = true;
 
     // Убийства и помощь

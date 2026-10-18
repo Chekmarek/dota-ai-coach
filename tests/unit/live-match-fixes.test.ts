@@ -310,18 +310,30 @@ describe('6. аванпост', () => {
     expect(OUTPOSTS.map((o) => o.id).sort()).toEqual(['npc_dota_watch_tower_bottom', 'npc_dota_watch_tower_top']);
     for (const o of OUTPOSTS) expect(Math.abs(o.x) < 8800 && Math.abs(o.y) < 8800).toBe(true);
   });
-  it('герой у аванпоста, врагов рядом нет → «захватите, если вражеский»; враг рядом — молчит', async () => {
+  it('Силы Тьмы у аванпоста на половине Сил Света, врагов рядом нет → «захватите»; враг рядом — молчит', async () => {
     const { outpostRule } = await import('../../src/core/coach/rules/macro.ts');
-    const ctx = (enemies: SimInput['enemies']) => {
-      const s = sim({ wallMs: T0, clock: 900, pos: { x: -4000, y: -500 }, enemies });
+    const ctx = (enemies: SimInput['enemies'], team: 'radiant' | 'dire' = 'dire', pos = { x: -4000, y: -500 }) => {
+      const s = sim({ wallMs: T0, clock: 900, team, pos, enemies });
       const v = buildView(s.state, s.gsi, T0);
       const mem = new CoachMemory();
       return { v, mem, ev: mem.ingest(v, 1800), look, settings: defaultCoachSettings(), now: T0 } as never;
     };
     const h = outpostRule(ctx([])) as { short: string; detail: { normal: string } } | null;
-    expect(h?.short).toBe('Аванпост рядом — захватите, если вражеский');
+    expect(h?.short).toBe('Аванпост врага рядом — захватите');
     expect(h?.detail.normal).toContain('6 с');
-    expect(outpostRule(ctx([{ slot: 5, hero: 'lina', pos: { x: -3900, y: -500 } }]))).toBeNull();
+    expect(outpostRule(ctx([{ slot: 0, hero: 'lina', pos: { x: -3900, y: -500 } }]))).toBeNull();
+  });
+  it('свой аванпост (на своей половине) — не зовёт захватывать (матч 9051402480: Силы Тьмы у аванпоста Сил Тьмы)', async () => {
+    const { outpostRule } = await import('../../src/core/coach/rules/macro.ts');
+    const at = (team: 'radiant' | 'dire', pos: { x: number; y: number }) => {
+      const s = sim({ wallMs: T0, clock: 900, team, pos, enemies: [] });
+      const v = buildView(s.state, s.gsi, T0);
+      const mem = new CoachMemory();
+      return outpostRule({ v, mem, ev: mem.ingest(v, 1800), look, settings: defaultCoachSettings(), now: T0 } as never);
+    };
+    expect(at('dire', { x: 2884, y: -542 })).toBeNull(); // как в 8:43 того матча
+    expect(at('radiant', { x: -4000, y: -500 })).toBeNull();
+    expect(at('radiant', { x: 3300, y: -450 })).not.toBeNull();
   });
   it('далеко от аванпостов — молчит', async () => {
     const { outpostRule } = await import('../../src/core/coach/rules/macro.ts');

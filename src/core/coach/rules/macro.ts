@@ -2,7 +2,7 @@
 import { upcomingEvents } from '../../knowledge-base/timers.ts';
 import { MAP_ZONE_RU, mapZone } from '../../match-state/map-zones.ts';
 import { nearEnemyCount, tpReady } from '../memory.ts';
-import { NEAR_UNITS, dist } from '../geo.ts';
+import { NEAR_UNITS, dist, mapSide } from '../geo.ts';
 import { derivedFact, fact, kbFact } from '../view.ts';
 import { draft, mmss, playing, plural, type Rule } from './context.ts';
 import type { HintDraft } from '../types.ts';
@@ -159,7 +159,11 @@ export const OUTPOST_NEAR_UNITS = 1200;
 export const outpostRule: Rule = (c) => {
   const me = c.v.me.pos.value;
   if (!playing(c) || !me || c.v.me.alive.value !== true || c.mem.inFight || nearEnemyCount(c.v) > 0) return null;
-  const o = OUTPOSTS.find((p) => dist(p, me) <= OUTPOST_NEAR_UNITS);
+  // Только аванпост на половине врага: свой (на своей половине) захватывать не нужно — в матче 9051402480 коуч
+  // дважды звал к аванпосту Сил Тьмы, играя за Силы Тьмы. Чей он сейчас, GSI не сообщает — поэтому «если ещё вражеский»
+  const team = c.v.team;
+  if (!team) return null;
+  const o = OUTPOSTS.find((p) => dist(p, me) <= OUTPOST_NEAR_UNITS && mapSide(p, team) === 'enemy');
   if (!o) return null;
   const capture = c.look.mechanicValue('outpost', 'capture');
   return draft({
@@ -168,8 +172,8 @@ export const outpostRule: Rule = (c) => {
     category: 'macro',
     priority: 'info',
     confidence: 0.6,
-    short: 'Аванпост рядом — захватите, если вражеский',
-    normal: `Рядом аванпост. Если он вражеский, захватите его${capture !== null ? ` (стоять у него ${capture} с)` : ''}: обзор и телепорт для команды. Врагов рядом не видно.`,
+    short: 'Аванпост врага рядом — захватите',
+    normal: `Рядом аванпост на стороне врага. Если он ещё вражеский, захватите его${capture !== null ? ` (стоять у него ${capture} с)` : ''}: обзор и телепорт для команды. Врагов рядом не видно.`,
     facts: [derivedFact('outpost-distance', 'До аванпоста', Math.round(dist(o, me)), 0.9), kbFact('outpost-capture', 'Захват, с', capture, false)],
     ttlSec: 8,
     cooldownSec: 300,

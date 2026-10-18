@@ -8,6 +8,9 @@ import { derivedFact } from './view.ts';
 import type { FactRef } from './types.ts';
 import { readyActiveNames, type DeathRecord } from './memory.ts';
 
+/** Телепорт Town Portal Scroll — 3 с (обычная игра; в Турбо не проверено) */
+const TP_CHANNEL_SEC = 3;
+
 export type MistakeType =
   | 'died-unused'
   | 'joined-losing-fight'
@@ -179,7 +182,9 @@ export class MistakeDetector {
     // По GSI — всё готовое и не нажатое (Blade Mail и т. п.); «ульта» отдельно — только если GSI не сказал, какая она
     const actives = readyActiveNames(c.look, d);
     const ultInActives = (d.readyActives ?? []).some((a) => a.kind === 'ability');
-    const unused = [...new Set([...actives, d.ultReady && !ultInActives ? 'ульта' : null, ...d.keyItemsReady.map((k) => c.look.itemName(k)), d.tpReady ? 'Town Portal Scroll' : null].filter((x): x is string => x !== null))];
+    // Town Portal Scroll — только если до смерти было время на телепорт (3 с) после начала урона
+    const tpUsable = d.tpReady === true && (d.dropSec ?? 0) >= TP_CHANNEL_SEC + 1;
+    const unused = [...new Set([...actives, d.ultReady && !ultInActives ? 'ульта' : null, ...d.keyItemsReady.map((k) => c.look.itemName(k)), tpUsable ? 'Town Portal Scroll' : null].filter((x): x is string => x !== null))];
     const facts = [derivedFact('enemies-near', 'Врагов рядом при смерти', d.enemiesNear, 0.75), derivedFact('drop', 'Здоровье упало за, с', d.dropSec === null ? null : Math.round(d.dropSec), 0.7)];
     if (unused.length && (d.dropSec ?? 0) >= 2) {
       out.push(this.add(c, { type: 'died-unused', severity: 3, deathIndex: index, text: `Умерли, не применив: ${unused.join(', ')}`, instead: 'Применяйте ульту и защитные предметы в начале драки, Town Portal Scroll — чтобы уйти.', facts }));

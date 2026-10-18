@@ -4,7 +4,7 @@ import { TP_ITEMS } from '../data.ts';
 import { hasItem, nearEnemyCount, tpReady } from '../memory.ts';
 import { actionChoice, nearEnemies } from '../prob.ts';
 import { isOwnBase } from '../geo.ts';
-import { derivedFact, fact, kbFact } from '../view.ts';
+import { derivedFact, fact, kbFact, poolPct } from '../view.ts';
 import { draft, playing, type Rule, type RuleContext } from './context.ts';
 
 
@@ -278,6 +278,8 @@ export const OUTGROWN_ITEMS: Record<string, number> = {
   null_talisman: 30,
   soul_ring: 35,
 };
+const MANA_CONSUMABLES = new Set(['clarity', 'enchanted_mango']);
+const HP_CONSUMABLES = new Set(['tango', 'flask', 'faerie_fire']);
 /** Совет продать — только когда основной инвентарь почти полон (ячейка нужна) */
 export const SELL_WHEN_FULL = 5;
 
@@ -287,17 +289,25 @@ export const sellRule: Rule = (c) => {
   const inv = c.v.me.items.filter((i) => /^inv\d$/.test(i.slot));
   if (inv.length < SELL_WHEN_FULL) return null;
   const scale = c.look.isTurbo ? 0.5 : 1;
-  const extra = inv.filter((i) => OUTGROWN_ITEMS[i.key] !== undefined && clock / 60 >= OUTGROWN_ITEMS[i.key]! * scale);
+  // Расходник, который сейчас пригодится (мало маны — Clarity, мало здоровья — Tango), не «лишний»: в матче 9051474634
+  // коуч сказал «Clarity — продайте», а через 5 с «Мало маны — выпейте Clarity»
+  const mana = poolPct(c.v.me.mana.value);
+  const hp = poolPct(c.v.me.hp.value);
+  const neededNow = (key: string) => (MANA_CONSUMABLES.has(key) && (mana === null || mana < 50)) || (HP_CONSUMABLES.has(key) && (hp === null || hp < 80));
+  const extra = inv.filter((i) => OUTGROWN_ITEMS[i.key] !== undefined && clock / 60 >= OUTGROWN_ITEMS[i.key]! * scale && !neededNow(i.key));
   if (!extra.length) return null;
   const names = [...new Set(extra.map((i) => c.look.itemName(i.key)))];
+  // Расходники выгоднее использовать, чем продать за бесценок
+  const allConsumable = extra.every((i) => MANA_CONSUMABLES.has(i.key) || HP_CONSUMABLES.has(i.key));
+  const verb = allConsumable ? 'используйте или продайте' : 'продайте';
   return draft({
     id: `economy.sell:${extra.map((i) => i.key).sort().join(',')}`,
     ruleId: 'economy.sell',
     category: 'economy',
     priority: 'info',
     confidence: 0.6,
-    short: `Лишнее: ${names.slice(0, 2).join(', ')} — продайте`,
-    normal: `${names.join(', ')} к ${Math.floor(clock / 60)}-й минуте почти ничего не дают, а инвентарь почти полон. Продайте и освободите ячейку под предмет посильнее.`,
+    short: `Лишнее: ${names.slice(0, 2).join(', ')} — ${verb}`,
+    normal: `${names.join(', ')} к ${Math.floor(clock / 60)}-й минуте почти ничего не дают, а инвентарь почти полон. ${allConsumable ? 'Используйте или продайте' : 'Продайте'} и освободите ячейку под предмет посильнее.`,
     facts: [derivedFact('outgrown', 'Лишние предметы', names.join(', '), 0.6), fact('clock', 'Игровое время, с', c.v.clock)],
     ttlSec: 10,
     cooldownSec: 300,

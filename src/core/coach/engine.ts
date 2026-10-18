@@ -417,15 +417,18 @@ export class CoachEngine {
 
   private showAdvice(value: Advice, choice: ActionChoice, clock: number | null): void {
     const short = `${ACTION_RU[value.action]}: ${DESTINATION_RU(value.where)}`;
+    // Свободная фраза маленькой модели бывала бессмысленной («Приступай к дрожжам», «Фармуй», «в лес», матч
+    // 9051402480) — её проверка по фактам не ловит. На экран — выбор ИИ (действие и место проверены) и оценка коуча
+    const estimate = `Оценка коуча: ${(Object.keys(choice.percents) as (keyof typeof choice.percents)[]).map((k) => `${ACTION_RU[k].toLowerCase()} ${choice.percents[k]}%`).join(', ')}`;
     const d = draft({
       id: 'ai.advice',
       category: 'macro',
       priority: value.action === 'retreat' ? 'advice' : 'info',
       confidence: Math.min(0.85, choice.confidence),
       short,
-      normal: value.say,
-      detailed: `${value.say} · Оценка коуча: ${(Object.keys(choice.percents) as (keyof typeof choice.percents)[]).map((k) => `${ACTION_RU[k].toLowerCase()} ${choice.percents[k]}%`).join(', ')}`,
-      facts: [{ key: 'ai-advice', label: 'Совет ИИ', value: value.say, source: 'derived', ageSec: 0, confidence: choice.confidence, verified: true }],
+      normal: `${short}. ${estimate}`,
+      detailed: `${short}. ${estimate}`,
+      facts: [{ key: 'ai-advice', label: 'Выбор ИИ', value: short, source: 'derived', ageSec: 0, confidence: choice.confidence, verified: true }],
       ttlSec: 12,
       cooldownSec: 0,
       zone: 'decision',
@@ -435,7 +438,7 @@ export class CoachEngine {
     r.hint.textSource = 'ai';
     if (r.status === 'shown') {
       this.asyncShown.push(r.hint);
-      this.log({ wallMs: this.now(), clock, kind: 'hint', id: r.hint.id, text: `${short} — ${value.say}`, source: 'ai' });
+      this.log({ wallMs: this.now(), clock, kind: 'hint', id: r.hint.id, text: `${short} — ИИ: ${value.say}`, source: 'ai' });
     } else this.asyncChanged.push(r.hint);
     this.opts.onAsync?.();
   }

@@ -93,6 +93,22 @@ describe('CoachService', () => {
     expect(/^[0-9A-Za-z_-]+$/.test(m.id)).toBe(true);
   });
 
+  it('история: обмен героем в начале матча — записан герой, которым играли (было: Kez вместо Ogre Magi)', () => {
+    const history = { saved: [] as HistoryMatch[], save(m: HistoryMatch) { this.saved.push(structuredClone(m)); } };
+    let now = 0;
+    const svc = new CoachService({ settings: { get: () => defaultSettings() }, kb, aiProvider: () => null, history, onHints: () => {}, now: () => now });
+    for (let t = 0; t < 40; t++) {
+      now = 1_000_000 + t * 1000;
+      // до −0:45 — Kez (выбран первым), потом обмен с другом — Ogre Magi
+      const s = sim({ wallMs: now, clock: -55 + t, phase: t < 30 ? 'pre-game' : 'in-progress', heroKey: t < 10 ? 'kez' : 'ogre_magi' });
+      s.gsi!.hero.name = t < 10 ? 'Kez' : 'Ogre Magi';
+      s.gsi!.gameState = t < 30 ? 'DOTA_GAMERULES_STATE_PRE_GAME' : 'DOTA_GAMERULES_STATE_GAME_IN_PROGRESS';
+      svc.ingest({ state: s.state, gsi: s.gsi, gsiWallMs: now });
+    }
+    svc.flush();
+    expect(history.saved[history.saved.length - 1]!.heroName).toBe('Ogre Magi');
+  });
+
   it('история: режим игры записывается; «неизвестен» не затирает известный; ручной выбор важнее', () => {
     const turbo = { mode: 'turbo', source: 'gsi', raw: 'DOTA_GAMEMODE_TURBO' } as const;
     const a = make(defaultSettings());
