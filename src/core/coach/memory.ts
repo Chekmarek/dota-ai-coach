@@ -126,6 +126,19 @@ export interface ReadyActive {
 /** Нажимаются не в драке (ботинки-переключатель, варды, ТП — у ТП своя проверка) — в «не использовал» не попадают */
 // Реген, который сбивается уроном или долго действует (Tango, Healing Salve, Clarity), и ветка — тоже не «не нажал в драке»
 const NOT_FIGHT_ACTIVES = new Set(['power_treads', 'tpscroll', 'travel_boots', 'travel_boots_2', 'ward_observer', 'ward_sentry', 'ward_dispenser', 'smoke_of_deceit', 'dust', 'tome_of_knowledge', 'courier', 'tango', 'tango_single', 'flask', 'clarity', 'branches', 'aegis', 'cheese']);
+/**
+ * Спасительные предметы — что могло спасти от смерти (ночная задача: «готовые, но не использованные спасительные
+ * предметы»): защита, уход, контроль врага, мгновенное лечение. Остальное нажимаемое (Arcane Boots, Dagon, Hand of Midas)
+ * в «не нажали» не идёт: на матчах 0.13.x разбор писал «Arcane Boots был готов» как причину смерти.
+ */
+export const SAVE_ITEMS = new Set([
+  'black_king_bar', 'blade_mail', 'ghost', 'glimmer_cape', 'force_staff', 'hurricane_pike', 'cyclone', 'wind_waker', 'manta', 'satanic',
+  'lotus_orb', 'blink', 'swift_blink', 'arcane_blink', 'overwhelming_blink', 'invis_sword', 'silver_edge', 'sheepstick', 'orchid', 'bloodthorn',
+  'abyssal_blade', 'ethereal_blade', 'heavens_halberd', 'mekansm', 'guardian_greaves', 'pipe', 'crimson_guard', 'pavise', 'solar_crest',
+  'magic_stick', 'magic_wand', 'faerie_fire', 'disperser', 'boots_of_bearing',
+]);
+/** Способностей в «не нажали» — не больше: длинный список из пяти способностей Tinker ничему не учит */
+const MAX_ABILITIES = 2;
 /** Короткие способности (перезарядка меньше) жмутся постоянно — их «готовность» в момент смерти ничего не значит */
 const LONG_COOLDOWN_SEC = 15;
 
@@ -136,17 +149,21 @@ const LONG_COOLDOWN_SEC = 15;
  */
 export function readyActives(v: CoachView): ReadyActive[] {
   const items = v.me.items
-    .filter((i) => /^inv\d$|^neutral$/.test(i.slot) && i.passive !== true && i.canCast === true && i.cooldownSec === 0 && i.charges !== 0 && !NOT_FIGHT_ACTIVES.has(i.key))
+    .filter((i) => /^inv\d$|^neutral$/.test(i.slot) && i.passive !== true && i.canCast === true && i.cooldownSec === 0 && i.charges !== 0 && !NOT_FIGHT_ACTIVES.has(i.key) && SAVE_ITEMS.has(i.key))
     .map((i): ReadyActive => ({ kind: 'item', key: i.key }));
+  // ульта — первой, потом способности с самой долгой перезарядкой; не больше MAX_ABILITIES
   const abilities = v.me.abilities
     .filter((a) => a.key !== null && a.passive === false && (a.level ?? 0) > 0 && a.state === 'ready' && (a.ultimate || (a.maxCooldownSec ?? 0) >= LONG_COOLDOWN_SEC))
+    .sort((a, b) => Number(b.ultimate) - Number(a.ultimate) || (b.maxCooldownSec ?? 0) - (a.maxCooldownSec ?? 0))
+    .slice(0, MAX_ABILITIES)
     .map((a): ReadyActive => ({ kind: 'ability', key: a.key! }));
   return [...items, ...abilities];
 }
 
 /** Названия готовых, но не нажатых предметов и способностей (как в клиенте Dota) */
 export function readyActiveNames(look: Pick<CoachLookup, 'itemName' | 'abilityByKey'>, d: Pick<DeathRecord, 'readyActives'>): string[] {
-  return [...new Set((d.readyActives ?? []).map((a) => (a.kind === 'item' ? look.itemName(a.key) : (look.abilityByKey.get(a.key)?.name ?? a.key))))];
+  // способность без названия в справочнике (tinker_keen_teleport) не показываем служебным ключом — пропускаем
+  return [...new Set((d.readyActives ?? []).map((a) => (a.kind === 'item' ? look.itemName(a.key) : (look.abilityByKey.get(a.key)?.name ?? null))).filter((x): x is string => !!x && !/^[a-z0-9_]+$/.test(x)))];
 }
 
 export function readyItems(v: CoachView, keys: readonly string[]): string[] {

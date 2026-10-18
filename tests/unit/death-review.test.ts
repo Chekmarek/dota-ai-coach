@@ -4,7 +4,8 @@ import { describe, expect, it } from 'vitest';
 import { CoachLookup } from '../../src/core/coach/data.ts';
 import { deathCauses } from '../../src/core/coach/reviews.ts';
 import { CoachEngine, defaultCoachSettings } from '../../src/core/coach/index.ts';
-import type { DeathRecord } from '../../src/core/coach/memory.ts';
+import { readyActives, readyActiveNames, type DeathRecord } from '../../src/core/coach/memory.ts';
+import { buildView } from '../../src/core/coach/view.ts';
 import { realData, sim } from './coach-sim.ts';
 
 const look = new CoachLookup(realData());
@@ -46,6 +47,32 @@ describe('причины смерти по важности', () => {
   });
   it('разница в силе: враги на 3 уровня выше', () => {
     expect(deathCauses(death({ myLevel: 9, enemyLevels: [12, 12] }), 'mid', look).map((x) => x.why)).toContain('Враги были сильнее: уровень 12 против вашего 9');
+  });
+});
+
+describe('«готов, но не нажат» — только спасительное (матчи Shadow Shaman и Tinker 18.10)', () => {
+  it('Arcane Boots и Dagon — не спасают: не называются; Black King Bar — называется', () => {
+    const s = sim({ wallMs: 1_000_000, clock: 900, items: [
+      { slot: 'inv0', key: 'arcane_boots', passive: false, canCast: true },
+      { slot: 'inv1', key: 'dagon', passive: false, canCast: true },
+      { slot: 'inv2', key: 'black_king_bar', passive: false, canCast: true },
+    ], abilities: [] });
+    expect(readyActives(buildView(s.state, s.gsi, 1_000_000))).toEqual([{ kind: 'item', key: 'black_king_bar' }]);
+  });
+  it('пять готовых способностей Tinker — не больше двух, ульта первой; без служебных ключей вместо названий', () => {
+    const abilities = [
+      { key: 'tinker_laser', level: 4, maxCooldownSec: 16 },
+      { key: 'tinker_march_of_the_machines', level: 4, maxCooldownSec: 30 },
+      { key: 'tinker_deploy_turrets', level: 1, maxCooldownSec: 20 },
+      { key: 'tinker_keen_teleport', level: 1, maxCooldownSec: 60 },
+      { key: 'tinker_rearm', level: 3, ultimate: true, maxCooldownSec: 7 },
+    ];
+    const s = sim({ wallMs: 1_000_000, clock: 900, items: [], abilities, heroKey: 'tinker' });
+    const ready = readyActives(buildView(s.state, s.gsi, 1_000_000));
+    expect(ready.length).toBe(2);
+    expect(ready[0]).toEqual({ kind: 'ability', key: 'tinker_rearm' });
+    const names = readyActiveNames(look, { readyActives: [...ready, { kind: 'ability', key: 'tinker_keen_teleport' }] });
+    for (const n of names) expect(n).not.toMatch(/^[a-z0-9_]+$/);
   });
 });
 
