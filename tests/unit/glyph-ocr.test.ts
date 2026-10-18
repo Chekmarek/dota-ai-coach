@@ -1,6 +1,7 @@
 // Ускоренный classify (досрочный отсев образцов) обязан давать то же, что полный перебор glyphDistance:
-// тот же символ и те же score/margin до бита — на всех символах всех кадров HUD и на зашумлённых символах.
-import { readdirSync, readFileSync } from 'node:fs';
+// тот же символ и те же score/margin до бита — на зашумлённых образцах всех моделей (всегда, в т. ч. в CI)
+// и на символах кадров HUD (кадры с никами в репозиторий не входят — эта часть только локально).
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { decodePng } from '../../scripts/png.mjs';
@@ -34,7 +35,7 @@ function reference(model: GlyphModel, g: Glyph): { ch: string; score: number; ma
 }
 
 function hudGlyphs(): Glyph[] {
-  const dir = join(ROOT, 'tests/fixtures/hud');
+  const dir = HUD_DIR;
   const out: Glyph[] = [];
   // каждый третий кадр: разные герои, предметы, числа — и тест укладывается в пару секунд
   for (const file of readdirSync(dir).filter((f) => f.endsWith('.png')).filter((_, i) => i % 3 === 0)) {
@@ -55,21 +56,37 @@ function noisy(g: Glyph, seed: number, amp: number): Glyph {
   return { ...g, vec: Float32Array.from(g.vec, (v) => Math.min(1, Math.max(0, v + rnd() * amp))), aspect: g.aspect + rnd() * amp * 0.5 };
 }
 
+/** Символы из образцов модели с шумом: в репозитории кадров HUD нет, а перебор надо проверить и в CI */
+function sampleGlyphs(model: GlyphModel): Glyph[] {
+  return model.samples.map((s) => ({ vec: Float32Array.from(s.vec), aspect: s.aspect, relH: s.relH, relTop: s.relTop, box: { x: 0, y: 0, w: 1, h: 1 } }) as Glyph);
+}
+
+function same(model: GlyphModel, glyphs: Glyph[]): number {
+  let checked = 0;
+  glyphs.forEach((g, i) => {
+    for (const q of [g, noisy(g, i + 1, 0.3), noisy(g, i + 7, 1)]) {
+      const a = classify(model, q), b = reference(model, q);
+      if (a.ch !== b.ch || !Object.is(a.score, b.score) || !Object.is(a.margin, b.margin)) expect({ i, a }).toEqual({ i, a: b });
+      checked++;
+    }
+  });
+  return checked;
+}
+
+const HUD_DIR = join(ROOT, 'tests/fixtures/hud');
+
 describe('распознавание символов: ускоренный перебор = полный перебор', () => {
-  it('все символы кадров HUD и зашумлённые — тот же символ, score и margin до бита', () => {
+  it('образцы всех моделей, чистые и зашумлённые — тот же символ, score и margin до бита', () => {
+    let checked = 0;
+    for (const model of models) checked += same(model, sampleGlyphs(model));
+    expect(checked).toBeGreaterThan(2000);
+  });
+
+  it.skipIf(!existsSync(HUD_DIR))('символы кадров HUD (локально) — то же до бита', () => {
     const glyphs = hudGlyphs();
     expect(glyphs.length).toBeGreaterThan(500);
     let checked = 0;
-    for (const model of models) {
-      if (model.samples[0]!.vec.length !== glyphs[0]!.vec.length) continue;
-      glyphs.forEach((g, i) => {
-        for (const q of [g, noisy(g, i + 1, 0.3), noisy(g, i + 7, 1)]) {
-          const a = classify(model, q), b = reference(model, q);
-          if (a.ch !== b.ch || !Object.is(a.score, b.score) || !Object.is(a.margin, b.margin)) expect({ i, a }).toEqual({ i, a: b });
-          checked++;
-        }
-      });
-    }
+    for (const model of models) if (model.samples[0]!.vec.length === glyphs[0]!.vec.length) checked += same(model, glyphs);
     expect(checked).toBeGreaterThan(1500);
   });
 });
