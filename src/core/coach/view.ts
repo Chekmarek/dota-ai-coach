@@ -15,6 +15,8 @@ export interface F<T> {
 }
 
 export const unknownF = <T>(): F<T> => ({ value: null, source: null, ageSec: null, confidence: 0 });
+/** Без свежего GSI матч считается идущим, пока часы подтверждены не раньше этого (чтения экрана могут пропадать) */
+export const CLOCK_CONFIRM_MS = 30_000;
 export const known = <T>(v: F<T>): v is F<T> & { value: T } => v.value !== null;
 
 export function fromTracked<T>(t: Tracked<T> | undefined, wallMs: number): F<T> {
@@ -145,7 +147,11 @@ export function buildView(s: MatchState, gsi: GsiReading | null, gsiWallMs: numb
   const phase = g?.phase ?? null;
   // Матч идёт: после горна, а также 90 с до горна (DOTA_GAMERULES_STATE_PRE_GAME: герои на карте, руны в 0:00)
   const preHorn = g?.gameState === 'DOTA_GAMERULES_STATE_PRE_GAME';
-  const inGame = phase !== null ? phase === 'in-progress' || preHorn : clock.value !== null && clock.value >= -90;
+  // Без свежего GSI матч «идёт», только если часы недавно подтверждены (экраном или GSI), а не досчитаны моделью,
+  // и последнее чтение GSI не было концом матча: иначе после победы подсказки шли бы по часам, которые никто не видит
+  const ended = gsi?.phase === 'post-game';
+  const clockSeen = s.match.clock.lastSeenWallMs !== null && wallMs - s.match.clock.lastSeenWallMs <= CLOCK_CONFIRM_MS;
+  const inGame = phase !== null ? phase === 'in-progress' || preHorn : !ended && clockSeen && clock.value !== null && clock.value >= -90;
 
   const kda = fromTracked(s.hero.kda, wallMs);
   const farm = fromTracked(s.hero.farm, wallMs);

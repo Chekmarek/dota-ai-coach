@@ -253,6 +253,10 @@ describe('запись сессий', () => {
     expect((lines[0]!.body as any).hero.name).toBe('npc_dota_hero_nevermore');
     expect((lines[0]!.body as any).player.gold).toBe(1335);
     expect(sanitizeGsiBody({ provider: { name: 'Dota 2' }, map: { name: 'start' } })).toEqual({ map: { name: 'start' } });
+    // Чат чужих игроков (настоящая форма события из записи 2026-10-16) на диск не пишется, остальные события — да
+    const chat = { game_time: 300, event_type: 'chat_message', player_id: 7, channel_type: 0, message: 'личное сообщение' };
+    const rosh = { game_time: 900, event_type: 'roshan_killed', team: 'dire' };
+    expect(sanitizeGsiBody({ map: { name: 'start' }, events: [chat, rosh, { event_type: 'x', message: 'тоже текст' }] })).toEqual({ map: { name: 'start' }, events: [rosh] });
 
     for (let d = 1; d <= 25; d++) r.record(body, new Date(2026, 10, d, 12).getTime());
     const files = readdirSync(dir).sort();

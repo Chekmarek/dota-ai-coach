@@ -216,3 +216,24 @@ describe('скорость правил', () => {
     expect(times[Math.floor(times.length * 0.95)]!).toBeLessThan(50);
   });
 });
+
+describe('матч идёт или нет (после конца матча подсказок нет)', () => {
+  const withClockSeen = (agoMs: number, i: Partial<SimInput> = {}) => {
+    const s = sim({ wallMs: T0, clock: 1200, noGsi: true, ...i });
+    s.state.match.clock = { ...s.state.match.clock, lastSeenWallMs: T0 - agoMs, tag: agoMs > 1500 ? 'inferred' : 'visible' };
+    return s;
+  };
+  it('без GSI: часы подтверждены экраном недавно — матч идёт; давно (досчитаны моделью) — нет', () => {
+    expect(buildView(withClockSeen(500).state, null, null).inGame).toBe(true);
+    expect(buildView(withClockSeen(29_000).state, null, null).inGame).toBe(true);
+    expect(buildView(withClockSeen(31_000).state, null, null).inGame).toBe(false);
+  });
+  it('GSI замолчал после конца матча — не идёт, даже если часы ещё свежие', () => {
+    const ended = sim({ wallMs: T0, clock: 1200, phase: 'post-game' });
+    const s = withClockSeen(2000);
+    expect(buildView(s.state, ended.gsi, T0 - 10_000).inGame).toBe(false);
+    // а с прошлым чтением «идёт матч» — по часам экрана идёт
+    const live = sim({ wallMs: T0, clock: 1200 });
+    expect(buildView(s.state, live.gsi, T0 - 10_000).inGame).toBe(true);
+  });
+});

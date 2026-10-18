@@ -83,3 +83,21 @@ runtime-зависимость). Тесты: vitest 5 (unit/integration), Playwr
 - Объяснения ИИ на странице «Драфт» ещё не подключены (обещаны в следующей версии в заметках 0.13.2).
 - Из LIMITATIONS: 16:10/21:9/4:3 — только расчёт (выключены); FPS Доты под ИИ на слабых ПК не измерен; облако
   проверено только на подставном сервере.
+
+## Турбо (0.13.3, готовится; выпуск — только после «да» владельца)
+- Режим: `src/core/gsi/mode.ts` — `map.game_mode` в GSI игрока нет; `GameModeTracker` узнаёт режим по часам в первом теле
+  PRE_GAME после выбора героев: −90 обычный, −60 Турбо (подтверждено матчем 2026-10-18, OpenDota: game_mode 23), −75 боты.
+  Ручной выбор — `hints.gameMode` (auto / turbo / normal). Индикатор режима — `src/hud/components/mode.ts`, `mode-toast.tsx`.
+- Справочник Турбо: `src/data/modes/turbo.json` (78 записей механики, источники с ревизиями Liquipedia) +
+  `src/core/knowledge-base/modes.ts`; после нового патча — сверить заново (иначе вся механика Турбо «не проверено»).
+- Правила: `CoachLookup.setMode` → механика Турбо, `aegisSec`, `hasNorms` (нормы обычной игры в Турбо выключены).
+- Статистика Турбо: `node scripts/import-stats.mjs --turbo` → `resources/data/kb/<патч>/stats-turbo.json`.
+- ИИ: строка «Режим игры» в фактах, проверка `wrongMode` в `draft-check.ts`; набор `tests/ai/draft-questions-turbo.json`.
+- Тестовые записи: `tests/fixtures/gsi/recorded/lobby-normal.jsonl`, `turbo-bristleback.jsonl` (без чата и matchid).
+- «Золотой» снимок обычных режимов: `tests/unit/golden-normal.test.ts` (обновлять только при намеренной смене поведения).
+- Проверка в игре: `docs/TURBO_GAME_TEST.md`; ограничения — `docs/LIMITATIONS.md`, раздел «Турбо».
+- Исправлено (этап 7): подсказки после конца матча (без свежего GSI матч «идёт», только если часы подтверждены
+  не раньше 30 с назад и последнее чтение GSI — не конец матча; `CLOCK_CONFIRM_MS` в `src/core/coach/view.ts`);
+  чат чужих игроков больше не пишется в `gsi-sessions` (`sanitizeGsiBody`; старые файлы с чатом остаются у владельца);
+  e2e раскладки HUD ждёт, пока раскладка устоится (было: фиксированные 0,7 с).
+- Известные баги: llama-server грузился 82 с во время матча (не воспроизведено, причина не найдена).

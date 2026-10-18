@@ -73,6 +73,12 @@ describe('настоящий матч Турбо через коуча', () => {
     for (const id of ['economy.gpm', 'laning.cs', 'economy.late']) expect(turbo.ids.has(id), id).toBe(false);
     expect(turbo.journal.some((x) => x.kind === 'mistake' && /добиваний|запаздыва/i.test(x.text))).toBe(false);
   });
+  it('после победы (29:44) подсказок нет: в 0.13.4 они шли по досчитанным часам до 45:19', () => {
+    const end = turbo.journal.find((x) => x.kind === 'match-review')!;
+    expect(end).toBeDefined();
+    const after = turbo.journal.filter((x) => x.wallMs > end.wallMs + 1000);
+    expect(after.map((x) => `${x.id}@${Math.round(x.clock ?? -1)}`)).toEqual([]);
+  });
   it('разбор матча: победа; GPM и XPM — без медианы обычной игры и без оценки', () => {
     const r = turbo.review!;
     expect(r).not.toBeNull();

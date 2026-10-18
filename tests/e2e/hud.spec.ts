@@ -205,8 +205,8 @@ test('16:9, 21:9 и 4:3, «Подробно»: видимые карточки �
     await ui.selectOption('[data-testid="hud-detail"]', 'detailed');
     for (const screen of ['16x9', '21x9', '4x3']) {
       await ui.selectOption('[data-testid="hud-screen"]', screen);
-      await ui.waitForTimeout(700);
-      const bad = await ui.evaluate(() => {
+      // Карточки появляются анимацией (выезд, перестройка стопки): ждём, пока раскладка устоится, а не фиксированные 0,7 с
+      const check = () => ui.evaluate(() => {
         const r = (el: Element) => el.getBoundingClientRect();
         const hit = (a: DOMRect, b: DOMRect) => a.left < b.right - 0.5 && b.left < a.right - 0.5 && a.top < b.bottom - 0.5 && b.top < a.bottom - 0.5;
         const forbidden = Array.from(document.querySelectorAll('[data-testid="hud-stage"] .hud-forbidden')).map((el) => ({ name: el.textContent ?? '', rect: r(el) }));
@@ -224,6 +224,8 @@ test('16:9, 21:9 и 4:3, «Подробно»: видимые карточки �
         }
         return { out, cards };
       });
+      await expect.poll(async () => { const r = await check(); return r.out.length === 0 && r.cards >= 3; }, { message: screen, timeout: 5000 }).toBe(true);
+      const bad = await check();
       expect(bad.out, screen).toEqual([]);
       expect(bad.cards, screen).toBeGreaterThanOrEqual(3);
     }

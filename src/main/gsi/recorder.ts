@@ -15,19 +15,23 @@ const FILE_RE = /^\d{4}-\d{2}-\d{2}\.jsonl$/;
 /** Ключи, которые удаляются на любом уровне: идентификаторы аккаунтов */
 const ID_KEYS = new Set(['steamid', 'accountid', 'account_id', 'personaname']);
 
+/** События чата: в них сообщения чужих игроков (event_type chat_message, поле message) — на диск не пишутся */
+const isChat = (x: unknown): boolean =>
+  typeof x === 'object' && x !== null && ((x as Record<string, unknown>)['event_type'] === 'chat_message' || 'message' in (x as Record<string, unknown>));
+
 /**
  * Копия тела без личных данных: нет provider и auth, нет ников (name внутри player — в режиме наблюдателя
- * там вложенные игроки), нет steamid/accountid нигде.
+ * там вложенные игроки), нет steamid/accountid нигде, нет сообщений чата в events.
  */
 export function sanitizeGsiBody(body: Record<string, unknown>): Record<string, unknown> {
-  const strip = (v: unknown, inPlayer: boolean): unknown => {
-    if (Array.isArray(v)) return v.map((x) => strip(x, inPlayer));
+  const strip = (v: unknown, inPlayer: boolean, inEvents = false): unknown => {
+    if (Array.isArray(v)) return (inEvents ? v.filter((x) => !isChat(x)) : v).map((x) => strip(x, inPlayer));
     if (v === null || typeof v !== 'object') return v;
     const out: Record<string, unknown> = {};
     for (const [k, x] of Object.entries(v as Record<string, unknown>)) {
       if (ID_KEYS.has(k.toLowerCase())) continue;
       if (inPlayer && k === 'name') continue;
-      out[k] = strip(x, inPlayer || k === 'player');
+      out[k] = strip(x, inPlayer || k === 'player', k === 'events');
     }
     return out;
   };
