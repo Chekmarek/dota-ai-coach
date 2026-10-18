@@ -1,5 +1,6 @@
 // B. Незамеченная опасность: пропавшие враги, смок, ганкеры, глубоко в чужом лесу, мало здоровья, здания, Рошан,
 // невидимые герои. Позиции врагов — только с мини-карты (с уверенностью); не видно — правило молчит.
+import { personalNote } from '../profile.ts';
 import { DETECTION_ITEMS } from '../data.ts';
 import { hasItem, hasRegen, nearEnemyCount, tpReady } from '../memory.ts';
 import { nearEnemies } from '../prob.ts';
@@ -30,7 +31,7 @@ export const missingRule: Rule = (c) => {
     priority: critical ? 'critical' : 'advice',
     confidence: 0.75,
     short,
-    normal: critical ? `${n} врагов нет на мини-карте, а вы на их стороне карты — отойдите к своим башням.` : `${n} врагов нет на мини-карте, вы один — держитесь ближе к своим.`,
+    normal: (critical ? `${n} врагов нет на мини-карте, а вы на их стороне карты — отойдите к своим башням.` : `${n} врагов нет на мини-карте, вы один — держитесь ближе к своим.`) + personalNote(c.look.data.profile, critical ? 'position' : 'laning-deaths'),
     facts: [derivedFact('missing', 'Врагов не видно', n, 0.75), derivedFact('side', 'Сторона карты', side, 0.7), derivedFact('alone', 'Союзников рядом нет', alone, 0.7)],
     ttlSec: 8,
     cooldownSec: 45,

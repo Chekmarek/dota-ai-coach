@@ -1,0 +1,46 @@
+{
+ "files": [
+  "Tinker turbo deaths=11 mistakes=28",
+  "Shadow Shaman turbo deaths=12 mistakes=27",
+  "Skywrath Mage turbo deaths=4 mistakes=14",
+  "Kez turbo deaths=1 mistakes=5",
+  "Techies turbo deaths=6 mistakes=18",
+  "Sniper turbo deaths=7 mistakes=15",
+  "Kez turbo deaths=2 mistakes=14",
+  "Pangolier unknown deaths=0 mistakes=1",
+  "Bristleback turbo deaths=3 mistakes=18"
+ ],
+ "profile": {
+  "matches": 9,
+  "patterns": [
+   {
+    "id": "missed-fights",
+    "inMatches": 8,
+    "of": 9,
+    "titleRu": "драки команды без вас",
+    "adviceRu": "Смотрите на мини-карту: когда у союзника 2+ врага — идите или телепортируйтесь."
+   },
+   {
+    "id": "unused",
+    "inMatches": 5,
+    "of": 9,
+    "titleRu": "смерти с ненажатыми предметами и способностями",
+    "adviceRu": "Спасительные предметы и способности нажимайте в начале драки."
+   },
+   {
+    "id": "outnumbered",
+    "inMatches": 5,
+    "of": 9,
+    "titleRu": "смерти в меньшинстве",
+    "adviceRu": "Перед тем как зайти, посчитайте врагов на мини-карте: больше, чем вас, — отходите."
+   },
+   {
+    "id": "position",
+    "inMatches": 5,
+    "of": 9,
+    "titleRu": "смерти на стороне врага без обзора",
+    "adviceRu": "Без обзора не заходите на половину врага, когда враги пропали с карты."
+   }
+  ]
+ }
+}

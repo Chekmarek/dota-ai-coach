@@ -9,6 +9,7 @@ import type { CoachInput } from '@shared/types/coach-input';
 import type { HistoryMatch } from '@shared/types/history';
 import type { KbStats } from '@shared/types/stats';
 import type { StatsRanked } from '@shared/types/stats-ranked';
+import { buildPlayerProfile, PROFILE_MATCHES } from '@core/coach/profile.ts';
 import type { KnowledgeBase } from '@shared/types/kb';
 import type { DraftLiveHeroes } from '@shared/types/draft';
 import { liveHeroes } from './draft';
@@ -28,7 +29,7 @@ export interface CoachDeps {
   settings: { get(): Settings };
   kb: { get(): KnowledgeBase | { error: string }; stats(): KbStats | null; statsTurbo?(): KbStats | null; statsRanked?(): StatsRanked | null };
   aiProvider: () => AiProvider | null;
-  history: { save(m: HistoryMatch): void };
+  history: { save(m: HistoryMatch): void; recent?(n: number): HistoryMatch[] };
   /** Подсказки на экране сейчас (пусто — нечего показывать); inMatch — матч идёт по данным игры */
   onHints: (hints: HudHint[], inMatch: boolean) => void;
   /** Показать индикатор режима игры: начало матча или смена режима (из игры или в настройках) */
@@ -83,6 +84,8 @@ export class CoachService {
       stats: this.deps.kb.stats(),
       statsTurbo: this.deps.kb.statsTurbo?.() ?? null,
       statsRanked: this.deps.kb.statsRanked?.() ?? null,
+      // профиль игрока — повторяющиеся ошибки по последним матчам из истории коуча (ночная задача, этап 4)
+      profile: buildPlayerProfile(this.deps.history.recent?.(PROFILE_MATCHES) ?? []),
       kbVerified: kb.meta.verification === 'verified',
       turbo: TURBO,
     };

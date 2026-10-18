@@ -1,4 +1,5 @@
 // A. Драки и решения: вступать ли, 1×1, драка/фарм/пуш/отход, цель, окно ульты, отход из проигранной драки, выкуп.
+import { personalNote } from '../profile.ts';
 import { ACTION_RU, actionChoice, engagePercent, factorsText, matchupPercent, nearEnemies } from '../prob.ts';
 import { nearEnemyCount, ultReady } from '../memory.ts';
 import { derivedFact, fact, kbFact, poolPct } from '../view.ts';
@@ -224,7 +225,7 @@ export const disengageRule: Rule = (c) => {
     priority: 'critical',
     confidence: 0.7,
     short,
-    normal: reinforce ? `Врагов стало ${now} вместо ${before} — драка проиграна, отходите.` : 'Союзник погиб в драке — без него лучше отойти.',
+    normal: (reinforce ? `Врагов стало ${now} вместо ${before} — драка проиграна, отходите.` : 'Союзник погиб в драке — без него лучше отойти.') + personalNote(c.look.data.profile, 'outnumbered'),
     facts: [derivedFact('enemies-near', 'Врагов рядом', now, 0.75), derivedFact('enemies-before', 'Врагов было', before, 0.75)],
     ttlSec: 6,
     cooldownSec: 15,

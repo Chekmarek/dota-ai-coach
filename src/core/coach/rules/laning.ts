@@ -1,4 +1,5 @@
 // C. Линия: добивания против ориентира, реген, бутылка, стаки и пулы, уровни силы (свой 6-й, 6-й у видимых врагов).
+import { personalNote } from '../profile.ts';
 import { mapZone } from '../../match-state/map-zones.ts';
 import { hasRegen } from '../memory.ts';
 import { nearEnemies } from '../prob.ts';
@@ -270,7 +271,7 @@ export const benchRule: Rule = (c) => {
       priority: 'info',
       confidence: 0.75,
       short: `${worst.what} ${worst.mine} к ${min}:00, ${ref.who} ~${worst.ref}`,
-      normal: `${worst.what}: ${worst.mine} к ${min}:00, ${who} обычно ~${worst.ref}. ${how}`,
+      normal: `${worst.what}: ${worst.mine} к ${min}:00, ${who} обычно ~${worst.ref}. ${how}${personalNote(c.look.data.profile, 'low-farm')}`,
       facts,
       ttlSec: 10,
       cooldownSec: 0,

@@ -1,5 +1,6 @@
 // D. Фарм и экономика: GPM/XPM против ориентиров, простой, непотраченное золото и следующий предмет,
 // тайминги предметов, очки навыков, ТП, варды, нейтральный предмет, маршрут фарма.
+import { personalNote } from '../profile.ts';
 import { TP_ITEMS } from '../data.ts';
 import { enemyThreats } from '../../draft/index.ts';
 import { hasItem, nearEnemyCount, tpReady } from '../memory.ts';
@@ -111,7 +112,7 @@ export const goldRule: Rule = (c) => {
     priority: 'advice',
     confidence: 0.8,
     short: item ? `Золото ${gold}: купите ${item.name}` : `Золото ${gold} — потратьте`,
-    normal: item ? `${gold} золота лежит без дела. Следующий предмет по сборке профи патча — ${item.name} (${item.cost}).` : `${gold} золота лежит без дела: при смерти часть потеряется.`,
+    normal: (item ? `${gold} золота лежит без дела. Следующий предмет по сборке — ${item.name} (${item.cost}).` : `${gold} золота лежит без дела: при смерти часть потеряется.`) + personalNote(c.look.data.profile, 'unspent-gold'),
     facts: [fact('gold', 'Золото', c.v.me.gold), ...(item ? [kbFact('next-item', 'Следующий предмет (профи патча)', item.name, false, 'stats'), kbFact('item-cost', 'Цена', item.cost, c.look.data.kbVerified)] : [])],
     ttlSec: 10,
     cooldownSec: 90,

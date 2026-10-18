@@ -5,7 +5,7 @@ import { goalFor, MISTAKE_RU, type Mistake, type MistakeType } from './mistakes.
 import { readyActiveNames, type CoachMemory, type DeathRecord } from './memory.ts';
 import type { CoachLookup } from './data.ts';
 import type { CoachView } from './view.ts';
-import { game, mmss } from './rules/context.ts';
+import { game, knowledge, mmss } from './rules/context.ts';
 import type { GameStage } from './game-context.ts';
 import { laneRole } from './rules/laning.ts';
 import type { RuleContext } from './rules/context.ts';
@@ -194,26 +194,36 @@ export function matchReview(v: CoachView, mem: CoachMemory, look: CoachLookup, m
   const st = look.statsFor(hero?.id, hero?.key);
   const result = v.winTeam && v.team ? (v.winTeam === v.team ? 'win' : 'loss') : null;
   const clock = mem.lastClock;
-  // Добивания к 10:00 — из истории (ближайшая запись к 600 с)
-  const at10 = mem.samples.filter((s) => s.clock !== null && s.clock >= 595 && s.clock <= 640 && s.lastHits !== null)[0]?.lastHits ?? null;
+  // Добивания к 10:00 и 20:00 — из истории (ближайшая запись к минуте)
+  const lhAt = (sec: number) => mem.samples.filter((s) => s.clock !== null && s.clock >= sec - 5 && s.clock <= sec + 40 && s.lastHits !== null)[0]?.lastHits ?? null;
+  const at10 = lhAt(600);
+  const at20 = lhAt(1200);
   const role = laneRole(c);
-  // Нормы (добивания профи, медианы GPM/XPM, минуты предметов) — из обычных матчей: в Турбо без ориентира и оценки
+  const g = game(c);
+  // Нормы (сильные игроки рейтинга STRATZ на вашей позиции, профи, медианы GPM/XPM, минуты предметов) — из обычных
+  // матчей: в Турбо без ориентира и оценки
   const norms = look.hasNorms;
   const noNorm = 'норм для Турбо нет';
-  const lhRef = norms && role && role !== 4 ? (st?.pro?.lhAt10[String(role)]?.median ?? null) : null;
+  const r10 = norms ? look.rankedAt(hero?.key ?? null, g.position, 10) : null;
+  const r20 = norms ? look.rankedAt(hero?.key ?? null, g.position, 20) : null;
+  const rankedLabel = `сильные игроки рейтинга, позиция ${g.position}`;
+  const lhRef = r10?.lh ?? (norms && role && role !== 4 ? (st?.pro?.lhAt10[String(role)]?.median ?? null) : null);
   const gpmRef = norms ? (st?.bench?.gpm?.p50 ?? null) : null;
   const xpmRef = norms ? (st?.bench?.xpm?.p50 ?? null) : null;
   const deaths = v.me.deaths.value ?? mem.deaths.length;
+  const core = g.core !== false;
   const stats: StatLine[] = [
-    { label: 'Добивания к 10:00', value: at10, ref: lhRef, refLabel: norms ? 'профи патча' : noNorm, verdict: verdict(at10, lhRef === null ? null : lhRef * 0.7) },
+    ...(core ? [{ label: 'Добивания к 10:00', value: at10, ref: lhRef, refLabel: norms ? (r10 ? rankedLabel : 'профи патча') : noNorm, verdict: verdict(at10, lhRef === null ? null : lhRef * (r10 ? 0.9 : 0.7)) }] : []),
+    ...(core && r20 ? [{ label: 'Добивания к 20:00', value: at20, ref: r20.lh, refLabel: rankedLabel, verdict: verdict(at20, r20.lh * 0.9) }] : []),
     { label: 'GPM', value: v.me.gpm.value, ref: gpmRef, refLabel: norms ? 'медиана патча' : noNorm, verdict: verdict(v.me.gpm.value, gpmRef) },
     { label: 'XPM', value: v.me.xpm.value, ref: xpmRef, refLabel: norms ? 'медиана патча' : noNorm, verdict: verdict(v.me.xpm.value, xpmRef) },
     { label: 'Смерти', value: deaths, ref: null, refLabel: null, verdict: deaths <= 4 ? 'good' : deaths <= 8 ? 'ok' : 'bad' },
   ];
-  const build = hero && norms ? look.buildFor(hero.id, hero.key).filter((b) => b.source === 'pro' && b.share >= 0.4 && (look.itemCost(b.key) ?? 0) >= 1500).slice(0, 3) : [];
+  // Ключевые предметы — из сборки для вашей позиции (рейтинг → профи), с минутой покупки сильных игроков
+  const build = hero && norms ? knowledge(c).me.build.filter((b) => b.share >= 0.4 && (look.itemCost(b.key) ?? 0) >= 1500).slice(0, 3) : [];
   for (const b of build) {
     const t = mem.items.get(b.key);
-    stats.push({ label: `${look.itemName(b.key)}, мин`, value: t === undefined ? null : Math.round(t / 6) / 10, ref: b.medianMin, refLabel: 'профи патча', verdict: t === undefined ? 'bad' : verdict(t / 60, b.medianMin, false) });
+    stats.push({ label: `${look.itemName(b.key)}, мин`, value: t === undefined ? null : Math.round(t / 6) / 10, ref: b.medianMin, refLabel: b.source === 'ranked' ? rankedLabel : 'профи патча', verdict: t === undefined ? 'bad' : verdict(t / 60, b.medianMin, false) });
   }
 
   const sorted = [...mistakes].sort((a, b) => b.severity - a.severity || (a.clock ?? 0) - (b.clock ?? 0));
@@ -234,9 +244,12 @@ export function matchReview(v: CoachView, mem: CoachMemory, look: CoachLookup, m
   const why: string[] = [];
   if (result) why.push(result === 'win' ? 'Победа' : 'Поражение');
   if (deaths >= 8) why.push(`Много смертей: ${deaths}`);
-  const gpmLine = stats[1]!;
+  const gpmLine = stats.find((s) => s.label === 'GPM')!;
   if (gpmLine.verdict === 'bad') why.push(`Золота меньше обычного: GPM ${gpmLine.value} против ${gpmLine.ref}`);
-  if (topMistakes[0]) why.push(`Главная ошибка: ${MISTAKE_RU[topMistakes[0].type].toLowerCase()}`);
+  // Сравнение с сильными игроками — числами (ночная задача, этап 4)
+  for (const s of stats) if (s.label.startsWith('Добивания') && s.verdict === 'bad' && s.value !== null && s.ref !== null) why.push(`${s.label}: ${s.value}, у ${s.refLabel?.startsWith('сильные') ? 'сильных игроков' : 'профи'} ~${s.ref}`);
+  // Три главные ошибки — что сделали бы сильные игроки (instead — «что делать вместо»)
+  topMistakes.forEach((m, i) => why.push(`Ошибка ${i + 1}${m.clock !== null ? ` (${mmss(m.clock)})` : ''}: ${m.text}. Сильный игрок: ${m.instead}`));
 
   const timeline = [
     ...mem.deaths.filter((d) => d.clock !== null).map((d) => ({ clock: d.clock!, text: 'Смерть' })),
@@ -245,7 +258,10 @@ export function matchReview(v: CoachView, mem: CoachMemory, look: CoachLookup, m
     ...(mem.roshanKilledAt !== null ? [{ clock: mem.roshanKilledAt, text: 'Рошан убит' }] : []),
   ].sort((x, y) => x.clock - y.clock);
 
+  // 1–2 вещи на следующую игру: по двум главным ошибкам, а если повторяется ошибка из прошлых игр — она первой
   const goals = topMistakes.map((m) => goalFor(m.type));
+  const repeat = look.data.profile?.patterns[0];
+  if (repeat) goals.unshift(`${repeat.adviceRu} (${repeat.titleRu} — в ${repeat.inMatches} из ${repeat.of} последних матчей)`);
   if (!goals.length) goals.push('Повторить: следить за мини-картой и тратить золото вовремя');
 
   const facts = [
@@ -259,5 +275,5 @@ export function matchReview(v: CoachView, mem: CoachMemory, look: CoachLookup, m
     ...good.map((g) => `Хорошо: ${g}`),
   ].filter(Boolean);
 
-  return { kind: 'match', result, heroName: hero?.name ?? null, durationSec: clock, why, topMistakes, goodPlays: good.slice(0, 3), stats, timeline, goals: goals.slice(0, 3), facts, aiText: null };
+  return { kind: 'match', result, heroName: hero?.name ?? null, durationSec: clock, why, topMistakes, goodPlays: good.slice(0, 3), stats, timeline, goals: [...new Set(goals)].slice(0, 2), facts, aiText: null };
 }

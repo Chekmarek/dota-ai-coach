@@ -1,4 +1,5 @@
 // E. Макро и цели: окно для пуша (враги мертвы), сбор команды, помощь в драке союзников, Рошан, тайминги карты.
+import { personalNote } from '../profile.ts';
 import { upcomingEvents } from '../../knowledge-base/timers.ts';
 import { MAP_ZONE_RU, mapZone } from '../../match-state/map-zones.ts';
 import { nearEnemyCount, tpReady } from '../memory.ts';
@@ -87,7 +88,7 @@ export const helpRule: Rule = (c) => {
       priority: 'advice',
       confidence: 0.6,
       short: `Бой: ${zone} — ${tp ? 'телепорт' : 'помогите'}`,
-      normal: `Возле ${name} ${around.length} врага (${zone}).${tp ? ' Town Portal Scroll готов — можно успеть.' : ' Идите на помощь.'}`,
+      normal: `Возле ${name} ${around.length} врага (${zone}).${tp ? ' Town Portal Scroll готов — можно успеть.' : ' Идите на помощь.'}${personalNote(c.look.data.profile, 'missed-fights')}`,
       facts: [derivedFact('enemies-around-ally', 'Врагов у союзника', around.length, 0.7), derivedFact('distance', 'До союзника', Math.round(d), 0.7), derivedFact('tp', 'Town Portal Scroll готов', tp, 0.9)],
       ttlSec: 8,
       cooldownSec: 30,
@@ -211,6 +212,30 @@ export const outpostRule: Rule = (c) => {
   });
 };
 
+/**
+ * Напоминание из прошлых игр (ночная задача, этап 4): один раз в начале матча — главная повторяющаяся ошибка по
+ * локальной истории коуча («в 4 из 5 последних матчей») и что с ней делать. Нет повторов — молчит.
+ */
+export const personalStartRule: Rule = (c) => {
+  const clock = c.v.clock.value;
+  const p = c.look.data.profile?.patterns ?? [];
+  if (!c.v.inGame || clock === null || clock < 0 || clock > 120 || !p.length || c.mem.once.has('personal:start')) return null;
+  c.mem.once.add('personal:start');
+  const top = p[0]!;
+  const also = p[1] ? ` Ещё: ${p[1].titleRu} (${p[1].inMatches} из ${p[1].of}).` : '';
+  return draft({
+    id: 'macro.personal',
+    category: 'macro',
+    priority: 'info',
+    confidence: 0.8,
+    short: `Из прошлых игр: ${top.titleRu} (${top.inMatches} из ${top.of})`,
+    normal: `${top.adviceRu} В ${top.inMatches} из ${top.of} последних матчей были ${top.titleRu}.${also}`,
+    facts: [derivedFact('pattern', 'Повторяющаяся ошибка', top.titleRu, 0.8), derivedFact('pattern-share', 'Матчей с ней', `${top.inMatches} из ${top.of}`, 0.9)],
+    ttlSec: 12,
+    cooldownSec: 0,
+  });
+};
+
 /** С этой секунды без уверенной позиции коуч просит выбрать её (к 2:00 линия уже понятна) */
 export const POSITION_ASK_AT = 120;
 
@@ -237,4 +262,4 @@ export const positionAskRule: Rule = (c) => {
   });
 };
 
-export const MACRO_RULES: Rule[] = [positionAskRule,helpRule, pushWindowRule, roshanKilledRule, groupRule, outpostRule, timersRule];
+export const MACRO_RULES: Rule[] = [personalStartRule, positionAskRule, helpRule, pushWindowRule, roshanKilledRule, groupRule, outpostRule, timersRule];

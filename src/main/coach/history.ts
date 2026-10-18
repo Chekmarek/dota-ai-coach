@@ -39,6 +39,21 @@ export class HistoryStore {
     return out;
   }
 
+  /** Последние n матчей целиком (новые — первыми) — для профиля игрока */
+  recent(n: number): HistoryMatch[] {
+    if (!existsSync(this.dir)) return [];
+    const out: HistoryMatch[] = [];
+    for (const f of readdirSync(this.dir).filter((x) => x.endsWith('.json')).sort().reverse()) {
+      if (out.length >= n) break;
+      try {
+        out.push(JSON.parse(readFileSync(join(this.dir, f), 'utf8')) as HistoryMatch);
+      } catch {
+        // испорченный файл пропускаем
+      }
+    }
+    return out;
+  }
+
   get(id: string): HistoryMatch | null {
     if (!SAFE_ID.test(id)) return null;
     const file = join(this.dir, `${id}.json`);

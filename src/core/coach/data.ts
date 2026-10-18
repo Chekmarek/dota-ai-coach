@@ -4,6 +4,7 @@ import type { KbHero, KbItem } from '../../shared/types/kb.ts';
 import type { MechanicsEntry } from '../../shared/types/mechanics.ts';
 import type { HeroStats, KbStats } from '../../shared/types/stats.ts';
 import type { RankedHero, StatsRanked } from '../../shared/types/stats-ranked.ts';
+import type { PlayerProfile } from './profile.ts';
 import { modeRule, turboMechanics, type ModeOverrides } from '../knowledge-base/modes.ts';
 import { UNKNOWN_MODE, type GameModeInfo } from '../gsi/mode.ts';
 
@@ -21,6 +22,8 @@ export interface CoachData {
   statsTurbo?: KbStats | null;
   /** Как играют сильные игроки в рейтинге (stats-ranked.json, STRATZ Divine–Immortal): кривые и покупки по позициям */
   statsRanked?: StatsRanked | null;
+  /** Профиль игрока: повторяющиеся ошибки из локальной истории коуча (profile.ts); нет — без напоминаний */
+  profile?: PlayerProfile | null;
 }
 
 /** Сильные игроки рейтинга к минуте (средние): добивания, ценность героя, опыт, уровень */
