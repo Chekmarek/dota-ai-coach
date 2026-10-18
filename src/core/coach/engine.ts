@@ -12,6 +12,9 @@ import { ACTION_RU, actionChoice, type ActionChoice } from './prob.ts';
 import { buildView, poolPct, type CoachView } from './view.ts';
 import { draft, game, mmss, type Rule, type RuleContext } from './rules/context.ts';
 
+/** Порядок категорий при равной важности (этап 5): что важно прямо сейчас — раньше */
+const CATEGORY_RANK: Record<HintDraft['category'], number> = { review: 8, danger: 7, fight: 6, timing: 5, macro: 4, laning: 3, economy: 2, mistake: 1 };
+
 /** Пересказ шаблонных подсказок моделью во время матча (выключен, см. tick, шаг 6) */
 const PHRASE_REWRITE = false;
 import { FIGHT_RULES, matchupsOnDemand } from './rules/fight.ts';
@@ -204,7 +207,8 @@ export class CoachEngine {
           // правило не должно ронять остальные
         }
       }
-      drafts.sort((a, b) => PRIORITY_RANK[b.priority] - PRIORITY_RANK[a.priority] || b.confidence - a.confidence);
+      // Важное прямо сейчас — первым: по важности, при равной — опасность и драка, потом руны/аванпост, потом фарм и предметы
+      drafts.sort((a, b) => PRIORITY_RANK[b.priority] - PRIORITY_RANK[a.priority] || CATEGORY_RANK[b.category] - CATEGORY_RANK[a.category] || b.confidence - a.confidence);
       for (const d of drafts) this.pushDraft(d, ctx, shown);
 
       // 2. Ошибки

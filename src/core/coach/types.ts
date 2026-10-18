@@ -134,7 +134,8 @@ export function defaultCoachSettings(): CoachSettings {
   return {
     detail: 'normal',
     categories: Object.fromEntries(HINT_CATEGORIES.map((c) => [c, true])) as Record<HintCategory, boolean>,
-    minConfidence: { critical: 0.45, advice: 0.5, info: 0.55 },
+    // Фильтр качества (этап 5): слабые советы не показываем — «лучше промолчать, чем сказать глупость»
+    minConfidence: { critical: 0.5, advice: 0.55, info: 0.6 },
     minPercentConfidence: 0.55,
     aiLive: true,
     gameMode: 'auto',

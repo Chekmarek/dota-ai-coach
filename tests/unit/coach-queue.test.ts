@@ -65,7 +65,9 @@ describe('HintQueue', () => {
     const q = new HintQueue();
     expect(q.push(d({ id: 'e', category: 'economy' }), ctx(0, true)).reason).toBe('in-fight');
     expect(q.push(d({ id: 'f', category: 'fight' }), ctx(0, true)).status).toBe('shown');
-    expect(q.push(d({ id: 'g', category: 'macro', priority: 'critical' }), ctx(0, true)).status).toBe('shown');
+    // в драке — одна новая подсказка раз в 4 с, даже критичная (этап 5: драку не заваливаем текстом)
+    expect(q.push(d({ id: 'g', category: 'macro', priority: 'critical' }), ctx(0, true)).reason).toBe('in-fight');
+    expect(q.push(d({ id: 'g', category: 'macro', priority: 'critical' }), ctx(4000, true)).status).toBe('shown');
   });
 
   it('промежуток категории: две подсказки экономики подряд не показываются', () => {

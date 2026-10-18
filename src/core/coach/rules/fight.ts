@@ -42,7 +42,7 @@ export const engageRule: Rule = (c) => {
     detailed: `${short}. ${enemies}. Почему: ${factorsText(e)}.`,
     facts,
     ttlSec: 8,
-    cooldownSec: 15,
+    cooldownSec: 30,
     percent: { label: go ? 'Вступать' : no ? 'Не вступать' : 'Драка', estimate: e },
   });
 };

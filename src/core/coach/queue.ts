@@ -11,13 +11,19 @@ export interface QueueConfig {
   maxPerMinute: number;
   /** Категории, которые не замолкают в драке (критичные проходят всегда) */
   inFightAllowed: HintCategory[];
+  /** В драке — не чаще одной новой подсказки (и критичной тоже) за столько мс: драку не заваливаем текстом */
+  inFightGapMs: number;
 }
 
+// Фильтр качества (этап 5 «понимания игры»): в 5 матчах 18.10 было ~7 подсказок в минуту — лимит 8 почти не работал,
+// а критичные шли без лимита. Теперь: 5 в минуту, категории реже, в драке — одна новая раз в 4 с
 export const DEFAULT_QUEUE_CONFIG: QueueConfig = {
   maxPerZone: { alert: 1, decision: 2, timing: 3, review: 1 },
-  categoryGapMs: { danger: 4000, fight: 3000, laning: 20_000, economy: 20_000, macro: 10_000, timing: 3000, mistake: 30_000, review: 0 },
-  maxPerMinute: 8,
+  // экономика и линия — как раньше (20 с): спамили драка и опасность, а «Дальше: предмет» и «Простой» иначе терялись
+  categoryGapMs: { danger: 8000, fight: 6000, laning: 20_000, economy: 20_000, macro: 15_000, timing: 5000, mistake: 45_000, review: 0 },
+  maxPerMinute: 5,
   inFightAllowed: ['fight', 'danger'],
+  inFightGapMs: 4000,
 };
 
 /** Категории «по ситуации»: правило выдаёт подсказку на каждом снимке, пока ситуация есть */
@@ -48,6 +54,8 @@ export class HintQueue {
   private lastById = new Map<string, number>();
   private lastByCategory = new Map<HintCategory, number>();
   private shownAt: number[] = [];
+  /** Когда показана последняя новая подсказка (кроме разборов) — для тишины в драке */
+  private lastShownMs: number | null = null;
   private seq = 0;
   /** Подтверждения правилом: сколько раз подсказка пришла (показ + повторы) и когда последний раз */
   private confirms = new Map<number, { count: number; lastMs: number }>();
@@ -62,6 +70,7 @@ export class HintQueue {
     this.lastById.clear();
     this.lastByCategory.clear();
     this.shownAt = [];
+    this.lastShownMs = null;
   }
 
   visible(zone?: HintZone): Hint[] {
@@ -140,6 +149,7 @@ export class HintQueue {
     if (last !== undefined && now - last < d.cooldownMs) return drop('cooldown');
     const critical = d.priority === 'critical';
     const review = d.category === 'review';
+    if (ctx.inFight && !review && this.lastShownMs !== null && now - this.lastShownMs < this.config.inFightGapMs) return drop('in-fight');
     if (!critical && !review) {
       const lastCat = this.lastByCategory.get(d.category);
       if (lastCat !== undefined && now - lastCat < this.config.categoryGapMs[d.category]) return drop('category-gap');
@@ -166,6 +176,7 @@ export class HintQueue {
     this.visibleHints.sort((a, b) => PRIORITY_RANK[b.priority] - PRIORITY_RANK[a.priority] || a.createdWallMs - b.createdWallMs);
     this.lastById.set(d.id, now);
     this.lastByCategory.set(d.category, now);
+    if (!review) this.lastShownMs = now;
     if (!critical && !review) this.shownAt.push(now);
     this.shownAt = this.shownAt.filter((t) => now - t < 60_000);
     this.shownTotal++;
