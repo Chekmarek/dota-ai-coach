@@ -9,6 +9,8 @@ import { CoachEngine, defaultCoachSettings } from '../../src/core/coach/index.ts
 import { buybackRule, disengageRule, engageRule } from '../../src/core/coach/rules/fight.ts';
 import { sellRule } from '../../src/core/coach/rules/economy.ts';
 import type { GameModeInfo } from '../../src/core/gsi/mode.ts';
+import { HintQueue } from '../../src/core/coach/queue.ts';
+import type { HintDraft } from '../../src/core/coach/types.ts';
 import { realData, sim, type SimInput } from './coach-sim.ts';
 
 const TURBO: GameModeInfo = { mode: 'turbo', source: 'clock', raw: 'start -1:00' };
@@ -128,6 +130,31 @@ describe('совет «продайте» и расходники', () => {
   it('маны много — «Clarity — используйте или продайте», а не просто «продайте»', () => {
     const h = sellRule(ctxOf({ clock: 1020, items: full('clarity'), mana: 2000, maxMana: 2135 }, { turbo: true })) as { short: string } | null;
     expect(h?.short).toBe('Лишнее: Clarity — используйте или продайте');
+  });
+});
+
+describe('совет «продайте» не повторяется при смене набора предметов', () => {
+  it('«два Null Talisman», потом «Null Talisman + Tango» — один номер подсказки, перерыв 5 минут общий (матч 9051512826: 5 раз за 7 минут)', () => {
+    const base = [
+      { slot: 'inv0', key: 'blade_mail' },
+      { slot: 'inv1', key: 'null_talisman' },
+      { slot: 'inv2', key: 'heart' },
+      { slot: 'inv3', key: 'power_treads' },
+    ];
+    const sets = [
+      [...base, { slot: 'inv4', key: 'null_talisman' }],
+      [...base, { slot: 'inv4', key: 'reaver' }],
+      [...base, { slot: 'inv4', key: 'tango', charges: 1 }],
+    ];
+    const drafts = sets.map((items, k) => sellRule(ctxOf({ clock: 930 + k * 60, items, mana: 400, maxMana: 400, hp: 1000, maxHp: 1000 }, { turbo: true, now: T0 + k * 60_000 })) as HintDraft | null);
+    expect(drafts.every((d) => d !== null)).toBe(true);
+    expect(new Set(drafts.map((d) => d!.id)).size).toBe(1);
+    // очередь подсказок: второй и третий совет в пределах 5 минут — на перерыве
+    const q = new HintQueue();
+    const settings = defaultCoachSettings();
+    const statuses = drafts.map((d, k) => q.push(d!, { now: T0 + k * 60_000, clock: 930 + k * 60, inFight: false, settings }).status);
+    expect(statuses[0]).toBe('shown');
+    expect(statuses.slice(1).some((s) => s === 'shown')).toBe(false);
   });
 });
 

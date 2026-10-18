@@ -301,7 +301,9 @@ export const sellRule: Rule = (c) => {
   const allConsumable = extra.every((i) => MANA_CONSUMABLES.has(i.key) || HP_CONSUMABLES.has(i.key));
   const verb = allConsumable ? 'используйте или продайте' : 'продайте';
   return draft({
-    id: `economy.sell:${extra.map((i) => i.key).sort().join(',')}`,
+    // Один id на правило: перерыв между советами — общий. С id по набору предметов («два Null Talisman», «Null Talisman»,
+    // «Null Talisman + Tango») совет звучал 5 раз за 7 минут (матч 9051512826)
+    id: 'economy.sell',
     ruleId: 'economy.sell',
     category: 'economy',
     priority: 'info',
