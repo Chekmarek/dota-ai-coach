@@ -1,0 +1,993 @@
+{
+ "schema": "dota-coach.mode-overrides",
+ "version": 1,
+ "mode": "turbo",
+ "patch": "7.41f",
+ "verifiedAt": "2026-10-18",
+ "noteRu": "Отличия Турбо от обычной игры по каждой записи механики (resources/data/kb/<патч>/mechanics.json). same — как в обычной игре; changed — значения Турбо (остальные ключи как обычно); unknown — в Турбо не проверено: значение null, подсказки по нему в Турбо выключены.",
+ "sources": {
+  "lp-game-modes": {
+   "name": "Liquipedia: Game Modes — Turbo Mode",
+   "url": "https://liquipedia.net/dota2/Game_Modes#Turbo_Mode",
+   "revision": 2419883,
+   "license": "CC BY-SA 3.0"
+  },
+  "lp-roshan": {
+   "name": "Liquipedia: Roshan",
+   "url": "https://liquipedia.net/dota2/Roshan",
+   "revision": 2437039,
+   "license": "CC BY-SA 3.0"
+  },
+  "lp-tormentor": {
+   "name": "Liquipedia: Tormentor",
+   "url": "https://liquipedia.net/dota2/Tormentor",
+   "revision": 2408278,
+   "license": "CC BY-SA 3.0"
+  },
+  "lp-lotus": {
+   "name": "Liquipedia: Lotus Pool",
+   "url": "https://liquipedia.net/dota2/Lotus_Pool",
+   "revision": 2364951,
+   "license": "CC BY-SA 3.0"
+  },
+  "lp-shrine": {
+   "name": "Liquipedia: Shrine of Wisdom",
+   "url": "https://liquipedia.net/dota2/Shrine_of_Wisdom",
+   "revision": 2430139,
+   "license": "CC BY-SA 3.0"
+  },
+  "lp-runes": {
+   "name": "Liquipedia: Runes",
+   "url": "https://liquipedia.net/dota2/Runes",
+   "revision": 2409440,
+   "license": "CC BY-SA 3.0"
+  },
+  "lp-neutral-items": {
+   "name": "Liquipedia: Neutral Items",
+   "url": "https://liquipedia.net/dota2/Neutral_Items",
+   "revision": 2367412,
+   "license": "CC BY-SA 3.0"
+  },
+  "lp-neutral-creeps": {
+   "name": "Liquipedia: Neutral Creeps",
+   "url": "https://liquipedia.net/dota2/Neutral_Creeps",
+   "revision": 2407798,
+   "license": "CC BY-SA 3.0"
+  },
+  "lp-buildings": {
+   "name": "Liquipedia: Buildings",
+   "url": "https://liquipedia.net/dota2/Buildings",
+   "revision": 2421735,
+   "license": "CC BY-SA 3.0"
+  },
+  "lp-time-of-day": {
+   "name": "Liquipedia: Time of Day",
+   "url": "https://liquipedia.net/dota2/Time_of_Day",
+   "revision": 2414032,
+   "license": "CC BY-SA 3.0"
+  },
+  "lp-courier": {
+   "name": "Liquipedia: Courier",
+   "url": "https://liquipedia.net/dota2/Courier",
+   "revision": 2430063,
+   "license": "CC BY-SA 3.0"
+  },
+  "lp-madstone": {
+   "name": "Liquipedia: Madstone",
+   "url": "https://liquipedia.net/dota2/Madstone",
+   "revision": 2432994,
+   "license": "CC BY-SA 3.0"
+  },
+  "valve-7.38": {
+   "name": "Valve: патч-ноуты 7.38 (раздел Turbo, Tormentor)",
+   "url": "https://www.dota2.com/patches/7.38",
+   "revision": null,
+   "license": null
+  },
+  "guide-2026": {
+   "name": "neznakov.com: Dota 2 Turbo Mode — How It Differs (обновлено 2026-09-08)",
+   "url": "https://neznakov.com/guides-turbo-rezhim",
+   "revision": null,
+   "license": null
+  },
+  "valve-2023-06": {
+   "name": "Обновление Valve 2023-06-08 (пересказ esports.net): лотос 90 с, Shard 7:30",
+   "url": "https://www.esports.net/news/dota/turbo-mode-just-got-faster-in-new-dota-2-update/",
+   "revision": null,
+   "license": null
+  }
+ },
+ "entries": [
+  {
+   "id": "lane-wave-spawn",
+   "status": "same",
+   "basis": "not-listed",
+   "sources": [
+    "lp-game-modes"
+   ],
+   "noteRu": "В списке отличий Турбо не упоминается — как в обычной игре"
+  },
+  {
+   "id": "lane-wave-composition",
+   "status": "same",
+   "basis": "not-listed",
+   "sources": [
+    "lp-game-modes"
+   ],
+   "noteRu": "В списке отличий Турбо не упоминается — как в обычной игре"
+  },
+  {
+   "id": "lane-siege-cadence",
+   "status": "same",
+   "basis": "not-listed",
+   "sources": [
+    "lp-game-modes"
+   ],
+   "noteRu": "В списке отличий Турбо не упоминается — как в обычной игре"
+  },
+  {
+   "id": "lane-siege-extra-30",
+   "status": "same",
+   "basis": "not-listed",
+   "sources": [
+    "lp-game-modes"
+   ],
+   "noteRu": "В списке отличий Турбо не упоминается — как в обычной игре"
+  },
+  {
+   "id": "lane-siege-extra-60",
+   "status": "same",
+   "basis": "not-listed",
+   "sources": [
+    "lp-game-modes"
+   ],
+   "noteRu": "В списке отличий Турбо не упоминается — как в обычной игре"
+  },
+  {
+   "id": "lane-flagbearer",
+   "status": "same",
+   "basis": "not-listed",
+   "sources": [
+    "lp-game-modes"
+   ],
+   "noteRu": "В списке отличий Турбо не упоминается — как в обычной игре"
+  },
+  {
+   "id": "lane-flagbearer-xp",
+   "status": "changed",
+   "basis": "derived",
+   "sources": [
+    "lp-game-modes"
+   ],
+   "noteRu": "Весь опыт удвоен: 60 × 2",
+   "values": {
+    "xp": 120
+   }
+  },
+  {
+   "id": "lane-meeting-point",
+   "status": "same",
+   "basis": "not-listed",
+   "sources": [
+    "lp-game-modes"
+   ],
+   "noteRu": "В списке отличий Турбо не упоминается — как в обычной игре"
+  },
+  {
+   "id": "lane-creep-upgrades",
+   "status": "changed",
+   "basis": "stated",
+   "sources": [
+    "lp-game-modes",
+    "guide-2026"
+   ],
+   "noteRu": "Усиление каждые 5 волн (волна 6, 11, 16…), за раз — 3 обычных усиления; «примерно в 9 раз быстрее». Прибавка за одно усиление в Турбо не опубликована",
+   "values": {
+    "interval": 150,
+    "melee": null,
+    "ranged": null
+   },
+   "schedule": {
+    "firstAt": 150,
+    "interval": 150,
+    "lastAt": null
+   }
+  },
+  {
+   "id": "lane-super-mega",
+   "status": "changed",
+   "basis": "stated",
+   "sources": [
+    "lp-game-modes"
+   ],
+   "noteRu": "Мега-крипы в Турбо вдвое сильнее",
+   "values": {
+    "rule": "как в обычной игре; у мега-крипов вдвое больше здоровья и урона"
+   }
+  },
+  {
+   "id": "lane-creep-stats-melee",
+   "status": "changed",
+   "basis": "derived",
+   "sources": [
+    "lp-game-modes",
+    "guide-2026"
+   ],
+   "noteRu": "Награда за крипов и весь опыт удвоены (здоровье и урон растут быстрее — см. усиления)",
+   "values": {
+    "gold": "68–78",
+    "xp": 114
+   }
+  },
+  {
+   "id": "lane-creep-stats-ranged",
+   "status": "changed",
+   "basis": "derived",
+   "sources": [
+    "lp-game-modes",
+    "guide-2026"
+   ],
+   "noteRu": "Награда за крипов и весь опыт удвоены (здоровье и урон растут быстрее — см. усиления)",
+   "values": {
+    "gold": "86–104",
+    "xp": 138
+   }
+  },
+  {
+   "id": "lane-creep-stats-siege",
+   "status": "changed",
+   "basis": "derived",
+   "sources": [
+    "lp-game-modes",
+    "guide-2026"
+   ],
+   "noteRu": "Награда за крипов и весь опыт удвоены (здоровье и урон растут быстрее — см. усиления)",
+   "values": {
+    "gold": "118–144",
+    "xp": 176
+   }
+  },
+  {
+   "id": "lane-creep-stats-flagbearer",
+   "status": "changed",
+   "basis": "derived",
+   "sources": [
+    "lp-game-modes"
+   ],
+   "noteRu": "Награда за крипов удвоена",
+   "values": {
+    "gold": "68–78"
+   }
+  },
+  {
+   "id": "lane-deny",
+   "status": "same",
+   "basis": "not-listed",
+   "sources": [
+    "lp-game-modes"
+   ],
+   "noteRu": "В списке отличий Турбо не упоминается — как в обычной игре"
+  },
+  {
+   "id": "neutral-spawn",
+   "status": "same",
+   "basis": "stated",
+   "sources": [
+    "lp-neutral-creeps"
+   ],
+   "noteRu": "Liquipedia: «Turbo Mode uses the same timings as other modes»"
+  },
+  {
+   "id": "neutral-stack-window",
+   "status": "same",
+   "basis": "stated",
+   "sources": [
+    "lp-neutral-creeps"
+   ],
+   "noteRu": "Тайминги нейтралов в Турбо те же"
+  },
+  {
+   "id": "neutral-stack-bounty",
+   "status": "same",
+   "basis": "not-listed",
+   "sources": [
+    "lp-game-modes"
+   ],
+   "noteRu": "В списке отличий Турбо не упоминается — как в обычной игре"
+  },
+  {
+   "id": "neutral-pull-general",
+   "status": "same",
+   "basis": "not-listed",
+   "sources": [
+    "lp-game-modes"
+   ],
+   "noteRu": "В списке отличий Турбо не упоминается — как в обычной игре"
+  },
+  {
+   "id": "neutral-pull-per-lane",
+   "status": "same",
+   "basis": "not-listed",
+   "sources": [
+    "lp-game-modes"
+   ],
+   "noteRu": "В списке отличий Турбо не упоминается — как в обычной игре"
+  },
+  {
+   "id": "neutral-camp-small",
+   "status": "changed",
+   "basis": "derived",
+   "sources": [
+    "lp-game-modes",
+    "guide-2026"
+   ],
+   "noteRu": "Награда за крипов (и нейтралов) и весь опыт удвоены",
+   "values": {
+    "gold": "110–122 (116)",
+    "xp": 180
+   }
+  },
+  {
+   "id": "neutral-camp-medium",
+   "status": "changed",
+   "basis": "derived",
+   "sources": [
+    "lp-game-modes",
+    "guide-2026"
+   ],
+   "noteRu": "Награда за крипов (и нейтралов) и весь опыт удвоены",
+   "values": {
+    "gold": "150–176 (164)",
+    "xp": 258
+   }
+  },
+  {
+   "id": "neutral-camp-large",
+   "status": "changed",
+   "basis": "derived",
+   "sources": [
+    "lp-game-modes",
+    "guide-2026"
+   ],
+   "noteRu": "Награда за крипов (и нейтралов) и весь опыт удвоены",
+   "values": {
+    "gold": "192–214 (204)",
+    "xp": 316
+   }
+  },
+  {
+   "id": "neutral-camp-ancient",
+   "status": "changed",
+   "basis": "derived",
+   "sources": [
+    "lp-game-modes",
+    "guide-2026"
+   ],
+   "noteRu": "Награда за крипов (и нейтралов) и весь опыт удвоены",
+   "values": {
+    "gold": "312–340 (326)",
+    "xp": 628
+   }
+  },
+  {
+   "id": "neutral-flooded-evolve",
+   "status": "same",
+   "basis": "not-listed",
+   "sources": [
+    "lp-game-modes"
+   ],
+   "noteRu": "В списке отличий Турбо не упоминается — как в обычной игре"
+  },
+  {
+   "id": "rune-bounty",
+   "status": "changed",
+   "basis": "stated",
+   "sources": [
+    "lp-runes",
+    "lp-game-modes",
+    "guide-2026"
+   ],
+   "noteRu": "Золото руны ×2; время появления в списке отличий нет — как в обычной игре",
+   "values": {
+    "gold": "2 × (40 + 6 × ⌊минуты / 5⌋)"
+   }
+  },
+  {
+   "id": "rune-power",
+   "status": "same",
+   "basis": "not-listed",
+   "sources": [
+    "lp-game-modes"
+   ],
+   "noteRu": "В списке отличий Турбо не упоминается — как в обычной игре"
+  },
+  {
+   "id": "rune-water",
+   "status": "same",
+   "basis": "not-listed",
+   "sources": [
+    "lp-game-modes"
+   ],
+   "noteRu": "В списке отличий Турбо не упоминается — как в обычной игре"
+  },
+  {
+   "id": "rune-wisdom",
+   "status": "same",
+   "basis": "stated",
+   "sources": [
+    "lp-shrine"
+   ],
+   "noteRu": "Рун мудрости нет и в Турбо — Святилища"
+  },
+  {
+   "id": "lotus-pool",
+   "status": "changed",
+   "basis": "stated",
+   "sources": [
+    "lp-lotus",
+    "lp-game-modes",
+    "valve-2023-06"
+   ],
+   "noteRu": "Лотос каждые 90 с (все 6 — за 9 минут). Великий и Величайший — с 4-го и 5-го уровня нейтральных предметов (Valve 7.38), а они в Турбо вдвое раньше: 17:30 и 30:00",
+   "values": {
+    "interval": 90,
+    "great": 1050,
+    "greater": 1800
+   },
+   "schedule": {
+    "firstAt": 90,
+    "interval": 90,
+    "lastAt": null
+   }
+  },
+  {
+   "id": "lotus-pool-contest",
+   "status": "same",
+   "basis": "not-listed",
+   "sources": [
+    "lp-game-modes"
+   ],
+   "noteRu": "В списке отличий Турбо не упоминается — как в обычной игре"
+  },
+  {
+   "id": "day-night-cycle",
+   "status": "same",
+   "basis": "stated",
+   "sources": [
+    "lp-time-of-day",
+    "lp-game-modes"
+   ],
+   "noteRu": "Часы матча в Турбо стартуют с −1:00 (в обычной игре −1:30); длина дня и ночи в списке отличий нет — как обычно"
+  },
+  {
+   "id": "day-night-neutrals",
+   "status": "same",
+   "basis": "not-listed",
+   "sources": [
+    "lp-game-modes"
+   ],
+   "noteRu": "В списке отличий Турбо не упоминается — как в обычной игре"
+  },
+  {
+   "id": "roshan-start",
+   "status": "same",
+   "basis": "stated",
+   "sources": [
+    "lp-roshan"
+   ],
+   "noteRu": "Liquipedia: перемещения Рошана в Турбо — по тем же таймингам"
+  },
+  {
+   "id": "roshan-pit-day-night",
+   "status": "same",
+   "basis": "stated",
+   "sources": [
+    "lp-roshan"
+   ],
+   "noteRu": "То же"
+  },
+  {
+   "id": "roshan-respawn",
+   "status": "changed",
+   "basis": "stated",
+   "sources": [
+    "lp-roshan",
+    "lp-game-modes",
+    "guide-2026"
+   ],
+   "noteRu": "Возрождение вдвое быстрее: 4–5,5 мин (обычно 8–11)",
+   "values": {
+    "min": 240,
+    "max": 330
+   }
+  },
+  {
+   "id": "roshan-drops",
+   "status": "unknown",
+   "basis": "conflict",
+   "sources": [],
+   "noteRu": "Что выпадает из Рошана в Турбо, источники не пишут"
+  },
+  {
+   "id": "roshan-bounty",
+   "status": "unknown",
+   "basis": "conflict",
+   "sources": [],
+   "noteRu": "Удваивается ли награда за Рошана (он не «крип линии и леса»), источники не пишут"
+  },
+  {
+   "id": "tormentor-spawn",
+   "status": "changed",
+   "basis": "stated",
+   "sources": [
+    "lp-tormentor",
+    "valve-7.38"
+   ],
+   "noteRu": "Первое появление 10:00, возрождение через 5 мин (вдвое быстрее; патч-ноуты 7.38 — то же соотношение: 15:00 → 7:30)",
+   "values": {
+    "firstAt": 600,
+    "respawn": 300
+   },
+   "schedule": {
+    "firstAt": 600,
+    "interval": null,
+    "lastAt": null
+   }
+  },
+  {
+   "id": "tormentor-location",
+   "status": "unknown",
+   "basis": "conflict",
+   "sources": [],
+   "noteRu": "Valve (7.38): в Турбо Мучитель появляется на другой стороне («Or at Dire side in Turbo»); для 7.41 не проверено"
+  },
+  {
+   "id": "tormentor-reward",
+   "status": "unknown",
+   "basis": "conflict",
+   "sources": [],
+   "noteRu": "Удваивается ли золото команде за Мучителя, источники не пишут"
+  },
+  {
+   "id": "tormentor-all-shard",
+   "status": "same",
+   "basis": "not-listed",
+   "sources": [
+    "lp-game-modes"
+   ],
+   "noteRu": "В списке отличий Турбо не упоминается — как в обычной игре"
+  },
+  {
+   "id": "tormentor-shield",
+   "status": "same",
+   "basis": "not-listed",
+   "sources": [
+    "lp-game-modes"
+   ],
+   "noteRu": "В списке отличий Турбо не упоминается — как в обычной игре"
+  },
+  {
+   "id": "neutral-items-t1",
+   "status": "same",
+   "basis": "stated",
+   "sources": [
+    "lp-neutral-items"
+   ],
+   "noteRu": "Тайминги нейтральных предметов в Турбо вдвое меньше: 0:00 → 0:00"
+  },
+  {
+   "id": "neutral-items-t1-cost",
+   "status": "same",
+   "basis": "not-listed",
+   "sources": [
+    "lp-game-modes"
+   ],
+   "noteRu": "В списке отличий Турбо не упоминается — как в обычной игре"
+  },
+  {
+   "id": "neutral-items-tiers",
+   "status": "changed",
+   "basis": "derived",
+   "sources": [
+    "lp-neutral-items",
+    "valve-7.38",
+    "guide-2026"
+   ],
+   "noteRu": "«All timings are halved in Turbo Mode» (Liquipedia), «Madstone Availability times are halved in Turbo» (Valve 7.38)",
+   "values": {
+    "t2": 450,
+    "t3": 750,
+    "t4": 1050,
+    "t5": 1800
+   }
+  },
+  {
+   "id": "neutral-items-choices",
+   "status": "same",
+   "basis": "not-listed",
+   "sources": [
+    "lp-game-modes"
+   ],
+   "noteRu": "В списке отличий Турбо не упоминается — как в обычной игре"
+  },
+  {
+   "id": "neutral-items-madstone",
+   "status": "changed",
+   "basis": "stated",
+   "sources": [
+    "valve-7.38",
+    "lp-madstone"
+   ],
+   "noteRu": "Valve 7.38: 3 Madstone убийце и 2 команде, древний лагерь 4 / 3",
+   "values": {
+    "regular": "3 / 2",
+    "ancient": "4 / 3"
+   }
+  },
+  {
+   "id": "buyback-cost",
+   "status": "same",
+   "basis": "not-listed",
+   "sources": [
+    "lp-game-modes"
+   ],
+   "noteRu": "Формула выкупа в списке отличий нет; цену коуч всё равно берёт из игры (GSI)"
+  },
+  {
+   "id": "buyback-cooldown",
+   "status": "same",
+   "basis": "not-listed",
+   "sources": [
+    "lp-game-modes"
+   ],
+   "noteRu": "В списке отличий Турбо не упоминается — как в обычной игре"
+  },
+  {
+   "id": "respawn-time",
+   "status": "unknown",
+   "basis": "conflict",
+   "sources": [],
+   "noteRu": "Источники расходятся: гайд 2026 — «на 25 % быстрее», Liquipedia — ускорение убрано с 7.23. Время возрождения коуч берёт из игры (GSI)"
+  },
+  {
+   "id": "death-gold-loss",
+   "status": "changed",
+   "basis": "stated",
+   "sources": [
+    "lp-game-modes",
+    "guide-2026"
+   ],
+   "noteRu": "В Турбо золото за смерть не теряется",
+   "values": {
+    "formula": "не теряется"
+   }
+  },
+  {
+   "id": "xp-per-level",
+   "status": "same",
+   "basis": "not-listed",
+   "sources": [
+    "lp-game-modes"
+   ],
+   "noteRu": "Таблица опыта по уровням та же — удвоен получаемый опыт"
+  },
+  {
+   "id": "gold-start",
+   "status": "same",
+   "basis": "not-listed",
+   "sources": [
+    "lp-game-modes"
+   ],
+   "noteRu": "В списке отличий Турбо не упоминается — как в обычной игре"
+  },
+  {
+   "id": "gold-passive",
+   "status": "unknown",
+   "basis": "conflict",
+   "sources": [],
+   "noteRu": "Источники расходятся: старые гайды — «пассивное золото ×2», Liquipedia — удвоение убрано с 7.23 (возможно, ошибка)"
+  },
+  {
+   "id": "gold-hero-kill",
+   "status": "same",
+   "basis": "stated",
+   "sources": [
+    "lp-game-modes",
+    "guide-2026"
+   ],
+   "noteRu": "Гайд 2026: «hero kills pay the usual amount»; удваиваются только награды за крипов"
+  },
+  {
+   "id": "gold-assist",
+   "status": "same",
+   "basis": "stated",
+   "sources": [
+    "lp-game-modes",
+    "guide-2026"
+   ],
+   "noteRu": "Как и за убийство героя — без удвоения"
+  },
+  {
+   "id": "gold-streak",
+   "status": "same",
+   "basis": "stated",
+   "sources": [
+    "lp-game-modes",
+    "guide-2026"
+   ],
+   "noteRu": "То же"
+  },
+  {
+   "id": "glyph",
+   "status": "same",
+   "basis": "not-listed",
+   "sources": [
+    "lp-game-modes"
+   ],
+   "noteRu": "В списке отличий Турбо не упоминается — как в обычной игре"
+  },
+  {
+   "id": "scan",
+   "status": "same",
+   "basis": "not-listed",
+   "sources": [
+    "lp-game-modes"
+   ],
+   "noteRu": "В списке отличий Турбо не упоминается — как в обычной игре"
+  },
+  {
+   "id": "courier",
+   "status": "changed",
+   "basis": "stated",
+   "sources": [
+    "lp-game-modes",
+    "lp-courier",
+    "guide-2026"
+   ],
+   "noteRu": "Свой летающий курьер у каждого, всегда ускорен до 1100, неуязвим (modifier_turbo_courier_invulnerable), сам доставляет предметы",
+   "values": {
+    "speed": 1100,
+    "respawn": "не умирает",
+    "flyingLevel": 1
+   }
+  },
+  {
+   "id": "towers",
+   "status": "changed",
+   "basis": "stated",
+   "sources": [
+    "lp-game-modes",
+    "guide-2026"
+   ],
+   "noteRu": "Слабее только башни 1-го уровня; 2–4-й — как в обычной игре (Liquipedia)",
+   "values": {
+    "t1": "1350 / 9"
+   }
+  },
+  {
+   "id": "tower-t4-reinforcement",
+   "status": "same",
+   "basis": "not-listed",
+   "sources": [
+    "lp-game-modes"
+   ],
+   "noteRu": "В списке отличий Турбо не упоминается — как в обычной игре"
+  },
+  {
+   "id": "barracks",
+   "status": "same",
+   "basis": "not-listed",
+   "sources": [
+    "lp-game-modes"
+   ],
+   "noteRu": "В списке отличий Турбо не упоминается — как в обычной игре"
+  },
+  {
+   "id": "ancient",
+   "status": "changed",
+   "basis": "stated",
+   "sources": [
+    "lp-buildings",
+    "lp-game-modes",
+    "guide-2026"
+   ],
+   "noteRu": "Древний в Турбо не восстанавливает здоровье"
+  },
+  {
+   "id": "backdoor-protection",
+   "status": "same",
+   "basis": "stated",
+   "sources": [
+    "guide-2026"
+   ],
+   "noteRu": "Гайд 2026: защита от бэкдора как обычно"
+  },
+  {
+   "id": "building-bounty",
+   "status": "changed",
+   "basis": "derived",
+   "sources": [
+    "lp-buildings"
+   ],
+   "noteRu": "Liquipedia: множитель золота за здания в Турбо — 2",
+   "values": {
+    "t1": "180 / 220–260",
+    "t2": "220 / 260",
+    "t3": "250 / 300",
+    "t4": "290 / 340",
+    "rangedRax": 180,
+    "meleeRax": 310
+   }
+  },
+  {
+   "id": "outpost",
+   "status": "same",
+   "basis": "not-listed",
+   "sources": [
+    "lp-game-modes"
+   ],
+   "noteRu": "В списке отличий Турбо не упоминается — как в обычной игре"
+  },
+  {
+   "id": "watcher",
+   "status": "same",
+   "basis": "not-listed",
+   "sources": [
+    "lp-game-modes"
+   ],
+   "noteRu": "В списке отличий Турбо не упоминается — как в обычной игре"
+  },
+  {
+   "id": "twin-gate",
+   "status": "same",
+   "basis": "not-listed",
+   "sources": [
+    "lp-game-modes"
+   ],
+   "noteRu": "В списке отличий Турбо не упоминается — как в обычной игре"
+  },
+  {
+   "id": "twin-gate-root",
+   "status": "same",
+   "basis": "not-listed",
+   "sources": [
+    "lp-game-modes"
+   ],
+   "noteRu": "В списке отличий Турбо не упоминается — как в обычной игре"
+  },
+  {
+   "id": "shrine-of-wisdom",
+   "status": "changed",
+   "basis": "stated",
+   "sources": [
+    "lp-shrine"
+   ],
+   "noteRu": "Liquipedia: «Turbo Mode Interval: 210» (обычно 420). Только один источник — первое время выведено из интервала",
+   "values": {
+    "firstAt": 210,
+    "interval": 210
+   },
+   "schedule": {
+    "firstAt": 210,
+    "interval": 210,
+    "lastAt": null
+   }
+  },
+  {
+   "id": "shrine-of-wisdom-xp",
+   "status": "unknown",
+   "basis": "conflict",
+   "sources": [],
+   "noteRu": "Опыт Святилища в Турбо удвоен, но неясно, один раз или вместе с общим удвоением опыта"
+  },
+  {
+   "id": "ward-observer",
+   "status": "same",
+   "basis": "not-listed",
+   "sources": [
+    "lp-game-modes"
+   ],
+   "noteRu": "В списке отличий Турбо не упоминается — как в обычной игре"
+  },
+  {
+   "id": "ward-sentry",
+   "status": "same",
+   "basis": "not-listed",
+   "sources": [
+    "lp-game-modes"
+   ],
+   "noteRu": "В списке отличий Турбо не упоминается — как в обычной игре"
+  },
+  {
+   "id": "smoke-of-deceit",
+   "status": "same",
+   "basis": "not-listed",
+   "sources": [
+    "lp-game-modes"
+   ],
+   "noteRu": "В списке отличий Турбо не упоминается — как в обычной игре"
+  },
+  {
+   "id": "vision-heroes",
+   "status": "same",
+   "basis": "not-listed",
+   "sources": [
+    "lp-game-modes"
+   ],
+   "noteRu": "В списке отличий Турбо не упоминается — как в обычной игре"
+  },
+  {
+   "id": "vision-night-stalker",
+   "status": "same",
+   "basis": "not-listed",
+   "sources": [
+    "lp-game-modes"
+   ],
+   "noteRu": "В списке отличий Турбо не упоминается — как в обычной игре"
+  }
+ ],
+ "rules": {
+  "aegisSec": {
+   "value": 240,
+   "sources": [
+    "lp-roshan",
+    "lp-game-modes",
+    "guide-2026"
+   ],
+   "noteRu": "Аегис исчезает через 4 мин (обычно 5)"
+  },
+  "clockStartSec": {
+   "value": -60,
+   "sources": [
+    "lp-time-of-day"
+   ],
+   "noteRu": "Часы матча стартуют с −1:00"
+  },
+  "shardAtSec": {
+   "value": 450,
+   "sources": [
+    "lp-game-modes",
+    "guide-2026",
+    "valve-2023-06"
+   ],
+   "noteRu": "Aghanim's Shard продаётся с 7:30"
+  },
+  "raindropAtSec": {
+   "value": 90,
+   "sources": [
+    "lp-game-modes",
+    "guide-2026"
+   ],
+   "noteRu": "Infused Raindrops с 1:30"
+  },
+  "tpCooldownFactor": {
+   "value": 0.5,
+   "sources": [
+    "lp-game-modes",
+    "guide-2026"
+   ],
+   "noteRu": "Перезарядка свитка телепорта и Boots of Travel вдвое меньше"
+  },
+  "sellAnywhere": {
+   "value": true,
+   "sources": [
+    "lp-game-modes",
+    "guide-2026"
+   ],
+   "noteRu": "Продавать можно в любом месте карты; предметы тайной лавки — в обычной"
+  },
+  "draft": {
+   "value": {
+    "banSec": 10,
+    "pickSec": 30,
+    "strategySec": 30,
+    "bansImmediate": true,
+    "blindPicks": true
+   },
+   "sources": [
+    "lp-game-modes"
+   ],
+   "noteRu": "Баны сразу, выбор героев вслепую; бан 10 с, выбор 30 с, стратегия 30 с"
+  }
+ }
+}
