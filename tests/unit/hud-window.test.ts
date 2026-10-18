@@ -25,7 +25,8 @@ describe('положение окна Доты', () => {
     expect(parseRectLine('0 0 1920 1080 0 0')).toMatchObject({ minimized: false, active: false });
     expect(rectScript(1, 1000)).toContain('GetForegroundWindow');
   });
-  it.runIf(process.platform === 'win32')('настоящая Windows: помощник печатает прямоугольник и «активно» для живого окна', async () => {
+  // На сервере CI нет рабочего стола с настоящими окнами — помощник там ничего не печатает, проверка только на ПК
+  it.runIf(process.platform === 'win32' && !process.env.CI)('настоящая Windows: помощник печатает прямоугольник и «активно» для живого окна', async () => {
     const { spawnSync } = await import('node:child_process');
     const list = spawnSync('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command', '(Get-Process | Where-Object { $_.MainWindowHandle -ne 0 } | Select-Object -First 1).MainWindowHandle.ToInt64()'], { encoding: 'utf8' });
     const hwnd = Number(list.stdout.trim());
