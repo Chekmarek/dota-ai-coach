@@ -5,6 +5,7 @@ import type { KnowledgeBase } from './types/kb';
 import type { AiAskPayload, AiAskResult, AiChunkMessage, AiFeedback, AiUiState } from './types/ai';
 import type { AiLocalModel } from './schemas/settings';
 import type { GsiReading } from '../core/gsi/map.ts';
+import type { GameModeInfo } from '../core/gsi/mode.ts';
 
 /** Полный список IPC-каналов окна интерфейса. Других каналов нет. */
 export const IPC = {
@@ -141,6 +142,13 @@ export interface GsiState {
   recording: boolean;
   /** Параметр запуска Dota 2 */
   launchOption: string;
+  /**
+   * Режим игры с учётом ручного выбора (настройка hints.gameMode). Без свежих данных игры (дольше GSI_MODE_FRESH_MS)
+   * и без ручного выбора — «неизвестен».
+   */
+  gameMode: GameModeInfo;
+  /** Что сообщила сама игра (без ручного выбора); null — свежих данных нет */
+  gameModeDetected: GameModeInfo | null;
 }
 
 /** Тело GSI для движка */

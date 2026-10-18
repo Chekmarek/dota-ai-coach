@@ -4,6 +4,7 @@ import type { AbilityState } from '../vision/abilities.ts';
 import type { DayNight } from '../vision/day-night.ts';
 import type { Farm, Kda, Pool } from '../vision/hud-fields.ts';
 import { parseGsiBody, type GsiAbilityRaw, type GsiBody, type GsiItemRaw } from './schema.ts';
+import { detectGameMode, type GameModeInfo } from './mode.ts';
 
 /** Стадия матча по game_state */
 export type GsiPhase = 'pre-game' | 'in-progress' | 'post-game';
@@ -44,6 +45,8 @@ export interface GsiItemSlot {
 
 export interface GsiReading {
   matchId: string | null;
+  /** Режим игры по map.game_mode / customgamename; null — в теле нет блока map */
+  gameMode: GameModeInfo | null;
   /** Сырой game_state, например DOTA_GAMERULES_STATE_GAME_IN_PROGRESS */
   gameState: string | null;
   phase: GsiPhase | null;
@@ -265,6 +268,7 @@ export function mapGsi(body: unknown, itemName?: ItemNameLookup, heroLookup?: He
 
   return {
     matchId: map.matchid && map.matchid !== '0' ? map.matchid : null,
+    gameMode: detectGameMode(body),
     gameState: map.game_state ?? null,
     phase: gsiPhase(map.game_state),
     clock: map.clock_time === undefined ? null : Math.trunc(map.clock_time),

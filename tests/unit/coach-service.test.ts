@@ -93,6 +93,23 @@ describe('CoachService', () => {
     expect(/^[0-9A-Za-z_-]+$/.test(m.id)).toBe(true);
   });
 
+  it('история: режим игры записывается; «неизвестен» не затирает известный; ручной выбор важнее', () => {
+    const turbo = { mode: 'turbo', source: 'gsi', raw: 'DOTA_GAMEMODE_TURBO' } as const;
+    const a = make(defaultSettings());
+    for (let t = 0; t < 40; t++) a.feed(t, { level: 5, mode: t < 20 ? turbo : undefined });
+    a.svc.flush();
+    expect(a.history.saved.at(-1)!.gameMode).toEqual(turbo);
+    const manual = make(applySettingsPatch(defaultSettings(), { hints: { gameMode: 'normal' } }));
+    for (let t = 0; t < 5; t++) manual.feed(t, { level: 5, mode: turbo });
+    manual.svc.flush();
+    expect(manual.history.saved.at(-1)!.gameMode).toEqual({ mode: 'all-pick', source: 'manual', raw: 'DOTA_GAMEMODE_TURBO' });
+    // мусор вместо режима от окна движка — «неизвестен»
+    const junk = make(defaultSettings());
+    for (let t = 0; t < 5; t++) junk.feed(t, { level: 5, mode: { mode: 'hyper', source: 'gsi', raw: null } as never });
+    junk.svc.flush();
+    expect(junk.history.saved.at(-1)!.gameMode).toEqual({ mode: 'unknown', source: 'none', raw: null });
+  });
+
   it('вход движка: мусор и чужая форма отклоняются', () => {
     expect(parseCoachInput(null)).toBeNull();
     expect(parseCoachInput({ state: { wallMs: 'x' } })).toBeNull();
@@ -113,6 +130,15 @@ describe('HistoryStore', () => {
     expect(h.list()[0]!.hints).toBe(1);
     expect(h.get('2026-10-16T10-00-00-000Z-1')?.heroName).toBe('Anti-Mage');
     expect(h.get('../evil')).toBeNull();
+  });
+  it('старый файл матча без режима читается; в списке режим — null', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'dc-hist-'));
+    const h = new HistoryStore(dir);
+    h.save(match('old'));
+    h.save({ ...match('new'), startedAt: '2026-10-17T10:00:00.000Z', gameMode: { mode: 'turbo', source: 'gsi', raw: 'DOTA_GAMEMODE_TURBO' } });
+    const byId = Object.fromEntries(h.list().map((x) => [x.id, x.gameMode]));
+    expect(byId).toEqual({ old: null, new: { mode: 'turbo', source: 'gsi', raw: 'DOTA_GAMEMODE_TURBO' } });
+    expect(h.get('old')?.gameMode).toBeUndefined();
   });
 
   it(`хранит не больше ${MAX_FILES} матчей`, () => {

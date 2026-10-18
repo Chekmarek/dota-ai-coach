@@ -1,0 +1,8681 @@
+[
+ {
+  "t": 1791911637670,
+  "aiContext": {
+   "schema": "dota-coach.ai-context",
+   "version": 1,
+   "wallMs": 1791911637670,
+   "sources": {
+    "gsi": false,
+    "screen": false
+   },
+   "match": {
+    "clockSec": {
+     "value": null,
+     "reason": "never-observed"
+    },
+    "paused": false,
+    "dayNight": {
+     "value": null,
+     "reason": "never-observed"
+    },
+    "scoreRadiant": {
+     "value": null,
+     "reason": "never-observed"
+    },
+    "scoreDire": {
+     "value": null,
+     "reason": "never-observed"
+    }
+   },
+   "myHero": {
+    "hero": {
+     "value": null,
+     "reason": "hero-not-identified"
+    },
+    "level": {
+     "value": null,
+     "reason": "hero-not-identified"
+    },
+    "health": {
+     "value": null,
+     "reason": "hero-not-identified"
+    },
+    "mana": {
+     "value": null,
+     "reason": "hero-not-identified"
+    },
+    "gold": {
+     "value": null,
+     "reason": "hero-not-identified"
+    },
+    "kda": {
+     "value": null,
+     "reason": "hero-not-identified"
+    }
+   },
+   "myTeam": {
+    "value": null,
+    "reason": "team-unknown"
+   },
+   "players": [],
+   "timers": {
+    "value": null,
+    "reason": "clock-unknown"
+   }
+  }
+ },
+ {
+  "t": 1791911654024,
+  "tick": {
+   "wallMs": 1791911654024,
+   "shown": [
+    {
+     "id": "economy.skill",
+     "ruleId": "economy.skill",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.6,
+     "short": "Очко навыка: Mana Break",
+     "detail": {
+      "normal": "Неиспользованных очков: 2. На 3 уровне профи патча чаще берут Mana Break.",
+      "detailed": "Неиспользованных очков: 2. На 3 уровне профи патча чаще берут Mana Break. · Свободных очков: 2 (вывод, 0 с) · Навык 3 уровня (профи патча): Mana Break (статистика патча, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "unspent",
+       "label": "Свободных очков",
+       "value": 2,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.6,
+       "verified": true
+      },
+      {
+       "key": "skill",
+       "label": "Навык 3 уровня (профи патча)",
+       "value": "Mana Break",
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 45000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 1,
+     "createdWallMs": 1791911654024,
+     "expiresWallMs": 1791912803995,
+     "clock": 10.728,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "economy.skill"
+   ]
+  }
+ },
+ {
+  "t": 1791911674157,
+  "tick": {
+   "wallMs": 1791911674157,
+   "shown": [
+    {
+     "id": "economy.idle",
+     "ruleId": "economy.idle",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.75,
+     "short": "Простой 151 с — идите фармить",
+     "detail": {
+      "normal": "Вы 151 с на одном месте без приказов. Каждая минута простоя — потерянное золото.",
+      "detailed": "Вы 151 с на одном месте без приказов. Каждая минута простоя — потерянное золото. · Без движения, с: 151 (вывод, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "idle",
+       "label": "Без движения, с",
+       "value": 151,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.75,
+       "verified": true
+      }
+     ],
+     "ttlMs": 8000,
+     "cooldownMs": 60000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 2,
+     "createdWallMs": 1791911674157,
+     "expiresWallMs": 1791911802696,
+     "clock": 30.903,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "economy.skill",
+    "economy.idle"
+   ]
+  }
+ },
+ {
+  "t": 1791911694321,
+  "tick": {
+   "wallMs": 1791911694321,
+   "shown": [
+    {
+     "id": "economy.gold",
+     "ruleId": "economy.gold",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.8,
+     "short": "Золото 99999: купите Wraith Band",
+     "detail": {
+      "normal": "99999 золота лежит без дела. Следующий предмет по сборке профи патча — Wraith Band (505).",
+      "detailed": "99999 золота лежит без дела. Следующий предмет по сборке профи патча — Wraith Band (505). · Золото: 99999 (игра, 0 с) · Следующий предмет (профи патча): Wraith Band (статистика патча, не проверено) · Цена: 505 (база, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "gold",
+       "label": "Золото",
+       "value": 99999,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      },
+      {
+       "key": "next-item",
+       "label": "Следующий предмет (профи патча)",
+       "value": "Wraith Band",
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      },
+      {
+       "key": "item-cost",
+       "label": "Цена",
+       "value": 505,
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 90000,
+     "zone": "timing",
+     "icon": "item:wraith_band",
+     "seq": 3,
+     "createdWallMs": 1791911694321,
+     "expiresWallMs": 1791912803995,
+     "clock": 51.067,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "economy.skill",
+    "economy.idle",
+    "economy.gold"
+   ]
+  }
+ },
+ {
+  "t": 1791911697818,
+  "aiContext": {
+   "schema": "dota-coach.ai-context",
+   "version": 1,
+   "wallMs": 1791911697818,
+   "sources": {
+    "gsi": true,
+    "screen": false
+   },
+   "match": {
+    "clockSec": {
+     "value": 54.564,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "paused": false,
+    "dayNight": {
+     "value": "day",
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "scoreRadiant": {
+     "value": 0,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "scoreDire": {
+     "value": 0,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    }
+   },
+   "myHero": {
+    "hero": {
+     "value": {
+      "id": 1,
+      "name": "antimage"
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "level": {
+     "value": 1,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "health": {
+     "value": {
+      "current": 582,
+      "max": 582
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "mana": {
+     "value": {
+      "current": 219,
+      "max": 219
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "gold": {
+     "value": 99999,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "kda": {
+     "value": {
+      "kills": 0,
+      "deaths": 0,
+      "assists": 0
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    }
+   },
+   "myTeam": {
+    "value": "radiant",
+    "source": "gsi"
+   },
+   "players": [
+    {
+     "slot": 0,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 1,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 2,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 3,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 4,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 5,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 6,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 7,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 8,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 9,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    }
+   ],
+   "timers": {
+    "upcoming": [
+     {
+      "id": "lane-wave",
+      "nameRu": "Волна крипов",
+      "atSec": 60,
+      "inSec": 5.436,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "neutral-spawn",
+      "nameRu": "Появление нейтралов",
+      "atSec": 60,
+      "inSec": 5.436,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "stack-window",
+      "nameRu": "Окно стака",
+      "atSec": 114,
+      "inSec": 59.436,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "rune-bounty",
+      "nameRu": "Руна богатства",
+      "atSec": 240,
+      "inSec": 185.436,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "rune-power",
+      "nameRu": "Руна силы",
+      "atSec": 360,
+      "inSec": 305.436,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "rune-water",
+      "nameRu": "Руна воды",
+      "atSec": 120,
+      "inSec": 65.436,
+      "verification": "imported-unverified"
+     }
+    ]
+   }
+  }
+ },
+ {
+  "t": 1791911759691,
+  "aiContext": {
+   "schema": "dota-coach.ai-context",
+   "version": 1,
+   "wallMs": 1791911759691,
+   "sources": {
+    "gsi": true,
+    "screen": false
+   },
+   "match": {
+    "clockSec": {
+     "value": 110,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "paused": false,
+    "dayNight": {
+     "value": "day",
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "scoreRadiant": {
+     "value": 0,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "scoreDire": {
+     "value": 0,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    }
+   },
+   "myHero": {
+    "hero": {
+     "value": {
+      "id": 1,
+      "name": "antimage"
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "level": {
+     "value": 1,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "health": {
+     "value": {
+      "current": 582,
+      "max": 582
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "mana": {
+     "value": {
+      "current": 219,
+      "max": 219
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "gold": {
+     "value": 99999,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "kda": {
+     "value": {
+      "kills": 0,
+      "deaths": 0,
+      "assists": 0
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    }
+   },
+   "myTeam": {
+    "value": "radiant",
+    "source": "gsi"
+   },
+   "players": [
+    {
+     "slot": 0,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 1,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 2,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 3,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 4,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 5,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 6,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 7,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 8,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 9,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    }
+   ],
+   "timers": {
+    "upcoming": [
+     {
+      "id": "lane-wave",
+      "nameRu": "Волна крипов",
+      "atSec": 120,
+      "inSec": 10,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "neutral-spawn",
+      "nameRu": "Появление нейтралов",
+      "atSec": 120,
+      "inSec": 10,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "stack-window",
+      "nameRu": "Окно стака",
+      "atSec": 114,
+      "inSec": 4,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "rune-bounty",
+      "nameRu": "Руна богатства",
+      "atSec": 240,
+      "inSec": 130,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "rune-power",
+      "nameRu": "Руна силы",
+      "atSec": 360,
+      "inSec": 250,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "rune-water",
+      "nameRu": "Руна воды",
+      "atSec": 120,
+      "inSec": 10,
+      "verification": "imported-unverified"
+     }
+    ]
+   }
+  }
+ },
+ {
+  "t": 1791911767944,
+  "tick": {
+   "wallMs": 1791911767944,
+   "shown": [],
+   "expired": [],
+   "changed": [],
+   "mistakes": [
+    {
+     "type": "unspent-gold",
+     "severity": 1,
+     "text": "Золото 99999 не тратилось больше 2 минут",
+     "instead": "Покупайте предмет сразу, как хватает, — курьером.",
+     "facts": [
+      {
+       "key": "gold",
+       "label": "Золото",
+       "value": 99999,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      }
+     ],
+     "id": "m1",
+     "wallMs": 1791911767944,
+     "clock": 120.695
+    }
+   ],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "economy.skill",
+    "economy.idle",
+    "economy.gold"
+   ]
+  }
+ },
+ {
+  "t": 1791911794978,
+  "tick": {
+   "wallMs": 1791911794978,
+   "shown": [],
+   "expired": [],
+   "changed": [],
+   "mistakes": [
+    {
+     "type": "idle",
+     "severity": 1,
+     "text": "Простой 151 с",
+     "instead": "Заберите волну или лагерь, поставьте стак.",
+     "facts": [
+      {
+       "key": "idle",
+       "label": "Без движения, с",
+       "value": 151,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.75,
+       "verified": true
+      }
+     ],
+     "id": "m2",
+     "wallMs": 1791911794978,
+     "clock": 147.763
+    }
+   ],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "economy.skill",
+    "economy.idle",
+    "economy.gold"
+   ]
+  }
+ },
+ {
+  "t": 1791911802862,
+  "tick": {
+   "wallMs": 1791911802862,
+   "shown": [],
+   "expired": [
+    {
+     "id": "economy.idle",
+     "ruleId": "economy.idle",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.75,
+     "short": "Простой 151 с — идите фармить",
+     "detail": {
+      "normal": "Вы 151 с на одном месте без приказов. Каждая минута простоя — потерянное золото.",
+      "detailed": "Вы 151 с на одном месте без приказов. Каждая минута простоя — потерянное золото. · Без движения, с: 151 (вывод, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "idle",
+       "label": "Без движения, с",
+       "value": 151,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.75,
+       "verified": true
+      }
+     ],
+     "ttlMs": 8000,
+     "cooldownMs": 60000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 2,
+     "createdWallMs": 1791911674157,
+     "expiresWallMs": 1791911802696,
+     "clock": 30.903,
+     "textSource": "template"
+    }
+   ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "economy.skill",
+    "economy.gold"
+   ]
+  }
+ },
+ {
+  "t": 1791911812249,
+  "tick": {
+   "wallMs": 1791911812249,
+   "shown": [
+    {
+     "id": "timing.lotus",
+     "ruleId": "timing.lotus",
+     "category": "timing",
+     "priority": "info",
+     "confidence": 0.8,
+     "short": "Лотос через 15 с",
+     "detail": {
+      "normal": "В 3:00 у пруда появится лотос (лечение и мана). Ближайший — заберите.",
+      "detailed": "В 3:00 у пруда появится лотос (лечение и мана). Ближайший — заберите. · Лотос: 3:00 (база, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "lotus",
+       "label": "Лотос",
+       "value": "3:00",
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 8000,
+     "cooldownMs": 0,
+     "zone": "timing",
+     "icon": null,
+     "seq": 4,
+     "createdWallMs": 1791911812249,
+     "expiresWallMs": 1791911820249,
+     "clock": 165.034,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "economy.skill",
+    "economy.gold",
+    "timing.lotus"
+   ]
+  }
+ },
+ {
+  "t": 1791911819885,
+  "aiContext": {
+   "schema": "dota-coach.ai-context",
+   "version": 1,
+   "wallMs": 1791911819885,
+   "sources": {
+    "gsi": true,
+    "screen": false
+   },
+   "match": {
+    "clockSec": {
+     "value": 172.67000000000002,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "paused": false,
+    "dayNight": {
+     "value": "day",
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "scoreRadiant": {
+     "value": 0,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "scoreDire": {
+     "value": 0,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    }
+   },
+   "myHero": {
+    "hero": {
+     "value": {
+      "id": 1,
+      "name": "antimage"
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "level": {
+     "value": 3,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "health": {
+     "value": {
+      "current": 648,
+      "max": 648
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "mana": {
+     "value": {
+      "current": 255,
+      "max": 255
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "gold": {
+     "value": 99999,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "kda": {
+     "value": {
+      "kills": 0,
+      "deaths": 0,
+      "assists": 0
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    }
+   },
+   "myTeam": {
+    "value": "radiant",
+    "source": "gsi"
+   },
+   "players": [
+    {
+     "slot": 0,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 1,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 2,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 3,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 4,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 5,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 6,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 7,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 8,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 9,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    }
+   ],
+   "timers": {
+    "upcoming": [
+     {
+      "id": "lane-wave",
+      "nameRu": "Волна крипов",
+      "atSec": 180,
+      "inSec": 7.329999999999984,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "neutral-spawn",
+      "nameRu": "Появление нейтралов",
+      "atSec": 180,
+      "inSec": 7.329999999999984,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "stack-window",
+      "nameRu": "Окно стака",
+      "atSec": 174,
+      "inSec": 1.329999999999984,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "rune-bounty",
+      "nameRu": "Руна богатства",
+      "atSec": 240,
+      "inSec": 67.32999999999998,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "rune-power",
+      "nameRu": "Руна силы",
+      "atSec": 360,
+      "inSec": 187.32999999999998,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "rune-water",
+      "nameRu": "Руна воды",
+      "atSec": 240,
+      "inSec": 67.32999999999998,
+      "verification": "imported-unverified"
+     }
+    ]
+   }
+  }
+ },
+ {
+  "t": 1791911820459,
+  "tick": {
+   "wallMs": 1791911820459,
+   "shown": [],
+   "expired": [
+    {
+     "id": "timing.lotus",
+     "ruleId": "timing.lotus",
+     "category": "timing",
+     "priority": "info",
+     "confidence": 0.8,
+     "short": "Лотос через 15 с",
+     "detail": {
+      "normal": "В 3:00 у пруда появится лотос (лечение и мана). Ближайший — заберите.",
+      "detailed": "В 3:00 у пруда появится лотос (лечение и мана). Ближайший — заберите. · Лотос: 3:00 (база, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "lotus",
+       "label": "Лотос",
+       "value": "3:00",
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 8000,
+     "cooldownMs": 0,
+     "zone": "timing",
+     "icon": null,
+     "seq": 4,
+     "createdWallMs": 1791911812249,
+     "expiresWallMs": 1791911820249,
+     "clock": 165.034,
+     "textSource": "template"
+    }
+   ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "economy.skill",
+    "economy.gold"
+   ]
+  }
+ },
+ {
+  "t": 1791911827458,
+  "tick": {
+   "wallMs": 1791911827458,
+   "shown": [
+    {
+     "id": "economy.neutral",
+     "ruleId": "economy.neutral",
+     "category": "economy",
+     "priority": "info",
+     "confidence": 0.8,
+     "short": "Пустой слот нейтрального предмета",
+     "detail": {
+      "normal": "Слот нейтрального предмета пуст — выберите предмет текущего уровня.",
+      "detailed": "Слот нейтрального предмета пуст — выберите предмет текущего уровня. · Нейтральный слот: пусто (игра, 0 с) · Нейтральные предметы с, с: 0 (база)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "neutral",
+       "label": "Нейтральный слот",
+       "value": "пусто",
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      },
+      {
+       "key": "neutral-t1",
+       "label": "Нейтральные предметы с, с",
+       "value": 0,
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": true
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 300000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 5,
+     "createdWallMs": 1791911827458,
+     "expiresWallMs": 1791911864546,
+     "clock": 180.243,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "economy.skill",
+    "economy.gold",
+    "economy.neutral"
+   ]
+  }
+ },
+ {
+  "t": 1791911854863,
+  "tick": {
+   "wallMs": 1791911854863,
+   "shown": [
+    {
+     "id": "economy.idle",
+     "ruleId": "economy.idle",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.75,
+     "short": "Простой 999 с — идите фармить",
+     "detail": {
+      "normal": "Вы 999 с на одном месте без приказов. Каждая минута простоя — потерянное золото.",
+      "detailed": "Вы 999 с на одном месте без приказов. Каждая минута простоя — потерянное золото. · Без движения, с: 999 (вывод, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "idle",
+       "label": "Без движения, с",
+       "value": 999,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.75,
+       "verified": true
+      }
+     ],
+     "ttlMs": 8000,
+     "cooldownMs": 60000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 6,
+     "createdWallMs": 1791911854863,
+     "expiresWallMs": 1791912801995,
+     "clock": 207.655,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "economy.skill",
+    "economy.gold",
+    "economy.idle"
+   ]
+  }
+ },
+ {
+  "t": 1791911880062,
+  "aiContext": {
+   "schema": "dota-coach.ai-context",
+   "version": 1,
+   "wallMs": 1791911880062,
+   "sources": {
+    "gsi": true,
+    "screen": false
+   },
+   "match": {
+    "clockSec": {
+     "value": 232.85399999999998,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "paused": false,
+    "dayNight": {
+     "value": "day",
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "scoreRadiant": {
+     "value": 0,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "scoreDire": {
+     "value": 0,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    }
+   },
+   "myHero": {
+    "hero": {
+     "value": {
+      "id": 1,
+      "name": "antimage"
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "level": {
+     "value": 3,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "health": {
+     "value": {
+      "current": 648,
+      "max": 648
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "mana": {
+     "value": {
+      "current": 255,
+      "max": 255
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "gold": {
+     "value": 99999,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "kda": {
+     "value": {
+      "kills": 0,
+      "deaths": 0,
+      "assists": 0
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    }
+   },
+   "myTeam": {
+    "value": "radiant",
+    "source": "gsi"
+   },
+   "players": [
+    {
+     "slot": 0,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 1,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 2,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 3,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 4,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 5,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 6,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 7,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 8,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 9,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    }
+   ],
+   "timers": {
+    "upcoming": [
+     {
+      "id": "lane-wave",
+      "nameRu": "Волна крипов",
+      "atSec": 240,
+      "inSec": 7.146000000000015,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "neutral-spawn",
+      "nameRu": "Появление нейтралов",
+      "atSec": 240,
+      "inSec": 7.146000000000015,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "stack-window",
+      "nameRu": "Окно стака",
+      "atSec": 234,
+      "inSec": 1.146000000000015,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "rune-bounty",
+      "nameRu": "Руна богатства",
+      "atSec": 240,
+      "inSec": 7.146000000000015,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "rune-power",
+      "nameRu": "Руна силы",
+      "atSec": 360,
+      "inSec": 127.14600000000002,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "rune-water",
+      "nameRu": "Руна воды",
+      "atSec": 240,
+      "inSec": 7.146000000000015,
+      "verification": "imported-unverified"
+     }
+    ]
+   }
+  }
+ },
+ {
+  "t": 1791911940303,
+  "aiContext": {
+   "schema": "dota-coach.ai-context",
+   "version": 1,
+   "wallMs": 1791911940303,
+   "sources": {
+    "gsi": true,
+    "screen": false
+   },
+   "match": {
+    "clockSec": {
+     "value": 293.095,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "paused": false,
+    "dayNight": {
+     "value": "day",
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "scoreRadiant": {
+     "value": 0,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "scoreDire": {
+     "value": 0,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    }
+   },
+   "myHero": {
+    "hero": {
+     "value": {
+      "id": 1,
+      "name": "antimage"
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "level": {
+     "value": 3,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "health": {
+     "value": {
+      "current": 648,
+      "max": 648
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "mana": {
+     "value": {
+      "current": 255,
+      "max": 255
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "gold": {
+     "value": 99999,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "kda": {
+     "value": {
+      "kills": 0,
+      "deaths": 0,
+      "assists": 0
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    }
+   },
+   "myTeam": {
+    "value": "radiant",
+    "source": "gsi"
+   },
+   "players": [
+    {
+     "slot": 0,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 1,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 2,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 3,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 4,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 5,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 6,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 7,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 8,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 9,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    }
+   ],
+   "timers": {
+    "upcoming": [
+     {
+      "id": "lane-wave",
+      "nameRu": "Волна крипов",
+      "atSec": 300,
+      "inSec": 6.904999999999973,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "neutral-spawn",
+      "nameRu": "Появление нейтралов",
+      "atSec": 300,
+      "inSec": 6.904999999999973,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "stack-window",
+      "nameRu": "Окно стака",
+      "atSec": 294,
+      "inSec": 0.9049999999999727,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "rune-bounty",
+      "nameRu": "Руна богатства",
+      "atSec": 480,
+      "inSec": 186.90499999999997,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "rune-power",
+      "nameRu": "Руна силы",
+      "atSec": 360,
+      "inSec": 66.90499999999997,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "shrine-of-wisdom",
+      "nameRu": "Святилище мудрости",
+      "atSec": 420,
+      "inSec": 126.90499999999997,
+      "verification": "imported-unverified"
+     }
+    ]
+   }
+  }
+ },
+ {
+  "t": 1791912000520,
+  "aiContext": {
+   "schema": "dota-coach.ai-context",
+   "version": 1,
+   "wallMs": 1791912000520,
+   "sources": {
+    "gsi": true,
+    "screen": false
+   },
+   "match": {
+    "clockSec": {
+     "value": 353.312,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "paused": false,
+    "dayNight": {
+     "value": "day",
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "scoreRadiant": {
+     "value": 0,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "scoreDire": {
+     "value": 0,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    }
+   },
+   "myHero": {
+    "hero": {
+     "value": {
+      "id": 1,
+      "name": "antimage"
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "level": {
+     "value": 3,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "health": {
+     "value": {
+      "current": 648,
+      "max": 648
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "mana": {
+     "value": {
+      "current": 255,
+      "max": 255
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "gold": {
+     "value": 99999,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "kda": {
+     "value": {
+      "kills": 0,
+      "deaths": 0,
+      "assists": 0
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    }
+   },
+   "myTeam": {
+    "value": "radiant",
+    "source": "gsi"
+   },
+   "players": [
+    {
+     "slot": 0,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 1,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 2,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 3,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 4,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 5,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 6,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 7,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 8,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 9,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    }
+   ],
+   "timers": {
+    "upcoming": [
+     {
+      "id": "lane-wave",
+      "nameRu": "Волна крипов",
+      "atSec": 360,
+      "inSec": 6.687999999999988,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "neutral-spawn",
+      "nameRu": "Появление нейтралов",
+      "atSec": 360,
+      "inSec": 6.687999999999988,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "stack-window",
+      "nameRu": "Окно стака",
+      "atSec": 354,
+      "inSec": 0.6879999999999882,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "rune-bounty",
+      "nameRu": "Руна богатства",
+      "atSec": 480,
+      "inSec": 126.68799999999999,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "rune-power",
+      "nameRu": "Руна силы",
+      "atSec": 360,
+      "inSec": 6.687999999999988,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "shrine-of-wisdom",
+      "nameRu": "Святилище мудрости",
+      "atSec": 420,
+      "inSec": 66.68799999999999,
+      "verification": "imported-unverified"
+     }
+    ]
+   }
+  }
+ },
+ {
+  "t": 1791912060524,
+  "aiContext": {
+   "schema": "dota-coach.ai-context",
+   "version": 1,
+   "wallMs": 1791912060524,
+   "sources": {
+    "gsi": true,
+    "screen": false
+   },
+   "match": {
+    "clockSec": {
+     "value": 413.31600000000003,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "paused": false,
+    "dayNight": {
+     "value": "day",
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "scoreRadiant": {
+     "value": 0,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "scoreDire": {
+     "value": 0,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    }
+   },
+   "myHero": {
+    "hero": {
+     "value": {
+      "id": 1,
+      "name": "antimage"
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "level": {
+     "value": 3,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "health": {
+     "value": {
+      "current": 648,
+      "max": 648
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "mana": {
+     "value": {
+      "current": 255,
+      "max": 255
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "gold": {
+     "value": 99999,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "kda": {
+     "value": {
+      "kills": 0,
+      "deaths": 0,
+      "assists": 0
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    }
+   },
+   "myTeam": {
+    "value": "radiant",
+    "source": "gsi"
+   },
+   "players": [
+    {
+     "slot": 0,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 1,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 2,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 3,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 4,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 5,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 6,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 7,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 8,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 9,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    }
+   ],
+   "timers": {
+    "upcoming": [
+     {
+      "id": "lane-wave",
+      "nameRu": "Волна крипов",
+      "atSec": 420,
+      "inSec": 6.683999999999969,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "neutral-spawn",
+      "nameRu": "Появление нейтралов",
+      "atSec": 420,
+      "inSec": 6.683999999999969,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "stack-window",
+      "nameRu": "Окно стака",
+      "atSec": 414,
+      "inSec": 0.6839999999999691,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "rune-bounty",
+      "nameRu": "Руна богатства",
+      "atSec": 480,
+      "inSec": 66.68399999999997,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "rune-power",
+      "nameRu": "Руна силы",
+      "atSec": 480,
+      "inSec": 66.68399999999997,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "shrine-of-wisdom",
+      "nameRu": "Святилище мудрости",
+      "atSec": 420,
+      "inSec": 6.683999999999969,
+      "verification": "imported-unverified"
+     }
+    ]
+   }
+  }
+ },
+ {
+  "t": 1791912120783,
+  "aiContext": {
+   "schema": "dota-coach.ai-context",
+   "version": 1,
+   "wallMs": 1791912120783,
+   "sources": {
+    "gsi": true,
+    "screen": false
+   },
+   "match": {
+    "clockSec": {
+     "value": 473.575,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "paused": false,
+    "dayNight": {
+     "value": "day",
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "scoreRadiant": {
+     "value": 0,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "scoreDire": {
+     "value": 0,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    }
+   },
+   "myHero": {
+    "hero": {
+     "value": {
+      "id": 1,
+      "name": "antimage"
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "level": {
+     "value": 3,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "health": {
+     "value": {
+      "current": 648,
+      "max": 648
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "mana": {
+     "value": {
+      "current": 255,
+      "max": 255
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "gold": {
+     "value": 99999,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "kda": {
+     "value": {
+      "kills": 0,
+      "deaths": 0,
+      "assists": 0
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    }
+   },
+   "myTeam": {
+    "value": "radiant",
+    "source": "gsi"
+   },
+   "players": [
+    {
+     "slot": 0,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 1,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 2,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 3,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 4,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 5,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 6,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 7,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 8,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 9,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    }
+   ],
+   "timers": {
+    "upcoming": [
+     {
+      "id": "lane-wave",
+      "nameRu": "Волна крипов",
+      "atSec": 480,
+      "inSec": 6.425000000000011,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "neutral-spawn",
+      "nameRu": "Появление нейтралов",
+      "atSec": 480,
+      "inSec": 6.425000000000011,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "stack-window",
+      "nameRu": "Окно стака",
+      "atSec": 474,
+      "inSec": 0.42500000000001137,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "rune-bounty",
+      "nameRu": "Руна богатства",
+      "atSec": 480,
+      "inSec": 6.425000000000011,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "rune-power",
+      "nameRu": "Руна силы",
+      "atSec": 480,
+      "inSec": 6.425000000000011,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "shrine-of-wisdom",
+      "nameRu": "Святилище мудрости",
+      "atSec": 840,
+      "inSec": 366.425,
+      "verification": "imported-unverified"
+     }
+    ]
+   }
+  }
+ },
+ {
+  "t": 1791912180811,
+  "aiContext": {
+   "schema": "dota-coach.ai-context",
+   "version": 1,
+   "wallMs": 1791912180811,
+   "sources": {
+    "gsi": true,
+    "screen": false
+   },
+   "match": {
+    "clockSec": {
+     "value": 533.6030000000001,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "paused": false,
+    "dayNight": {
+     "value": "day",
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "scoreRadiant": {
+     "value": 0,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "scoreDire": {
+     "value": 0,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    }
+   },
+   "myHero": {
+    "hero": {
+     "value": {
+      "id": 1,
+      "name": "antimage"
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "level": {
+     "value": 3,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "health": {
+     "value": {
+      "current": 648,
+      "max": 648
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "mana": {
+     "value": {
+      "current": 255,
+      "max": 255
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "gold": {
+     "value": 99999,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "kda": {
+     "value": {
+      "kills": 0,
+      "deaths": 0,
+      "assists": 0
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    }
+   },
+   "myTeam": {
+    "value": "radiant",
+    "source": "gsi"
+   },
+   "players": [
+    {
+     "slot": 0,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 1,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 2,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 3,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 4,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 5,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 6,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 7,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 8,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 9,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    }
+   ],
+   "timers": {
+    "upcoming": [
+     {
+      "id": "lane-wave",
+      "nameRu": "Волна крипов",
+      "atSec": 540,
+      "inSec": 6.3969999999999345,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "neutral-spawn",
+      "nameRu": "Появление нейтралов",
+      "atSec": 540,
+      "inSec": 6.3969999999999345,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "stack-window",
+      "nameRu": "Окно стака",
+      "atSec": 534,
+      "inSec": 0.3969999999999345,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "rune-bounty",
+      "nameRu": "Руна богатства",
+      "atSec": 720,
+      "inSec": 186.39699999999993,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "rune-power",
+      "nameRu": "Руна силы",
+      "atSec": 600,
+      "inSec": 66.39699999999993,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "shrine-of-wisdom",
+      "nameRu": "Святилище мудрости",
+      "atSec": 840,
+      "inSec": 306.39699999999993,
+      "verification": "imported-unverified"
+     }
+    ]
+   }
+  }
+ },
+ {
+  "t": 1791912241012,
+  "aiContext": {
+   "schema": "dota-coach.ai-context",
+   "version": 1,
+   "wallMs": 1791912241012,
+   "sources": {
+    "gsi": true,
+    "screen": false
+   },
+   "match": {
+    "clockSec": {
+     "value": 593.804,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "paused": false,
+    "dayNight": {
+     "value": "day",
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "scoreRadiant": {
+     "value": 0,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "scoreDire": {
+     "value": 0,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    }
+   },
+   "myHero": {
+    "hero": {
+     "value": {
+      "id": 1,
+      "name": "antimage"
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "level": {
+     "value": 3,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "health": {
+     "value": {
+      "current": 648,
+      "max": 648
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "mana": {
+     "value": {
+      "current": 255,
+      "max": 255
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "gold": {
+     "value": 99999,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "kda": {
+     "value": {
+      "kills": 0,
+      "deaths": 0,
+      "assists": 0
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    }
+   },
+   "myTeam": {
+    "value": "radiant",
+    "source": "gsi"
+   },
+   "players": [
+    {
+     "slot": 0,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 1,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 2,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 3,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 4,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 5,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 6,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 7,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 8,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 9,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    }
+   ],
+   "timers": {
+    "upcoming": [
+     {
+      "id": "lane-wave",
+      "nameRu": "Волна крипов",
+      "atSec": 600,
+      "inSec": 6.196000000000026,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "neutral-spawn",
+      "nameRu": "Появление нейтралов",
+      "atSec": 600,
+      "inSec": 6.196000000000026,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "stack-window",
+      "nameRu": "Окно стака",
+      "atSec": 594,
+      "inSec": 0.19600000000002638,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "rune-bounty",
+      "nameRu": "Руна богатства",
+      "atSec": 720,
+      "inSec": 126.19600000000003,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "rune-power",
+      "nameRu": "Руна силы",
+      "atSec": 600,
+      "inSec": 6.196000000000026,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "shrine-of-wisdom",
+      "nameRu": "Святилище мудрости",
+      "atSec": 840,
+      "inSec": 246.19600000000003,
+      "verification": "imported-unverified"
+     }
+    ]
+   }
+  }
+ },
+ {
+  "t": 1791912301252,
+  "aiContext": {
+   "schema": "dota-coach.ai-context",
+   "version": 1,
+   "wallMs": 1791912301252,
+   "sources": {
+    "gsi": true,
+    "screen": false
+   },
+   "match": {
+    "clockSec": {
+     "value": 654.044,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "paused": false,
+    "dayNight": {
+     "value": "day",
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "scoreRadiant": {
+     "value": 0,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "scoreDire": {
+     "value": 0,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    }
+   },
+   "myHero": {
+    "hero": {
+     "value": {
+      "id": 1,
+      "name": "antimage"
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "level": {
+     "value": 3,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "health": {
+     "value": {
+      "current": 648,
+      "max": 648
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "mana": {
+     "value": {
+      "current": 255,
+      "max": 255
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "gold": {
+     "value": 99999,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "kda": {
+     "value": {
+      "kills": 0,
+      "deaths": 0,
+      "assists": 0
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    }
+   },
+   "myTeam": {
+    "value": "radiant",
+    "source": "gsi"
+   },
+   "players": [
+    {
+     "slot": 0,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 1,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 2,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 3,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 4,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 5,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 6,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 7,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 8,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 9,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    }
+   ],
+   "timers": {
+    "upcoming": [
+     {
+      "id": "lane-wave",
+      "nameRu": "Волна крипов",
+      "atSec": 660,
+      "inSec": 5.956000000000017,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "neutral-spawn",
+      "nameRu": "Появление нейтралов",
+      "atSec": 660,
+      "inSec": 5.956000000000017,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "stack-window",
+      "nameRu": "Окно стака",
+      "atSec": 654,
+      "inSec": 0,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "rune-bounty",
+      "nameRu": "Руна богатства",
+      "atSec": 720,
+      "inSec": 65.95600000000002,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "rune-power",
+      "nameRu": "Руна силы",
+      "atSec": 720,
+      "inSec": 65.95600000000002,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "shrine-of-wisdom",
+      "nameRu": "Святилище мудрости",
+      "atSec": 840,
+      "inSec": 185.95600000000002,
+      "verification": "imported-unverified"
+     }
+    ]
+   }
+  }
+ },
+ {
+  "t": 1791912361475,
+  "aiContext": {
+   "schema": "dota-coach.ai-context",
+   "version": 1,
+   "wallMs": 1791912361475,
+   "sources": {
+    "gsi": true,
+    "screen": false
+   },
+   "match": {
+    "clockSec": {
+     "value": 714.255,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "paused": false,
+    "dayNight": {
+     "value": "day",
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "scoreRadiant": {
+     "value": 0,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "scoreDire": {
+     "value": 0,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    }
+   },
+   "myHero": {
+    "hero": {
+     "value": {
+      "id": 1,
+      "name": "antimage"
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "level": {
+     "value": 3,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "health": {
+     "value": {
+      "current": 648,
+      "max": 648
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "mana": {
+     "value": {
+      "current": 255,
+      "max": 255
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "gold": {
+     "value": 99999,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "kda": {
+     "value": {
+      "kills": 0,
+      "deaths": 0,
+      "assists": 0
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    }
+   },
+   "myTeam": {
+    "value": "radiant",
+    "source": "gsi"
+   },
+   "players": [
+    {
+     "slot": 0,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 1,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 2,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 3,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 4,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 5,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 6,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 7,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 8,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 9,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    }
+   ],
+   "timers": {
+    "upcoming": [
+     {
+      "id": "lane-wave",
+      "nameRu": "Волна крипов",
+      "atSec": 720,
+      "inSec": 5.7450000000000045,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "neutral-spawn",
+      "nameRu": "Появление нейтралов",
+      "atSec": 720,
+      "inSec": 5.7450000000000045,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "stack-window",
+      "nameRu": "Окно стака",
+      "atSec": 714,
+      "inSec": 0,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "rune-bounty",
+      "nameRu": "Руна богатства",
+      "atSec": 720,
+      "inSec": 5.7450000000000045,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "rune-power",
+      "nameRu": "Руна силы",
+      "atSec": 720,
+      "inSec": 5.7450000000000045,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "shrine-of-wisdom",
+      "nameRu": "Святилище мудрости",
+      "atSec": 840,
+      "inSec": 125.745,
+      "verification": "imported-unverified"
+     }
+    ]
+   }
+  }
+ },
+ {
+  "t": 1791912421765,
+  "aiContext": {
+   "schema": "dota-coach.ai-context",
+   "version": 1,
+   "wallMs": 1791912421765,
+   "sources": {
+    "gsi": true,
+    "screen": false
+   },
+   "match": {
+    "clockSec": {
+     "value": 774.548,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "paused": false,
+    "dayNight": {
+     "value": "day",
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "scoreRadiant": {
+     "value": 0,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "scoreDire": {
+     "value": 0,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    }
+   },
+   "myHero": {
+    "hero": {
+     "value": {
+      "id": 1,
+      "name": "antimage"
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "level": {
+     "value": 3,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "health": {
+     "value": {
+      "current": 648,
+      "max": 648
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "mana": {
+     "value": {
+      "current": 255,
+      "max": 255
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "gold": {
+     "value": 99999,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "kda": {
+     "value": {
+      "kills": 0,
+      "deaths": 0,
+      "assists": 0
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    }
+   },
+   "myTeam": {
+    "value": "radiant",
+    "source": "gsi"
+   },
+   "players": [
+    {
+     "slot": 0,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 1,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 2,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 3,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 4,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 5,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 6,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 7,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 8,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 9,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    }
+   ],
+   "timers": {
+    "upcoming": [
+     {
+      "id": "lane-wave",
+      "nameRu": "Волна крипов",
+      "atSec": 780,
+      "inSec": 5.451999999999998,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "neutral-spawn",
+      "nameRu": "Появление нейтралов",
+      "atSec": 780,
+      "inSec": 5.451999999999998,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "stack-window",
+      "nameRu": "Окно стака",
+      "atSec": 774,
+      "inSec": 0,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "rune-bounty",
+      "nameRu": "Руна богатства",
+      "atSec": 960,
+      "inSec": 185.452,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "rune-power",
+      "nameRu": "Руна силы",
+      "atSec": 840,
+      "inSec": 65.452,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "shrine-of-wisdom",
+      "nameRu": "Святилище мудрости",
+      "atSec": 840,
+      "inSec": 65.452,
+      "verification": "imported-unverified"
+     }
+    ]
+   }
+  }
+ },
+ {
+  "t": 1791912482019,
+  "aiContext": {
+   "schema": "dota-coach.ai-context",
+   "version": 1,
+   "wallMs": 1791912482019,
+   "sources": {
+    "gsi": true,
+    "screen": false
+   },
+   "match": {
+    "clockSec": {
+     "value": 834.802,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "paused": false,
+    "dayNight": {
+     "value": "day",
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "scoreRadiant": {
+     "value": 0,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "scoreDire": {
+     "value": 0,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    }
+   },
+   "myHero": {
+    "hero": {
+     "value": {
+      "id": 1,
+      "name": "antimage"
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "level": {
+     "value": 3,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "health": {
+     "value": {
+      "current": 648,
+      "max": 648
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "mana": {
+     "value": {
+      "current": 255,
+      "max": 255
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "gold": {
+     "value": 99999,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "kda": {
+     "value": {
+      "kills": 0,
+      "deaths": 0,
+      "assists": 0
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    }
+   },
+   "myTeam": {
+    "value": "radiant",
+    "source": "gsi"
+   },
+   "players": [
+    {
+     "slot": 0,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 1,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 2,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 3,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 4,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 5,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 6,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 7,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 8,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 9,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    }
+   ],
+   "timers": {
+    "upcoming": [
+     {
+      "id": "lane-wave",
+      "nameRu": "Волна крипов",
+      "atSec": 840,
+      "inSec": 5.197999999999979,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "neutral-spawn",
+      "nameRu": "Появление нейтралов",
+      "atSec": 840,
+      "inSec": 5.197999999999979,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "stack-window",
+      "nameRu": "Окно стака",
+      "atSec": 834,
+      "inSec": 0,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "rune-bounty",
+      "nameRu": "Руна богатства",
+      "atSec": 960,
+      "inSec": 125.19799999999998,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "rune-power",
+      "nameRu": "Руна силы",
+      "atSec": 840,
+      "inSec": 5.197999999999979,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "shrine-of-wisdom",
+      "nameRu": "Святилище мудрости",
+      "atSec": 840,
+      "inSec": 5.197999999999979,
+      "verification": "imported-unverified"
+     }
+    ]
+   }
+  }
+ },
+ {
+  "t": 1791912542039,
+  "aiContext": {
+   "schema": "dota-coach.ai-context",
+   "version": 1,
+   "wallMs": 1791912542039,
+   "sources": {
+    "gsi": true,
+    "screen": false
+   },
+   "match": {
+    "clockSec": {
+     "value": 894.822,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "paused": false,
+    "dayNight": {
+     "value": "day",
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "scoreRadiant": {
+     "value": 0,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "scoreDire": {
+     "value": 0,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    }
+   },
+   "myHero": {
+    "hero": {
+     "value": {
+      "id": 1,
+      "name": "antimage"
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "level": {
+     "value": 3,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "health": {
+     "value": {
+      "current": 648,
+      "max": 648
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "mana": {
+     "value": {
+      "current": 255,
+      "max": 255
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "gold": {
+     "value": 99999,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "kda": {
+     "value": {
+      "kills": 0,
+      "deaths": 0,
+      "assists": 0
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    }
+   },
+   "myTeam": {
+    "value": "radiant",
+    "source": "gsi"
+   },
+   "players": [
+    {
+     "slot": 0,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 1,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 2,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 3,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 4,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 5,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 6,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 7,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 8,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 9,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    }
+   ],
+   "timers": {
+    "upcoming": [
+     {
+      "id": "lane-wave",
+      "nameRu": "Волна крипов",
+      "atSec": 900,
+      "inSec": 5.177999999999997,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "neutral-spawn",
+      "nameRu": "Появление нейтралов",
+      "atSec": 900,
+      "inSec": 5.177999999999997,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "stack-window",
+      "nameRu": "Окно стака",
+      "atSec": 894,
+      "inSec": 0,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "rune-bounty",
+      "nameRu": "Руна богатства",
+      "atSec": 960,
+      "inSec": 65.178,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "rune-power",
+      "nameRu": "Руна силы",
+      "atSec": 960,
+      "inSec": 65.178,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "shrine-of-wisdom",
+      "nameRu": "Святилище мудрости",
+      "atSec": 1260,
+      "inSec": 365.178,
+      "verification": "imported-unverified"
+     }
+    ]
+   }
+  }
+ },
+ {
+  "t": 1791912602241,
+  "aiContext": {
+   "schema": "dota-coach.ai-context",
+   "version": 1,
+   "wallMs": 1791912602241,
+   "sources": {
+    "gsi": true,
+    "screen": false
+   },
+   "match": {
+    "clockSec": {
+     "value": 955.024,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "paused": false,
+    "dayNight": {
+     "value": "day",
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "scoreRadiant": {
+     "value": 0,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "scoreDire": {
+     "value": 0,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    }
+   },
+   "myHero": {
+    "hero": {
+     "value": {
+      "id": 1,
+      "name": "antimage"
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "level": {
+     "value": 3,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "health": {
+     "value": {
+      "current": 648,
+      "max": 648
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "mana": {
+     "value": {
+      "current": 255,
+      "max": 255
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "gold": {
+     "value": 99999,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "kda": {
+     "value": {
+      "kills": 0,
+      "deaths": 0,
+      "assists": 0
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    }
+   },
+   "myTeam": {
+    "value": "radiant",
+    "source": "gsi"
+   },
+   "players": [
+    {
+     "slot": 0,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 1,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 2,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 3,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 4,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 5,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 6,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 7,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 8,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 9,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    }
+   ],
+   "timers": {
+    "upcoming": [
+     {
+      "id": "lane-wave",
+      "nameRu": "Волна крипов",
+      "atSec": 960,
+      "inSec": 4.975999999999999,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "neutral-spawn",
+      "nameRu": "Появление нейтралов",
+      "atSec": 960,
+      "inSec": 4.975999999999999,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "stack-window",
+      "nameRu": "Окно стака",
+      "atSec": 1014,
+      "inSec": 58.976,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "rune-bounty",
+      "nameRu": "Руна богатства",
+      "atSec": 960,
+      "inSec": 4.975999999999999,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "rune-power",
+      "nameRu": "Руна силы",
+      "atSec": 960,
+      "inSec": 4.975999999999999,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "shrine-of-wisdom",
+      "nameRu": "Святилище мудрости",
+      "atSec": 1260,
+      "inSec": 304.976,
+      "verification": "imported-unverified"
+     }
+    ]
+   }
+  }
+ },
+ {
+  "t": 1791912662488,
+  "aiContext": {
+   "schema": "dota-coach.ai-context",
+   "version": 1,
+   "wallMs": 1791912662488,
+   "sources": {
+    "gsi": true,
+    "screen": false
+   },
+   "match": {
+    "clockSec": {
+     "value": 1015.271,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "paused": false,
+    "dayNight": {
+     "value": "day",
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "scoreRadiant": {
+     "value": 0,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "scoreDire": {
+     "value": 0,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    }
+   },
+   "myHero": {
+    "hero": {
+     "value": {
+      "id": 1,
+      "name": "antimage"
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "level": {
+     "value": 3,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "health": {
+     "value": {
+      "current": 648,
+      "max": 648
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "mana": {
+     "value": {
+      "current": 255,
+      "max": 255
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "gold": {
+     "value": 99999,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "kda": {
+     "value": {
+      "kills": 0,
+      "deaths": 0,
+      "assists": 0
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    }
+   },
+   "myTeam": {
+    "value": "radiant",
+    "source": "gsi"
+   },
+   "players": [
+    {
+     "slot": 0,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 1,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 2,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 3,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 4,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 5,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 6,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 7,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 8,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 9,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    }
+   ],
+   "timers": {
+    "upcoming": [
+     {
+      "id": "lane-wave",
+      "nameRu": "Волна крипов",
+      "atSec": 1020,
+      "inSec": 4.729000000000042,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "neutral-spawn",
+      "nameRu": "Появление нейтралов",
+      "atSec": 1020,
+      "inSec": 4.729000000000042,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "stack-window",
+      "nameRu": "Окно стака",
+      "atSec": 1074,
+      "inSec": 58.72900000000004,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "rune-bounty",
+      "nameRu": "Руна богатства",
+      "atSec": 1200,
+      "inSec": 184.72900000000004,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "rune-power",
+      "nameRu": "Руна силы",
+      "atSec": 1080,
+      "inSec": 64.72900000000004,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "shrine-of-wisdom",
+      "nameRu": "Святилище мудрости",
+      "atSec": 1260,
+      "inSec": 244.72900000000004,
+      "verification": "imported-unverified"
+     }
+    ]
+   }
+  }
+ },
+ {
+  "t": 1791912722782,
+  "aiContext": {
+   "schema": "dota-coach.ai-context",
+   "version": 1,
+   "wallMs": 1791912722782,
+   "sources": {
+    "gsi": true,
+    "screen": false
+   },
+   "match": {
+    "clockSec": {
+     "value": 1075.565,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "paused": false,
+    "dayNight": {
+     "value": "day",
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "scoreRadiant": {
+     "value": 0,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "scoreDire": {
+     "value": 0,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    }
+   },
+   "myHero": {
+    "hero": {
+     "value": {
+      "id": 1,
+      "name": "antimage"
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "level": {
+     "value": 3,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "health": {
+     "value": {
+      "current": 648,
+      "max": 648
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "mana": {
+     "value": {
+      "current": 255,
+      "max": 255
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "gold": {
+     "value": 99999,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "kda": {
+     "value": {
+      "kills": 0,
+      "deaths": 0,
+      "assists": 0
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    }
+   },
+   "myTeam": {
+    "value": "radiant",
+    "source": "gsi"
+   },
+   "players": [
+    {
+     "slot": 0,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 1,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 2,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 3,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 4,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 5,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 6,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 7,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 8,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 9,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    }
+   ],
+   "timers": {
+    "upcoming": [
+     {
+      "id": "lane-wave",
+      "nameRu": "Волна крипов",
+      "atSec": 1080,
+      "inSec": 4.434999999999945,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "neutral-spawn",
+      "nameRu": "Появление нейтралов",
+      "atSec": 1080,
+      "inSec": 4.434999999999945,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "stack-window",
+      "nameRu": "Окно стака",
+      "atSec": 1134,
+      "inSec": 58.434999999999945,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "rune-bounty",
+      "nameRu": "Руна богатства",
+      "atSec": 1200,
+      "inSec": 124.43499999999995,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "rune-power",
+      "nameRu": "Руна силы",
+      "atSec": 1080,
+      "inSec": 4.434999999999945,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "shrine-of-wisdom",
+      "nameRu": "Святилище мудрости",
+      "atSec": 1260,
+      "inSec": 184.43499999999995,
+      "verification": "imported-unverified"
+     }
+    ]
+   }
+  }
+ },
+ {
+  "t": 1791912783058,
+  "aiContext": {
+   "schema": "dota-coach.ai-context",
+   "version": 1,
+   "wallMs": 1791912783058,
+   "sources": {
+    "gsi": true,
+    "screen": false
+   },
+   "match": {
+    "clockSec": {
+     "value": 1135.841,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "paused": false,
+    "dayNight": {
+     "value": "day",
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "scoreRadiant": {
+     "value": 0,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "scoreDire": {
+     "value": 0,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    }
+   },
+   "myHero": {
+    "hero": {
+     "value": {
+      "id": 1,
+      "name": "antimage"
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "level": {
+     "value": 3,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "health": {
+     "value": {
+      "current": 648,
+      "max": 648
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "mana": {
+     "value": {
+      "current": 255,
+      "max": 255
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "gold": {
+     "value": 99999,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "kda": {
+     "value": {
+      "kills": 0,
+      "deaths": 0,
+      "assists": 0
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    }
+   },
+   "myTeam": {
+    "value": "radiant",
+    "source": "gsi"
+   },
+   "players": [
+    {
+     "slot": 0,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 1,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 2,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 3,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 4,
+     "team": "radiant",
+     "side": "ally",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 5,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 6,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 7,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 8,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    },
+    {
+     "slot": 9,
+     "team": "dire",
+     "side": "enemy",
+     "hero": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "alive": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "respawnAtSec": {
+      "value": null,
+      "reason": "not-applicable"
+     },
+     "position": {
+      "value": null,
+      "reason": "never-observed"
+     },
+     "missing": null,
+     "missingForSec": null,
+     "hpPercent": {
+      "value": null,
+      "reason": "not-linked"
+     }
+    }
+   ],
+   "timers": {
+    "upcoming": [
+     {
+      "id": "lane-wave",
+      "nameRu": "Волна крипов",
+      "atSec": 1140,
+      "inSec": 4.1590000000001055,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "neutral-spawn",
+      "nameRu": "Появление нейтралов",
+      "atSec": 1140,
+      "inSec": 4.1590000000001055,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "stack-window",
+      "nameRu": "Окно стака",
+      "atSec": 1194,
+      "inSec": 58.159000000000106,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "rune-bounty",
+      "nameRu": "Руна богатства",
+      "atSec": 1200,
+      "inSec": 64.1590000000001,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "rune-power",
+      "nameRu": "Руна силы",
+      "atSec": 1200,
+      "inSec": 64.1590000000001,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "shrine-of-wisdom",
+      "nameRu": "Святилище мудрости",
+      "atSec": 1260,
+      "inSec": 124.1590000000001,
+      "verification": "imported-unverified"
+     }
+    ]
+   }
+  }
+ },
+ {
+  "journal": [
+   {
+    "wallMs": 1791911654024,
+    "clock": 10.728,
+    "kind": "hint",
+    "id": "economy.skill",
+    "text": "Очко навыка: Mana Break",
+    "source": "template"
+   },
+   {
+    "wallMs": 1791911674157,
+    "clock": 30.903,
+    "kind": "hint",
+    "id": "economy.idle",
+    "text": "Простой 30 с — идите фармить",
+    "source": "template"
+   },
+   {
+    "wallMs": 1791911694321,
+    "clock": 51.067,
+    "kind": "hint",
+    "id": "economy.gold",
+    "text": "Золото 99999: купите Wraith Band",
+    "source": "template"
+   },
+   {
+    "wallMs": 1791911767944,
+    "clock": 120.695,
+    "kind": "mistake",
+    "id": "m1",
+    "text": "Золото 99999 не тратилось больше 2 минут",
+    "source": "template"
+   },
+   {
+    "wallMs": 1791911794978,
+    "clock": 147.763,
+    "kind": "mistake",
+    "id": "m2",
+    "text": "Простой 151 с",
+    "source": "template"
+   },
+   {
+    "wallMs": 1791911812249,
+    "clock": 165.034,
+    "kind": "hint",
+    "id": "timing.lotus",
+    "text": "Лотос через 15 с",
+    "source": "template"
+   },
+   {
+    "wallMs": 1791911827458,
+    "clock": 180.243,
+    "kind": "hint",
+    "id": "economy.neutral",
+    "text": "Пустой слот нейтрального предмета",
+    "source": "template"
+   },
+   {
+    "wallMs": 1791911854863,
+    "clock": 207.655,
+    "kind": "hint",
+    "id": "economy.idle",
+    "text": "Простой 60 с — идите фармить",
+    "source": "template"
+   }
+  ],
+  "deathReview": null,
+  "matchReview": null
+ }
+]

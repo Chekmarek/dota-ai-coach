@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { zoneOverridesSchema, type ZoneOverrides } from '../../core/hud/layout.ts';
 import { HUD_THEME_IDS, type HudThemeId } from '../types/hud.ts';
+import { GAME_MODE_OVERRIDES, type GameModeOverride } from '../../core/gsi/mode.ts';
 
 export type HintDetail = 'min' | 'normal' | 'detailed';
 export type HintCategories = Record<'fight' | 'danger' | 'laning' | 'economy' | 'macro' | 'timing' | 'mistake' | 'review', boolean>;
@@ -30,6 +31,8 @@ const DEFAULTS = {
     categories: { fight: true, danger: true, laning: true, economy: true, macro: true, timing: true, mistake: true, review: true } as HintCategories,
     ai: true,
     inApp: true,
+    // Турбо (0.13.3): режим берётся из игры; если Dota его не сообщает — пользователь выбирает вручную
+    gameMode: 'auto' as GameModeOverride,
   },
   // Подсказки поверх игры (этап 3): тема, раскладка, анимации, прозрачность, размер
   hud: { enabled: true, theme: 'runes' as HudThemeId, reduceMotion: false, opacity: 1, scale: 1, zones: null as ZoneOverrides | null },
@@ -150,6 +153,8 @@ const fields = {
     ai: z.boolean(),
     /** Дублировать подсказки лентой на странице «Живая игра» (отдельное окно коуча) */
     inApp: z.boolean(),
+    /** Режим игры для подсказок и драфта: auto — по данным игры, turbo / normal — выбран вручную */
+    gameMode: z.enum(GAME_MODE_OVERRIDES),
   },
   hud: {
     /** Показывать подсказки поверх окна игры */

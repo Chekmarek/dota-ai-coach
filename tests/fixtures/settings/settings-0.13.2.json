@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "capture": { "targetFps": 3, "maxWidth": 1920, "processingFpsCap": 10, "previewFps": 2 },
+  "replay": { "loop": false },
+  "voice": { "enabled": false, "voiceId": null, "rate": 1, "volume": 0.8 },
+  "ui": { "showRegions": false },
+  "live": { "autoStart": true, "fps": 10, "overlay": true, "overlayCorner": "top-left" },
+  "hints": {
+    "enabled": true,
+    "ranked": false,
+    "detail": "detailed",
+    "categories": { "fight": true, "danger": true, "laning": false, "economy": true, "macro": true, "timing": true, "mistake": true, "review": true },
+    "ai": false,
+    "inApp": true
+  },
+  "hud": { "enabled": true, "theme": "runes", "reduceMotion": false, "opacity": 0.9, "scale": 1.1, "zones": null },
+  "gsi": { "port": 53790, "token": "cdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd", "record": true, "dotaDir": null },
+  "dev": { "datasetRecord": false, "datasetEveryN": 10 },
+  "ai": { "provider": "local", "local": { "model": "qwen3-4b", "draftModel": null }, "cloud": { "baseUrl": "", "model": "" }, "sendToCloudConsent": false }
+}

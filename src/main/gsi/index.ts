@@ -11,6 +11,7 @@ import { GsiServer } from './server';
 import { GSI_LAUNCH_OPTION, cfgPath, cfgStatus, installCfg, locateDota, refreshCfg, removeCfg, steamPathFromRegistry, type DotaLocation } from './setup';
 import { SessionRecorder } from './recorder';
 import { SerialRestarter } from './restart';
+import { detectGameMode, resolveGameMode, GSI_MODE_FRESH_MS, type GameModeInfo } from '@core/gsi/mode.ts';
 
 /** Состояние в интерфейс — не чаще раза в секунду (плюс сразу при изменениях) */
 const PUSH_MS = 1000;
@@ -44,6 +45,10 @@ class GsiService {
   private port: number;
   /** Когда коуч сам переписал устаревший файл в папке Dota (Dota подхватит его после перезапуска); null — не переписывал */
   private refreshedAt: number | null = null;
+  /** Режим из последнего тела с блоком map и когда оно пришло */
+  private detected: { info: GameModeInfo; at: number } | null = null;
+  /** Для live.log: какие ключи map уже записаны (есть ли в игре map.game_mode — проверяется на настоящих матчах) */
+  private loggedMapKeys = '';
 
   constructor(private readonly deps: Deps) {
     this.recorder = new SessionRecorder(join(deps.dataDir, 'gsi-sessions'), liveLog);
@@ -101,8 +106,23 @@ class GsiService {
 
   private onBody(body: Record<string, unknown>, wallMs: number): void {
     this.deps.forward(body, wallMs);
+    this.trackMode(body, wallMs);
     if (this.deps.settings.get().gsi.record) this.recorder.record(body, wallMs);
     this.push(false);
+  }
+
+  private trackMode(body: Record<string, unknown>, wallMs: number): void {
+    const info = detectGameMode(body);
+    if (!info) return;
+    const map = body.map as Record<string, unknown>;
+    const keys = Object.keys(map).sort().join(',');
+    if (keys !== this.loggedMapKeys) {
+      this.loggedMapKeys = keys;
+      liveLog('gsi ключи map', { keys, gameMode: map.game_mode === undefined ? 'нет' : String(map.game_mode).slice(0, 60) });
+    }
+    const prev = this.detected?.info;
+    if (!prev || prev.mode !== info.mode || prev.raw !== info.raw) liveLog('gsi режим игры', info);
+    this.detected = { info, at: wallMs };
   }
 
   /** Настройки поменялись: новый порт — перезапуск приёмника и обновление своего файла в папке Dota */
@@ -119,6 +139,7 @@ class GsiService {
     const st = this.servers.server?.status;
     const dir = this.location.dotaDir;
     const cfg = dir ? cfgStatus(dir, s.port, s.token) : null;
+    const fresh = this.detected && Date.now() - this.detected.at < GSI_MODE_FRESH_MS ? this.detected.info : null;
     return {
       server: st?.state ?? 'off',
       port: s.port,
@@ -136,6 +157,8 @@ class GsiService {
       rejected: st?.rejected ?? 0,
       recording: s.record,
       launchOption: GSI_LAUNCH_OPTION,
+      gameMode: resolveGameMode(fresh, this.deps.settings.get().hints.gameMode),
+      gameModeDetected: fresh,
     };
   }
 

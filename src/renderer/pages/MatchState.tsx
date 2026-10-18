@@ -9,6 +9,7 @@ import type { AgreementField, AgreementReport } from '@core/gsi/agreement.ts';
 import type { VisionAgreementField } from '@core/gsi/vision-agreement.ts';
 import { useEngine } from '../hooks/useEngine';
 import { Card, PageHeader } from '../components/ui';
+import { GameModeBadge } from '../components/gsi';
 import { UpcomingEventsCard } from '../components/mechanics';
 import { useKnowledgeBase } from '../hooks/useKnowledgeBase';
 import { PlayersCard } from '../components/players';
@@ -135,6 +136,9 @@ export function MatchState() {
   return (
     <>
       <PageHeader title="Состояние матча" subtitle="Что коуч знает о матче: видно сейчас, видели раньше, вывод или неизвестно; из игры или с экрана. Только наблюдение, без советов." />
+      <p className="game-mode-row muted small">
+        Режим игры: <GameModeBadge testId="match-game-mode" />
+      </p>
       {(!running && !gsi) || !match ? (
         <Card>
           <p className="muted match-empty" data-testid="match-empty">

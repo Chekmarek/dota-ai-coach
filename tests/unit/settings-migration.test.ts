@@ -9,7 +9,7 @@ import { copyFileSync, mkdtempSync, readFileSync, readdirSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { SettingsStore } from '../../src/main/settings/store';
-import { defaultSettings } from '../../src/shared/schemas/settings';
+import { defaultSettings, settingsPatchSchema, settingsSchema } from '../../src/shared/schemas/settings';
 
 const FIX = join(import.meta.dirname, '../fixtures/settings');
 const raw = (name: string) => JSON.parse(readFileSync(join(FIX, name), 'utf8')) as Record<string, any>;
@@ -61,6 +61,27 @@ describe('настройки после обновления', () => {
       expect(readdirSync(dir)).toEqual(['settings.json']);
     }
     const gsi = new SettingsStore(dataDirWith('settings-0.8.0-gsi.json')).get().gsi;
-    expect(gsi).toEqual({ port: 54321, token: 'ab'.repeat(32), record: false, dotaDir: 'D:\\Игры\\Steam Library\\steamapps\\common\\dota 2 beta' });
+    expect(gsi).toEqual({ port: 54321, token: 'ab'.repeat(32), record: false, dotaDir: 'D:\\Игры\\Steam Library\\steamapps\\common\\dota 2 beta' });  });
+
+  it('файл 0.13.2 (без режима игры) читается без потерь; режим — «по данным игры»', () => {
+    const dir = dataDirWith('settings-0.13.2.json');
+    const s = new SettingsStore(dir).get();
+    expectKept(raw('settings-0.13.2.json'), s);
+    expect(s.hints.gameMode).toBe('auto');
+    expect(s.hints.detail).toBe('detailed');
+    expect(readdirSync(dir)).toEqual(['settings.json']);
+  });
+
+  it('неверный режим игры в файле — «по данным игры», остальные подсказки на месте', () => {
+    const r = raw('settings-0.13.2.json') as { hints: Record<string, unknown> };
+    for (const bad of ['TURBO', 5, null, { x: 1 }]) {
+      const s = settingsSchema.parse({ ...r, hints: { ...r.hints, gameMode: bad } });
+      expect(s.hints.gameMode).toBe('auto');
+      expect(s.hints.ranked).toBe(false);
+    }
+    expect(settingsSchema.parse({ ...r, hints: { ...r.hints, gameMode: 'turbo' } }).hints.gameMode).toBe('turbo');
+    expect(() => settingsPatchSchema.parse({ hints: { gameMode: 'fast' } })).toThrow();
+    expect(settingsPatchSchema.parse({ hints: { gameMode: 'normal' } }).hints?.gameMode).toBe('normal');
+
   });
 });

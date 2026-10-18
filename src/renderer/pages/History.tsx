@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import type { HistoryMatch, HistorySummary } from '@shared/types/history';
 import { Card, PageHeader } from '../components/ui';
+import { gameModeRu } from '@core/gsi/mode.ts';
 
 const mmss = (sec: number | null) => (sec === null ? '—' : `${sec < 0 ? '-' : ''}${Math.floor(Math.abs(sec) / 60)}:${String(Math.abs(Math.round(sec)) % 60).padStart(2, '0')}`);
 const RESULT_RU = { win: 'Победа', loss: 'Поражение' } as const;
@@ -40,7 +41,7 @@ export function History() {
               {list.map((m) => (
                 <li key={m.id}>
                   <button className={m.id === selected ? 'active' : ''} onClick={() => setSelected(m.id)}>
-                    {new Date(m.startedAt).toLocaleString('ru-RU', { dateStyle: 'short', timeStyle: 'short' })} · {m.heroName ?? 'герой ?'}
+                    {new Date(m.startedAt).toLocaleString('ru-RU', { dateStyle: 'short', timeStyle: 'short' })} · {m.heroName ?? 'герой ?'} · {m.gameMode ? gameModeRu(m.gameMode) : 'режим не записан'}
                     <br />
                     <span className="muted small">
                       {m.result ? RESULT_RU[m.result] : 'без итога'} · {mmss(m.durationSec)} · советов {m.hints} · ошибок {m.mistakes} · смертей {m.deaths}
@@ -52,6 +53,9 @@ export function History() {
           </Card>
           {current && (
             <div data-testid="history-match">
+              <p className="muted small" data-testid="history-game-mode">
+                Режим игры: {current.gameMode ? gameModeRu(current.gameMode) : 'не записан (матч до 0.13.3)'}
+              </p>
               {current.matchReview && (
                 <Card title={`Разбор матча: ${current.matchReview.result ? RESULT_RU[current.matchReview.result] : 'итог неизвестен'}`}>
                   {current.matchReview.aiText && <p>{current.matchReview.aiText}</p>}

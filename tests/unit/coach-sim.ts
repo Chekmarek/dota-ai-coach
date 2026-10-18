@@ -4,6 +4,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import type { MatchState, Tracked, TrackedPlayer, MapPoint } from '../../src/core/match-state/index.ts';
 import type { GsiReading, GsiItemSlot, GsiAbility } from '../../src/core/gsi/map.ts';
+import { UNKNOWN_MODE, type GameModeInfo } from '../../src/core/gsi/mode.ts';
 import type { CoachData } from '../../src/core/coach/data.ts';
 import { parseKbStats } from '../../src/shared/types/stats.ts';
 import { parseMechanics } from '../../src/shared/types/mechanics.ts';
@@ -47,6 +48,8 @@ export interface SimPlayer {
 export interface SimInput {
   wallMs: number;
   clock: number;
+  /** Режим игры; по умолчанию — неизвестен (как в записях без map.game_mode) */
+  mode?: GameModeInfo;
   team?: 'radiant' | 'dire';
   heroKey?: string;
   heroId?: number;
@@ -157,6 +160,7 @@ export function sim(i: SimInput): { state: MatchState; gsi: GsiReading | null } 
       scoreRadiant: tr(0, w),
       scoreDire: tr(0, w),
       dayNight: tr(i.night ? 'night' : 'day', w),
+      mode: i.mode ?? { ...UNKNOWN_MODE },
     },
     hero: {
       locked: true,
@@ -180,6 +184,7 @@ export function sim(i: SimInput): { state: MatchState; gsi: GsiReading | null } 
   if (i.noGsi) return { state, gsi: null };
   const gsi: GsiReading = {
     matchId: '123',
+    gameMode: i.mode ?? null,
     gameState: null,
     phase: i.phase ?? 'in-progress',
     clock: i.clock,

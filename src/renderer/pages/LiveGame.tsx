@@ -7,7 +7,7 @@ import { HudRecognition, RegionOverlay } from '../components/HudRecognition';
 import { LIVE_HINT, LivePill, isLive, startLive } from '../components/live';
 import { PreviewImage } from '../components/preview';
 import { HintsFeed, HintsToggles } from '../components/hints';
-import { GsiCard } from '../components/gsi';
+import { GameModeBadge, GsiCard } from '../components/gsi';
 import { engine } from '../hooks/useEngine';
 import { AskCoach } from '../components/ask';
 import { usePageFacts } from '../hooks/useFacts';
@@ -28,6 +28,9 @@ export function LiveGame({ onNavigate }: PageProps) {
   return (
     <>
       <PageHeader title="Живая игра" subtitle="Коуч смотрит на окно Dota 2 в реальном времени. Подсказки во время матча — поверх игры и в карточке «Подсказки сейчас»; настройки — ниже." />
+      <p className="game-mode-row muted small">
+        Режим игры: <GameModeBadge testId="live-game-mode" />
+      </p>
       {exclusive && (
         <div className="live-warning" role="alert" data-testid="live-exclusive-warning">
           <strong>Дота в полноэкранном режиме — значок не может быть поверх игры.</strong>

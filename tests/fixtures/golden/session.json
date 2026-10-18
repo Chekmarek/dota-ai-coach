@@ -1,0 +1,158 @@
+[
+ {
+  "t": 1760340000000,
+  "aiContext": {
+   "schema": "dota-coach.ai-context",
+   "version": 1,
+   "wallMs": 1760340000000,
+   "sources": {
+    "gsi": true,
+    "screen": false
+   },
+   "match": {
+    "clockSec": {
+     "value": 485,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "paused": false,
+    "dayNight": {
+     "value": "day",
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "scoreRadiant": {
+     "value": 3,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "scoreDire": {
+     "value": 2,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    }
+   },
+   "myHero": {
+    "hero": {
+     "value": {
+      "id": 11,
+      "name": "nevermore"
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "level": {
+     "value": 7,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "health": {
+     "value": {
+      "current": 812,
+      "max": 980
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "mana": {
+     "value": {
+      "current": 230,
+      "max": 411
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "gold": {
+     "value": 1335,
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    },
+    "kda": {
+     "value": {
+      "kills": 2,
+      "deaths": 1,
+      "assists": 1
+     },
+     "confidence": 1,
+     "ageSec": 0,
+     "tag": "visible",
+     "source": "gsi"
+    }
+   },
+   "myTeam": {
+    "value": "radiant",
+    "source": "gsi"
+   },
+   "players": [],
+   "timers": {
+    "upcoming": [
+     {
+      "id": "lane-wave",
+      "nameRu": "Волна крипов",
+      "atSec": 510,
+      "inSec": 25,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "neutral-spawn",
+      "nameRu": "Появление нейтралов",
+      "atSec": 540,
+      "inSec": 55,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "stack-window",
+      "nameRu": "Окно стака",
+      "atSec": 534,
+      "inSec": 49,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "rune-bounty",
+      "nameRu": "Руна богатства",
+      "atSec": 720,
+      "inSec": 235,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "rune-power",
+      "nameRu": "Руна силы",
+      "atSec": 600,
+      "inSec": 115,
+      "verification": "imported-unverified"
+     },
+     {
+      "id": "shrine-of-wisdom",
+      "nameRu": "Святилище мудрости",
+      "atSec": 840,
+      "inSec": 355,
+      "verification": "imported-unverified"
+     }
+    ]
+   }
+  }
+ },
+ {
+  "journal": [],
+  "deathReview": null,
+  "matchReview": null
+ }
+]

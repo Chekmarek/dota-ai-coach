@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import type { DraftRequest, DraftResult, DraftReasonView } from '@shared/types/draft';
 import type { KbHero } from '@shared/types/kb';
 import { Card, PageHeader } from '../components/ui';
+import { GameModeBadge } from '../components/gsi';
 import { useKnowledgeBase } from '../hooks/useKnowledgeBase';
 
 type Side = 'allies' | 'enemies' | 'bans';
@@ -72,6 +73,9 @@ export function Draft() {
         title="Драфт"
         subtitle="Кого взять против врагов и в пару к союзникам, чем опасны враги и что покупать против них. По статистике публичных матчей текущего патча."
       />
+      <p className="game-mode-row muted small">
+        Режим игры: <GameModeBadge testId="draft-game-mode" />
+      </p>
       {(kbError || res?.error) && <p className="error">{kbError ?? res?.error}</p>}
       {res?.noStats && res.noStats.length > 0 && (
         <p className="muted small" data-testid="draft-no-stats">

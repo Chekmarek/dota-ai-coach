@@ -34,6 +34,10 @@ export const gsiMapSchema = z.looseObject({
   win_team: str,
   radiant_score: int,
   dire_score: int,
+  /** Режим DOTA_GAMEMODE_*: в настоящей записи Hero Demo его нет — разбирается в mode.ts */
+  game_mode: opt(z.union([z.string(), z.number()])),
+  /** Путь к аддону пользовательской игры (Hero Demo); в матчмейкинге — пусто */
+  customgamename: str,
 });
 
 export const gsiPlayerSchema = z.looseObject({

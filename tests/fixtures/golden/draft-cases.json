@@ -1,0 +1,4853 @@
+[
+ {
+  "id": "empty",
+  "result": {
+   "candidates": [
+    {
+     "hero": "skeleton_king",
+     "name": "Wraith King",
+     "score": 0.0175,
+     "vsEnemies": [],
+     "withAllies": [],
+     "meta": 0.0175,
+     "positions": [
+      1,
+      2
+     ],
+     "covered": 0
+    },
+    {
+     "hero": "meepo",
+     "name": "Meepo",
+     "score": 0.0153,
+     "vsEnemies": [],
+     "withAllies": [],
+     "meta": 0.0153,
+     "positions": [
+      1,
+      2
+     ],
+     "covered": 0
+    },
+    {
+     "hero": "visage",
+     "name": "Visage",
+     "score": 0.0135,
+     "vsEnemies": [],
+     "withAllies": [],
+     "meta": 0.0135,
+     "positions": [
+      4,
+      5
+     ],
+     "covered": 0
+    },
+    {
+     "hero": "obsidian_destroyer",
+     "name": "Outworld Destroyer",
+     "score": 0.0129,
+     "vsEnemies": [],
+     "withAllies": [],
+     "meta": 0.0129,
+     "positions": [
+      3,
+      2
+     ],
+     "covered": 0
+    },
+    {
+     "hero": "spectre",
+     "name": "Spectre",
+     "score": 0.0119,
+     "vsEnemies": [],
+     "withAllies": [],
+     "meta": 0.0119,
+     "positions": [
+      1,
+      2
+     ],
+     "covered": 0
+    },
+    {
+     "hero": "phantom_lancer",
+     "name": "Phantom Lancer",
+     "score": 0.0115,
+     "vsEnemies": [],
+     "withAllies": [],
+     "meta": 0.0115,
+     "positions": [
+      1
+     ],
+     "covered": 0
+    },
+    {
+     "hero": "juggernaut",
+     "name": "Juggernaut",
+     "score": 0.0105,
+     "vsEnemies": [],
+     "withAllies": [],
+     "meta": 0.0105,
+     "positions": [
+      1,
+      2
+     ],
+     "covered": 0
+    },
+    {
+     "hero": "dragon_knight",
+     "name": "Dragon Knight",
+     "score": 0.0101,
+     "vsEnemies": [],
+     "withAllies": [],
+     "meta": 0.0101,
+     "positions": [
+      3,
+      2,
+      1
+     ],
+     "covered": 0
+    },
+    {
+     "hero": "riki",
+     "name": "Riki",
+     "score": 0.0098,
+     "vsEnemies": [],
+     "withAllies": [],
+     "meta": 0.0098,
+     "positions": [
+      1,
+      2
+     ],
+     "covered": 0
+    },
+    {
+     "hero": "lich",
+     "name": "Lich",
+     "score": 0.0094,
+     "vsEnemies": [],
+     "withAllies": [],
+     "meta": 0.0094,
+     "positions": [
+      5,
+      4
+     ],
+     "covered": 0
+    },
+    {
+     "hero": "arc_warden",
+     "name": "Arc Warden",
+     "score": 0.0094,
+     "vsEnemies": [],
+     "withAllies": [],
+     "meta": 0.0094,
+     "positions": [
+      1,
+      2
+     ],
+     "covered": 0
+    },
+    {
+     "hero": "vengefulspirit",
+     "name": "Vengeful Spirit",
+     "score": 0.0091,
+     "vsEnemies": [],
+     "withAllies": [],
+     "meta": 0.0091,
+     "positions": [
+      4,
+      5
+     ],
+     "covered": 0
+    }
+   ],
+   "threats": [],
+   "me": null,
+   "noStats": [],
+   "hasSynergy": true,
+   "patch": "7.41f",
+   "statsAt": "2026-10-16T19:05:26.088Z",
+   "error": null
+  }
+ },
+ {
+  "id": "one-enemy",
+  "result": {
+   "candidates": [
+    {
+     "hero": "slark",
+     "name": "Slark",
+     "score": 0.0561,
+     "vsEnemies": [
+      {
+       "hero": "bristleback",
+       "name": "Bristleback",
+       "delta": 0.0568,
+       "games": 18702
+      }
+     ],
+     "withAllies": [],
+     "meta": -0.0007,
+     "positions": [
+      3,
+      2,
+      1
+     ],
+     "covered": 1
+    },
+    {
+     "hero": "viper",
+     "name": "Viper",
+     "score": 0.0432,
+     "vsEnemies": [
+      {
+       "hero": "bristleback",
+       "name": "Bristleback",
+       "delta": 0.0495,
+       "games": 13200
+      }
+     ],
+     "withAllies": [],
+     "meta": -0.0063,
+     "positions": [
+      3,
+      2,
+      1
+     ],
+     "covered": 1
+    },
+    {
+     "hero": "legion_commander",
+     "name": "Legion Commander",
+     "score": 0.0425,
+     "vsEnemies": [
+      {
+       "hero": "bristleback",
+       "name": "Bristleback",
+       "delta": 0.0334,
+       "games": 22847
+      }
+     ],
+     "withAllies": [],
+     "meta": 0.0091,
+     "positions": [
+      1,
+      2
+     ],
+     "covered": 1
+    },
+    {
+     "hero": "nyx_assassin",
+     "name": "Nyx Assassin",
+     "score": 0.0414,
+     "vsEnemies": [
+      {
+       "hero": "bristleback",
+       "name": "Bristleback",
+       "delta": 0.0327,
+       "games": 10314
+      }
+     ],
+     "withAllies": [],
+     "meta": 0.0087,
+     "positions": [
+      5,
+      4
+     ],
+     "covered": 1
+    },
+    {
+     "hero": "antimage",
+     "name": "Anti-Mage",
+     "score": 0.0338,
+     "vsEnemies": [
+      {
+       "hero": "bristleback",
+       "name": "Bristleback",
+       "delta": 0.0303,
+       "games": 17450
+      }
+     ],
+     "withAllies": [],
+     "meta": 0.0035,
+     "positions": [
+      1,
+      2
+     ],
+     "covered": 1
+    },
+    {
+     "hero": "primal_beast",
+     "name": "Primal Beast",
+     "score": 0.0304,
+     "vsEnemies": [
+      {
+       "hero": "bristleback",
+       "name": "Bristleback",
+       "delta": 0.0342,
+       "games": 4819
+      }
+     ],
+     "withAllies": [],
+     "meta": -0.0038,
+     "positions": [
+      3,
+      1
+     ],
+     "covered": 1
+    },
+    {
+     "hero": "necrolyte",
+     "name": "Necrophos",
+     "score": 0.0253,
+     "vsEnemies": [
+      {
+       "hero": "bristleback",
+       "name": "Bristleback",
+       "delta": 0.0225,
+       "games": 19191
+      }
+     ],
+     "withAllies": [],
+     "meta": 0.0028,
+     "positions": [
+      1,
+      2
+     ],
+     "covered": 1
+    },
+    {
+     "hero": "juggernaut",
+     "name": "Juggernaut",
+     "score": 0.0252,
+     "vsEnemies": [
+      {
+       "hero": "bristleback",
+       "name": "Bristleback",
+       "delta": 0.0147,
+       "games": 21093
+      }
+     ],
+     "withAllies": [],
+     "meta": 0.0105,
+     "positions": [
+      1,
+      2
+     ],
+     "covered": 1
+    },
+    {
+     "hero": "ancient_apparition",
+     "name": "Ancient Apparition",
+     "score": 0.0241,
+     "vsEnemies": [
+      {
+       "hero": "bristleback",
+       "name": "Bristleback",
+       "delta": 0.0192,
+       "games": 9430
+      }
+     ],
+     "withAllies": [],
+     "meta": 0.0049,
+     "positions": [
+      5,
+      4
+     ],
+     "covered": 1
+    },
+    {
+     "hero": "meepo",
+     "name": "Meepo",
+     "score": 0.0236,
+     "vsEnemies": [
+      {
+       "hero": "bristleback",
+       "name": "Bristleback",
+       "delta": 0.0083,
+       "games": 1902
+      }
+     ],
+     "withAllies": [],
+     "meta": 0.0153,
+     "positions": [
+      1,
+      2
+     ],
+     "covered": 1
+    },
+    {
+     "hero": "silencer",
+     "name": "Silencer",
+     "score": 0.023,
+     "vsEnemies": [
+      {
+       "hero": "bristleback",
+       "name": "Bristleback",
+       "delta": 0.0213,
+       "games": 11930
+      }
+     ],
+     "withAllies": [],
+     "meta": 0.0017,
+     "positions": [
+      5,
+      4
+     ],
+     "covered": 1
+    },
+    {
+     "hero": "spirit_breaker",
+     "name": "Spirit Breaker",
+     "score": 0.0204,
+     "vsEnemies": [
+      {
+       "hero": "bristleback",
+       "name": "Bristleback",
+       "delta": 0.0127,
+       "games": 19306
+      }
+     ],
+     "withAllies": [],
+     "meta": 0.0077,
+     "positions": [
+      5,
+      4
+     ],
+     "covered": 1
+    }
+   ],
+   "threats": [
+    {
+     "id": "passives",
+     "nameRu": "сильные пассивки",
+     "whyRu": "сила в пассивных способностях",
+     "heroes": [
+      "Bristleback"
+     ],
+     "urgent": false,
+     "items": [
+      {
+       "key": "silver_edge",
+       "name": "Silver Edge",
+       "cost": 5700,
+       "role": "core"
+      },
+      {
+       "key": "spirit_vessel",
+       "name": "Spirit Vessel",
+       "cost": 2725,
+       "role": "support"
+      }
+     ]
+    }
+   ],
+   "me": null,
+   "noStats": [],
+   "hasSynergy": true,
+   "patch": "7.41f",
+   "statsAt": "2026-10-16T19:05:26.088Z",
+   "error": null
+  }
+ },
+ {
+  "id": "full-enemies",
+  "result": {
+   "candidates": [
+    {
+     "hero": "meepo",
+     "name": "Meepo",
+     "score": 0.0901,
+     "vsEnemies": [
+      {
+       "hero": "riki",
+       "name": "Riki",
+       "delta": 0.0451,
+       "games": 1398
+      },
+      {
+       "hero": "faceless_void",
+       "name": "Faceless Void",
+       "delta": 0.0319,
+       "games": 2073
+      },
+      {
+       "hero": "bristleback",
+       "name": "Bristleback",
+       "delta": 0.0083,
+       "games": 1902
+      },
+      {
+       "hero": "invoker",
+       "name": "Invoker",
+       "delta": -0.0038,
+       "games": 6387
+      },
+      {
+       "hero": "lion",
+       "name": "Lion",
+       "delta": -0.0067,
+       "games": 7957
+      }
+     ],
+     "withAllies": [],
+     "meta": 0.0153,
+     "positions": [
+      1,
+      2
+     ],
+     "covered": 5
+    },
+    {
+     "hero": "slardar",
+     "name": "Slardar",
+     "score": 0.0521,
+     "vsEnemies": [
+      {
+       "hero": "bristleback",
+       "name": "Bristleback",
+       "delta": 0.021,
+       "games": 8803
+      },
+      {
+       "hero": "invoker",
+       "name": "Invoker",
+       "delta": 0.0177,
+       "games": 22757
+      },
+      {
+       "hero": "faceless_void",
+       "name": "Faceless Void",
+       "delta": 0.0105,
+       "games": 9326
+      },
+      {
+       "hero": "riki",
+       "name": "Riki",
+       "delta": 0.0067,
+       "games": 8553
+      },
+      {
+       "hero": "lion",
+       "name": "Lion",
+       "delta": -0.001,
+       "games": 31311
+      }
+     ],
+     "withAllies": [],
+     "meta": -0.0028,
+     "positions": [
+      3
+     ],
+     "covered": 5
+    },
+    {
+     "hero": "shadow_shaman",
+     "name": "Shadow Shaman",
+     "score": 0.0472,
+     "vsEnemies": [
+      {
+       "hero": "faceless_void",
+       "name": "Faceless Void",
+       "delta": 0.0138,
+       "games": 24446
+      },
+      {
+       "hero": "riki",
+       "name": "Riki",
+       "delta": 0.0127,
+       "games": 17382
+      },
+      {
+       "hero": "bristleback",
+       "name": "Bristleback",
+       "delta": 0.0088,
+       "games": 21903
+      },
+      {
+       "hero": "lion",
+       "name": "Lion",
+       "delta": 0.004,
+       "games": 93203
+      },
+      {
+       "hero": "invoker",
+       "name": "Invoker",
+       "delta": 0.002,
+       "games": 63640
+      }
+     ],
+     "withAllies": [],
+     "meta": 0.0059,
+     "positions": [
+      4,
+      5
+     ],
+     "covered": 5
+    },
+    {
+     "hero": "legion_commander",
+     "name": "Legion Commander",
+     "score": 0.0445,
+     "vsEnemies": [
+      {
+       "hero": "bristleback",
+       "name": "Bristleback",
+       "delta": 0.0334,
+       "games": 22847
+      },
+      {
+       "hero": "faceless_void",
+       "name": "Faceless Void",
+       "delta": 0.0148,
+       "games": 24547
+      },
+      {
+       "hero": "invoker",
+       "name": "Invoker",
+       "delta": 0.002,
+       "games": 60056
+      },
+      {
+       "hero": "riki",
+       "name": "Riki",
+       "delta": -0.0039,
+       "games": 17287
+      },
+      {
+       "hero": "lion",
+       "name": "Lion",
+       "delta": -0.0109,
+       "games": 83651
+      }
+     ],
+     "withAllies": [],
+     "meta": 0.0091,
+     "positions": [
+      1,
+      2
+     ],
+     "covered": 5
+    },
+    {
+     "hero": "axe",
+     "name": "Axe",
+     "score": 0.0369,
+     "vsEnemies": [
+      {
+       "hero": "faceless_void",
+       "name": "Faceless Void",
+       "delta": 0.0148,
+       "games": 23740
+      },
+      {
+       "hero": "bristleback",
+       "name": "Bristleback",
+       "delta": 0.0128,
+       "games": 22070
+      },
+      {
+       "hero": "lion",
+       "name": "Lion",
+       "delta": 0.008,
+       "games": 84923
+      },
+      {
+       "hero": "riki",
+       "name": "Riki",
+       "delta": 0.0029,
+       "games": 16535
+      },
+      {
+       "hero": "invoker",
+       "name": "Invoker",
+       "delta": -0.003,
+       "games": 59855
+      }
+     ],
+     "withAllies": [],
+     "meta": 0.0014,
+     "positions": [
+      3,
+      2
+     ],
+     "covered": 5
+    },
+    {
+     "hero": "drow_ranger",
+     "name": "Drow Ranger",
+     "score": 0.0364,
+     "vsEnemies": [
+      {
+       "hero": "bristleback",
+       "name": "Bristleback",
+       "delta": 0.0305,
+       "games": 24438
+      },
+      {
+       "hero": "riki",
+       "name": "Riki",
+       "delta": 0.0206,
+       "games": 18349
+      },
+      {
+       "hero": "lion",
+       "name": "Lion",
+       "delta": 0.008,
+       "games": 89075
+      },
+      {
+       "hero": "faceless_void",
+       "name": "Faceless Void",
+       "delta": -0.003,
+       "games": 28419
+      },
+      {
+       "hero": "invoker",
+       "name": "Invoker",
+       "delta": -0.005,
+       "games": 63717
+      }
+     ],
+     "withAllies": [],
+     "meta": -0.0147,
+     "positions": [
+      1,
+      2
+     ],
+     "covered": 5
+    },
+    {
+     "hero": "chaos_knight",
+     "name": "Chaos Knight",
+     "score": 0.0349,
+     "vsEnemies": [
+      {
+       "hero": "faceless_void",
+       "name": "Faceless Void",
+       "delta": 0.0179,
+       "games": 6401
+      },
+      {
+       "hero": "riki",
+       "name": "Riki",
+       "delta": 0.0164,
+       "games": 4037
+      },
+      {
+       "hero": "lion",
+       "name": "Lion",
+       "delta": 0.001,
+       "games": 20427
+      },
+      {
+       "hero": "bristleback",
+       "name": "Bristleback",
+       "delta": 0.0009,
+       "games": 6324
+      },
+      {
+       "hero": "invoker",
+       "name": "Invoker",
+       "delta": -0.0058,
+       "games": 13168
+      }
+     ],
+     "withAllies": [],
+     "meta": 0.0045,
+     "positions": [
+      1,
+      2
+     ],
+     "covered": 5
+    },
+    {
+     "hero": "dragon_knight",
+     "name": "Dragon Knight",
+     "score": 0.0347,
+     "vsEnemies": [
+      {
+       "hero": "riki",
+       "name": "Riki",
+       "delta": 0.0184,
+       "games": 12940
+      },
+      {
+       "hero": "lion",
+       "name": "Lion",
+       "delta": 0.0139,
+       "games": 67648
+      },
+      {
+       "hero": "bristleback",
+       "name": "Bristleback",
+       "delta": 0.0049,
+       "games": 15230
+      },
+      {
+       "hero": "invoker",
+       "name": "Invoker",
+       "delta": 0.004,
+       "games": 50830
+      },
+      {
+       "hero": "faceless_void",
+       "name": "Faceless Void",
+       "delta": -0.0166,
+       "games": 17671
+      }
+     ],
+     "withAllies": [],
+     "meta": 0.0101,
+     "positions": [
+      3,
+      2,
+      1
+     ],
+     "covered": 5
+    },
+    {
+     "hero": "rubick",
+     "name": "Rubick",
+     "score": 0.0341,
+     "vsEnemies": [
+      {
+       "hero": "lion",
+       "name": "Lion",
+       "delta": 0.0149,
+       "games": 113743
+      },
+      {
+       "hero": "bristleback",
+       "name": "Bristleback",
+       "delta": 0.0108,
+       "games": 21500
+      },
+      {
+       "hero": "riki",
+       "name": "Riki",
+       "delta": 0.0059,
+       "games": 19622
+      },
+      {
+       "hero": "faceless_void",
+       "name": "Faceless Void",
+       "delta": 0.0059,
+       "games": 27238
+      },
+      {
+       "hero": "invoker",
+       "name": "Invoker",
+       "delta": -0.002,
+       "games": 79990
+      }
+     ],
+     "withAllies": [],
+     "meta": -0.0014,
+     "positions": [
+      4,
+      5
+     ],
+     "covered": 5
+    },
+    {
+     "hero": "lone_druid",
+     "name": "Lone Druid",
+     "score": 0.033,
+     "vsEnemies": [
+      {
+       "hero": "faceless_void",
+       "name": "Faceless Void",
+       "delta": 0.033,
+       "games": 3341
+      },
+      {
+       "hero": "riki",
+       "name": "Riki",
+       "delta": 0.006,
+       "games": 2283
+      },
+      {
+       "hero": "bristleback",
+       "name": "Bristleback",
+       "delta": 0,
+       "games": 2905
+      },
+      {
+       "hero": "lion",
+       "name": "Lion",
+       "delta": -0.0019,
+       "games": 12485
+      },
+      {
+       "hero": "invoker",
+       "name": "Invoker",
+       "delta": -0.0038,
+       "games": 9620
+      }
+     ],
+     "withAllies": [],
+     "meta": -0.0003,
+     "positions": [
+      1
+     ],
+     "covered": 5
+    },
+    {
+     "hero": "silencer",
+     "name": "Silencer",
+     "score": 0.032,
+     "vsEnemies": [
+      {
+       "hero": "bristleback",
+       "name": "Bristleback",
+       "delta": 0.0213,
+       "games": 11930
+      },
+      {
+       "hero": "faceless_void",
+       "name": "Faceless Void",
+       "delta": 0.0136,
+       "games": 13683
+      },
+      {
+       "hero": "lion",
+       "name": "Lion",
+       "delta": 0.004,
+       "games": 50783
+      },
+      {
+       "hero": "invoker",
+       "name": "Invoker",
+       "delta": 0.001,
+       "games": 32947
+      },
+      {
+       "hero": "riki",
+       "name": "Riki",
+       "delta": -0.0096,
+       "games": 10947
+      }
+     ],
+     "withAllies": [],
+     "meta": 0.0017,
+     "positions": [
+      5,
+      4
+     ],
+     "covered": 5
+    },
+    {
+     "hero": "disruptor",
+     "name": "Disruptor",
+     "score": 0.0304,
+     "vsEnemies": [
+      {
+       "hero": "riki",
+       "name": "Riki",
+       "delta": 0.0143,
+       "games": 8374
+      },
+      {
+       "hero": "faceless_void",
+       "name": "Faceless Void",
+       "delta": 0.0116,
+       "games": 10707
+      },
+      {
+       "hero": "bristleback",
+       "name": "Bristleback",
+       "delta": 0.0057,
+       "games": 8845
+      },
+      {
+       "hero": "lion",
+       "name": "Lion",
+       "delta": 0.004,
+       "games": 42884
+      },
+      {
+       "hero": "invoker",
+       "name": "Invoker",
+       "delta": -0.0069,
+       "games": 28780
+      }
+     ],
+     "withAllies": [],
+     "meta": 0.0017,
+     "positions": [
+      5,
+      4
+     ],
+     "covered": 5
+    }
+   ],
+   "threats": [
+    {
+     "id": "invis",
+     "nameRu": "невидимость",
+     "whyRu": "без обнаружения его не ударить",
+     "heroes": [
+      "Invoker",
+      "Riki"
+     ],
+     "urgent": true,
+     "items": [
+      {
+       "key": "dust",
+       "name": "Dust of Appearance",
+       "cost": 80,
+       "role": "any"
+      },
+      {
+       "key": "ward_sentry",
+       "name": "Sentry Ward",
+       "cost": 50,
+       "role": "support"
+      },
+      {
+       "key": "gem",
+       "name": "Gem of True Sight",
+       "cost": 900,
+       "role": "core"
+      }
+     ]
+    },
+    {
+     "id": "magic",
+     "nameRu": "магический урон",
+     "whyRu": "убивает заклинаниями",
+     "heroes": [
+      "Invoker",
+      "Lion"
+     ],
+     "urgent": false,
+     "items": [
+      {
+       "key": "black_king_bar",
+       "name": "Black King Bar",
+       "cost": 4050,
+       "role": "core"
+      },
+      {
+       "key": "pipe",
+       "name": "Pipe of Insight",
+       "cost": 3725,
+       "role": "support"
+      },
+      {
+       "key": "glimmer_cape",
+       "name": "Glimmer Cape",
+       "cost": 2150,
+       "role": "support"
+      },
+      {
+       "key": "eternal_shroud",
+       "name": "Eternal Shroud",
+       "cost": 3900,
+       "role": "core"
+      }
+     ]
+    },
+    {
+     "id": "disable",
+     "nameRu": "контроль",
+     "whyRu": "долго держит в оглушении",
+     "heroes": [
+      "Lion",
+      "Faceless Void"
+     ],
+     "urgent": false,
+     "items": [
+      {
+       "key": "black_king_bar",
+       "name": "Black King Bar",
+       "cost": 4050,
+       "role": "core"
+      },
+      {
+       "key": "sphere",
+       "name": "Linken's Sphere",
+       "cost": 4800,
+       "role": "core"
+      },
+      {
+       "key": "lotus_orb",
+       "name": "Lotus Orb",
+       "cost": 3850,
+       "role": "support"
+      },
+      {
+       "key": "cyclone",
+       "name": "Eul's Scepter of Divinity",
+       "cost": 2600,
+       "role": "support"
+      }
+     ]
+    },
+    {
+     "id": "passives",
+     "nameRu": "сильные пассивки",
+     "whyRu": "сила в пассивных способностях",
+     "heroes": [
+      "Bristleback"
+     ],
+     "urgent": false,
+     "items": [
+      {
+       "key": "silver_edge",
+       "name": "Silver Edge",
+       "cost": 5700,
+       "role": "core"
+      },
+      {
+       "key": "spirit_vessel",
+       "name": "Spirit Vessel",
+       "cost": 2725,
+       "role": "support"
+      }
+     ]
+    },
+    {
+     "id": "evasion",
+     "nameRu": "уклонение",
+     "whyRu": "атаки промахиваются",
+     "heroes": [
+      "Riki"
+     ],
+     "urgent": false,
+     "items": [
+      {
+       "key": "monkey_king_bar",
+       "name": "Monkey King Bar",
+       "cost": 5000,
+       "role": "core"
+      },
+      {
+       "key": "bloodthorn",
+       "name": "Bloodthorn",
+       "cost": 6400,
+       "role": "core"
+      }
+     ]
+    },
+    {
+     "id": "physical",
+     "nameRu": "физический урон",
+     "whyRu": "бьёт руками",
+     "heroes": [
+      "Faceless Void"
+     ],
+     "urgent": false,
+     "items": [
+      {
+       "key": "ghost",
+       "name": "Ghost Scepter",
+       "cost": 1500,
+       "role": "support"
+      },
+      {
+       "key": "solar_crest",
+       "name": "Solar Crest",
+       "cost": 2575,
+       "role": "support"
+      },
+      {
+       "key": "heavens_halberd",
+       "name": "Heaven's Halberd",
+       "cost": 3300,
+       "role": "core"
+      },
+      {
+       "key": "assault",
+       "name": "Assault Cuirass",
+       "cost": 5125,
+       "role": "core"
+      },
+      {
+       "key": "shivas_guard",
+       "name": "Shiva's Guard",
+       "cost": 4500,
+       "role": "core"
+      }
+     ]
+    }
+   ],
+   "me": null,
+   "noStats": [],
+   "hasSynergy": true,
+   "patch": "7.41f",
+   "statsAt": "2026-10-16T19:05:26.088Z",
+   "error": null
+  }
+ },
+ {
+  "id": "pos-1",
+  "result": {
+   "candidates": [
+    {
+     "hero": "life_stealer",
+     "name": "Lifestealer",
+     "score": 0.0447,
+     "vsEnemies": [
+      {
+       "hero": "invoker",
+       "name": "Invoker",
+       "delta": 0.0208,
+       "games": 54178
+      },
+      {
+       "hero": "pudge",
+       "name": "Pudge",
+       "delta": 0.0129,
+       "games": 87620
+      }
+     ],
+     "withAllies": [
+      {
+       "hero": "lion",
+       "name": "Lion",
+       "delta": 0.004,
+       "games": 71443
+      }
+     ],
+     "meta": 0.007,
+     "positions": [
+      1,
+      2
+     ],
+     "covered": 3
+    },
+    {
+     "hero": "ursa",
+     "name": "Ursa",
+     "score": 0.0413,
+     "vsEnemies": [
+      {
+       "hero": "pudge",
+       "name": "Pudge",
+       "delta": 0.0257,
+       "games": 40846
+      },
+      {
+       "hero": "invoker",
+       "name": "Invoker",
+       "delta": 0.0098,
+       "games": 24550
+      }
+     ],
+     "withAllies": [
+      {
+       "hero": "lion",
+       "name": "Lion",
+       "delta": 0.0089,
+       "games": 35346
+      }
+     ],
+     "meta": -0.0031,
+     "positions": [
+      1,
+      2
+     ],
+     "covered": 3
+    },
+    {
+     "hero": "weaver",
+     "name": "Weaver",
+     "score": 0.035,
+     "vsEnemies": [
+      {
+       "hero": "pudge",
+       "name": "Pudge",
+       "delta": 0.0236,
+       "games": 26669
+      },
+      {
+       "hero": "invoker",
+       "name": "Invoker",
+       "delta": 0.0137,
+       "games": 16166
+      }
+     ],
+     "withAllies": [
+      {
+       "hero": "lion",
+       "name": "Lion",
+       "delta": 0.0078,
+       "games": 20328
+      }
+     ],
+     "meta": -0.0101,
+     "positions": [
+      1,
+      2
+     ],
+     "covered": 3
+    },
+    {
+     "hero": "riki",
+     "name": "Riki",
+     "score": 0.0312,
+     "vsEnemies": [
+      {
+       "hero": "invoker",
+       "name": "Invoker",
+       "delta": 0.0254,
+       "games": 18015
+      },
+      {
+       "hero": "pudge",
+       "name": "Pudge",
+       "delta": -0.002,
+       "games": 26229
+      }
+     ],
+     "withAllies": [
+      {
+       "hero": "lion",
+       "name": "Lion",
+       "delta": -0.002,
+       "games": 22662
+      }
+     ],
+     "meta": 0.0098,
+     "positions": [
+      1,
+      2
+     ],
+     "covered": 3
+    },
+    {
+     "hero": "bristleback",
+     "name": "Bristleback",
+     "score": 0.0296,
+     "vsEnemies": [
+      {
+       "hero": "pudge",
+       "name": "Pudge",
+       "delta": 0.0158,
+       "games": 35315
+      },
+      {
+       "hero": "invoker",
+       "name": "Invoker",
+       "delta": 0.0088,
+       "games": 19819
+      }
+     ],
+     "withAllies": [
+      {
+       "hero": "lion",
+       "name": "Lion",
+       "delta": 0.0099,
+       "games": 31069
+      }
+     ],
+     "meta": -0.0049,
+     "positions": [
+      2,
+      1,
+      3
+     ],
+     "covered": 3
+    },
+    {
+     "hero": "skeleton_king",
+     "name": "Wraith King",
+     "score": 0.0275,
+     "vsEnemies": [
+      {
+       "hero": "pudge",
+       "name": "Pudge",
+       "delta": 0.0189,
+       "games": 70218
+      },
+      {
+       "hero": "invoker",
+       "name": "Invoker",
+       "delta": -0.0119,
+       "games": 41427
+      }
+     ],
+     "withAllies": [
+      {
+       "hero": "lion",
+       "name": "Lion",
+       "delta": 0.003,
+       "games": 61797
+      }
+     ],
+     "meta": 0.0175,
+     "positions": [
+      1,
+      2
+     ],
+     "covered": 3
+    },
+    {
+     "hero": "wisp",
+     "name": "Io",
+     "score": 0.0258,
+     "vsEnemies": [
+      {
+       "hero": "invoker",
+       "name": "Invoker",
+       "delta": 0.0127,
+       "games": 15791
+      },
+      {
+       "hero": "pudge",
+       "name": "Pudge",
+       "delta": 0.0059,
+       "games": 23640
+      }
+     ],
+     "withAllies": [
+      {
+       "hero": "lion",
+       "name": "Lion",
+       "delta": 0.0058,
+       "games": 11941
+      }
+     ],
+     "meta": 0.0014,
+     "positions": [
+      1,
+      2
+     ],
+     "covered": 3
+    },
+    {
+     "hero": "antimage",
+     "name": "Anti-Mage",
+     "score": 0.0244,
+     "vsEnemies": [
+      {
+       "hero": "pudge",
+       "name": "Pudge",
+       "delta": 0.009,
+       "games": 75534
+      },
+      {
+       "hero": "invoker",
+       "name": "Invoker",
+       "delta": 0.0089,
+       "games": 64009
+      }
+     ],
+     "withAllies": [
+      {
+       "hero": "lion",
+       "name": "Lion",
+       "delta": 0.003,
+       "games": 76117
+      }
+     ],
+     "meta": 0.0035,
+     "positions": [
+      1,
+      2
+     ],
+     "covered": 3
+    },
+    {
+     "hero": "sven",
+     "name": "Sven",
+     "score": 0.0212,
+     "vsEnemies": [
+      {
+       "hero": "pudge",
+       "name": "Pudge",
+       "delta": 0.0169,
+       "games": 57447
+      },
+      {
+       "hero": "invoker",
+       "name": "Invoker",
+       "delta": -0.003,
+       "games": 35586
+      }
+     ],
+     "withAllies": [
+      {
+       "hero": "lion",
+       "name": "Lion",
+       "delta": 0.001,
+       "games": 49682
+      }
+     ],
+     "meta": 0.0063,
+     "positions": [
+      1
+     ],
+     "covered": 3
+    },
+    {
+     "hero": "kez",
+     "name": "Kez",
+     "score": 0.0186,
+     "vsEnemies": [
+      {
+       "hero": "invoker",
+       "name": "Invoker",
+       "delta": 0.0175,
+       "games": 15431
+      },
+      {
+       "hero": "pudge",
+       "name": "Pudge",
+       "delta": 0.0137,
+       "games": 21583
+      }
+     ],
+     "withAllies": [
+      {
+       "hero": "lion",
+       "name": "Lion",
+       "delta": 0.0049,
+       "games": 16995
+      }
+     ],
+     "meta": -0.0175,
+     "positions": [
+      1,
+      2
+     ],
+     "covered": 3
+    },
+    {
+     "hero": "phantom_lancer",
+     "name": "Phantom Lancer",
+     "score": 0.0145,
+     "vsEnemies": [
+      {
+       "hero": "invoker",
+       "name": "Invoker",
+       "delta": 0.0149,
+       "games": 43308
+      },
+      {
+       "hero": "pudge",
+       "name": "Pudge",
+       "delta": -0.0149,
+       "games": 62276
+      }
+     ],
+     "withAllies": [
+      {
+       "hero": "lion",
+       "name": "Lion",
+       "delta": 0.003,
+       "games": 59269
+      }
+     ],
+     "meta": 0.0115,
+     "positions": [
+      1
+     ],
+     "covered": 3
+    },
+    {
+     "hero": "shredder",
+     "name": "Timbersaw",
+     "score": 0.0138,
+     "vsEnemies": [
+      {
+       "hero": "pudge",
+       "name": "Pudge",
+       "delta": 0.0168,
+       "games": 34123
+      },
+      {
+       "hero": "invoker",
+       "name": "Invoker",
+       "delta": -0.0049,
+       "games": 15680
+      }
+     ],
+     "withAllies": [
+      {
+       "hero": "lion",
+       "name": "Lion",
+       "delta": 0.0187,
+       "games": 23453
+      }
+     ],
+     "meta": -0.0168,
+     "positions": [
+      2,
+      1
+     ],
+     "covered": 3
+    }
+   ],
+   "threats": [
+    {
+     "id": "invis",
+     "nameRu": "невидимость",
+     "whyRu": "без обнаружения его не ударить",
+     "heroes": [
+      "Invoker"
+     ],
+     "urgent": true,
+     "items": [
+      {
+       "key": "dust",
+       "name": "Dust of Appearance",
+       "cost": 80,
+       "role": "any"
+      },
+      {
+       "key": "ward_sentry",
+       "name": "Sentry Ward",
+       "cost": 50,
+       "role": "support"
+      },
+      {
+       "key": "gem",
+       "name": "Gem of True Sight",
+       "cost": 900,
+       "role": "core"
+      }
+     ]
+    },
+    {
+     "id": "magic",
+     "nameRu": "магический урон",
+     "whyRu": "убивает заклинаниями",
+     "heroes": [
+      "Invoker"
+     ],
+     "urgent": false,
+     "items": [
+      {
+       "key": "black_king_bar",
+       "name": "Black King Bar",
+       "cost": 4050,
+       "role": "core"
+      },
+      {
+       "key": "pipe",
+       "name": "Pipe of Insight",
+       "cost": 3725,
+       "role": "support"
+      },
+      {
+       "key": "glimmer_cape",
+       "name": "Glimmer Cape",
+       "cost": 2150,
+       "role": "support"
+      },
+      {
+       "key": "eternal_shroud",
+       "name": "Eternal Shroud",
+       "cost": 3900,
+       "role": "core"
+      }
+     ]
+    }
+   ],
+   "me": null,
+   "noStats": [],
+   "hasSynergy": true,
+   "patch": "7.41f",
+   "statsAt": "2026-10-16T19:05:26.088Z",
+   "error": null
+  }
+ },
+ {
+  "id": "pos-2",
+  "result": {
+   "candidates": [
+    {
+     "hero": "life_stealer",
+     "name": "Lifestealer",
+     "score": 0.0447,
+     "vsEnemies": [
+      {
+       "hero": "invoker",
+       "name": "Invoker",
+       "delta": 0.0208,
+       "games": 54178
+      },
+      {
+       "hero": "pudge",
+       "name": "Pudge",
+       "delta": 0.0129,
+       "games": 87620
+      }
+     ],
+     "withAllies": [
+      {
+       "hero": "lion",
+       "name": "Lion",
+       "delta": 0.004,
+       "games": 71443
+      }
+     ],
+     "meta": 0.007,
+     "positions": [
+      1,
+      2
+     ],
+     "covered": 3
+    },
+    {
+     "hero": "ursa",
+     "name": "Ursa",
+     "score": 0.0413,
+     "vsEnemies": [
+      {
+       "hero": "pudge",
+       "name": "Pudge",
+       "delta": 0.0257,
+       "games": 40846
+      },
+      {
+       "hero": "invoker",
+       "name": "Invoker",
+       "delta": 0.0098,
+       "games": 24550
+      }
+     ],
+     "withAllies": [
+      {
+       "hero": "lion",
+       "name": "Lion",
+       "delta": 0.0089,
+       "games": 35346
+      }
+     ],
+     "meta": -0.0031,
+     "positions": [
+      1,
+      2
+     ],
+     "covered": 3
+    },
+    {
+     "hero": "void_spirit",
+     "name": "Void Spirit",
+     "score": 0.0378,
+     "vsEnemies": [
+      {
+       "hero": "invoker",
+       "name": "Invoker",
+       "delta": 0.0323,
+       "games": 17943
+      },
+      {
+       "hero": "pudge",
+       "name": "Pudge",
+       "delta": 0.0118,
+       "games": 20656
+      }
+     ],
+     "withAllies": [
+      {
+       "hero": "lion",
+       "name": "Lion",
+       "delta": -0.0049,
+       "games": 17158
+      }
+     ],
+     "meta": -0.0014,
+     "positions": [
+      3,
+      2
+     ],
+     "covered": 3
+    },
+    {
+     "hero": "weaver",
+     "name": "Weaver",
+     "score": 0.035,
+     "vsEnemies": [
+      {
+       "hero": "pudge",
+       "name": "Pudge",
+       "delta": 0.0236,
+       "games": 26669
+      },
+      {
+       "hero": "invoker",
+       "name": "Invoker",
+       "delta": 0.0137,
+       "games": 16166
+      }
+     ],
+     "withAllies": [
+      {
+       "hero": "lion",
+       "name": "Lion",
+       "delta": 0.0078,
+       "games": 20328
+      }
+     ],
+     "meta": -0.0101,
+     "positions": [
+      1,
+      2
+     ],
+     "covered": 3
+    },
+    {
+     "hero": "riki",
+     "name": "Riki",
+     "score": 0.0312,
+     "vsEnemies": [
+      {
+       "hero": "invoker",
+       "name": "Invoker",
+       "delta": 0.0254,
+       "games": 18015
+      },
+      {
+       "hero": "pudge",
+       "name": "Pudge",
+       "delta": -0.002,
+       "games": 26229
+      }
+     ],
+     "withAllies": [
+      {
+       "hero": "lion",
+       "name": "Lion",
+       "delta": -0.002,
+       "games": 22662
+      }
+     ],
+     "meta": 0.0098,
+     "positions": [
+      1,
+      2
+     ],
+     "covered": 3
+    },
+    {
+     "hero": "bristleback",
+     "name": "Bristleback",
+     "score": 0.0296,
+     "vsEnemies": [
+      {
+       "hero": "pudge",
+       "name": "Pudge",
+       "delta": 0.0158,
+       "games": 35315
+      },
+      {
+       "hero": "invoker",
+       "name": "Invoker",
+       "delta": 0.0088,
+       "games": 19819
+      }
+     ],
+     "withAllies": [
+      {
+       "hero": "lion",
+       "name": "Lion",
+       "delta": 0.0099,
+       "games": 31069
+      }
+     ],
+     "meta": -0.0049,
+     "positions": [
+      2,
+      1,
+      3
+     ],
+     "covered": 3
+    },
+    {
+     "hero": "dawnbreaker",
+     "name": "Dawnbreaker",
+     "score": 0.0296,
+     "vsEnemies": [
+      {
+       "hero": "pudge",
+       "name": "Pudge",
+       "delta": 0.0169,
+       "games": 54666
+      },
+      {
+       "hero": "invoker",
+       "name": "Invoker",
+       "delta": 0,
+       "games": 34899
+      }
+     ],
+     "withAllies": [
+      {
+       "hero": "lion",
+       "name": "Lion",
+       "delta": 0.004,
+       "games": 45087
+      }
+     ],
+     "meta": 0.0087,
+     "positions": [
+      2,
+      3
+     ],
+     "covered": 3
+    },
+    {
+     "hero": "skeleton_king",
+     "name": "Wraith King",
+     "score": 0.0275,
+     "vsEnemies": [
+      {
+       "hero": "pudge",
+       "name": "Pudge",
+       "delta": 0.0189,
+       "games": 70218
+      },
+      {
+       "hero": "invoker",
+       "name": "Invoker",
+       "delta": -0.0119,
+       "games": 41427
+      }
+     ],
+     "withAllies": [
+      {
+       "hero": "lion",
+       "name": "Lion",
+       "delta": 0.003,
+       "games": 61797
+      }
+     ],
+     "meta": 0.0175,
+     "positions": [
+      1,
+      2
+     ],
+     "covered": 3
+    },
+    {
+     "hero": "wisp",
+     "name": "Io",
+     "score": 0.0258,
+     "vsEnemies": [
+      {
+       "hero": "invoker",
+       "name": "Invoker",
+       "delta": 0.0127,
+       "games": 15791
+      },
+      {
+       "hero": "pudge",
+       "name": "Pudge",
+       "delta": 0.0059,
+       "games": 23640
+      }
+     ],
+     "withAllies": [
+      {
+       "hero": "lion",
+       "name": "Lion",
+       "delta": 0.0058,
+       "games": 11941
+      }
+     ],
+     "meta": 0.0014,
+     "positions": [
+      1,
+      2
+     ],
+     "covered": 3
+    },
+    {
+     "hero": "antimage",
+     "name": "Anti-Mage",
+     "score": 0.0244,
+     "vsEnemies": [
+      {
+       "hero": "pudge",
+       "name": "Pudge",
+       "delta": 0.009,
+       "games": 75534
+      },
+      {
+       "hero": "invoker",
+       "name": "Invoker",
+       "delta": 0.0089,
+       "games": 64009
+      }
+     ],
+     "withAllies": [
+      {
+       "hero": "lion",
+       "name": "Lion",
+       "delta": 0.003,
+       "games": 76117
+      }
+     ],
+     "meta": 0.0035,
+     "positions": [
+      1,
+      2
+     ],
+     "covered": 3
+    },
+    {
+     "hero": "pangolier",
+     "name": "Pangolier",
+     "score": 0.024,
+     "vsEnemies": [
+      {
+       "hero": "pudge",
+       "name": "Pudge",
+       "delta": 0.0186,
+       "games": 17517
+      },
+      {
+       "hero": "invoker",
+       "name": "Invoker",
+       "delta": 0.0165,
+       "games": 14688
+      }
+     ],
+     "withAllies": [
+      {
+       "hero": "lion",
+       "name": "Lion",
+       "delta": 0.0029,
+       "games": 14005
+      }
+     ],
+     "meta": -0.014,
+     "positions": [
+      3,
+      2
+     ],
+     "covered": 3
+    },
+    {
+     "hero": "enigma",
+     "name": "Enigma",
+     "score": 0.0232,
+     "vsEnemies": [
+      {
+       "hero": "pudge",
+       "name": "Pudge",
+       "delta": 0.0088,
+       "games": 18890
+      },
+      {
+       "hero": "invoker",
+       "name": "Invoker",
+       "delta": 0.001,
+       "games": 13218
+      }
+     ],
+     "withAllies": [
+      {
+       "hero": "lion",
+       "name": "Lion",
+       "delta": 0.0078,
+       "games": 12885
+      }
+     ],
+     "meta": 0.0056,
+     "positions": [
+      3,
+      2
+     ],
+     "covered": 3
+    }
+   ],
+   "threats": [
+    {
+     "id": "invis",
+     "nameRu": "невидимость",
+     "whyRu": "без обнаружения его не ударить",
+     "heroes": [
+      "Invoker"
+     ],
+     "urgent": true,
+     "items": [
+      {
+       "key": "dust",
+       "name": "Dust of Appearance",
+       "cost": 80,
+       "role": "any"
+      },
+      {
+       "key": "ward_sentry",
+       "name": "Sentry Ward",
+       "cost": 50,
+       "role": "support"
+      },
+      {
+       "key": "gem",
+       "name": "Gem of True Sight",
+       "cost": 900,
+       "role": "core"
+      }
+     ]
+    },
+    {
+     "id": "magic",
+     "nameRu": "магический урон",
+     "whyRu": "убивает заклинаниями",
+     "heroes": [
+      "Invoker"
+     ],
+     "urgent": false,
+     "items": [
+      {
+       "key": "black_king_bar",
+       "name": "Black King Bar",
+       "cost": 4050,
+       "role": "core"
+      },
+      {
+       "key": "pipe",
+       "name": "Pipe of Insight",
+       "cost": 3725,
+       "role": "support"
+      },
+      {
+       "key": "glimmer_cape",
+       "name": "Glimmer Cape",
+       "cost": 2150,
+       "role": "support"
+      },
+      {
+       "key": "eternal_shroud",
+       "name": "Eternal Shroud",
+       "cost": 3900,
+       "role": "core"
+      }
+     ]
+    }
+   ],
+   "me": null,
+   "noStats": [],
+   "hasSynergy": true,
+   "patch": "7.41f",
+   "statsAt": "2026-10-16T19:05:26.088Z",
+   "error": null
+  }
+ },
+ {
+  "id": "pos-3",
+  "result": {
+   "candidates": [
+    {
+     "hero": "void_spirit",
+     "name": "Void Spirit",
+     "score": 0.0378,
+     "vsEnemies": [
+      {
+       "hero": "invoker",
+       "name": "Invoker",
+       "delta": 0.0323,
+       "games": 17943
+      },
+      {
+       "hero": "pudge",
+       "name": "Pudge",
+       "delta": 0.0118,
+       "games": 20656
+      }
+     ],
+     "withAllies": [
+      {
+       "hero": "lion",
+       "name": "Lion",
+       "delta": -0.0049,
+       "games": 17158
+      }
+     ],
+     "meta": -0.0014,
+     "positions": [
+      3,
+      2
+     ],
+     "covered": 3
+    },
+    {
+     "hero": "slardar",
+     "name": "Slardar",
+     "score": 0.0377,
+     "vsEnemies": [
+      {
+       "hero": "pudge",
+       "name": "Pudge",
+       "delta": 0.0198,
+       "games": 36198
+      },
+      {
+       "hero": "invoker",
+       "name": "Invoker",
+       "delta": 0.0177,
+       "games": 22757
+      }
+     ],
+     "withAllies": [
+      {
+       "hero": "lion",
+       "name": "Lion",
+       "delta": 0.003,
+       "games": 31359
+      }
+     ],
+     "meta": -0.0028,
+     "positions": [
+      3
+     ],
+     "covered": 3
+    },
+    {
+     "hero": "bristleback",
+     "name": "Bristleback",
+     "score": 0.0296,
+     "vsEnemies": [
+      {
+       "hero": "pudge",
+       "name": "Pudge",
+       "delta": 0.0158,
+       "games": 35315
+      },
+      {
+       "hero": "invoker",
+       "name": "Invoker",
+       "delta": 0.0088,
+       "games": 19819
+      }
+     ],
+     "withAllies": [
+      {
+       "hero": "lion",
+       "name": "Lion",
+       "delta": 0.0099,
+       "games": 31069
+      }
+     ],
+     "meta": -0.0049,
+     "positions": [
+      2,
+      1,
+      3
+     ],
+     "covered": 3
+    },
+    {
+     "hero": "dawnbreaker",
+     "name": "Dawnbreaker",
+     "score": 0.0296,
+     "vsEnemies": [
+      {
+       "hero": "pudge",
+       "name": "Pudge",
+       "delta": 0.0169,
+       "games": 54666
+      },
+      {
+       "hero": "invoker",
+       "name": "Invoker",
+       "delta": 0,
+       "games": 34899
+      }
+     ],
+     "withAllies": [
+      {
+       "hero": "lion",
+       "name": "Lion",
+       "delta": 0.004,
+       "games": 45087
+      }
+     ],
+     "meta": 0.0087,
+     "positions": [
+      2,
+      3
+     ],
+     "covered": 3
+    },
+    {
+     "hero": "undying",
+     "name": "Undying",
+     "score": 0.0252,
+     "vsEnemies": [
+      {
+       "hero": "pudge",
+       "name": "Pudge",
+       "delta": 0.0159,
+       "games": 81771
+      },
+      {
+       "hero": "invoker",
+       "name": "Invoker",
+       "delta": 0.004,
+       "games": 49359
+      }
+     ],
+     "withAllies": [
+      {
+       "hero": "lion",
+       "name": "Lion",
+       "delta": 0.006,
+       "games": 51233
+      }
+     ],
+     "meta": -0.0007,
+     "positions": [
+      4,
+      5,
+      3
+     ],
+     "covered": 3
+    },
+    {
+     "hero": "pangolier",
+     "name": "Pangolier",
+     "score": 0.024,
+     "vsEnemies": [
+      {
+       "hero": "pudge",
+       "name": "Pudge",
+       "delta": 0.0186,
+       "games": 17517
+      },
+      {
+       "hero": "invoker",
+       "name": "Invoker",
+       "delta": 0.0165,
+       "games": 14688
+      }
+     ],
+     "withAllies": [
+      {
+       "hero": "lion",
+       "name": "Lion",
+       "delta": 0.0029,
+       "games": 14005
+      }
+     ],
+     "meta": -0.014,
+     "positions": [
+      3,
+      2
+     ],
+     "covered": 3
+    },
+    {
+     "hero": "enigma",
+     "name": "Enigma",
+     "score": 0.0232,
+     "vsEnemies": [
+      {
+       "hero": "pudge",
+       "name": "Pudge",
+       "delta": 0.0088,
+       "games": 18890
+      },
+      {
+       "hero": "invoker",
+       "name": "Invoker",
+       "delta": 0.001,
+       "games": 13218
+      }
+     ],
+     "withAllies": [
+      {
+       "hero": "lion",
+       "name": "Lion",
+       "delta": 0.0078,
+       "games": 12885
+      }
+     ],
+     "meta": 0.0056,
+     "positions": [
+      3,
+      2
+     ],
+     "covered": 3
+    },
+    {
+     "hero": "phoenix",
+     "name": "Phoenix",
+     "score": 0.0216,
+     "vsEnemies": [
+      {
+       "hero": "invoker",
+       "name": "Invoker",
+       "delta": 0.0029,
+       "games": 18677
+      },
+      {
+       "hero": "pudge",
+       "name": "Pudge",
+       "delta": -0.001,
+       "games": 27510
+      }
+     ],
+     "withAllies": [
+      {
+       "hero": "lion",
+       "name": "Lion",
+       "delta": 0.0127,
+       "games": 18490
+      }
+     ],
+     "meta": 0.007,
+     "positions": [
+      4,
+      3,
+      5
+     ],
+     "covered": 3
+    },
+    {
+     "hero": "snapfire",
+     "name": "Snapfire",
+     "score": 0.0216,
+     "vsEnemies": [
+      {
+       "hero": "pudge",
+       "name": "Pudge",
+       "delta": 0.0079,
+       "games": 48511
+      },
+      {
+       "hero": "invoker",
+       "name": "Invoker",
+       "delta": 0.003,
+       "games": 35823
+      }
+     ],
+     "withAllies": [
+      {
+       "hero": "lion",
+       "name": "Lion",
+       "delta": 0.0128,
+       "games": 33611
+      }
+     ],
+     "meta": -0.0021,
+     "positions": [
+      2,
+      3,
+      4
+     ],
+     "covered": 3
+    },
+    {
+     "hero": "puck",
+     "name": "Puck",
+     "score": 0.0175,
+     "vsEnemies": [
+      {
+       "hero": "invoker",
+       "name": "Invoker",
+       "delta": 0.03,
+       "games": 12037
+      },
+      {
+       "hero": "pudge",
+       "name": "Pudge",
+       "delta": 0.0068,
+       "games": 13919
+      }
+     ],
+     "withAllies": [
+      {
+       "hero": "lion",
+       "name": "Lion",
+       "delta": -0.0106,
+       "games": 11741
+      }
+     ],
+     "meta": -0.0087,
+     "positions": [
+      2,
+      3
+     ],
+     "covered": 3
+    },
+    {
+     "hero": "magnataur",
+     "name": "Magnus",
+     "score": 0.0163,
+     "vsEnemies": [
+      {
+       "hero": "pudge",
+       "name": "Pudge",
+       "delta": 0.0189,
+       "games": 52415
+      },
+      {
+       "hero": "invoker",
+       "name": "Invoker",
+       "delta": -0.0049,
+       "games": 38931
+      }
+     ],
+     "withAllies": [
+      {
+       "hero": "lion",
+       "name": "Lion",
+       "delta": 0.004,
+       "games": 42533
+      }
+     ],
+     "meta": -0.0017,
+     "positions": [
+      2,
+      3
+     ],
+     "covered": 3
+    },
+    {
+     "hero": "sand_king",
+     "name": "Sand King",
+     "score": 0.0126,
+     "vsEnemies": [
+      {
+       "hero": "invoker",
+       "name": "Invoker",
+       "delta": 0.0184,
+       "games": 12361
+      },
+      {
+       "hero": "pudge",
+       "name": "Pudge",
+       "delta": -0.0118,
+       "games": 18909
+      }
+     ],
+     "withAllies": [
+      {
+       "hero": "lion",
+       "name": "Lion",
+       "delta": 0.0088,
+       "games": 15645
+      }
+     ],
+     "meta": -0.0028,
+     "positions": [
+      3,
+      2
+     ],
+     "covered": 3
+    }
+   ],
+   "threats": [
+    {
+     "id": "invis",
+     "nameRu": "невидимость",
+     "whyRu": "без обнаружения его не ударить",
+     "heroes": [
+      "Invoker"
+     ],
+     "urgent": true,
+     "items": [
+      {
+       "key": "dust",
+       "name": "Dust of Appearance",
+       "cost": 80,
+       "role": "any"
+      },
+      {
+       "key": "ward_sentry",
+       "name": "Sentry Ward",
+       "cost": 50,
+       "role": "support"
+      },
+      {
+       "key": "gem",
+       "name": "Gem of True Sight",
+       "cost": 900,
+       "role": "core"
+      }
+     ]
+    },
+    {
+     "id": "magic",
+     "nameRu": "магический урон",
+     "whyRu": "убивает заклинаниями",
+     "heroes": [
+      "Invoker"
+     ],
+     "urgent": false,
+     "items": [
+      {
+       "key": "black_king_bar",
+       "name": "Black King Bar",
+       "cost": 4050,
+       "role": "core"
+      },
+      {
+       "key": "pipe",
+       "name": "Pipe of Insight",
+       "cost": 3725,
+       "role": "support"
+      },
+      {
+       "key": "glimmer_cape",
+       "name": "Glimmer Cape",
+       "cost": 2150,
+       "role": "support"
+      },
+      {
+       "key": "eternal_shroud",
+       "name": "Eternal Shroud",
+       "cost": 3900,
+       "role": "core"
+      }
+     ]
+    }
+   ],
+   "me": null,
+   "noStats": [],
+   "hasSynergy": true,
+   "patch": "7.41f",
+   "statsAt": "2026-10-16T19:05:26.088Z",
+   "error": null
+  }
+ },
+ {
+  "id": "pos-4",
+  "result": {
+   "candidates": [
+    {
+     "hero": "grimstroke",
+     "name": "Grimstroke",
+     "score": 0.0354,
+     "vsEnemies": [
+      {
+       "hero": "pudge",
+       "name": "Pudge",
+       "delta": 0.0208,
+       "games": 40045
+      },
+      {
+       "hero": "invoker",
+       "name": "Invoker",
+       "delta": 0.001,
+       "games": 26017
+      }
+     ],
+     "withAllies": [
+      {
+       "hero": "lion",
+       "name": "Lion",
+       "delta": 0.0059,
+       "games": 21954
+      }
+     ],
+     "meta": 0.0077,
+     "positions": [
+      4,
+      5
+     ],
+     "covered": 3
+    },
+    {
+     "hero": "bounty_hunter",
+     "name": "Bounty Hunter",
+     "score": 0.0254,
+     "vsEnemies": [
+      {
+       "hero": "invoker",
+       "name": "Invoker",
+       "delta": 0.0098,
+       "games": 23186
+      },
+      {
+       "hero": "pudge",
+       "name": "Pudge",
+       "delta": 0.0059,
+       "games": 37771
+      }
+     ],
+     "withAllies": [
+      {
+       "hero": "lion",
+       "name": "Lion",
+       "delta": 0.001,
+       "games": 21421
+      }
+     ],
+     "meta": 0.0087,
+     "positions": [
+      5,
+      4
+     ],
+     "covered": 3
+    },
+    {
+     "hero": "undying",
+     "name": "Undying",
+     "score": 0.0252,
+     "vsEnemies": [
+      {
+       "hero": "pudge",
+       "name": "Pudge",
+       "delta": 0.0159,
+       "games": 81771
+      },
+      {
+       "hero": "invoker",
+       "name": "Invoker",
+       "delta": 0.004,
+       "games": 49359
+      }
+     ],
+     "withAllies": [
+      {
+       "hero": "lion",
+       "name": "Lion",
+       "delta": 0.006,
+       "games": 51233
+      }
+     ],
+     "meta": -0.0007,
+     "positions": [
+      4,
+      5,
+      3
+     ],
+     "covered": 3
+    },
+    {
+     "hero": "silencer",
+     "name": "Silencer",
+     "score": 0.0245,
+     "vsEnemies": [
+      {
+       "hero": "pudge",
+       "name": "Pudge",
+       "delta": 0.0139,
+       "games": 52268
+      },
+      {
+       "hero": "invoker",
+       "name": "Invoker",
+       "delta": 0.001,
+       "games": 32947
+      }
+     ],
+     "withAllies": [
+      {
+       "hero": "lion",
+       "name": "Lion",
+       "delta": 0.0079,
+       "games": 32850
+      }
+     ],
+     "meta": 0.0017,
+     "positions": [
+      5,
+      4
+     ],
+     "covered": 3
+    },
+    {
+     "hero": "ancient_apparition",
+     "name": "Ancient Apparition",
+     "score": 0.0218,
+     "vsEnemies": [
+      {
+       "hero": "pudge",
+       "name": "Pudge",
+       "delta": 0.006,
+       "games": 47677
+      },
+      {
+       "hero": "invoker",
+       "name": "Invoker",
+       "delta": -0.0049,
+       "games": 28979
+      }
+     ],
+     "withAllies": [
+      {
+       "hero": "lion",
+       "name": "Lion",
+       "delta": 0.0158,
+       "games": 25242
+      }
+     ],
+     "meta": 0.0049,
+     "positions": [
+      5,
+      4
+     ],
+     "covered": 3
+    },
+    {
+     "hero": "phoenix",
+     "name": "Phoenix",
+     "score": 0.0216,
+     "vsEnemies": [
+      {
+       "hero": "invoker",
+       "name": "Invoker",
+       "delta": 0.0029,
+       "games": 18677
+      },
+      {
+       "hero": "pudge",
+       "name": "Pudge",
+       "delta": -0.001,
+       "games": 27510
+      }
+     ],
+     "withAllies": [
+      {
+       "hero": "lion",
+       "name": "Lion",
+       "delta": 0.0127,
+       "games": 18490
+      }
+     ],
+     "meta": 0.007,
+     "positions": [
+      4,
+      3,
+      5
+     ],
+     "covered": 3
+    },
+    {
+     "hero": "snapfire",
+     "name": "Snapfire",
+     "score": 0.0216,
+     "vsEnemies": [
+      {
+       "hero": "pudge",
+       "name": "Pudge",
+       "delta": 0.0079,
+       "games": 48511
+      },
+      {
+       "hero": "invoker",
+       "name": "Invoker",
+       "delta": 0.003,
+       "games": 35823
+      }
+     ],
+     "withAllies": [
+      {
+       "hero": "lion",
+       "name": "Lion",
+       "delta": 0.0128,
+       "games": 33611
+      }
+     ],
+     "meta": -0.0021,
+     "positions": [
+      2,
+      3,
+      4
+     ],
+     "covered": 3
+    },
+    {
+     "hero": "keeper_of_the_light",
+     "name": "Keeper of the Light",
+     "score": 0.0214,
+     "vsEnemies": [
+      {
+       "hero": "invoker",
+       "name": "Invoker",
+       "delta": 0.0166,
+       "games": 17809
+      },
+      {
+       "hero": "pudge",
+       "name": "Pudge",
+       "delta": 0.001,
+       "games": 25392
+      }
+     ],
+     "withAllies": [
+      {
+       "hero": "lion",
+       "name": "Lion",
+       "delta": 0.0059,
+       "games": 16555
+      }
+     ],
+     "meta": -0.0021,
+     "positions": [
+      4,
+      2
+     ],
+     "covered": 3
+    },
+    {
+     "hero": "ringmaster",
+     "name": "Ringmaster",
+     "score": 0.0186,
+     "vsEnemies": [
+      {
+       "hero": "pudge",
+       "name": "Pudge",
+       "delta": 0.0158,
+       "games": 25947
+      },
+      {
+       "hero": "invoker",
+       "name": "Invoker",
+       "delta": 0.002,
+       "games": 17415
+      }
+     ],
+     "withAllies": [
+      {
+       "hero": "lion",
+       "name": "Lion",
+       "delta": 0.0039,
+       "games": 12415
+      }
+     ],
+     "meta": -0.0031,
+     "positions": [
+      4,
+      5
+     ],
+     "covered": 3
+    },
+    {
+     "hero": "skywrath_mage",
+     "name": "Skywrath Mage",
+     "score": 0.0151,
+     "vsEnemies": [
+      {
+       "hero": "pudge",
+       "name": "Pudge",
+       "delta": 0.0089,
+       "games": 68497
+      },
+      {
+       "hero": "invoker",
+       "name": "Invoker",
+       "delta": 0.001,
+       "games": 41511
+      }
+     ],
+     "withAllies": [
+      {
+       "hero": "lion",
+       "name": "Lion",
+       "delta": 0.0059,
+       "games": 40378
+      }
+     ],
+     "meta": -0.0007,
+     "positions": [
+      4,
+      5
+     ],
+     "covered": 3
+    },
+    {
+     "hero": "marci",
+     "name": "Marci",
+     "score": 0.0145,
+     "vsEnemies": [
+      {
+       "hero": "pudge",
+       "name": "Pudge",
+       "delta": 0.0079,
+       "games": 34401
+      },
+      {
+       "hero": "invoker",
+       "name": "Invoker",
+       "delta": 0.0069,
+       "games": 24642
+      }
+     ],
+     "withAllies": [
+      {
+       "hero": "lion",
+       "name": "Lion",
+       "delta": 0.0049,
+       "games": 24367
+      }
+     ],
+     "meta": -0.0052,
+     "positions": [
+      4,
+      5
+     ],
+     "covered": 3
+    },
+    {
+     "hero": "tusk",
+     "name": "Tusk",
+     "score": 0.0116,
+     "vsEnemies": [
+      {
+       "hero": "invoker",
+       "name": "Invoker",
+       "delta": 0.0147,
+       "games": 19168
+      },
+      {
+       "hero": "pudge",
+       "name": "Pudge",
+       "delta": 0.002,
+       "games": 24286
+      }
+     ],
+     "withAllies": [
+      {
+       "hero": "lion",
+       "name": "Lion",
+       "delta": 0.0029,
+       "games": 17132
+      }
+     ],
+     "meta": -0.008,
+     "positions": [
+      5,
+      4
+     ],
+     "covered": 3
+    }
+   ],
+   "threats": [
+    {
+     "id": "invis",
+     "nameRu": "невидимость",
+     "whyRu": "без обнаружения его не ударить",
+     "heroes": [
+      "Invoker"
+     ],
+     "urgent": true,
+     "items": [
+      {
+       "key": "dust",
+       "name": "Dust of Appearance",
+       "cost": 80,
+       "role": "any"
+      },
+      {
+       "key": "ward_sentry",
+       "name": "Sentry Ward",
+       "cost": 50,
+       "role": "support"
+      },
+      {
+       "key": "gem",
+       "name": "Gem of True Sight",
+       "cost": 900,
+       "role": "core"
+      }
+     ]
+    },
+    {
+     "id": "magic",
+     "nameRu": "магический урон",
+     "whyRu": "убивает заклинаниями",
+     "heroes": [
+      "Invoker"
+     ],
+     "urgent": false,
+     "items": [
+      {
+       "key": "black_king_bar",
+       "name": "Black King Bar",
+       "cost": 4050,
+       "role": "core"
+      },
+      {
+       "key": "pipe",
+       "name": "Pipe of Insight",
+       "cost": 3725,
+       "role": "support"
+      },
+      {
+       "key": "glimmer_cape",
+       "name": "Glimmer Cape",
+       "cost": 2150,
+       "role": "support"
+      },
+      {
+       "key": "eternal_shroud",
+       "name": "Eternal Shroud",
+       "cost": 3900,
+       "role": "core"
+      }
+     ]
+    }
+   ],
+   "me": null,
+   "noStats": [],
+   "hasSynergy": true,
+   "patch": "7.41f",
+   "statsAt": "2026-10-16T19:05:26.088Z",
+   "error": null
+  }
+ },
+ {
+  "id": "pos-5",
+  "result": {
+   "candidates": [
+    {
+     "hero": "grimstroke",
+     "name": "Grimstroke",
+     "score": 0.0354,
+     "vsEnemies": [
+      {
+       "hero": "pudge",
+       "name": "Pudge",
+       "delta": 0.0208,
+       "games": 40045
+      },
+      {
+       "hero": "invoker",
+       "name": "Invoker",
+       "delta": 0.001,
+       "games": 26017
+      }
+     ],
+     "withAllies": [
+      {
+       "hero": "lion",
+       "name": "Lion",
+       "delta": 0.0059,
+       "games": 21954
+      }
+     ],
+     "meta": 0.0077,
+     "positions": [
+      4,
+      5
+     ],
+     "covered": 3
+    },
+    {
+     "hero": "bounty_hunter",
+     "name": "Bounty Hunter",
+     "score": 0.0254,
+     "vsEnemies": [
+      {
+       "hero": "invoker",
+       "name": "Invoker",
+       "delta": 0.0098,
+       "games": 23186
+      },
+      {
+       "hero": "pudge",
+       "name": "Pudge",
+       "delta": 0.0059,
+       "games": 37771
+      }
+     ],
+     "withAllies": [
+      {
+       "hero": "lion",
+       "name": "Lion",
+       "delta": 0.001,
+       "games": 21421
+      }
+     ],
+     "meta": 0.0087,
+     "positions": [
+      5,
+      4
+     ],
+     "covered": 3
+    },
+    {
+     "hero": "undying",
+     "name": "Undying",
+     "score": 0.0252,
+     "vsEnemies": [
+      {
+       "hero": "pudge",
+       "name": "Pudge",
+       "delta": 0.0159,
+       "games": 81771
+      },
+      {
+       "hero": "invoker",
+       "name": "Invoker",
+       "delta": 0.004,
+       "games": 49359
+      }
+     ],
+     "withAllies": [
+      {
+       "hero": "lion",
+       "name": "Lion",
+       "delta": 0.006,
+       "games": 51233
+      }
+     ],
+     "meta": -0.0007,
+     "positions": [
+      4,
+      5,
+      3
+     ],
+     "covered": 3
+    },
+    {
+     "hero": "silencer",
+     "name": "Silencer",
+     "score": 0.0245,
+     "vsEnemies": [
+      {
+       "hero": "pudge",
+       "name": "Pudge",
+       "delta": 0.0139,
+       "games": 52268
+      },
+      {
+       "hero": "invoker",
+       "name": "Invoker",
+       "delta": 0.001,
+       "games": 32947
+      }
+     ],
+     "withAllies": [
+      {
+       "hero": "lion",
+       "name": "Lion",
+       "delta": 0.0079,
+       "games": 32850
+      }
+     ],
+     "meta": 0.0017,
+     "positions": [
+      5,
+      4
+     ],
+     "covered": 3
+    },
+    {
+     "hero": "ancient_apparition",
+     "name": "Ancient Apparition",
+     "score": 0.0218,
+     "vsEnemies": [
+      {
+       "hero": "pudge",
+       "name": "Pudge",
+       "delta": 0.006,
+       "games": 47677
+      },
+      {
+       "hero": "invoker",
+       "name": "Invoker",
+       "delta": -0.0049,
+       "games": 28979
+      }
+     ],
+     "withAllies": [
+      {
+       "hero": "lion",
+       "name": "Lion",
+       "delta": 0.0158,
+       "games": 25242
+      }
+     ],
+     "meta": 0.0049,
+     "positions": [
+      5,
+      4
+     ],
+     "covered": 3
+    },
+    {
+     "hero": "phoenix",
+     "name": "Phoenix",
+     "score": 0.0216,
+     "vsEnemies": [
+      {
+       "hero": "invoker",
+       "name": "Invoker",
+       "delta": 0.0029,
+       "games": 18677
+      },
+      {
+       "hero": "pudge",
+       "name": "Pudge",
+       "delta": -0.001,
+       "games": 27510
+      }
+     ],
+     "withAllies": [
+      {
+       "hero": "lion",
+       "name": "Lion",
+       "delta": 0.0127,
+       "games": 18490
+      }
+     ],
+     "meta": 0.007,
+     "positions": [
+      4,
+      3,
+      5
+     ],
+     "covered": 3
+    },
+    {
+     "hero": "ringmaster",
+     "name": "Ringmaster",
+     "score": 0.0186,
+     "vsEnemies": [
+      {
+       "hero": "pudge",
+       "name": "Pudge",
+       "delta": 0.0158,
+       "games": 25947
+      },
+      {
+       "hero": "invoker",
+       "name": "Invoker",
+       "delta": 0.002,
+       "games": 17415
+      }
+     ],
+     "withAllies": [
+      {
+       "hero": "lion",
+       "name": "Lion",
+       "delta": 0.0039,
+       "games": 12415
+      }
+     ],
+     "meta": -0.0031,
+     "positions": [
+      4,
+      5
+     ],
+     "covered": 3
+    },
+    {
+     "hero": "skywrath_mage",
+     "name": "Skywrath Mage",
+     "score": 0.0151,
+     "vsEnemies": [
+      {
+       "hero": "pudge",
+       "name": "Pudge",
+       "delta": 0.0089,
+       "games": 68497
+      },
+      {
+       "hero": "invoker",
+       "name": "Invoker",
+       "delta": 0.001,
+       "games": 41511
+      }
+     ],
+     "withAllies": [
+      {
+       "hero": "lion",
+       "name": "Lion",
+       "delta": 0.0059,
+       "games": 40378
+      }
+     ],
+     "meta": -0.0007,
+     "positions": [
+      4,
+      5
+     ],
+     "covered": 3
+    },
+    {
+     "hero": "marci",
+     "name": "Marci",
+     "score": 0.0145,
+     "vsEnemies": [
+      {
+       "hero": "pudge",
+       "name": "Pudge",
+       "delta": 0.0079,
+       "games": 34401
+      },
+      {
+       "hero": "invoker",
+       "name": "Invoker",
+       "delta": 0.0069,
+       "games": 24642
+      }
+     ],
+     "withAllies": [
+      {
+       "hero": "lion",
+       "name": "Lion",
+       "delta": 0.0049,
+       "games": 24367
+      }
+     ],
+     "meta": -0.0052,
+     "positions": [
+      4,
+      5
+     ],
+     "covered": 3
+    },
+    {
+     "hero": "tusk",
+     "name": "Tusk",
+     "score": 0.0116,
+     "vsEnemies": [
+      {
+       "hero": "invoker",
+       "name": "Invoker",
+       "delta": 0.0147,
+       "games": 19168
+      },
+      {
+       "hero": "pudge",
+       "name": "Pudge",
+       "delta": 0.002,
+       "games": 24286
+      }
+     ],
+     "withAllies": [
+      {
+       "hero": "lion",
+       "name": "Lion",
+       "delta": 0.0029,
+       "games": 17132
+      }
+     ],
+     "meta": -0.008,
+     "positions": [
+      5,
+      4
+     ],
+     "covered": 3
+    },
+    {
+     "hero": "dazzle",
+     "name": "Dazzle",
+     "score": 0.0114,
+     "vsEnemies": [
+      {
+       "hero": "invoker",
+       "name": "Invoker",
+       "delta": 0.0078,
+       "games": 19588
+      },
+      {
+       "hero": "pudge",
+       "name": "Pudge",
+       "delta": 0.0069,
+       "games": 30697
+      }
+     ],
+     "withAllies": [
+      {
+       "hero": "lion",
+       "name": "Lion",
+       "delta": -0.0078,
+       "games": 13799
+      }
+     ],
+     "meta": 0.0045,
+     "positions": [
+      5,
+      4
+     ],
+     "covered": 3
+    },
+    {
+     "hero": "mirana",
+     "name": "Mirana",
+     "score": 0.0111,
+     "vsEnemies": [
+      {
+       "hero": "invoker",
+       "name": "Invoker",
+       "delta": 0.0079,
+       "games": 38644
+      },
+      {
+       "hero": "pudge",
+       "name": "Pudge",
+       "delta": -0.004,
+       "games": 63921
+      }
+     ],
+     "withAllies": [
+      {
+       "hero": "lion",
+       "name": "Lion",
+       "delta": 0.002,
+       "games": 34814
+      }
+     ],
+     "meta": 0.0052,
+     "positions": [
+      4,
+      5
+     ],
+     "covered": 3
+    }
+   ],
+   "threats": [
+    {
+     "id": "invis",
+     "nameRu": "невидимость",
+     "whyRu": "без обнаружения его не ударить",
+     "heroes": [
+      "Invoker"
+     ],
+     "urgent": true,
+     "items": [
+      {
+       "key": "dust",
+       "name": "Dust of Appearance",
+       "cost": 80,
+       "role": "any"
+      },
+      {
+       "key": "ward_sentry",
+       "name": "Sentry Ward",
+       "cost": 50,
+       "role": "support"
+      },
+      {
+       "key": "gem",
+       "name": "Gem of True Sight",
+       "cost": 900,
+       "role": "core"
+      }
+     ]
+    },
+    {
+     "id": "magic",
+     "nameRu": "магический урон",
+     "whyRu": "убивает заклинаниями",
+     "heroes": [
+      "Invoker"
+     ],
+     "urgent": false,
+     "items": [
+      {
+       "key": "black_king_bar",
+       "name": "Black King Bar",
+       "cost": 4050,
+       "role": "core"
+      },
+      {
+       "key": "pipe",
+       "name": "Pipe of Insight",
+       "cost": 3725,
+       "role": "support"
+      },
+      {
+       "key": "glimmer_cape",
+       "name": "Glimmer Cape",
+       "cost": 2150,
+       "role": "support"
+      },
+      {
+       "key": "eternal_shroud",
+       "name": "Eternal Shroud",
+       "cost": 3900,
+       "role": "core"
+      }
+     ]
+    }
+   ],
+   "me": null,
+   "noStats": [],
+   "hasSynergy": true,
+   "patch": "7.41f",
+   "statsAt": "2026-10-16T19:05:26.088Z",
+   "error": null
+  }
+ },
+ {
+  "id": "me-picked",
+  "result": {
+   "candidates": [],
+   "threats": [
+    {
+     "id": "invis",
+     "nameRu": "невидимость",
+     "whyRu": "без обнаружения его не ударить",
+     "heroes": [
+      "Riki"
+     ],
+     "urgent": true,
+     "items": [
+      {
+       "key": "dust",
+       "name": "Dust of Appearance",
+       "cost": 80,
+       "role": "any"
+      },
+      {
+       "key": "ward_sentry",
+       "name": "Sentry Ward",
+       "cost": 50,
+       "role": "support"
+      },
+      {
+       "key": "gem",
+       "name": "Gem of True Sight",
+       "cost": 900,
+       "role": "core"
+      }
+     ]
+    },
+    {
+     "id": "passives",
+     "nameRu": "сильные пассивки",
+     "whyRu": "сила в пассивных способностях",
+     "heroes": [
+      "Bristleback"
+     ],
+     "urgent": false,
+     "items": [
+      {
+       "key": "silver_edge",
+       "name": "Silver Edge",
+       "cost": 5700,
+       "role": "core"
+      },
+      {
+       "key": "spirit_vessel",
+       "name": "Spirit Vessel",
+       "cost": 2725,
+       "role": "support"
+      }
+     ]
+    },
+    {
+     "id": "evasion",
+     "nameRu": "уклонение",
+     "whyRu": "атаки промахиваются",
+     "heroes": [
+      "Riki"
+     ],
+     "urgent": false,
+     "items": [
+      {
+       "key": "monkey_king_bar",
+       "name": "Monkey King Bar",
+       "cost": 5000,
+       "role": "core"
+      },
+      {
+       "key": "bloodthorn",
+       "name": "Bloodthorn",
+       "cost": 6400,
+       "role": "core"
+      }
+     ]
+    }
+   ],
+   "me": {
+    "hero": "viper",
+    "name": "Viper",
+    "role": "core",
+    "worst": [
+     {
+      "hero": "riki",
+      "name": "Riki",
+      "delta": -0.0143,
+      "games": 8004
+     }
+    ],
+    "best": [
+     {
+      "hero": "bristleback",
+      "name": "Bristleback",
+      "delta": 0.0495,
+      "games": 13200
+     }
+    ]
+   },
+   "noStats": [],
+   "hasSynergy": true,
+   "patch": "7.41f",
+   "statsAt": "2026-10-16T19:05:26.088Z",
+   "error": null
+  }
+ },
+ {
+  "id": "support-items",
+  "result": {
+   "candidates": [],
+   "threats": [
+    {
+     "id": "invis",
+     "nameRu": "невидимость",
+     "whyRu": "без обнаружения его не ударить",
+     "heroes": [
+      "Riki"
+     ],
+     "urgent": true,
+     "items": [
+      {
+       "key": "dust",
+       "name": "Dust of Appearance",
+       "cost": 80,
+       "role": "any"
+      },
+      {
+       "key": "ward_sentry",
+       "name": "Sentry Ward",
+       "cost": 50,
+       "role": "support"
+      },
+      {
+       "key": "gem",
+       "name": "Gem of True Sight",
+       "cost": 900,
+       "role": "core"
+      }
+     ]
+    },
+    {
+     "id": "evasion",
+     "nameRu": "уклонение",
+     "whyRu": "атаки промахиваются",
+     "heroes": [
+      "Riki"
+     ],
+     "urgent": false,
+     "items": [
+      {
+       "key": "monkey_king_bar",
+       "name": "Monkey King Bar",
+       "cost": 5000,
+       "role": "core"
+      },
+      {
+       "key": "bloodthorn",
+       "name": "Bloodthorn",
+       "cost": 6400,
+       "role": "core"
+      }
+     ]
+    },
+    {
+     "id": "illusions",
+     "nameRu": "иллюзии и копии",
+     "whyRu": "нужен урон по площади",
+     "heroes": [
+      "Phantom Lancer"
+     ],
+     "urgent": false,
+     "items": [
+      {
+       "key": "bfury",
+       "name": "Battle Fury",
+       "cost": 3900,
+       "role": "core"
+      },
+      {
+       "key": "mjollnir",
+       "name": "Mjollnir",
+       "cost": 5500,
+       "role": "core"
+      },
+      {
+       "key": "radiance",
+       "name": "Radiance",
+       "cost": 4700,
+       "role": "core"
+      },
+      {
+       "key": "shivas_guard",
+       "name": "Shiva's Guard",
+       "cost": 4500,
+       "role": "core"
+      }
+     ]
+    },
+    {
+     "id": "mobile",
+     "nameRu": "подвижность",
+     "whyRu": "сразу уходит или прыгает",
+     "heroes": [
+      "Phantom Lancer"
+     ],
+     "urgent": false,
+     "items": [
+      {
+       "key": "cyclone",
+       "name": "Eul's Scepter of Divinity",
+       "cost": 2600,
+       "role": "support"
+      },
+      {
+       "key": "orchid",
+       "name": "Orchid Malevolence",
+       "cost": 3275,
+       "role": "core"
+      },
+      {
+       "key": "sheepstick",
+       "name": "Scythe of Vyse",
+       "cost": 5200,
+       "role": "core"
+      },
+      {
+       "key": "abyssal_blade",
+       "name": "Abyssal Blade",
+       "cost": 6250,
+       "role": "core"
+      }
+     ]
+    }
+   ],
+   "me": {
+    "hero": "crystal_maiden",
+    "name": "Crystal Maiden",
+    "role": "support",
+    "worst": [],
+    "best": [
+     {
+      "hero": "phantom_lancer",
+      "name": "Phantom Lancer",
+      "delta": 0.0424,
+      "games": 29009
+     },
+     {
+      "hero": "riki",
+      "name": "Riki",
+      "delta": 0.0068,
+      "games": 15408
+     }
+    ]
+   },
+   "noStats": [],
+   "hasSynergy": true,
+   "patch": "7.41f",
+   "statsAt": "2026-10-16T19:05:26.088Z",
+   "error": null
+  }
+ },
+ {
+  "id": "core-items",
+  "result": {
+   "candidates": [],
+   "threats": [
+    {
+     "id": "invis",
+     "nameRu": "невидимость",
+     "whyRu": "без обнаружения его не ударить",
+     "heroes": [
+      "Riki"
+     ],
+     "urgent": true,
+     "items": [
+      {
+       "key": "dust",
+       "name": "Dust of Appearance",
+       "cost": 80,
+       "role": "any"
+      },
+      {
+       "key": "ward_sentry",
+       "name": "Sentry Ward",
+       "cost": 50,
+       "role": "support"
+      },
+      {
+       "key": "gem",
+       "name": "Gem of True Sight",
+       "cost": 900,
+       "role": "core"
+      }
+     ]
+    },
+    {
+     "id": "evasion",
+     "nameRu": "уклонение",
+     "whyRu": "атаки промахиваются",
+     "heroes": [
+      "Riki"
+     ],
+     "urgent": false,
+     "items": [
+      {
+       "key": "monkey_king_bar",
+       "name": "Monkey King Bar",
+       "cost": 5000,
+       "role": "core"
+      },
+      {
+       "key": "bloodthorn",
+       "name": "Bloodthorn",
+       "cost": 6400,
+       "role": "core"
+      }
+     ]
+    },
+    {
+     "id": "illusions",
+     "nameRu": "иллюзии и копии",
+     "whyRu": "нужен урон по площади",
+     "heroes": [
+      "Phantom Lancer"
+     ],
+     "urgent": false,
+     "items": [
+      {
+       "key": "bfury",
+       "name": "Battle Fury",
+       "cost": 3900,
+       "role": "core"
+      },
+      {
+       "key": "mjollnir",
+       "name": "Mjollnir",
+       "cost": 5500,
+       "role": "core"
+      },
+      {
+       "key": "radiance",
+       "name": "Radiance",
+       "cost": 4700,
+       "role": "core"
+      },
+      {
+       "key": "shivas_guard",
+       "name": "Shiva's Guard",
+       "cost": 4500,
+       "role": "core"
+      }
+     ]
+    },
+    {
+     "id": "mobile",
+     "nameRu": "подвижность",
+     "whyRu": "сразу уходит или прыгает",
+     "heroes": [
+      "Phantom Lancer"
+     ],
+     "urgent": false,
+     "items": [
+      {
+       "key": "orchid",
+       "name": "Orchid Malevolence",
+       "cost": 3275,
+       "role": "core"
+      },
+      {
+       "key": "sheepstick",
+       "name": "Scythe of Vyse",
+       "cost": 5200,
+       "role": "core"
+      },
+      {
+       "key": "abyssal_blade",
+       "name": "Abyssal Blade",
+       "cost": 6250,
+       "role": "core"
+      },
+      {
+       "key": "cyclone",
+       "name": "Eul's Scepter of Divinity",
+       "cost": 2600,
+       "role": "support"
+      }
+     ]
+    }
+   ],
+   "me": {
+    "hero": "juggernaut",
+    "name": "Juggernaut",
+    "role": "core",
+    "worst": [
+     {
+      "hero": "riki",
+      "name": "Riki",
+      "delta": -0.0294,
+      "games": 19362
+     },
+     {
+      "hero": "phantom_lancer",
+      "name": "Phantom Lancer",
+      "delta": -0.0099,
+      "games": 41813
+     }
+    ],
+    "best": []
+   },
+   "noStats": [],
+   "hasSynergy": true,
+   "patch": "7.41f",
+   "statsAt": "2026-10-16T19:05:26.088Z",
+   "error": null
+  }
+ },
+ {
+  "id": "few-games",
+  "result": {
+   "candidates": [
+    {
+     "hero": "warlock",
+     "name": "Warlock",
+     "score": 0.0314,
+     "vsEnemies": [
+      {
+       "hero": "chen",
+       "name": "Chen",
+       "delta": 0.0311,
+       "games": 346
+      }
+     ],
+     "withAllies": [],
+     "meta": 0.0003,
+     "positions": [
+      4,
+      5
+     ],
+     "covered": 1
+    },
+    {
+     "hero": "broodmother",
+     "name": "Broodmother",
+     "score": 0.0265,
+     "vsEnemies": [
+      {
+       "hero": "chen",
+       "name": "Chen",
+       "delta": 0.0279,
+       "games": 174
+      }
+     ],
+     "withAllies": [],
+     "meta": -0.0014,
+     "positions": [
+      1,
+      2
+     ],
+     "covered": 1
+    },
+    {
+     "hero": "marci",
+     "name": "Marci",
+     "score": 0.0232,
+     "vsEnemies": [
+      {
+       "hero": "chen",
+       "name": "Chen",
+       "delta": 0.0284,
+       "games": 426
+      }
+     ],
+     "withAllies": [],
+     "meta": -0.0052,
+     "positions": [
+      4,
+      5
+     ],
+     "covered": 1
+    },
+    {
+     "hero": "meepo",
+     "name": "Meepo",
+     "score": 0.0225,
+     "vsEnemies": [
+      {
+       "hero": "chen",
+       "name": "Chen",
+       "delta": 0.0072,
+       "games": 132
+      }
+     ],
+     "withAllies": [],
+     "meta": 0.0153,
+     "positions": [
+      1,
+      2
+     ],
+     "covered": 1
+    },
+    {
+     "hero": "slark",
+     "name": "Slark",
+     "score": 0.0203,
+     "vsEnemies": [
+      {
+       "hero": "chen",
+       "name": "Chen",
+       "delta": 0.021,
+       "games": 835
+      }
+     ],
+     "withAllies": [],
+     "meta": -0.0007,
+     "positions": [
+      3,
+      2,
+      1
+     ],
+     "covered": 1
+    },
+    {
+     "hero": "lich",
+     "name": "Lich",
+     "score": 0.0198,
+     "vsEnemies": [
+      {
+       "hero": "chen",
+       "name": "Chen",
+       "delta": 0.0104,
+       "games": 736
+      }
+     ],
+     "withAllies": [],
+     "meta": 0.0094,
+     "positions": [
+      5,
+      4
+     ],
+     "covered": 1
+    },
+    {
+     "hero": "earthshaker",
+     "name": "Earthshaker",
+     "score": 0.0192,
+     "vsEnemies": [
+      {
+       "hero": "chen",
+       "name": "Chen",
+       "delta": 0.0178,
+       "games": 1141
+      }
+     ],
+     "withAllies": [],
+     "meta": 0.0014,
+     "positions": [
+      3,
+      2,
+      4
+     ],
+     "covered": 1
+    },
+    {
+     "hero": "dragon_knight",
+     "name": "Dragon Knight",
+     "score": 0.0189,
+     "vsEnemies": [
+      {
+       "hero": "chen",
+       "name": "Chen",
+       "delta": 0.0088,
+       "games": 852
+      }
+     ],
+     "withAllies": [],
+     "meta": 0.0101,
+     "positions": [
+      3,
+      2,
+      1
+     ],
+     "covered": 1
+    },
+    {
+     "hero": "magnataur",
+     "name": "Magnus",
+     "score": 0.0188,
+     "vsEnemies": [
+      {
+       "hero": "chen",
+       "name": "Chen",
+       "delta": 0.0205,
+       "games": 605
+      }
+     ],
+     "withAllies": [],
+     "meta": -0.0017,
+     "positions": [
+      2,
+      3
+     ],
+     "covered": 1
+    },
+    {
+     "hero": "dazzle",
+     "name": "Dazzle",
+     "score": 0.0183,
+     "vsEnemies": [
+      {
+       "hero": "chen",
+       "name": "Chen",
+       "delta": 0.0138,
+       "games": 362
+      }
+     ],
+     "withAllies": [],
+     "meta": 0.0045,
+     "positions": [
+      5,
+      4
+     ],
+     "covered": 1
+    },
+    {
+     "hero": "chaos_knight",
+     "name": "Chaos Knight",
+     "score": 0.018,
+     "vsEnemies": [
+      {
+       "hero": "chen",
+       "name": "Chen",
+       "delta": 0.0135,
+       "games": 262
+      }
+     ],
+     "withAllies": [],
+     "meta": 0.0045,
+     "positions": [
+      1,
+      2
+     ],
+     "covered": 1
+    },
+    {
+     "hero": "witch_doctor",
+     "name": "Witch Doctor",
+     "score": 0.0176,
+     "vsEnemies": [
+      {
+       "hero": "chen",
+       "name": "Chen",
+       "delta": 0.0096,
+       "games": 1133
+      }
+     ],
+     "withAllies": [],
+     "meta": 0.008,
+     "positions": [
+      5,
+      4
+     ],
+     "covered": 1
+    }
+   ],
+   "threats": [
+    {
+     "id": "summons",
+     "nameRu": "призванные существа",
+     "whyRu": "много юнитов",
+     "heroes": [
+      "Chen"
+     ],
+     "urgent": false,
+     "items": [
+      {
+       "key": "crimson_guard",
+       "name": "Crimson Guard",
+       "cost": 3725,
+       "role": "core"
+      },
+      {
+       "key": "mjollnir",
+       "name": "Mjollnir",
+       "cost": 5500,
+       "role": "core"
+      },
+      {
+       "key": "shivas_guard",
+       "name": "Shiva's Guard",
+       "cost": 4500,
+       "role": "core"
+      }
+     ]
+    },
+    {
+     "id": "healing",
+     "nameRu": "лечение и реген",
+     "whyRu": "режьте лечение",
+     "heroes": [
+      "Chen"
+     ],
+     "urgent": false,
+     "items": [
+      {
+       "key": "spirit_vessel",
+       "name": "Spirit Vessel",
+       "cost": 2725,
+       "role": "support"
+      },
+      {
+       "key": "shivas_guard",
+       "name": "Shiva's Guard",
+       "cost": 4500,
+       "role": "core"
+      }
+     ]
+    }
+   ],
+   "me": null,
+   "noStats": [],
+   "hasSynergy": true,
+   "patch": "7.41f",
+   "statsAt": "2026-10-16T19:05:26.088Z",
+   "error": null
+  }
+ },
+ {
+  "id": "hero-without-stats",
+  "result": {
+   "candidates": [
+    {
+     "hero": "phantom_lancer",
+     "name": "Phantom Lancer",
+     "score": 0.0613,
+     "vsEnemies": [
+      {
+       "hero": "viper",
+       "name": "Viper",
+       "delta": 0.0498,
+       "games": 16569
+      }
+     ],
+     "withAllies": [],
+     "meta": 0.0115,
+     "positions": [
+      1
+     ],
+     "covered": 1
+    },
+    {
+     "hero": "arc_warden",
+     "name": "Arc Warden",
+     "score": 0.0598,
+     "vsEnemies": [
+      {
+       "hero": "viper",
+       "name": "Viper",
+       "delta": 0.0504,
+       "games": 5582
+      }
+     ],
+     "withAllies": [],
+     "meta": 0.0094,
+     "positions": [
+      1,
+      2
+     ],
+     "covered": 1
+    },
+    {
+     "hero": "naga_siren",
+     "name": "Naga Siren",
+     "score": 0.0463,
+     "vsEnemies": [
+      {
+       "hero": "viper",
+       "name": "Viper",
+       "delta": 0.0512,
+       "games": 1727
+      }
+     ],
+     "withAllies": [],
+     "meta": -0.0049,
+     "positions": [
+      1
+     ],
+     "covered": 1
+    },
+    {
+     "hero": "chaos_knight",
+     "name": "Chaos Knight",
+     "score": 0.0422,
+     "vsEnemies": [
+      {
+       "hero": "viper",
+       "name": "Viper",
+       "delta": 0.0377,
+       "games": 6512
+      }
+     ],
+     "withAllies": [],
+     "meta": 0.0045,
+     "positions": [
+      1,
+      2
+     ],
+     "covered": 1
+    },
+    {
+     "hero": "brewmaster",
+     "name": "Brewmaster",
+     "score": 0.0379,
+     "vsEnemies": [
+      {
+       "hero": "viper",
+       "name": "Viper",
+       "delta": 0.0365,
+       "games": 2662
+      }
+     ],
+     "withAllies": [],
+     "meta": 0.0014,
+     "positions": [
+      3,
+      2
+     ],
+     "covered": 1
+    },
+    {
+     "hero": "juggernaut",
+     "name": "Juggernaut",
+     "score": 0.0351,
+     "vsEnemies": [
+      {
+       "hero": "viper",
+       "name": "Viper",
+       "delta": 0.0246,
+       "games": 28011
+      }
+     ],
+     "withAllies": [],
+     "meta": 0.0105,
+     "positions": [
+      1,
+      2
+     ],
+     "covered": 1
+    },
+    {
+     "hero": "dark_seer",
+     "name": "Dark Seer",
+     "score": 0.0319,
+     "vsEnemies": [
+      {
+       "hero": "viper",
+       "name": "Viper",
+       "delta": 0.0336,
+       "games": 5495
+      }
+     ],
+     "withAllies": [],
+     "meta": -0.0017,
+     "positions": [
+      2,
+      1,
+      3
+     ],
+     "covered": 1
+    },
+    {
+     "hero": "morphling",
+     "name": "Morphling",
+     "score": 0.0257,
+     "vsEnemies": [
+      {
+       "hero": "viper",
+       "name": "Viper",
+       "delta": 0.033,
+       "games": 4469
+      }
+     ],
+     "withAllies": [],
+     "meta": -0.0073,
+     "positions": [
+      1
+     ],
+     "covered": 1
+    },
+    {
+     "hero": "riki",
+     "name": "Riki",
+     "score": 0.0241,
+     "vsEnemies": [
+      {
+       "hero": "viper",
+       "name": "Viper",
+       "delta": 0.0143,
+       "games": 8004
+      }
+     ],
+     "withAllies": [],
+     "meta": 0.0098,
+     "positions": [
+      1,
+      2
+     ],
+     "covered": 1
+    },
+    {
+     "hero": "witch_doctor",
+     "name": "Witch Doctor",
+     "score": 0.0218,
+     "vsEnemies": [
+      {
+       "hero": "viper",
+       "name": "Viper",
+       "delta": 0.0138,
+       "games": 24343
+      }
+     ],
+     "withAllies": [],
+     "meta": 0.008,
+     "positions": [
+      5,
+      4
+     ],
+     "covered": 1
+    },
+    {
+     "hero": "clinkz",
+     "name": "Clinkz",
+     "score": 0.0206,
+     "vsEnemies": [
+      {
+       "hero": "viper",
+       "name": "Viper",
+       "delta": 0.0199,
+       "games": 7042
+      }
+     ],
+     "withAllies": [],
+     "meta": 0.0007,
+     "positions": [
+      1
+     ],
+     "covered": 1
+    },
+    {
+     "hero": "windrunner",
+     "name": "Windranger",
+     "score": 0.02,
+     "vsEnemies": [
+      {
+       "hero": "viper",
+       "name": "Viper",
+       "delta": 0.0266,
+       "games": 27101
+      }
+     ],
+     "withAllies": [],
+     "meta": -0.0066,
+     "positions": [
+      4,
+      5,
+      1,
+      2
+     ],
+     "covered": 1
+    }
+   ],
+   "threats": [],
+   "me": null,
+   "noStats": [],
+   "hasSynergy": true,
+   "patch": "7.41f",
+   "statsAt": "2026-10-16T19:05:26.088Z",
+   "error": null
+  }
+ },
+ {
+  "id": "no-stats-file",
+  "result": {
+   "candidates": [
+    {
+     "hero": "meepo",
+     "name": "Meepo",
+     "score": 0.0604,
+     "vsEnemies": [
+      {
+       "hero": "riki",
+       "name": "Riki",
+       "delta": 0.0451,
+       "games": 1398
+      }
+     ],
+     "withAllies": [],
+     "meta": 0.0153,
+     "positions": [
+      1,
+      2
+     ],
+     "covered": 1
+    },
+    {
+     "hero": "troll_warlord",
+     "name": "Troll Warlord",
+     "score": 0.0419,
+     "vsEnemies": [
+      {
+       "hero": "riki",
+       "name": "Riki",
+       "delta": 0.0353,
+       "games": 2491
+      }
+     ],
+     "withAllies": [],
+     "meta": 0.0066,
+     "positions": [
+      1,
+      2
+     ],
+     "covered": 1
+    },
+    {
+     "hero": "bloodseeker",
+     "name": "Bloodseeker",
+     "score": 0.0334,
+     "vsEnemies": [
+      {
+       "hero": "riki",
+       "name": "Riki",
+       "delta": 0.0264,
+       "games": 3981
+      }
+     ],
+     "withAllies": [],
+     "meta": 0.007,
+     "positions": [
+      1,
+      2
+     ],
+     "covered": 1
+    },
+    {
+     "hero": "omniknight",
+     "name": "Omniknight",
+     "score": 0.0322,
+     "vsEnemies": [
+      {
+       "hero": "riki",
+       "name": "Riki",
+       "delta": 0.028,
+       "games": 1867
+      }
+     ],
+     "withAllies": [],
+     "meta": 0.0042,
+     "positions": [
+      4,
+      5
+     ],
+     "covered": 1
+    },
+    {
+     "hero": "naga_siren",
+     "name": "Naga Siren",
+     "score": 0.0315,
+     "vsEnemies": [
+      {
+       "hero": "riki",
+       "name": "Riki",
+       "delta": 0.0364,
+       "games": 1073
+      }
+     ],
+     "withAllies": [],
+     "meta": -0.0049,
+     "positions": [
+      1
+     ],
+     "covered": 1
+    },
+    {
+     "hero": "skeleton_king",
+     "name": "Wraith King",
+     "score": 0.0292,
+     "vsEnemies": [
+      {
+       "hero": "riki",
+       "name": "Riki",
+       "delta": 0.0117,
+       "games": 13446
+      }
+     ],
+     "withAllies": [],
+     "meta": 0.0175,
+     "positions": [
+      1,
+      2
+     ],
+     "covered": 1
+    },
+    {
+     "hero": "dragon_knight",
+     "name": "Dragon Knight",
+     "score": 0.0285,
+     "vsEnemies": [
+      {
+       "hero": "riki",
+       "name": "Riki",
+       "delta": 0.0184,
+       "games": 12940
+      }
+     ],
+     "withAllies": [],
+     "meta": 0.0101,
+     "positions": [
+      3,
+      2,
+      1
+     ],
+     "covered": 1
+    },
+    {
+     "hero": "sven",
+     "name": "Sven",
+     "score": 0.0265,
+     "vsEnemies": [
+      {
+       "hero": "riki",
+       "name": "Riki",
+       "delta": 0.0202,
+       "games": 9553
+      }
+     ],
+     "withAllies": [],
+     "meta": 0.0063,
+     "positions": [
+      1
+     ],
+     "covered": 1
+    },
+    {
+     "hero": "abyssal_underlord",
+     "name": "Underlord",
+     "score": 0.0256,
+     "vsEnemies": [
+      {
+       "hero": "riki",
+       "name": "Riki",
+       "delta": 0.0326,
+       "games": 5390
+      }
+     ],
+     "withAllies": [],
+     "meta": -0.007,
+     "positions": [
+      2,
+      3
+     ],
+     "covered": 1
+    },
+    {
+     "hero": "luna",
+     "name": "Luna",
+     "score": 0.0227,
+     "vsEnemies": [
+      {
+       "hero": "riki",
+       "name": "Riki",
+       "delta": 0.0203,
+       "games": 11420
+      }
+     ],
+     "withAllies": [],
+     "meta": 0.0024,
+     "positions": [
+      1
+     ],
+     "covered": 1
+    },
+    {
+     "hero": "spectre",
+     "name": "Spectre",
+     "score": 0.0225,
+     "vsEnemies": [
+      {
+       "hero": "riki",
+       "name": "Riki",
+       "delta": 0.0106,
+       "games": 9764
+      }
+     ],
+     "withAllies": [],
+     "meta": 0.0119,
+     "positions": [
+      1,
+      2
+     ],
+     "covered": 1
+    },
+    {
+     "hero": "chaos_knight",
+     "name": "Chaos Knight",
+     "score": 0.0209,
+     "vsEnemies": [
+      {
+       "hero": "riki",
+       "name": "Riki",
+       "delta": 0.0164,
+       "games": 4037
+      }
+     ],
+     "withAllies": [],
+     "meta": 0.0045,
+     "positions": [
+      1,
+      2
+     ],
+     "covered": 1
+    }
+   ],
+   "threats": [
+    {
+     "id": "invis",
+     "nameRu": "невидимость",
+     "whyRu": "без обнаружения его не ударить",
+     "heroes": [
+      "Riki"
+     ],
+     "urgent": true,
+     "items": [
+      {
+       "key": "dust",
+       "name": "Dust of Appearance",
+       "cost": 80,
+       "role": "any"
+      },
+      {
+       "key": "ward_sentry",
+       "name": "Sentry Ward",
+       "cost": 50,
+       "role": "support"
+      },
+      {
+       "key": "gem",
+       "name": "Gem of True Sight",
+       "cost": 900,
+       "role": "core"
+      }
+     ]
+    },
+    {
+     "id": "evasion",
+     "nameRu": "уклонение",
+     "whyRu": "атаки промахиваются",
+     "heroes": [
+      "Riki"
+     ],
+     "urgent": false,
+     "items": [
+      {
+       "key": "monkey_king_bar",
+       "name": "Monkey King Bar",
+       "cost": 5000,
+       "role": "core"
+      },
+      {
+       "key": "bloodthorn",
+       "name": "Bloodthorn",
+       "cost": 6400,
+       "role": "core"
+      }
+     ]
+    }
+   ],
+   "me": null,
+   "noStats": [],
+   "hasSynergy": true,
+   "patch": "7.41f",
+   "statsAt": "2026-10-16T19:05:26.088Z",
+   "error": null
+  }
+ }
+]

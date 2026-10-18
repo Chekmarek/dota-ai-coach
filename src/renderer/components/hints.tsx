@@ -4,6 +4,10 @@
 import { useEffect, useState } from 'react';
 import type { HintCategories, HintDetail, Settings, SettingsPatch } from '@shared/schemas/settings';
 import type { CoachStateMessage } from '@shared/ipc';
+import type { GameModeOverride } from '@core/gsi/mode.ts';
+import { GameModeBadge } from './gsi';
+
+const MODE_RU: Record<GameModeOverride, string> = { auto: 'Определять по данным игры', turbo: 'Турбо', normal: 'Обычный режим (All Pick, рейтинг)' };
 
 const DETAIL_RU: Record<HintDetail, string> = { min: 'Минимум — только короткая фраза', normal: 'Обычный — фраза и пояснение', detailed: 'Подробно — с фактами и факторами %' };
 const CATEGORY_RU: Record<keyof HintCategories, string> = {
@@ -34,6 +38,20 @@ export function HintsToggles({ settings, update, testIdPrefix = 'setting-hints' 
       </p>
       <p className="muted small">
         Рейтинговый матч или обычный, Dota через GSI не сообщает: если подсказки в рейтинге не нужны, выключайте «Включить live-подсказки» перед рейтинговой игрой.
+      </p>
+      <label>
+        Режим игры
+        <select value={h.gameMode} onChange={(e) => void update({ hints: { gameMode: e.target.value as GameModeOverride } })} data-testid={`${testIdPrefix}-game-mode`}>
+          {(Object.keys(MODE_RU) as GameModeOverride[]).map((m) => (
+            <option key={m} value={m}>
+              {MODE_RU[m]}
+            </option>
+          ))}
+        </select>
+      </label>
+      <p className="muted small">
+        Сейчас: <GameModeBadge testId={`${testIdPrefix}-game-mode-now`} />. Если Dota не сообщает режим, выберите его здесь вручную. Без данных
+        игры и без выбора коуч считает игру обычной.
       </p>
       <label>
         Подробность подсказок

@@ -11,6 +11,7 @@ import type { KbStats } from '@shared/types/stats';
 import type { KnowledgeBase } from '@shared/types/kb';
 import type { DraftLiveHeroes } from '@shared/types/draft';
 import { liveHeroes } from './draft';
+import { asGameModeInfo, resolveGameMode, type GameModeInfo } from '@core/gsi/mode.ts';
 
 /** Как часто сохранять историю идущего матча */
 export const HISTORY_SAVE_MS = 30_000;
@@ -93,7 +94,7 @@ export class CoachService {
       this.lastHintLogMs = this.now();
       this.deps.log?.('coach подсказки', { shown: u.shown.map((h) => h.id).slice(0, 6), visible: u.visible.length, rulesMs: Math.round(u.rulesMs) });
     }
-    this.trackHistory(u);
+    this.trackHistory(u, resolveGameMode(asGameModeInfo(input.state.match.mode), s.hints.gameMode));
     this.publish();
     return u;
   }
@@ -136,7 +137,7 @@ export class CoachService {
 
   // ---------- История ----------
 
-  private trackHistory(u: CoachUpdate): void {
+  private trackHistory(u: CoachUpdate, mode: GameModeInfo): void {
     const e = this.engine!;
     const now = this.now();
     if (!e.inGame && !u.matchReview && !this.match) return;
@@ -162,6 +163,8 @@ export class CoachService {
     const m = this.match;
     m.matchId ??= matchId;
     m.heroName ??= e.heroName;
+    // Режим: известный не затирается «неизвестным» (GSI замолчал), ручной выбор пользователя — важнее
+    if (mode.mode !== 'unknown' || !m.gameMode) m.gameMode = mode;
     // новые записи журнала
     const fresh = e.journalTotal - this.seenJournal;
     if (fresh > 0) m.entries.push(...e.journal.slice(-Math.min(fresh, e.journal.length)));

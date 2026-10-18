@@ -552,6 +552,41 @@ test('GSI: записанная сессия → «Состояние матча
   }
 });
 
+test('режим игры: без данных — «режим неизвестен», Турбо из GSI на трёх страницах, ручной выбор важнее', async () => {
+  const dataDir = tmp();
+  const port = 54126;
+  gsiSettings(dataDir, port);
+  const { app, ui } = await launch(dataDir);
+  try {
+    await ui.click('[data-testid="nav-live"]');
+    await expect(ui.locator('[data-testid="live-game-mode"]')).toHaveText('режим неизвестен');
+    await expect(ui.locator('[data-testid="live-game-mode"]')).toHaveAttribute('data-mode', 'unknown');
+    // Синтетическая сессия (laning.json) с режимом Турбо: в настоящей записи Hero Demo map.game_mode нет
+    const entries = parseSession(readFileSync(join(ROOT, 'tests/fixtures/gsi/session.jsonl'), 'utf8')).map((e) => ({
+      ...e,
+      body: { ...e.body, map: { ...(e.body.map as object), game_mode: 'DOTA_GAMEMODE_TURBO' } },
+    }));
+    const r = await replaySession(entries, { url: `http://127.0.0.1:${port}/`, token: GSI_TOKEN });
+    expect(r.failed).toBe(0);
+    await expect(ui.locator('[data-testid="live-game-mode"]')).toHaveText('Турбо', { timeout: 3000 });
+    await ui.click('[data-testid="nav-match"]');
+    await expect(ui.locator('[data-testid="match-game-mode"]')).toHaveText('Турбо');
+    await ui.click('[data-testid="nav-draft"]');
+    await expect(ui.locator('[data-testid="draft-game-mode"]')).toHaveText('Турбо');
+    // Ручной выбор в «Настройках» важнее данных игры
+    await ui.click('[data-testid="nav-settings"]');
+    await ui.selectOption('[data-testid="setting-hints-game-mode"]', 'normal');
+    await expect(ui.locator('[data-testid="setting-hints-game-mode-now"]')).toHaveText('Обычный режим (выбран вручную)');
+    await ui.selectOption('[data-testid="setting-hints-game-mode"]', 'auto');
+    await expect(ui.locator('[data-testid="setting-hints-game-mode-now"]')).toHaveText('Турбо');
+    await ui.screenshot({ path: join(ROOT, 'test-results/game-mode-settings.png') });
+    const saved = JSON.parse(readFileSync(join(dataDir, 'settings.json'), 'utf8'));
+    expect(saved.hints.gameMode).toBe('auto');
+  } finally {
+    await app.close();
+  }
+});
+
 test('GSI: настоящая запись Hero Demo → Anti-Mage «из игры» за 3 с, уровни и способность — по одному событию', async () => {
   const dataDir = tmp();
   const port = 54123;

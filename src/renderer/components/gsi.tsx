@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import type { GsiState } from '@shared/ipc';
 import { setGsiState, useGsi } from '../hooks/useGsi';
 import { Card } from './ui';
+import { gameModeRu, UNKNOWN_MODE, type GameModeInfo } from '@core/gsi/mode.ts';
 
 /**
  * Данные «идут», если последний запрос был не раньше этого. Настоящая Dota (проверка 2026-10-13) в меню присылает
@@ -33,6 +34,29 @@ export function useTick(): number {
     return () => clearInterval(t);
   }, []);
   return now;
+}
+
+/** Режим игры сейчас: ручной выбор — всегда; из игры — только пока данные идут, иначе «режим неизвестен» */
+export function currentGameMode(st: GsiState | null, now: number): GameModeInfo {
+  if (!st?.gameMode) return { ...UNKNOWN_MODE };
+  if (st.gameMode.source === 'manual') return st.gameMode;
+  return st.lastBodyAt !== null && now - st.lastBodyAt < GSI_FLOW_MS ? st.gameMode : { ...UNKNOWN_MODE };
+}
+
+/** Подпись «Турбо» / «All Pick» / «режим неизвестен» */
+export function GameModeBadge({ testId = 'game-mode' }: { testId?: string }) {
+  const mode = currentGameMode(useGsi(), useTick());
+  const title =
+    mode.source === 'manual'
+      ? 'Режим выбран вручную: «Настройки → Live-подсказки → Режим игры»'
+      : mode.mode === 'unknown'
+        ? 'Dota не сообщила режим (нет данных из игры или в них нет режима). Подсказки — как в обычной игре; режим можно выбрать вручную в «Настройках»'
+        : `По данным игры${mode.raw ? `: ${mode.raw}` : ''}`;
+  return (
+    <span className={`pill game-mode game-mode-${mode.mode}`} data-testid={testId} data-mode={mode.mode} title={title}>
+      {gameModeRu(mode)}
+    </span>
+  );
 }
 
 /** Плашка для боковой панели: видна, только когда данные идут */

@@ -5,6 +5,7 @@
 // Чистое ядро: ни Electron, ни DOM, ни часов — время всегда передаётся в ingest/snapshot.
 import type { HudReading } from '../vision/recognize-hud.ts';
 import type { GsiPhase, GsiReading } from '../gsi/map.ts';
+import { UNKNOWN_MODE, type GameModeInfo } from '../gsi/mode.ts';
 import type { Observed } from '../../shared/types/observation.ts';
 import { ClockTracker } from './clock.ts';
 import { StableField, VISIBLE_MS, unknownTracked, type FieldChange } from './stable-field.ts';
@@ -132,6 +133,8 @@ export class MatchStateModel {
   /** Союзники и враги по верхней панели */
   private players = new PlayersTrack();
   private events: MatchEvent[] = [];
+  /** Режим игры из GSI; сбрасывается вместе с матчем */
+  private gameMode: GameModeInfo = { ...UNKNOWN_MODE };
   private seq = 0;
   /** Какое значение каждого поля последним подтвердил каждый источник — события только по своим изменениям */
   private gate = new SourceEventGate();
@@ -220,6 +223,7 @@ export class MatchStateModel {
       this.emit('match-reset', wallMs, { reason: 'gsi-hero', from: g.heroId, to: reading.hero.id });
     }
     if (reading.hero.id !== null) g.heroId = reading.hero.id;
+    if (reading.gameMode) this.gameMode = reading.gameMode;
     // Своя команда — для союзников и врагов на верхней панели (после возможного сброса матча)
     this.players.setOurTeam(reading.team);
     // Уровень своего героя — чтобы узнать его полоску здоровья на экране
@@ -397,6 +401,7 @@ export class MatchStateModel {
         scoreRadiant: this.scoreRadiant.tracked(wallMs, TTL_MS.score),
         scoreDire: this.scoreDire.tracked(wallMs, TTL_MS.score),
         dayNight: this.dayNight.tracked(wallMs, TTL_MS.dayNight),
+        mode: this.gameMode,
       },
       hero: {
         locked: h.locked !== null,
@@ -430,6 +435,7 @@ export class MatchStateModel {
     this.hero = new HeroTrack();
     this.players = new PlayersTrack();
     this.events = [];
+    this.gameMode = { ...UNKNOWN_MODE };
     this.gate.reset();
   }
 

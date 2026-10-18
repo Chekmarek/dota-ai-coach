@@ -176,3 +176,8 @@ button.link { background: none; border: none; padding: 0; color: var(--accent-2)
 .history-list button.active { outline: 2px solid #4ff0dc; }
 .history-entries { list-style: none; margin: 0; padding: 0; max-height: 420px; overflow: auto; display: grid; gap: 2px; font-size: 13px; }
 .history-entries .clock { display: inline-block; min-width: 48px; color: #9a9078; }
+
+/* Режим игры (0.13.3): Турбо выделен, неизвестный — приглушён */
+.game-mode-row { margin: -4px 0 12px; }
+.pill.game-mode-turbo { color: var(--warn); border-color: #5a4a1f; }
+.pill.game-mode-unknown { opacity: 0.75; }

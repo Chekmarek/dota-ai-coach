@@ -3,6 +3,7 @@
 import { existsSync, mkdirSync, readdirSync, readFileSync, renameSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import type { HistoryMatch, HistorySummary } from '@shared/types/history';
+import { asGameModeInfo } from '@core/gsi/mode.ts';
 
 export const MAX_FILES = 50;
 const SAFE_ID = /^[0-9A-Za-z_-]{1,80}$/;
@@ -30,7 +31,7 @@ export class HistoryStore {
     for (const f of readdirSync(this.dir).filter((x) => x.endsWith('.json')).sort().reverse()) {
       try {
         const m = JSON.parse(readFileSync(join(this.dir, f), 'utf8')) as HistoryMatch;
-        out.push({ id: m.id, startedAt: m.startedAt, heroName: m.heroName, result: m.result, durationSec: m.durationSec, hints: m.entries.filter((e) => e.kind === 'hint').length, mistakes: m.mistakes.length, deaths: m.deathReviews.length });
+        out.push({ id: m.id, startedAt: m.startedAt, heroName: m.heroName, gameMode: asGameModeInfo(m.gameMode), result: m.result, durationSec: m.durationSec, hints: m.entries.filter((e) => e.kind === 'hint').length, mistakes: m.mistakes.length, deaths: m.deathReviews.length });
       } catch {
         // испорченный файл пропускаем
       }

@@ -1,4 +1,5 @@
 // «История советов»: что сохраняется по каждому матчу (src/main/coach/history.ts).
+import type { GameModeInfo } from '../../core/gsi/mode.ts';
 export interface HistoryEntry {
   wallMs: number;
   /** Игровое время, с; null — неизвестно */
@@ -42,6 +43,8 @@ export interface HistoryMatch {
   startedAt: string;
   matchId: string | null;
   heroName: string | null;
+  /** Режим игры (с 0.13.3; в старых файлах поля нет) */
+  gameMode?: GameModeInfo;
   result: 'win' | 'loss' | null;
   durationSec: number | null;
   entries: HistoryEntry[];
@@ -54,6 +57,8 @@ export interface HistorySummary {
   id: string;
   startedAt: string;
   heroName: string | null;
+  /** Режим игры; null — не записан (матчи до 0.13.3) */
+  gameMode: GameModeInfo | null;
   result: 'win' | 'loss' | null;
   durationSec: number | null;
   hints: number;

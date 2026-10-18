@@ -4,6 +4,7 @@ import type { HeroIdentity } from '../vision/hero-name.ts';
 import type { Farm, Kda, Pool } from '../vision/hud-fields.ts';
 import type { AbilityState } from '../vision/abilities.ts';
 import type { PlayersSnapshot } from './players.ts';
+import type { GameModeInfo } from '../gsi/mode.ts';
 
 export type { DayNight, HeroIdentity, Farm, Kda, Pool, AbilityState };
 
@@ -82,6 +83,8 @@ export interface MatchState {
     scoreRadiant: Tracked<number>;
     scoreDire: Tracked<number>;
     dayNight: Tracked<DayNight>;
+    /** Режим игры из GSI (до ручного выбора пользователя); неизвестен — нет GSI или Dota не сообщила */
+    mode: GameModeInfo;
   };
   hero: {
     /** Герой игрока определён (и больше не меняется до сброса матча) */
