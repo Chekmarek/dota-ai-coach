@@ -556,66 +556,6 @@
   }
  },
  {
-  "t": 6,
-  "tick": {
-   "wallMs": 5006000,
-   "shown": [
-    {
-     "id": "fight.target:axe",
-     "ruleId": "fight.target",
-     "category": "fight",
-     "priority": "advice",
-     "confidence": 0.8,
-     "short": "Фокус: Axe, 50% здоровья",
-     "detail": {
-      "normal": "Бейте Axe: у него меньше всех здоровья (50%).",
-      "detailed": "Бейте Axe: у него меньше всех здоровья (50%). · Цель: axe (экран, 0 с) · Здоровье цели, %: 50 (экран, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "target",
-       "label": "Цель",
-       "value": "axe",
-       "source": "screen",
-       "ageSec": 0,
-       "confidence": 0.95,
-       "verified": true
-      },
-      {
-       "key": "target-hp",
-       "label": "Здоровье цели, %",
-       "value": 50,
-       "source": "screen",
-       "ageSec": 0,
-       "confidence": 0.8,
-       "verified": true
-      }
-     ],
-     "ttlMs": 5000,
-     "cooldownMs": 8000,
-     "zone": "decision",
-     "icon": "hero:axe",
-     "seq": 2,
-     "createdWallMs": 5006000,
-     "expiresWallMs": 5020000,
-     "clock": 306,
-     "textSource": "template"
-    }
-   ],
-   "expired": [],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": true,
-   "visible": [
-    "fight.engage",
-    "fight.target:axe"
-   ]
-  }
- },
- {
   "t": 16,
   "tick": {
    "wallMs": 5016000,
@@ -647,7 +587,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 3,
+     "seq": 2,
      "createdWallMs": 5016000,
      "expiresWallMs": 5024000,
      "clock": 316,
@@ -667,62 +607,52 @@
   }
  },
  {
-  "t": 23,
+  "t": 24,
   "tick": {
-   "wallMs": 5023000,
-   "shown": [
+   "wallMs": 5024000,
+   "shown": [],
+   "expired": [
     {
-     "id": "fight.target:axe",
-     "ruleId": "fight.target",
-     "category": "fight",
+     "id": "danger.building:tower1_mid",
+     "ruleId": "danger.building",
+     "category": "danger",
      "priority": "advice",
-     "confidence": 0.8,
-     "short": "Фокус: Axe, 50% здоровья",
+     "confidence": 0.9,
+     "short": "Бьют башню T1 на средней линии (82%)",
      "detail": {
-      "normal": "Бейте Axe: у него меньше всех здоровья (50%).",
-      "detailed": "Бейте Axe: у него меньше всех здоровья (50%). · Цель: axe (экран, 0 с) · Здоровье цели, %: 50 (экран, 0 с)"
+      "normal": "Башню T1 на средней линии под атакой: 82% здоровья. Защитите или телепорт.",
+      "detailed": "Башню T1 на средней линии под атакой: 82% здоровья. Защитите или телепорт. · Здоровье здания, %: 82 (игра, 0 с)"
      },
      "percent": null,
      "facts": [
       {
-       "key": "target",
-       "label": "Цель",
-       "value": "axe",
-       "source": "screen",
+       "key": "building-hp",
+       "label": "Здоровье здания, %",
+       "value": 82,
+       "source": "gsi",
        "ageSec": 0,
-       "confidence": 0.95,
-       "verified": true
-      },
-      {
-       "key": "target-hp",
-       "label": "Здоровье цели, %",
-       "value": 50,
-       "source": "screen",
-       "ageSec": 0,
-       "confidence": 0.8,
+       "confidence": 1,
        "verified": true
       }
      ],
-     "ttlMs": 5000,
-     "cooldownMs": 8000,
-     "zone": "decision",
-     "icon": "hero:axe",
-     "seq": 4,
-     "createdWallMs": 5023000,
-     "expiresWallMs": 5044000,
-     "clock": 323,
+     "ttlMs": 8000,
+     "cooldownMs": 45000,
+     "zone": "alert",
+     "icon": null,
+     "seq": 2,
+     "createdWallMs": 5016000,
+     "expiresWallMs": 5024000,
+     "clock": 316,
      "textSource": "template"
     }
    ],
-   "expired": [],
    "changed": [],
    "mistakes": [],
    "deathReview": null,
    "matchReview": null,
    "inFight": true,
    "visible": [
-    "fight.engage",
-    "fight.target:axe"
+    "fight.engage"
    ]
   }
  },
@@ -785,7 +715,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 5,
+     "seq": 3,
      "createdWallMs": 5040000,
      "expiresWallMs": 5048000,
      "clock": 340,
@@ -815,10 +745,10 @@
       }
      ],
      "ttlMs": 10000,
-     "cooldownMs": 60000,
+     "cooldownMs": 180000,
      "zone": "alert",
      "icon": null,
-     "seq": 6,
+     "seq": 4,
      "createdWallMs": 5040000,
      "expiresWallMs": 5050000,
      "clock": 340,
@@ -1027,7 +957,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": "item:dust",
-     "seq": 7,
+     "seq": 5,
      "createdWallMs": 5043000,
      "expiresWallMs": 5053000,
      "clock": 343,
@@ -1076,10 +1006,10 @@
       }
      ],
      "ttlMs": 10000,
-     "cooldownMs": 60000,
+     "cooldownMs": 180000,
      "zone": "alert",
      "icon": null,
-     "seq": 6,
+     "seq": 4,
      "createdWallMs": 5040000,
      "expiresWallMs": 5050000,
      "clock": 340,
@@ -1143,12 +1073,12 @@
       }
      ],
      "ttlMs": 8000,
-     "cooldownMs": 45000,
+     "cooldownMs": 90000,
      "zone": "alert",
      "icon": null,
-     "seq": 8,
+     "seq": 6,
      "createdWallMs": 5051000,
-     "expiresWallMs": 5077000,
+     "expiresWallMs": 5071000,
      "clock": 351,
      "textSource": "template"
     }
@@ -1207,7 +1137,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": "item:dust",
-     "seq": 7,
+     "seq": 5,
      "createdWallMs": 5043000,
      "expiresWallMs": 5053000,
      "clock": 343,
@@ -1221,6 +1151,75 @@
    "inFight": false,
    "visible": [
     "danger.missing"
+   ]
+  }
+ },
+ {
+  "t": 60,
+  "tick": {
+   "wallMs": 5060000,
+   "shown": [
+    {
+     "id": "danger.invis",
+     "ruleId": "danger.invis",
+     "category": "danger",
+     "priority": "advice",
+     "confidence": 0.7,
+     "short": "Riki невидим — купите пыль",
+     "detail": {
+      "normal": "У врага Riki есть невидимость, а у вас нет пыли или сентри. Пыль стоит 80.",
+      "detailed": "У врага Riki есть невидимость, а у вас нет пыли или сентри. Пыль стоит 80. · Невидимый враг: riki (экран, 0 с) · Цена пыли: 80 (база, не проверено) · Невидимость (по описанию способностей): да (база, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "invis-hero",
+       "label": "Невидимый враг",
+       "value": "riki",
+       "source": "screen",
+       "ageSec": 0,
+       "confidence": 0.95,
+       "verified": true
+      },
+      {
+       "key": "dust-cost",
+       "label": "Цена пыли",
+       "value": 80,
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      },
+      {
+       "key": "invis",
+       "label": "Невидимость (по описанию способностей)",
+       "value": "да",
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 480000,
+     "zone": "timing",
+     "icon": "item:dust",
+     "seq": 7,
+     "createdWallMs": 5060000,
+     "expiresWallMs": 5079000,
+     "clock": 360,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "danger.missing",
+    "danger.invis"
    ]
   }
  },
@@ -1632,45 +1631,36 @@
   }
  },
  {
-  "t": 66,
+  "t": 63,
   "tick": {
-   "wallMs": 5066000,
+   "wallMs": 5063000,
    "shown": [
     {
-     "id": "danger.invis",
-     "ruleId": "danger.invis",
-     "category": "danger",
+     "id": "economy.tp",
+     "ruleId": "economy.tp",
+     "category": "economy",
      "priority": "advice",
-     "confidence": 0.7,
-     "short": "Riki невидим — купите пыль",
+     "confidence": 0.85,
+     "short": "Нет Town Portal Scroll — купите",
      "detail": {
-      "normal": "У врага Riki есть невидимость, а у вас нет пыли или сентри. Пыль стоит 80.",
-      "detailed": "У врага Riki есть невидимость, а у вас нет пыли или сентри. Пыль стоит 80. · Невидимый враг: riki (экран, 0 с) · Цена пыли: 80 (база, не проверено) · Невидимость (по описанию способностей): да (база, не проверено)"
+      "normal": "У вас нет свитка телепортации (100 золота): без него не успеть на помощь и не сбежать.",
+      "detailed": "У вас нет свитка телепортации (100 золота): без него не успеть на помощь и не сбежать. · Town Portal Scroll: нет (вывод, 0 с) · Цена Town Portal Scroll: 100 (база, не проверено)"
      },
      "percent": null,
      "facts": [
       {
-       "key": "invis-hero",
-       "label": "Невидимый враг",
-       "value": "riki",
-       "source": "screen",
+       "key": "tp",
+       "label": "Town Portal Scroll",
+       "value": false,
+       "source": "derived",
        "ageSec": 0,
-       "confidence": 0.95,
+       "confidence": 0.9,
        "verified": true
       },
       {
-       "key": "dust-cost",
-       "label": "Цена пыли",
-       "value": 80,
-       "source": "kb",
-       "ageSec": null,
-       "confidence": 1,
-       "verified": false
-      },
-      {
-       "key": "invis",
-       "label": "Невидимость (по описанию способностей)",
-       "value": "да",
+       "key": "tp-cost",
+       "label": "Цена Town Portal Scroll",
+       "value": 100,
        "source": "kb",
        "ageSec": null,
        "confidence": 1,
@@ -1678,13 +1668,13 @@
       }
      ],
      "ttlMs": 10000,
-     "cooldownMs": 480000,
+     "cooldownMs": 120000,
      "zone": "timing",
-     "icon": "item:dust",
-     "seq": 9,
-     "createdWallMs": 5066000,
-     "expiresWallMs": 5086000,
-     "clock": 366,
+     "icon": "item:tpscroll",
+     "seq": 8,
+     "createdWallMs": 5063000,
+     "expiresWallMs": 5073000,
+     "clock": 363,
      "textSource": "template"
     }
    ],
@@ -1695,8 +1685,8 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.missing",
-    "danger.invis"
+    "danger.invis",
+    "economy.tp"
    ]
   }
  },
@@ -1759,7 +1749,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 10,
+     "seq": 9,
      "createdWallMs": 5070000,
      "expiresWallMs": 5084000,
      "clock": 370,
@@ -1774,48 +1764,16 @@
    "inFight": false,
    "visible": [
     "danger.low-hp",
-    "danger.invis"
+    "economy.tp"
    ]
   }
  },
  {
-  "t": 76,
+  "t": 73,
   "tick": {
-   "wallMs": 5076000,
-   "shown": [
-    {
-     "id": "danger.building:tower1_mid",
-     "ruleId": "danger.building",
-     "category": "danger",
-     "priority": "critical",
-     "confidence": 0.9,
-     "short": "Бьют башню T1 на средней линии (16%)",
-     "detail": {
-      "normal": "Башню T1 на средней линии под атакой: 16% здоровья. Защитите или телепорт.",
-      "detailed": "Башню T1 на средней линии под атакой: 16% здоровья. Защитите или телепорт. · Здоровье здания, %: 16 (игра, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "building-hp",
-       "label": "Здоровье здания, %",
-       "value": 16,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      }
-     ],
-     "ttlMs": 8000,
-     "cooldownMs": 45000,
-     "zone": "alert",
-     "icon": null,
-     "seq": 11,
-     "createdWallMs": 5076000,
-     "expiresWallMs": 5084000,
-     "clock": 376,
-     "textSource": "template"
-    },
+   "wallMs": 5073000,
+   "shown": [],
+   "expired": [
     {
      "id": "economy.tp",
      "ruleId": "economy.tp",
@@ -1852,9 +1810,58 @@
      "cooldownMs": 120000,
      "zone": "timing",
      "icon": "item:tpscroll",
-     "seq": 12,
+     "seq": 8,
+     "createdWallMs": 5063000,
+     "expiresWallMs": 5073000,
+     "clock": 363,
+     "textSource": "template"
+    }
+   ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "danger.low-hp"
+   ]
+  }
+ },
+ {
+  "t": 76,
+  "tick": {
+   "wallMs": 5076000,
+   "shown": [
+    {
+     "id": "danger.building:tower1_mid",
+     "ruleId": "danger.building",
+     "category": "danger",
+     "priority": "critical",
+     "confidence": 0.9,
+     "short": "Бьют башню T1 на средней линии (16%)",
+     "detail": {
+      "normal": "Башню T1 на средней линии под атакой: 16% здоровья. Защитите или телепорт.",
+      "detailed": "Башню T1 на средней линии под атакой: 16% здоровья. Защитите или телепорт. · Здоровье здания, %: 16 (игра, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "building-hp",
+       "label": "Здоровье здания, %",
+       "value": 16,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      }
+     ],
+     "ttlMs": 8000,
+     "cooldownMs": 45000,
+     "zone": "alert",
+     "icon": null,
+     "seq": 10,
      "createdWallMs": 5076000,
-     "expiresWallMs": 5086000,
+     "expiresWallMs": 5084000,
      "clock": 376,
      "textSource": "template"
     }
@@ -1866,8 +1873,67 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
+    "danger.building:tower1_mid"
+   ]
+  }
+ },
+ {
+  "t": 83,
+  "tick": {
+   "wallMs": 5083000,
+   "shown": [
+    {
+     "id": "economy.neutral",
+     "ruleId": "economy.neutral",
+     "category": "economy",
+     "priority": "info",
+     "confidence": 0.8,
+     "short": "Пустой слот нейтрального предмета",
+     "detail": {
+      "normal": "Слот нейтрального предмета пуст — выберите предмет текущего уровня.",
+      "detailed": "Слот нейтрального предмета пуст — выберите предмет текущего уровня. · Нейтральный слот: пусто (игра, 0 с) · Нейтральные предметы с, с: 0 (база)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "neutral",
+       "label": "Нейтральный слот",
+       "value": "пусто",
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      },
+      {
+       "key": "neutral-t1",
+       "label": "Нейтральные предметы с, с",
+       "value": 0,
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": true
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 300000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 11,
+     "createdWallMs": 5083000,
+     "expiresWallMs": 5093000,
+     "clock": 383,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
     "danger.building:tower1_mid",
-    "economy.tp"
+    "economy.neutral"
    ]
   }
  },
@@ -1904,7 +1970,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 11,
+     "seq": 10,
      "createdWallMs": 5076000,
      "expiresWallMs": 5084000,
      "clock": 376,
@@ -1917,106 +1983,15 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "economy.tp"
+    "economy.neutral"
    ]
-  }
- },
- {
-  "t": 86,
-  "tick": {
-   "wallMs": 5086000,
-   "shown": [],
-   "expired": [
-    {
-     "id": "economy.tp",
-     "ruleId": "economy.tp",
-     "category": "economy",
-     "priority": "advice",
-     "confidence": 0.85,
-     "short": "Нет Town Portal Scroll — купите",
-     "detail": {
-      "normal": "У вас нет свитка телепортации (100 золота): без него не успеть на помощь и не сбежать.",
-      "detailed": "У вас нет свитка телепортации (100 золота): без него не успеть на помощь и не сбежать. · Town Portal Scroll: нет (вывод, 0 с) · Цена Town Portal Scroll: 100 (база, не проверено)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "tp",
-       "label": "Town Portal Scroll",
-       "value": false,
-       "source": "derived",
-       "ageSec": 0,
-       "confidence": 0.9,
-       "verified": true
-      },
-      {
-       "key": "tp-cost",
-       "label": "Цена Town Portal Scroll",
-       "value": 100,
-       "source": "kb",
-       "ageSec": null,
-       "confidence": 1,
-       "verified": false
-      }
-     ],
-     "ttlMs": 10000,
-     "cooldownMs": 120000,
-     "zone": "timing",
-     "icon": "item:tpscroll",
-     "seq": 12,
-     "createdWallMs": 5076000,
-     "expiresWallMs": 5086000,
-     "clock": 376,
-     "textSource": "template"
-    }
-   ],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
-   "visible": []
   }
  },
  {
   "t": 89,
   "tick": {
    "wallMs": 5089000,
-   "shown": [
-    {
-     "id": "mistake.missed-rune",
-     "ruleId": "mistake.missed-rune",
-     "category": "mistake",
-     "priority": "info",
-     "confidence": 0.7,
-     "short": "Пропущенная руна",
-     "detail": {
-      "normal": "Руна силы в 6:00 без внимания. За 10 с до появления руны идите к реке — или попросите саппорта.",
-      "detailed": "Руна силы в 6:00 без внимания. За 10 с до появления руны идите к реке — или попросите саппорта. · Руна силы: 6:00 (база, не проверено)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "rune",
-       "label": "Руна силы",
-       "value": "6:00",
-       "source": "kb",
-       "ageSec": null,
-       "confidence": 0.8,
-       "verified": false
-      }
-     ],
-     "ttlMs": 10000,
-     "cooldownMs": 60000,
-     "zone": "timing",
-     "icon": null,
-     "seq": 13,
-     "createdWallMs": 5089000,
-     "expiresWallMs": 5099000,
-     "clock": 389,
-     "textSource": "template"
-    }
-   ],
+   "shown": [],
    "expired": [],
    "changed": [],
    "mistakes": [
@@ -2045,47 +2020,56 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "mistake.missed-rune"
+    "economy.neutral"
    ]
   }
  },
  {
-  "t": 99,
+  "t": 93,
   "tick": {
-   "wallMs": 5099000,
+   "wallMs": 5093000,
    "shown": [],
    "expired": [
     {
-     "id": "mistake.missed-rune",
-     "ruleId": "mistake.missed-rune",
-     "category": "mistake",
+     "id": "economy.neutral",
+     "ruleId": "economy.neutral",
+     "category": "economy",
      "priority": "info",
-     "confidence": 0.7,
-     "short": "Пропущенная руна",
+     "confidence": 0.8,
+     "short": "Пустой слот нейтрального предмета",
      "detail": {
-      "normal": "Руна силы в 6:00 без внимания. За 10 с до появления руны идите к реке — или попросите саппорта.",
-      "detailed": "Руна силы в 6:00 без внимания. За 10 с до появления руны идите к реке — или попросите саппорта. · Руна силы: 6:00 (база, не проверено)"
+      "normal": "Слот нейтрального предмета пуст — выберите предмет текущего уровня.",
+      "detailed": "Слот нейтрального предмета пуст — выберите предмет текущего уровня. · Нейтральный слот: пусто (игра, 0 с) · Нейтральные предметы с, с: 0 (база)"
      },
      "percent": null,
      "facts": [
       {
-       "key": "rune",
-       "label": "Руна силы",
-       "value": "6:00",
+       "key": "neutral",
+       "label": "Нейтральный слот",
+       "value": "пусто",
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      },
+      {
+       "key": "neutral-t1",
+       "label": "Нейтральные предметы с, с",
+       "value": 0,
        "source": "kb",
        "ageSec": null,
-       "confidence": 0.8,
-       "verified": false
+       "confidence": 1,
+       "verified": true
       }
      ],
      "ttlMs": 10000,
-     "cooldownMs": 60000,
+     "cooldownMs": 300000,
      "zone": "timing",
      "icon": null,
-     "seq": 13,
-     "createdWallMs": 5089000,
-     "expiresWallMs": 5099000,
-     "clock": 389,
+     "seq": 11,
+     "createdWallMs": 5083000,
+     "expiresWallMs": 5093000,
+     "clock": 383,
      "textSource": "template"
     }
    ],
@@ -2103,42 +2087,42 @@
    "wallMs": 5103000,
    "shown": [
     {
-     "id": "economy.neutral",
-     "ruleId": "economy.neutral",
+     "id": "economy.next:wraith_band",
+     "ruleId": "economy.next",
      "category": "economy",
      "priority": "info",
-     "confidence": 0.8,
-     "short": "Пустой слот нейтрального предмета",
+     "confidence": 0.7,
+     "short": "Дальше: Wraith Band",
      "detail": {
-      "normal": "Слот нейтрального предмета пуст — выберите предмет текущего уровня.",
-      "detailed": "Слот нейтрального предмета пуст — выберите предмет текущего уровня. · Нейтральный слот: пусто (игра, 0 с) · Нейтральные предметы с, с: 0 (база)"
+      "normal": "Следующий предмет: Wraith Band — профи патча берут его к 2 мин.",
+      "detailed": "Следующий предмет: Wraith Band — профи патча берут его к 2 мин. · Следующий предмет (профи патча): Wraith Band (статистика патча, не проверено) · Обычно к минуте: 2.4 (статистика патча, не проверено)"
      },
      "percent": null,
      "facts": [
       {
-       "key": "neutral",
-       "label": "Нейтральный слот",
-       "value": "пусто",
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      },
-      {
-       "key": "neutral-t1",
-       "label": "Нейтральные предметы с, с",
-       "value": 0,
-       "source": "kb",
+       "key": "next-item",
+       "label": "Следующий предмет (профи патча)",
+       "value": "Wraith Band",
+       "source": "stats",
        "ageSec": null,
        "confidence": 1,
-       "verified": true
+       "verified": false
+      },
+      {
+       "key": "median-min",
+       "label": "Обычно к минуте",
+       "value": 2.4,
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
       }
      ],
      "ttlMs": 10000,
      "cooldownMs": 300000,
      "zone": "timing",
-     "icon": null,
-     "seq": 14,
+     "icon": "item:wraith_band",
+     "seq": 12,
      "createdWallMs": 5103000,
      "expiresWallMs": 5113000,
      "clock": 403,
@@ -2152,67 +2136,7 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "economy.neutral"
-   ]
-  }
- },
- {
-  "t": 111,
-  "tick": {
-   "wallMs": 5111000,
-   "shown": [
-    {
-     "id": "timing.shrine-of-wisdom",
-     "ruleId": "timing.shrine-of-wisdom",
-     "category": "timing",
-     "priority": "info",
-     "confidence": 0.8,
-     "short": "Святилище мудрости через 15 с",
-     "detail": {
-      "normal": "Святилище мудрости через 15 с (7:00).",
-      "detailed": "Святилище мудрости через 15 с (7:00). · Святилище мудрости: 7:00 (база, не проверено) · Игровое время, с: 405 (игра, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "shrine-of-wisdom",
-       "label": "Святилище мудрости",
-       "value": "7:00",
-       "source": "kb",
-       "ageSec": null,
-       "confidence": 1,
-       "verified": false
-      },
-      {
-       "key": "clock",
-       "label": "Игровое время, с",
-       "value": 405,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      }
-     ],
-     "ttlMs": 15000,
-     "cooldownMs": 0,
-     "zone": "timing",
-     "icon": null,
-     "seq": 15,
-     "createdWallMs": 5111000,
-     "expiresWallMs": 5126000,
-     "clock": 411,
-     "textSource": "template"
-    }
-   ],
-   "expired": [],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
-   "visible": [
-    "economy.neutral",
-    "timing.shrine-of-wisdom"
+    "economy.next:wraith_band"
    ]
   }
  },
@@ -2223,42 +2147,42 @@
    "shown": [],
    "expired": [
     {
-     "id": "economy.neutral",
-     "ruleId": "economy.neutral",
+     "id": "economy.next:wraith_band",
+     "ruleId": "economy.next",
      "category": "economy",
      "priority": "info",
-     "confidence": 0.8,
-     "short": "Пустой слот нейтрального предмета",
+     "confidence": 0.7,
+     "short": "Дальше: Wraith Band",
      "detail": {
-      "normal": "Слот нейтрального предмета пуст — выберите предмет текущего уровня.",
-      "detailed": "Слот нейтрального предмета пуст — выберите предмет текущего уровня. · Нейтральный слот: пусто (игра, 0 с) · Нейтральные предметы с, с: 0 (база)"
+      "normal": "Следующий предмет: Wraith Band — профи патча берут его к 2 мин.",
+      "detailed": "Следующий предмет: Wraith Band — профи патча берут его к 2 мин. · Следующий предмет (профи патча): Wraith Band (статистика патча, не проверено) · Обычно к минуте: 2.4 (статистика патча, не проверено)"
      },
      "percent": null,
      "facts": [
       {
-       "key": "neutral",
-       "label": "Нейтральный слот",
-       "value": "пусто",
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      },
-      {
-       "key": "neutral-t1",
-       "label": "Нейтральные предметы с, с",
-       "value": 0,
-       "source": "kb",
+       "key": "next-item",
+       "label": "Следующий предмет (профи патча)",
+       "value": "Wraith Band",
+       "source": "stats",
        "ageSec": null,
        "confidence": 1,
-       "verified": true
+       "verified": false
+      },
+      {
+       "key": "median-min",
+       "label": "Обычно к минуте",
+       "value": 2.4,
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
       }
      ],
      "ttlMs": 10000,
      "cooldownMs": 300000,
      "zone": "timing",
-     "icon": null,
-     "seq": 14,
+     "icon": "item:wraith_band",
+     "seq": 12,
      "createdWallMs": 5103000,
      "expiresWallMs": 5113000,
      "clock": 403,
@@ -2270,9 +2194,7 @@
    "deathReview": null,
    "matchReview": null,
    "inFight": false,
-   "visible": [
-    "timing.shrine-of-wisdom"
-   ]
+   "visible": []
   }
  },
  {
@@ -2683,9 +2605,9 @@
   }
  },
  {
-  "t": 126,
+  "t": 123,
   "tick": {
-   "wallMs": 5126000,
+   "wallMs": 5123000,
    "shown": [
     {
      "id": "fight.keep-buyback",
@@ -2732,57 +2654,14 @@
      "cooldownMs": 300000,
      "zone": "timing",
      "icon": null,
-     "seq": 16,
-     "createdWallMs": 5126000,
-     "expiresWallMs": 5134000,
-     "clock": 426,
+     "seq": 13,
+     "createdWallMs": 5123000,
+     "expiresWallMs": 5131000,
+     "clock": 423,
      "textSource": "template"
     }
    ],
-   "expired": [
-    {
-     "id": "timing.shrine-of-wisdom",
-     "ruleId": "timing.shrine-of-wisdom",
-     "category": "timing",
-     "priority": "info",
-     "confidence": 0.8,
-     "short": "Святилище мудрости через 15 с",
-     "detail": {
-      "normal": "Святилище мудрости через 15 с (7:00).",
-      "detailed": "Святилище мудрости через 15 с (7:00). · Святилище мудрости: 7:00 (база, не проверено) · Игровое время, с: 405 (игра, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "shrine-of-wisdom",
-       "label": "Святилище мудрости",
-       "value": "7:00",
-       "source": "kb",
-       "ageSec": null,
-       "confidence": 1,
-       "verified": false
-      },
-      {
-       "key": "clock",
-       "label": "Игровое время, с",
-       "value": 405,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      }
-     ],
-     "ttlMs": 15000,
-     "cooldownMs": 0,
-     "zone": "timing",
-     "icon": null,
-     "seq": 15,
-     "createdWallMs": 5111000,
-     "expiresWallMs": 5126000,
-     "clock": 411,
-     "textSource": "template"
-    }
-   ],
+   "expired": [],
    "changed": [],
    "mistakes": [],
    "deathReview": null,
@@ -2794,9 +2673,9 @@
   }
  },
  {
-  "t": 134,
+  "t": 131,
   "tick": {
-   "wallMs": 5134000,
+   "wallMs": 5131000,
    "shown": [],
    "expired": [
     {
@@ -2844,10 +2723,10 @@
      "cooldownMs": 300000,
      "zone": "timing",
      "icon": null,
-     "seq": 16,
-     "createdWallMs": 5126000,
-     "expiresWallMs": 5134000,
-     "clock": 426,
+     "seq": 13,
+     "createdWallMs": 5123000,
+     "expiresWallMs": 5131000,
+     "clock": 423,
      "textSource": "template"
     }
    ],
@@ -2990,7 +2869,7 @@
      "cooldownMs": 30000,
      "zone": "decision",
      "icon": null,
-     "seq": 17,
+     "seq": 14,
      "createdWallMs": 5160000,
      "expiresWallMs": 5207000,
      "clock": 460,
@@ -3005,66 +2884,6 @@
    "inFight": true,
    "visible": [
     "fight.engage"
-   ]
-  }
- },
- {
-  "t": 166,
-  "tick": {
-   "wallMs": 5166000,
-   "shown": [
-    {
-     "id": "fight.target:axe",
-     "ruleId": "fight.target",
-     "category": "fight",
-     "priority": "advice",
-     "confidence": 0.8,
-     "short": "Фокус: Axe, 50% здоровья",
-     "detail": {
-      "normal": "Бейте Axe: у него меньше всех здоровья (50%).",
-      "detailed": "Бейте Axe: у него меньше всех здоровья (50%). · Цель: axe (экран, 0 с) · Здоровье цели, %: 50 (экран, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "target",
-       "label": "Цель",
-       "value": "axe",
-       "source": "screen",
-       "ageSec": 0,
-       "confidence": 0.95,
-       "verified": true
-      },
-      {
-       "key": "target-hp",
-       "label": "Здоровье цели, %",
-       "value": 50,
-       "source": "screen",
-       "ageSec": 0,
-       "confidence": 0.8,
-       "verified": true
-      }
-     ],
-     "ttlMs": 5000,
-     "cooldownMs": 8000,
-     "zone": "decision",
-     "icon": "hero:axe",
-     "seq": 18,
-     "createdWallMs": 5166000,
-     "expiresWallMs": 5180000,
-     "clock": 466,
-     "textSource": "template"
-    }
-   ],
-   "expired": [],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": true,
-   "visible": [
-    "fight.engage",
-    "fight.target:axe"
    ]
   }
  },
@@ -3100,7 +2919,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 19,
+     "seq": 15,
      "createdWallMs": 5176000,
      "expiresWallMs": 5184000,
      "clock": 476,
@@ -3559,7 +3378,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 19,
+     "seq": 15,
      "createdWallMs": 5176000,
      "expiresWallMs": 5184000,
      "clock": 476,
@@ -3573,66 +3392,6 @@
    "inFight": true,
    "visible": [
     "fight.engage"
-   ]
-  }
- },
- {
-  "t": 185,
-  "tick": {
-   "wallMs": 5185000,
-   "shown": [
-    {
-     "id": "fight.target:axe",
-     "ruleId": "fight.target",
-     "category": "fight",
-     "priority": "advice",
-     "confidence": 0.8,
-     "short": "Фокус: Axe, 50% здоровья",
-     "detail": {
-      "normal": "Бейте Axe: у него меньше всех здоровья (50%).",
-      "detailed": "Бейте Axe: у него меньше всех здоровья (50%). · Цель: axe (экран, 0 с) · Здоровье цели, %: 50 (экран, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "target",
-       "label": "Цель",
-       "value": "axe",
-       "source": "screen",
-       "ageSec": 0,
-       "confidence": 0.95,
-       "verified": true
-      },
-      {
-       "key": "target-hp",
-       "label": "Здоровье цели, %",
-       "value": 50,
-       "source": "screen",
-       "ageSec": 0,
-       "confidence": 0.8,
-       "verified": true
-      }
-     ],
-     "ttlMs": 5000,
-     "cooldownMs": 8000,
-     "zone": "decision",
-     "icon": "hero:axe",
-     "seq": 20,
-     "createdWallMs": 5185000,
-     "expiresWallMs": 5204000,
-     "clock": 485,
-     "textSource": "template"
-    }
-   ],
-   "expired": [],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": true,
-   "visible": [
-    "fight.engage",
-    "fight.target:axe"
    ]
   }
  },
@@ -3695,42 +3454,9 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 21,
+     "seq": 16,
      "createdWallMs": 5200000,
-     "expiresWallMs": 5208000,
-     "clock": 500,
-     "textSource": "template"
-    },
-    {
-     "id": "danger.smoke",
-     "ruleId": "danger.smoke",
-     "category": "danger",
-     "priority": "critical",
-     "confidence": 0.6,
-     "short": "Возможен Smoke of Deceit: 5 героев пропали",
-     "detail": {
-      "normal": "5 врагов исчезли с мини-карты почти одновременно — похоже на Smoke of Deceit. Будьте рядом с союзниками.",
-      "detailed": "5 врагов исчезли с мини-карты почти одновременно — похоже на Smoke of Deceit. Будьте рядом с союзниками. · Пропали одновременно: 5 (вывод, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "smoke",
-       "label": "Пропали одновременно",
-       "value": 5,
-       "source": "derived",
-       "ageSec": 0,
-       "confidence": 0.6,
-       "verified": true
-      }
-     ],
-     "ttlMs": 10000,
-     "cooldownMs": 60000,
-     "zone": "alert",
-     "icon": null,
-     "seq": 22,
-     "createdWallMs": 5200000,
-     "expiresWallMs": 5210000,
+     "expiresWallMs": 5247000,
      "clock": 500,
      "textSource": "template"
     }
@@ -3743,7 +3469,7 @@
    "inFight": false,
    "visible": [
     "fight.engage",
-    "danger.smoke"
+    "danger.low-hp"
    ]
   }
  },
@@ -3879,7 +3605,7 @@
      "cooldownMs": 30000,
      "zone": "decision",
      "icon": null,
-     "seq": 17,
+     "seq": 14,
      "createdWallMs": 5160000,
      "expiresWallMs": 5207000,
      "clock": 460,
@@ -3892,7 +3618,7 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.smoke"
+    "danger.low-hp"
    ]
   }
  },
@@ -3937,7 +3663,7 @@
      "cooldownMs": 120000,
      "zone": "timing",
      "icon": "item:tpscroll",
-     "seq": 23,
+     "seq": 17,
      "createdWallMs": 5203000,
      "expiresWallMs": 5213000,
      "clock": 503,
@@ -3951,7 +3677,7 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.smoke",
+    "danger.low-hp",
     "economy.tp"
    ]
   }
@@ -3989,127 +3715,8 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.smoke",
+    "danger.low-hp",
     "economy.tp"
-   ]
-  }
- },
- {
-  "t": 210,
-  "tick": {
-   "wallMs": 5210000,
-   "shown": [],
-   "expired": [
-    {
-     "id": "danger.smoke",
-     "ruleId": "danger.smoke",
-     "category": "danger",
-     "priority": "critical",
-     "confidence": 0.6,
-     "short": "Возможен Smoke of Deceit: 5 героев пропали",
-     "detail": {
-      "normal": "5 врагов исчезли с мини-карты почти одновременно — похоже на Smoke of Deceit. Будьте рядом с союзниками.",
-      "detailed": "5 врагов исчезли с мини-карты почти одновременно — похоже на Smoke of Deceit. Будьте рядом с союзниками. · Пропали одновременно: 5 (вывод, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "smoke",
-       "label": "Пропали одновременно",
-       "value": 5,
-       "source": "derived",
-       "ageSec": 0,
-       "confidence": 0.6,
-       "verified": true
-      }
-     ],
-     "ttlMs": 10000,
-     "cooldownMs": 60000,
-     "zone": "alert",
-     "icon": null,
-     "seq": 22,
-     "createdWallMs": 5200000,
-     "expiresWallMs": 5210000,
-     "clock": 500,
-     "textSource": "template"
-    }
-   ],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
-   "visible": [
-    "economy.tp"
-   ]
-  }
- },
- {
-  "t": 211,
-  "tick": {
-   "wallMs": 5211000,
-   "shown": [
-    {
-     "id": "danger.missing",
-     "ruleId": "danger.missing",
-     "category": "danger",
-     "priority": "advice",
-     "confidence": 0.75,
-     "short": "5 врагов не видно — осторожно",
-     "detail": {
-      "normal": "5 врагов нет на мини-карте, вы один — держитесь ближе к своим.",
-      "detailed": "5 врагов нет на мини-карте, вы один — держитесь ближе к своим. · Врагов не видно: 5 (вывод, 0 с) · Сторона карты: own (вывод, 0 с) · Союзников рядом нет: да (вывод, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "missing",
-       "label": "Врагов не видно",
-       "value": 5,
-       "source": "derived",
-       "ageSec": 0,
-       "confidence": 0.75,
-       "verified": true
-      },
-      {
-       "key": "side",
-       "label": "Сторона карты",
-       "value": "own",
-       "source": "derived",
-       "ageSec": 0,
-       "confidence": 0.7,
-       "verified": true
-      },
-      {
-       "key": "alone",
-       "label": "Союзников рядом нет",
-       "value": true,
-       "source": "derived",
-       "ageSec": 0,
-       "confidence": 0.7,
-       "verified": true
-      }
-     ],
-     "ttlMs": 8000,
-     "cooldownMs": 45000,
-     "zone": "alert",
-     "icon": null,
-     "seq": 24,
-     "createdWallMs": 5211000,
-     "expiresWallMs": 5237000,
-     "clock": 511,
-     "textSource": "template"
-    }
-   ],
-   "expired": [],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
-   "visible": [
-    "economy.tp",
-    "danger.missing"
    ]
   }
  },
@@ -4155,90 +3762,13 @@
      "cooldownMs": 120000,
      "zone": "timing",
      "icon": "item:tpscroll",
-     "seq": 23,
+     "seq": 17,
      "createdWallMs": 5203000,
      "expiresWallMs": 5213000,
      "clock": 503,
      "textSource": "template"
     }
    ],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
-   "visible": [
-    "danger.missing"
-   ]
-  }
- },
- {
-  "t": 230,
-  "tick": {
-   "wallMs": 5230000,
-   "shown": [
-    {
-     "id": "danger.low-hp",
-     "ruleId": "danger.low-hp",
-     "category": "danger",
-     "priority": "critical",
-     "confidence": 0.9,
-     "short": "Мало здоровья, нет регена — назад",
-     "detail": {
-      "normal": "Здоровья 25%, нет регенерации и Town Portal Scroll, врагов не видно — уходите к базе.",
-      "detailed": "Здоровья 25%, нет регенерации и Town Portal Scroll, врагов не видно — уходите к базе. · Здоровье, %: 25 (игра, 0 с) · Есть реген: нет (вывод, 0 с) · Town Portal Scroll готов: нет (вывод, 0 с) · Врагов не видно: 5 (вывод, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "hp",
-       "label": "Здоровье, %",
-       "value": 25,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      },
-      {
-       "key": "regen",
-       "label": "Есть реген",
-       "value": false,
-       "source": "derived",
-       "ageSec": 0,
-       "confidence": 0.9,
-       "verified": true
-      },
-      {
-       "key": "tp",
-       "label": "Town Portal Scroll готов",
-       "value": false,
-       "source": "derived",
-       "ageSec": 0,
-       "confidence": 0.9,
-       "verified": true
-      },
-      {
-       "key": "missing",
-       "label": "Врагов не видно",
-       "value": 5,
-       "source": "derived",
-       "ageSec": 0,
-       "confidence": 0.75,
-       "verified": true
-      }
-     ],
-     "ttlMs": 8000,
-     "cooldownMs": 30000,
-     "zone": "alert",
-     "icon": null,
-     "seq": 25,
-     "createdWallMs": 5230000,
-     "expiresWallMs": 5247000,
-     "clock": 530,
-     "textSource": "template"
-    }
-   ],
-   "expired": [],
    "changed": [],
    "mistakes": [],
    "deathReview": null,
@@ -4716,10 +4246,10 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 25,
-     "createdWallMs": 5230000,
+     "seq": 16,
+     "createdWallMs": 5200000,
      "expiresWallMs": 5247000,
-     "clock": 530,
+     "clock": 500,
      "textSource": "template"
     }
    ],
@@ -4763,7 +4293,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 26,
+     "seq": 18,
      "createdWallMs": 5256000,
      "expiresWallMs": 5264000,
      "clock": 556,
@@ -4814,7 +4344,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 26,
+     "seq": 18,
      "createdWallMs": 5256000,
      "expiresWallMs": 5264000,
      "clock": 556,
@@ -4870,7 +4400,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 27,
+     "seq": 19,
      "createdWallMs": 5285000,
      "expiresWallMs": 5300000,
      "clock": 585,
@@ -4885,66 +4415,6 @@
    "inFight": false,
    "visible": [
     "timing.rune-power"
-   ]
-  }
- },
- {
-  "t": 290,
-  "tick": {
-   "wallMs": 5290000,
-   "shown": [
-    {
-     "id": "timing.day-night",
-     "ruleId": "timing.day-night",
-     "category": "timing",
-     "priority": "info",
-     "confidence": 0.8,
-     "short": "Скоро наступит день",
-     "detail": {
-      "normal": "Скоро наступит день (10:00).",
-      "detailed": "Скоро наступит день (10:00). · Смена дня и ночи: 10:00 (база, не проверено) · Игровое время, с: 585 (игра, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "day-night",
-       "label": "Смена дня и ночи",
-       "value": "10:00",
-       "source": "kb",
-       "ageSec": null,
-       "confidence": 1,
-       "verified": false
-      },
-      {
-       "key": "clock",
-       "label": "Игровое время, с",
-       "value": 585,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      }
-     ],
-     "ttlMs": 15000,
-     "cooldownMs": 0,
-     "zone": "timing",
-     "icon": null,
-     "seq": 28,
-     "createdWallMs": 5290000,
-     "expiresWallMs": 5305000,
-     "clock": 590,
-     "textSource": "template"
-    }
-   ],
-   "expired": [],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
-   "visible": [
-    "timing.rune-power",
-    "timing.day-night"
    ]
   }
  },
@@ -5007,21 +4477,63 @@
      "cooldownMs": 0,
      "zone": "decision",
      "icon": null,
-     "seq": 29,
+     "seq": 20,
      "createdWallMs": 5300000,
      "expiresWallMs": 5310000,
      "clock": 600,
      "textSource": "template"
     }
    ],
-   "expired": [],
+   "expired": [
+    {
+     "id": "timing.rune-power",
+     "ruleId": "timing.rune-power",
+     "category": "timing",
+     "priority": "info",
+     "confidence": 0.8,
+     "short": "Руна силы через 15 с, бежать 14 с",
+     "detail": {
+      "normal": "Руна силы через 15 с, бежать 14 с (10:00).",
+      "detailed": "Руна силы через 15 с, бежать 14 с (10:00). · Руна силы: 10:00 (база, не проверено) · Игровое время, с: 585 (игра, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "rune-power",
+       "label": "Руна силы",
+       "value": "10:00",
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      },
+      {
+       "key": "clock",
+       "label": "Игровое время, с",
+       "value": 585,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      }
+     ],
+     "ttlMs": 15000,
+     "cooldownMs": 0,
+     "zone": "timing",
+     "icon": null,
+     "seq": 19,
+     "createdWallMs": 5285000,
+     "expiresWallMs": 5300000,
+     "clock": 585,
+     "textSource": "template"
+    }
+   ],
    "changed": [],
    "mistakes": [],
    "deathReview": null,
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "timing.day-night",
     "laning.bench"
    ]
   }
@@ -5434,65 +4946,6 @@
   }
  },
  {
-  "t": 305,
-  "tick": {
-   "wallMs": 5305000,
-   "shown": [],
-   "expired": [
-    {
-     "id": "timing.day-night",
-     "ruleId": "timing.day-night",
-     "category": "timing",
-     "priority": "info",
-     "confidence": 0.8,
-     "short": "Скоро наступит день",
-     "detail": {
-      "normal": "Скоро наступит день (10:00).",
-      "detailed": "Скоро наступит день (10:00). · Смена дня и ночи: 10:00 (база, не проверено) · Игровое время, с: 585 (игра, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "day-night",
-       "label": "Смена дня и ночи",
-       "value": "10:00",
-       "source": "kb",
-       "ageSec": null,
-       "confidence": 1,
-       "verified": false
-      },
-      {
-       "key": "clock",
-       "label": "Игровое время, с",
-       "value": 585,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      }
-     ],
-     "ttlMs": 15000,
-     "cooldownMs": 0,
-     "zone": "timing",
-     "icon": null,
-     "seq": 28,
-     "createdWallMs": 5290000,
-     "expiresWallMs": 5305000,
-     "clock": 590,
-     "textSource": "template"
-    }
-   ],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
-   "visible": [
-    "laning.bench"
-   ]
-  }
- },
- {
   "t": 310,
   "tick": {
    "wallMs": 5310000,
@@ -5552,7 +5005,7 @@
      "cooldownMs": 0,
      "zone": "decision",
      "icon": null,
-     "seq": 29,
+     "seq": 20,
      "createdWallMs": 5300000,
      "expiresWallMs": 5310000,
      "clock": 600,
@@ -5698,7 +5151,7 @@
      "cooldownMs": 30000,
      "zone": "decision",
      "icon": null,
-     "seq": 30,
+     "seq": 21,
      "createdWallMs": 5320000,
      "expiresWallMs": 5367000,
      "clock": 620,
@@ -5750,66 +5203,6 @@
    "inFight": true,
    "visible": [
     "fight.engage"
-   ]
-  }
- },
- {
-  "t": 326,
-  "tick": {
-   "wallMs": 5326000,
-   "shown": [
-    {
-     "id": "fight.target:axe",
-     "ruleId": "fight.target",
-     "category": "fight",
-     "priority": "advice",
-     "confidence": 0.8,
-     "short": "Фокус: Axe, 50% здоровья",
-     "detail": {
-      "normal": "Бейте Axe: у него меньше всех здоровья (50%).",
-      "detailed": "Бейте Axe: у него меньше всех здоровья (50%). · Цель: axe (экран, 0 с) · Здоровье цели, %: 50 (экран, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "target",
-       "label": "Цель",
-       "value": "axe",
-       "source": "screen",
-       "ageSec": 0,
-       "confidence": 0.95,
-       "verified": true
-      },
-      {
-       "key": "target-hp",
-       "label": "Здоровье цели, %",
-       "value": 50,
-       "source": "screen",
-       "ageSec": 0,
-       "confidence": 0.8,
-       "verified": true
-      }
-     ],
-     "ttlMs": 5000,
-     "cooldownMs": 8000,
-     "zone": "decision",
-     "icon": "hero:axe",
-     "seq": 31,
-     "createdWallMs": 5326000,
-     "expiresWallMs": 5364000,
-     "clock": 626,
-     "textSource": "template"
-    }
-   ],
-   "expired": [],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": true,
-   "visible": [
-    "fight.engage",
-    "fight.target:axe"
    ]
   }
  },
@@ -5872,7 +5265,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 32,
+     "seq": 22,
      "createdWallMs": 5360000,
      "expiresWallMs": 5368000,
      "clock": 660,
@@ -5902,10 +5295,10 @@
       }
      ],
      "ttlMs": 10000,
-     "cooldownMs": 60000,
+     "cooldownMs": 180000,
      "zone": "alert",
      "icon": null,
-     "seq": 33,
+     "seq": 23,
      "createdWallMs": 5360000,
      "expiresWallMs": 5370000,
      "clock": 660,
@@ -6463,7 +5856,7 @@
      "cooldownMs": 30000,
      "zone": "decision",
      "icon": null,
-     "seq": 30,
+     "seq": 21,
      "createdWallMs": 5320000,
      "expiresWallMs": 5367000,
      "clock": 620,
@@ -6521,7 +5914,7 @@
      "cooldownMs": 120000,
      "zone": "timing",
      "icon": "item:tpscroll",
-     "seq": 34,
+     "seq": 24,
      "createdWallMs": 5363000,
      "expiresWallMs": 5373000,
      "clock": 663,
@@ -6570,10 +5963,10 @@
       }
      ],
      "ttlMs": 10000,
-     "cooldownMs": 60000,
+     "cooldownMs": 180000,
      "zone": "alert",
      "icon": null,
-     "seq": 33,
+     "seq": 23,
      "createdWallMs": 5360000,
      "expiresWallMs": 5370000,
      "clock": 660,
@@ -6637,10 +6030,10 @@
       }
      ],
      "ttlMs": 8000,
-     "cooldownMs": 45000,
+     "cooldownMs": 90000,
      "zone": "alert",
      "icon": null,
-     "seq": 35,
+     "seq": 25,
      "createdWallMs": 5371000,
      "expiresWallMs": 5397000,
      "clock": 671,
@@ -6701,7 +6094,7 @@
      "cooldownMs": 120000,
      "zone": "timing",
      "icon": "item:tpscroll",
-     "seq": 34,
+     "seq": 24,
      "createdWallMs": 5363000,
      "expiresWallMs": 5373000,
      "clock": 663,
@@ -6777,7 +6170,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 36,
+     "seq": 26,
      "createdWallMs": 5390000,
      "expiresWallMs": 5407000,
      "clock": 690,
@@ -6792,6 +6185,66 @@
    "inFight": false,
    "visible": [
     "danger.low-hp"
+   ]
+  }
+ },
+ {
+  "t": 400,
+  "tick": {
+   "wallMs": 5400000,
+   "shown": [
+    {
+     "id": "economy.neutral",
+     "ruleId": "economy.neutral",
+     "category": "economy",
+     "priority": "info",
+     "confidence": 0.8,
+     "short": "Пустой слот нейтрального предмета",
+     "detail": {
+      "normal": "Слот нейтрального предмета пуст — выберите предмет текущего уровня.",
+      "detailed": "Слот нейтрального предмета пуст — выберите предмет текущего уровня. · Нейтральный слот: пусто (игра, 0 с) · Нейтральные предметы с, с: 0 (база)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "neutral",
+       "label": "Нейтральный слот",
+       "value": "пусто",
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      },
+      {
+       "key": "neutral-t1",
+       "label": "Нейтральные предметы с, с",
+       "value": 0,
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": true
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 300000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 27,
+     "createdWallMs": 5400000,
+     "expiresWallMs": 5410000,
+     "clock": 700,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "danger.low-hp",
+    "economy.neutral"
    ]
   }
  },
@@ -6855,7 +6308,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 36,
+     "seq": 26,
      "createdWallMs": 5390000,
      "expiresWallMs": 5407000,
      "clock": 690,
@@ -6867,7 +6320,9 @@
    "deathReview": null,
    "matchReview": null,
    "inFight": false,
-   "visible": []
+   "visible": [
+    "economy.neutral"
+   ]
   }
  },
  {
@@ -6911,7 +6366,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 37,
+     "seq": 28,
      "createdWallMs": 5405000,
      "expiresWallMs": 5420000,
      "clock": 705,
@@ -6925,6 +6380,7 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
+    "economy.neutral",
     "timing.rune-bounty"
    ]
   }
@@ -6970,7 +6426,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 38,
+     "seq": 29,
      "createdWallMs": 5410000,
      "expiresWallMs": 5425000,
      "clock": 710,
@@ -6986,66 +6442,6 @@
    "visible": [
     "timing.rune-bounty",
     "timing.rune-power"
-   ]
-  }
- },
- {
-  "t": 413,
-  "tick": {
-   "wallMs": 5413000,
-   "shown": [
-    {
-     "id": "economy.neutral",
-     "ruleId": "economy.neutral",
-     "category": "economy",
-     "priority": "info",
-     "confidence": 0.8,
-     "short": "Пустой слот нейтрального предмета",
-     "detail": {
-      "normal": "Слот нейтрального предмета пуст — выберите предмет текущего уровня.",
-      "detailed": "Слот нейтрального предмета пуст — выберите предмет текущего уровня. · Нейтральный слот: пусто (игра, 0 с) · Нейтральные предметы с, с: 0 (база)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "neutral",
-       "label": "Нейтральный слот",
-       "value": "пусто",
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      },
-      {
-       "key": "neutral-t1",
-       "label": "Нейтральные предметы с, с",
-       "value": 0,
-       "source": "kb",
-       "ageSec": null,
-       "confidence": 1,
-       "verified": true
-      }
-     ],
-     "ttlMs": 10000,
-     "cooldownMs": 300000,
-     "zone": "timing",
-     "icon": null,
-     "seq": 39,
-     "createdWallMs": 5413000,
-     "expiresWallMs": 5423000,
-     "clock": 713,
-     "textSource": "template"
-    }
-   ],
-   "expired": [],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
-   "visible": [
-    "timing.rune-power",
-    "economy.neutral"
    ]
   }
  },
@@ -7081,7 +6477,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 40,
+     "seq": 30,
      "createdWallMs": 5416000,
      "expiresWallMs": 5424000,
      "clock": 716,
@@ -7540,7 +6936,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 40,
+     "seq": 30,
      "createdWallMs": 5416000,
      "expiresWallMs": 5424000,
      "clock": 716,
@@ -7599,7 +6995,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 38,
+     "seq": 29,
      "createdWallMs": 5410000,
      "expiresWallMs": 5425000,
      "clock": 710,
@@ -7664,7 +7060,7 @@
      "cooldownMs": 300000,
      "zone": "timing",
      "icon": null,
-     "seq": 41,
+     "seq": 31,
      "createdWallMs": 5440000,
      "expiresWallMs": 5448000,
      "clock": 740,
@@ -7714,7 +7110,7 @@
      "cooldownMs": 60000,
      "zone": "timing",
      "icon": null,
-     "seq": 42,
+     "seq": 32,
      "createdWallMs": 5445000,
      "expiresWallMs": 5455000,
      "clock": 745,
@@ -7805,7 +7201,7 @@
      "cooldownMs": 300000,
      "zone": "timing",
      "icon": null,
-     "seq": 41,
+     "seq": 31,
      "createdWallMs": 5440000,
      "expiresWallMs": 5448000,
      "clock": 740,
@@ -7855,7 +7251,7 @@
      "cooldownMs": 60000,
      "zone": "timing",
      "icon": null,
-     "seq": 42,
+     "seq": 32,
      "createdWallMs": 5445000,
      "expiresWallMs": 5455000,
      "clock": 745,
@@ -8001,7 +7397,7 @@
      "cooldownMs": 30000,
      "zone": "decision",
      "icon": null,
-     "seq": 43,
+     "seq": 33,
      "createdWallMs": 5480000,
      "expiresWallMs": 5527000,
      "clock": 780,
@@ -8427,66 +7823,6 @@
   }
  },
  {
-  "t": 486,
-  "tick": {
-   "wallMs": 5486000,
-   "shown": [
-    {
-     "id": "fight.target:axe",
-     "ruleId": "fight.target",
-     "category": "fight",
-     "priority": "advice",
-     "confidence": 0.8,
-     "short": "Фокус: Axe, 50% здоровья",
-     "detail": {
-      "normal": "Бейте Axe: у него меньше всех здоровья (50%).",
-      "detailed": "Бейте Axe: у него меньше всех здоровья (50%). · Цель: axe (экран, 0 с) · Здоровье цели, %: 50 (экран, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "target",
-       "label": "Цель",
-       "value": "axe",
-       "source": "screen",
-       "ageSec": 0,
-       "confidence": 0.95,
-       "verified": true
-      },
-      {
-       "key": "target-hp",
-       "label": "Здоровье цели, %",
-       "value": 50,
-       "source": "screen",
-       "ageSec": 0,
-       "confidence": 0.8,
-       "verified": true
-      }
-     ],
-     "ttlMs": 5000,
-     "cooldownMs": 8000,
-     "zone": "decision",
-     "icon": "hero:axe",
-     "seq": 44,
-     "createdWallMs": 5486000,
-     "expiresWallMs": 5500000,
-     "clock": 786,
-     "textSource": "template"
-    }
-   ],
-   "expired": [],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": true,
-   "visible": [
-    "fight.engage",
-    "fight.target:axe"
-   ]
-  }
- },
- {
   "t": 496,
   "tick": {
    "wallMs": 5496000,
@@ -8518,7 +7854,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 45,
+     "seq": 34,
      "createdWallMs": 5496000,
      "expiresWallMs": 5504000,
      "clock": 796,
@@ -8538,62 +7874,52 @@
   }
  },
  {
-  "t": 503,
+  "t": 504,
   "tick": {
-   "wallMs": 5503000,
-   "shown": [
+   "wallMs": 5504000,
+   "shown": [],
+   "expired": [
     {
-     "id": "fight.target:axe",
-     "ruleId": "fight.target",
-     "category": "fight",
+     "id": "danger.building:tower1_mid",
+     "ruleId": "danger.building",
+     "category": "danger",
      "priority": "advice",
-     "confidence": 0.8,
-     "short": "Фокус: Axe, 50% здоровья",
+     "confidence": 0.9,
+     "short": "Бьют башню T1 на средней линии (82%)",
      "detail": {
-      "normal": "Бейте Axe: у него меньше всех здоровья (50%).",
-      "detailed": "Бейте Axe: у него меньше всех здоровья (50%). · Цель: axe (экран, 0 с) · Здоровье цели, %: 50 (экран, 0 с)"
+      "normal": "Башню T1 на средней линии под атакой: 82% здоровья. Защитите или телепорт.",
+      "detailed": "Башню T1 на средней линии под атакой: 82% здоровья. Защитите или телепорт. · Здоровье здания, %: 82 (игра, 0 с)"
      },
      "percent": null,
      "facts": [
       {
-       "key": "target",
-       "label": "Цель",
-       "value": "axe",
-       "source": "screen",
+       "key": "building-hp",
+       "label": "Здоровье здания, %",
+       "value": 82,
+       "source": "gsi",
        "ageSec": 0,
-       "confidence": 0.95,
-       "verified": true
-      },
-      {
-       "key": "target-hp",
-       "label": "Здоровье цели, %",
-       "value": 50,
-       "source": "screen",
-       "ageSec": 0,
-       "confidence": 0.8,
+       "confidence": 1,
        "verified": true
       }
      ],
-     "ttlMs": 5000,
-     "cooldownMs": 8000,
-     "zone": "decision",
-     "icon": "hero:axe",
-     "seq": 46,
-     "createdWallMs": 5503000,
-     "expiresWallMs": 5524000,
-     "clock": 803,
+     "ttlMs": 8000,
+     "cooldownMs": 45000,
+     "zone": "alert",
+     "icon": null,
+     "seq": 34,
+     "createdWallMs": 5496000,
+     "expiresWallMs": 5504000,
+     "clock": 796,
      "textSource": "template"
     }
    ],
-   "expired": [],
    "changed": [],
    "mistakes": [],
    "deathReview": null,
    "matchReview": null,
    "inFight": true,
    "visible": [
-    "fight.engage",
-    "fight.target:axe"
+    "fight.engage"
    ]
   }
  },
@@ -8656,42 +7982,9 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 47,
+     "seq": 35,
      "createdWallMs": 5520000,
-     "expiresWallMs": 5528000,
-     "clock": 820,
-     "textSource": "template"
-    },
-    {
-     "id": "danger.smoke",
-     "ruleId": "danger.smoke",
-     "category": "danger",
-     "priority": "critical",
-     "confidence": 0.6,
-     "short": "Возможен Smoke of Deceit: 5 героев пропали",
-     "detail": {
-      "normal": "5 врагов исчезли с мини-карты почти одновременно — похоже на Smoke of Deceit. Будьте рядом с союзниками.",
-      "detailed": "5 врагов исчезли с мини-карты почти одновременно — похоже на Smoke of Deceit. Будьте рядом с союзниками. · Пропали одновременно: 5 (вывод, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "smoke",
-       "label": "Пропали одновременно",
-       "value": 5,
-       "source": "derived",
-       "ageSec": 0,
-       "confidence": 0.6,
-       "verified": true
-      }
-     ],
-     "ttlMs": 10000,
-     "cooldownMs": 60000,
-     "zone": "alert",
-     "icon": null,
-     "seq": 48,
-     "createdWallMs": 5520000,
-     "expiresWallMs": 5530000,
+     "expiresWallMs": 5564000,
      "clock": 820,
      "textSource": "template"
     }
@@ -8704,7 +7997,7 @@
    "inFight": false,
    "visible": [
     "fight.engage",
-    "danger.smoke"
+    "danger.low-hp"
    ]
   }
  },
@@ -8840,7 +8133,7 @@
      "cooldownMs": 30000,
      "zone": "decision",
      "icon": null,
-     "seq": 43,
+     "seq": 33,
      "createdWallMs": 5480000,
      "expiresWallMs": 5527000,
      "clock": 780,
@@ -8853,7 +8146,7 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.smoke"
+    "danger.low-hp"
    ]
   }
  },
@@ -8898,7 +8191,7 @@
      "cooldownMs": 120000,
      "zone": "timing",
      "icon": "item:tpscroll",
-     "seq": 49,
+     "seq": 36,
      "createdWallMs": 5523000,
      "expiresWallMs": 5533000,
      "clock": 823,
@@ -8912,118 +8205,8 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.smoke",
+    "danger.low-hp",
     "economy.tp"
-   ]
-  }
- },
- {
-  "t": 530,
-  "tick": {
-   "wallMs": 5530000,
-   "shown": [],
-   "expired": [
-    {
-     "id": "danger.smoke",
-     "ruleId": "danger.smoke",
-     "category": "danger",
-     "priority": "critical",
-     "confidence": 0.6,
-     "short": "Возможен Smoke of Deceit: 5 героев пропали",
-     "detail": {
-      "normal": "5 врагов исчезли с мини-карты почти одновременно — похоже на Smoke of Deceit. Будьте рядом с союзниками.",
-      "detailed": "5 врагов исчезли с мини-карты почти одновременно — похоже на Smoke of Deceit. Будьте рядом с союзниками. · Пропали одновременно: 5 (вывод, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "smoke",
-       "label": "Пропали одновременно",
-       "value": 5,
-       "source": "derived",
-       "ageSec": 0,
-       "confidence": 0.6,
-       "verified": true
-      }
-     ],
-     "ttlMs": 10000,
-     "cooldownMs": 60000,
-     "zone": "alert",
-     "icon": null,
-     "seq": 48,
-     "createdWallMs": 5520000,
-     "expiresWallMs": 5530000,
-     "clock": 820,
-     "textSource": "template"
-    }
-   ],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
-   "visible": [
-    "economy.tp"
-   ]
-  }
- },
- {
-  "t": 531,
-  "tick": {
-   "wallMs": 5531000,
-   "shown": [
-    {
-     "id": "timing.shrine-of-wisdom",
-     "ruleId": "timing.shrine-of-wisdom",
-     "category": "timing",
-     "priority": "info",
-     "confidence": 0.8,
-     "short": "Святилище мудрости через 15 с",
-     "detail": {
-      "normal": "Святилище мудрости через 15 с (14:00).",
-      "detailed": "Святилище мудрости через 15 с (14:00). · Святилище мудрости: 14:00 (база, не проверено) · Игровое время, с: 825 (игра, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "shrine-of-wisdom",
-       "label": "Святилище мудрости",
-       "value": "14:00",
-       "source": "kb",
-       "ageSec": null,
-       "confidence": 1,
-       "verified": false
-      },
-      {
-       "key": "clock",
-       "label": "Игровое время, с",
-       "value": 825,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      }
-     ],
-     "ttlMs": 15000,
-     "cooldownMs": 0,
-     "zone": "timing",
-     "icon": null,
-     "seq": 50,
-     "createdWallMs": 5531000,
-     "expiresWallMs": 5546000,
-     "clock": 831,
-     "textSource": "template"
-    }
-   ],
-   "expired": [],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
-   "visible": [
-    "economy.tp",
-    "timing.shrine-of-wisdom"
    ]
   }
  },
@@ -9069,7 +8252,7 @@
      "cooldownMs": 120000,
      "zone": "timing",
      "icon": "item:tpscroll",
-     "seq": 49,
+     "seq": 36,
      "createdWallMs": 5523000,
      "expiresWallMs": 5533000,
      "clock": 823,
@@ -9082,7 +8265,7 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "timing.shrine-of-wisdom"
+    "danger.low-hp"
    ]
   }
  },
@@ -9494,247 +8677,9 @@
   }
  },
  {
-  "t": 546,
+  "t": 549,
   "tick": {
-   "wallMs": 5546000,
-   "shown": [
-    {
-     "id": "danger.missing",
-     "ruleId": "danger.missing",
-     "category": "danger",
-     "priority": "advice",
-     "confidence": 0.75,
-     "short": "5 врагов не видно — осторожно",
-     "detail": {
-      "normal": "5 врагов нет на мини-карте, вы один — держитесь ближе к своим.",
-      "detailed": "5 врагов нет на мини-карте, вы один — держитесь ближе к своим. · Врагов не видно: 5 (вывод, 0 с) · Сторона карты: own (вывод, 0 с) · Союзников рядом нет: да (вывод, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "missing",
-       "label": "Врагов не видно",
-       "value": 5,
-       "source": "derived",
-       "ageSec": 0,
-       "confidence": 0.75,
-       "verified": true
-      },
-      {
-       "key": "side",
-       "label": "Сторона карты",
-       "value": "own",
-       "source": "derived",
-       "ageSec": 0,
-       "confidence": 0.7,
-       "verified": true
-      },
-      {
-       "key": "alone",
-       "label": "Союзников рядом нет",
-       "value": true,
-       "source": "derived",
-       "ageSec": 0,
-       "confidence": 0.7,
-       "verified": true
-      }
-     ],
-     "ttlMs": 8000,
-     "cooldownMs": 45000,
-     "zone": "alert",
-     "icon": null,
-     "seq": 51,
-     "createdWallMs": 5546000,
-     "expiresWallMs": 5557000,
-     "clock": 846,
-     "textSource": "template"
-    }
-   ],
-   "expired": [
-    {
-     "id": "timing.shrine-of-wisdom",
-     "ruleId": "timing.shrine-of-wisdom",
-     "category": "timing",
-     "priority": "info",
-     "confidence": 0.8,
-     "short": "Святилище мудрости через 15 с",
-     "detail": {
-      "normal": "Святилище мудрости через 15 с (14:00).",
-      "detailed": "Святилище мудрости через 15 с (14:00). · Святилище мудрости: 14:00 (база, не проверено) · Игровое время, с: 825 (игра, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "shrine-of-wisdom",
-       "label": "Святилище мудрости",
-       "value": "14:00",
-       "source": "kb",
-       "ageSec": null,
-       "confidence": 1,
-       "verified": false
-      },
-      {
-       "key": "clock",
-       "label": "Игровое время, с",
-       "value": 825,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      }
-     ],
-     "ttlMs": 15000,
-     "cooldownMs": 0,
-     "zone": "timing",
-     "icon": null,
-     "seq": 50,
-     "createdWallMs": 5531000,
-     "expiresWallMs": 5546000,
-     "clock": 831,
-     "textSource": "template"
-    }
-   ],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
-   "visible": [
-    "danger.missing"
-   ]
-  }
- },
- {
-  "t": 550,
-  "tick": {
-   "wallMs": 5550000,
-   "shown": [
-    {
-     "id": "danger.low-hp",
-     "ruleId": "danger.low-hp",
-     "category": "danger",
-     "priority": "critical",
-     "confidence": 0.9,
-     "short": "Мало здоровья, нет регена — назад",
-     "detail": {
-      "normal": "Здоровья 25%, нет регенерации и Town Portal Scroll, врагов не видно — уходите к базе.",
-      "detailed": "Здоровья 25%, нет регенерации и Town Portal Scroll, врагов не видно — уходите к базе. · Здоровье, %: 25 (игра, 0 с) · Есть реген: нет (вывод, 0 с) · Town Portal Scroll готов: нет (вывод, 0 с) · Врагов не видно: 5 (вывод, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "hp",
-       "label": "Здоровье, %",
-       "value": 25,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      },
-      {
-       "key": "regen",
-       "label": "Есть реген",
-       "value": false,
-       "source": "derived",
-       "ageSec": 0,
-       "confidence": 0.9,
-       "verified": true
-      },
-      {
-       "key": "tp",
-       "label": "Town Portal Scroll готов",
-       "value": false,
-       "source": "derived",
-       "ageSec": 0,
-       "confidence": 0.9,
-       "verified": true
-      },
-      {
-       "key": "missing",
-       "label": "Врагов не видно",
-       "value": 5,
-       "source": "derived",
-       "ageSec": 0,
-       "confidence": 0.75,
-       "verified": true
-      }
-     ],
-     "ttlMs": 8000,
-     "cooldownMs": 30000,
-     "zone": "alert",
-     "icon": null,
-     "seq": 52,
-     "createdWallMs": 5550000,
-     "expiresWallMs": 5564000,
-     "clock": 850,
-     "textSource": "template"
-    }
-   ],
-   "expired": [],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
-   "visible": [
-    "danger.low-hp"
-   ]
-  }
- },
- {
-  "t": 556,
-  "tick": {
-   "wallMs": 5556000,
-   "shown": [
-    {
-     "id": "danger.building:tower1_mid",
-     "ruleId": "danger.building",
-     "category": "danger",
-     "priority": "critical",
-     "confidence": 0.9,
-     "short": "Бьют башню T1 на средней линии (16%)",
-     "detail": {
-      "normal": "Башню T1 на средней линии под атакой: 16% здоровья. Защитите или телепорт.",
-      "detailed": "Башню T1 на средней линии под атакой: 16% здоровья. Защитите или телепорт. · Здоровье здания, %: 16 (игра, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "building-hp",
-       "label": "Здоровье здания, %",
-       "value": 16,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      }
-     ],
-     "ttlMs": 8000,
-     "cooldownMs": 45000,
-     "zone": "alert",
-     "icon": null,
-     "seq": 53,
-     "createdWallMs": 5556000,
-     "expiresWallMs": 5564000,
-     "clock": 856,
-     "textSource": "template"
-    }
-   ],
-   "expired": [],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
-   "visible": [
-    "danger.building:tower1_mid"
-   ]
-  }
- },
- {
-  "t": 564,
-  "tick": {
-   "wallMs": 5564000,
+   "wallMs": 5549000,
    "shown": [
     {
      "id": "danger.invis",
@@ -9781,13 +8726,81 @@
      "cooldownMs": 480000,
      "zone": "timing",
      "icon": "item:dust",
-     "seq": 54,
-     "createdWallMs": 5564000,
-     "expiresWallMs": 5656000,
-     "clock": 864,
+     "seq": 37,
+     "createdWallMs": 5549000,
+     "expiresWallMs": 5649000,
+     "clock": 849,
      "textSource": "template"
     }
    ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "danger.low-hp",
+    "danger.invis"
+   ]
+  }
+ },
+ {
+  "t": 556,
+  "tick": {
+   "wallMs": 5556000,
+   "shown": [
+    {
+     "id": "danger.building:tower1_mid",
+     "ruleId": "danger.building",
+     "category": "danger",
+     "priority": "critical",
+     "confidence": 0.9,
+     "short": "Бьют башню T1 на средней линии (16%)",
+     "detail": {
+      "normal": "Башню T1 на средней линии под атакой: 16% здоровья. Защитите или телепорт.",
+      "detailed": "Башню T1 на средней линии под атакой: 16% здоровья. Защитите или телепорт. · Здоровье здания, %: 16 (игра, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "building-hp",
+       "label": "Здоровье здания, %",
+       "value": 16,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      }
+     ],
+     "ttlMs": 8000,
+     "cooldownMs": 45000,
+     "zone": "alert",
+     "icon": null,
+     "seq": 38,
+     "createdWallMs": 5556000,
+     "expiresWallMs": 5564000,
+     "clock": 856,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "danger.building:tower1_mid",
+    "danger.invis"
+   ]
+  }
+ },
+ {
+  "t": 564,
+  "tick": {
+   "wallMs": 5564000,
+   "shown": [],
    "expired": [
     {
      "id": "danger.building:tower1_mid",
@@ -9816,7 +8829,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 53,
+     "seq": 38,
      "createdWallMs": 5556000,
      "expiresWallMs": 5564000,
      "clock": 856,
@@ -9865,7 +8878,7 @@
      "cooldownMs": 60000,
      "zone": "timing",
      "icon": null,
-     "seq": 55,
+     "seq": 39,
      "createdWallMs": 5565000,
      "expiresWallMs": 5575000,
      "clock": 865,
@@ -9938,7 +8951,7 @@
      "cooldownMs": 60000,
      "zone": "timing",
      "icon": null,
-     "seq": 55,
+     "seq": 39,
      "createdWallMs": 5565000,
      "expiresWallMs": 5575000,
      "clock": 865,
@@ -9952,66 +8965,6 @@
    "inFight": false,
    "visible": [
     "danger.invis"
-   ]
-  }
- },
- {
-  "t": 585,
-  "tick": {
-   "wallMs": 5585000,
-   "shown": [
-    {
-     "id": "timing.day-night",
-     "ruleId": "timing.day-night",
-     "category": "timing",
-     "priority": "info",
-     "confidence": 0.8,
-     "short": "Скоро наступит ночь",
-     "detail": {
-      "normal": "Скоро наступит ночь (15:00).",
-      "detailed": "Скоро наступит ночь (15:00). · Смена дня и ночи: 15:00 (база, не проверено) · Игровое время, с: 885 (игра, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "day-night",
-       "label": "Смена дня и ночи",
-       "value": "15:00",
-       "source": "kb",
-       "ageSec": null,
-       "confidence": 1,
-       "verified": false
-      },
-      {
-       "key": "clock",
-       "label": "Игровое время, с",
-       "value": 885,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      }
-     ],
-     "ttlMs": 15000,
-     "cooldownMs": 0,
-     "zone": "timing",
-     "icon": null,
-     "seq": 56,
-     "createdWallMs": 5585000,
-     "expiresWallMs": 5600000,
-     "clock": 885,
-     "textSource": "template"
-    }
-   ],
-   "expired": [],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
-   "visible": [
-    "danger.invis",
-    "timing.day-night"
    ]
   }
  },
@@ -10047,7 +9000,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 57,
+     "seq": 40,
      "createdWallMs": 5600000,
      "expiresWallMs": 5610000,
      "clock": 900,
@@ -10474,9 +9427,9 @@
   }
  },
  {
-  "t": 606,
+  "t": 604,
   "tick": {
-   "wallMs": 5606000,
+   "wallMs": 5604000,
    "shown": [
     {
      "id": "laning.bench",
@@ -10532,10 +9485,10 @@
      "cooldownMs": 0,
      "zone": "decision",
      "icon": null,
-     "seq": 58,
-     "createdWallMs": 5606000,
-     "expiresWallMs": 5616000,
-     "clock": 906,
+     "seq": 41,
+     "createdWallMs": 5604000,
+     "expiresWallMs": 5614000,
+     "clock": 904,
      "textSource": "template"
     }
    ],
@@ -10552,9 +9505,9 @@
   }
  },
  {
-  "t": 616,
+  "t": 614,
   "tick": {
-   "wallMs": 5616000,
+   "wallMs": 5614000,
    "shown": [],
    "expired": [
     {
@@ -10611,10 +9564,10 @@
      "cooldownMs": 0,
      "zone": "decision",
      "icon": null,
-     "seq": 58,
-     "createdWallMs": 5606000,
-     "expiresWallMs": 5616000,
-     "clock": 906,
+     "seq": 41,
+     "createdWallMs": 5604000,
+     "expiresWallMs": 5614000,
+     "clock": 904,
      "textSource": "template"
     }
    ],
@@ -10759,7 +9712,7 @@
      "cooldownMs": 30000,
      "zone": "decision",
      "icon": null,
-     "seq": 59,
+     "seq": 42,
      "createdWallMs": 5640000,
      "expiresWallMs": 5687000,
      "clock": 940,
@@ -10779,62 +9732,70 @@
   }
  },
  {
-  "t": 646,
+  "t": 642,
   "tick": {
-   "wallMs": 5646000,
-   "shown": [
+   "wallMs": 5642000,
+   "shown": [],
+   "expired": [
     {
-     "id": "fight.target:axe",
-     "ruleId": "fight.target",
-     "category": "fight",
+     "id": "danger.invis",
+     "ruleId": "danger.invis",
+     "category": "danger",
      "priority": "advice",
-     "confidence": 0.8,
-     "short": "Фокус: Axe, 50% здоровья",
+     "confidence": 0.7,
+     "short": "Riki невидим — купите пыль",
      "detail": {
-      "normal": "Бейте Axe: у него меньше всех здоровья (50%).",
-      "detailed": "Бейте Axe: у него меньше всех здоровья (50%). · Цель: axe (экран, 0 с) · Здоровье цели, %: 50 (экран, 0 с)"
+      "normal": "У врага Riki есть невидимость, а у вас нет пыли или сентри. Пыль стоит 80.",
+      "detailed": "У врага Riki есть невидимость, а у вас нет пыли или сентри. Пыль стоит 80. · Невидимый враг: riki (экран, 0 с) · Цена пыли: 80 (база, не проверено) · Невидимость (по описанию способностей): да (база, не проверено)"
      },
      "percent": null,
      "facts": [
       {
-       "key": "target",
-       "label": "Цель",
-       "value": "axe",
+       "key": "invis-hero",
+       "label": "Невидимый враг",
+       "value": "riki",
        "source": "screen",
        "ageSec": 0,
        "confidence": 0.95,
        "verified": true
       },
       {
-       "key": "target-hp",
-       "label": "Здоровье цели, %",
-       "value": 50,
-       "source": "screen",
-       "ageSec": 0,
-       "confidence": 0.8,
-       "verified": true
+       "key": "dust-cost",
+       "label": "Цена пыли",
+       "value": 80,
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      },
+      {
+       "key": "invis",
+       "label": "Невидимость (по описанию способностей)",
+       "value": "да",
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
       }
      ],
-     "ttlMs": 5000,
-     "cooldownMs": 8000,
-     "zone": "decision",
-     "icon": "hero:axe",
-     "seq": 60,
-     "createdWallMs": 5646000,
-     "expiresWallMs": 5660000,
-     "clock": 946,
+     "ttlMs": 10000,
+     "cooldownMs": 480000,
+     "zone": "timing",
+     "icon": "item:dust",
+     "seq": 37,
+     "createdWallMs": 5549000,
+     "expiresWallMs": 5649000,
+     "clock": 849,
      "textSource": "template"
     }
    ],
-   "expired": [],
    "changed": [],
    "mistakes": [],
    "deathReview": null,
    "matchReview": null,
    "inFight": true,
    "visible": [
-    "fight.engage",
-    "fight.target:axe"
+    "fight.engage"
    ]
   }
  },
@@ -10870,7 +9831,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 61,
+     "seq": 43,
      "createdWallMs": 5656000,
      "expiresWallMs": 5664000,
      "clock": 956,
@@ -11329,7 +10290,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 61,
+     "seq": 43,
      "createdWallMs": 5656000,
      "expiresWallMs": 5664000,
      "clock": 956,
@@ -11343,66 +10304,6 @@
    "inFight": true,
    "visible": [
     "fight.engage"
-   ]
-  }
- },
- {
-  "t": 665,
-  "tick": {
-   "wallMs": 5665000,
-   "shown": [
-    {
-     "id": "fight.target:axe",
-     "ruleId": "fight.target",
-     "category": "fight",
-     "priority": "advice",
-     "confidence": 0.8,
-     "short": "Фокус: Axe, 50% здоровья",
-     "detail": {
-      "normal": "Бейте Axe: у него меньше всех здоровья (50%).",
-      "detailed": "Бейте Axe: у него меньше всех здоровья (50%). · Цель: axe (экран, 0 с) · Здоровье цели, %: 50 (экран, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "target",
-       "label": "Цель",
-       "value": "axe",
-       "source": "screen",
-       "ageSec": 0,
-       "confidence": 0.95,
-       "verified": true
-      },
-      {
-       "key": "target-hp",
-       "label": "Здоровье цели, %",
-       "value": 50,
-       "source": "screen",
-       "ageSec": 0,
-       "confidence": 0.8,
-       "verified": true
-      }
-     ],
-     "ttlMs": 5000,
-     "cooldownMs": 8000,
-     "zone": "decision",
-     "icon": "hero:axe",
-     "seq": 62,
-     "createdWallMs": 5665000,
-     "expiresWallMs": 5684000,
-     "clock": 965,
-     "textSource": "template"
-    }
-   ],
-   "expired": [],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": true,
-   "visible": [
-    "fight.engage",
-    "fight.target:axe"
    ]
   }
  },
@@ -11465,7 +10366,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 63,
+     "seq": 44,
      "createdWallMs": 5680000,
      "expiresWallMs": 5688000,
      "clock": 980,
@@ -11495,10 +10396,10 @@
       }
      ],
      "ttlMs": 10000,
-     "cooldownMs": 60000,
+     "cooldownMs": 180000,
      "zone": "alert",
      "icon": null,
-     "seq": 64,
+     "seq": 45,
      "createdWallMs": 5680000,
      "expiresWallMs": 5690000,
      "clock": 980,
@@ -11649,7 +10550,7 @@
      "cooldownMs": 30000,
      "zone": "decision",
      "icon": null,
-     "seq": 59,
+     "seq": 42,
      "createdWallMs": 5640000,
      "expiresWallMs": 5687000,
      "clock": 940,
@@ -11707,7 +10608,7 @@
      "cooldownMs": 120000,
      "zone": "timing",
      "icon": "item:tpscroll",
-     "seq": 65,
+     "seq": 46,
      "createdWallMs": 5683000,
      "expiresWallMs": 5693000,
      "clock": 983,
@@ -11794,10 +10695,10 @@
       }
      ],
      "ttlMs": 10000,
-     "cooldownMs": 60000,
+     "cooldownMs": 180000,
      "zone": "alert",
      "icon": null,
-     "seq": 64,
+     "seq": 45,
      "createdWallMs": 5680000,
      "expiresWallMs": 5690000,
      "clock": 980,
@@ -11861,10 +10762,10 @@
       }
      ],
      "ttlMs": 8000,
-     "cooldownMs": 45000,
+     "cooldownMs": 90000,
      "zone": "alert",
      "icon": null,
-     "seq": 66,
+     "seq": 47,
      "createdWallMs": 5691000,
      "expiresWallMs": 5717000,
      "clock": 991,
@@ -11925,7 +10826,7 @@
      "cooldownMs": 120000,
      "zone": "timing",
      "icon": "item:tpscroll",
-     "seq": 65,
+     "seq": 46,
      "createdWallMs": 5683000,
      "expiresWallMs": 5693000,
      "clock": 983,
@@ -12001,7 +10902,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 67,
+     "seq": 48,
      "createdWallMs": 5710000,
      "expiresWallMs": 5727000,
      "clock": 1010,
@@ -12060,7 +10961,7 @@
      "cooldownMs": 300000,
      "zone": "timing",
      "icon": null,
-     "seq": 68,
+     "seq": 49,
      "createdWallMs": 5720000,
      "expiresWallMs": 5730000,
      "clock": 1020,
@@ -12546,7 +11447,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 67,
+     "seq": 48,
      "createdWallMs": 5710000,
      "expiresWallMs": 5727000,
      "clock": 1010,
@@ -12605,7 +11506,7 @@
      "cooldownMs": 300000,
      "zone": "timing",
      "icon": null,
-     "seq": 68,
+     "seq": 49,
      "createdWallMs": 5720000,
      "expiresWallMs": 5730000,
      "clock": 1020,
@@ -12652,7 +11553,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 69,
+     "seq": 50,
      "createdWallMs": 5736000,
      "expiresWallMs": 5744000,
      "clock": 1036,
@@ -12703,7 +11604,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 69,
+     "seq": 50,
      "createdWallMs": 5736000,
      "expiresWallMs": 5744000,
      "clock": 1036,
@@ -12768,7 +11669,7 @@
      "cooldownMs": 300000,
      "zone": "timing",
      "icon": null,
-     "seq": 70,
+     "seq": 51,
      "createdWallMs": 5760000,
      "expiresWallMs": 5768000,
      "clock": 1060,
@@ -12827,7 +11728,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 71,
+     "seq": 52,
      "createdWallMs": 5765000,
      "expiresWallMs": 5780000,
      "clock": 1065,
@@ -12897,7 +11798,7 @@
      "cooldownMs": 300000,
      "zone": "timing",
      "icon": null,
-     "seq": 70,
+     "seq": 51,
      "createdWallMs": 5760000,
      "expiresWallMs": 5768000,
      "clock": 1060,
@@ -12956,7 +11857,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 71,
+     "seq": 52,
      "createdWallMs": 5765000,
      "expiresWallMs": 5780000,
      "clock": 1065,
@@ -13509,7 +12410,7 @@
      "cooldownMs": 30000,
      "zone": "decision",
      "icon": null,
-     "seq": 72,
+     "seq": 53,
      "createdWallMs": 5800000,
      "expiresWallMs": 5847000,
      "clock": 1100,
@@ -13561,66 +12462,6 @@
    "inFight": true,
    "visible": [
     "fight.engage"
-   ]
-  }
- },
- {
-  "t": 806,
-  "tick": {
-   "wallMs": 5806000,
-   "shown": [
-    {
-     "id": "fight.target:axe",
-     "ruleId": "fight.target",
-     "category": "fight",
-     "priority": "advice",
-     "confidence": 0.8,
-     "short": "Фокус: Axe, 50% здоровья",
-     "detail": {
-      "normal": "Бейте Axe: у него меньше всех здоровья (50%).",
-      "detailed": "Бейте Axe: у него меньше всех здоровья (50%). · Цель: axe (экран, 0 с) · Здоровье цели, %: 50 (экран, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "target",
-       "label": "Цель",
-       "value": "axe",
-       "source": "screen",
-       "ageSec": 0,
-       "confidence": 0.95,
-       "verified": true
-      },
-      {
-       "key": "target-hp",
-       "label": "Здоровье цели, %",
-       "value": 50,
-       "source": "screen",
-       "ageSec": 0,
-       "confidence": 0.8,
-       "verified": true
-      }
-     ],
-     "ttlMs": 5000,
-     "cooldownMs": 8000,
-     "zone": "decision",
-     "icon": "hero:axe",
-     "seq": 73,
-     "createdWallMs": 5806000,
-     "expiresWallMs": 5844000,
-     "clock": 1106,
-     "textSource": "template"
-    }
-   ],
-   "expired": [],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": true,
-   "visible": [
-    "fight.engage",
-    "fight.target:axe"
    ]
   }
  },
@@ -13683,42 +12524,9 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 74,
+     "seq": 54,
      "createdWallMs": 5840000,
-     "expiresWallMs": 5848000,
-     "clock": 1140,
-     "textSource": "template"
-    },
-    {
-     "id": "danger.smoke",
-     "ruleId": "danger.smoke",
-     "category": "danger",
-     "priority": "critical",
-     "confidence": 0.6,
-     "short": "Возможен Smoke of Deceit: 5 героев пропали",
-     "detail": {
-      "normal": "5 врагов исчезли с мини-карты почти одновременно — похоже на Smoke of Deceit. Будьте рядом с союзниками.",
-      "detailed": "5 врагов исчезли с мини-карты почти одновременно — похоже на Smoke of Deceit. Будьте рядом с союзниками. · Пропали одновременно: 5 (вывод, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "smoke",
-       "label": "Пропали одновременно",
-       "value": 5,
-       "source": "derived",
-       "ageSec": 0,
-       "confidence": 0.6,
-       "verified": true
-      }
-     ],
-     "ttlMs": 10000,
-     "cooldownMs": 60000,
-     "zone": "alert",
-     "icon": null,
-     "seq": 75,
-     "createdWallMs": 5840000,
-     "expiresWallMs": 5850000,
+     "expiresWallMs": 5887000,
      "clock": 1140,
      "textSource": "template"
     }
@@ -13731,7 +12539,7 @@
    "inFight": false,
    "visible": [
     "fight.engage",
-    "danger.smoke"
+    "danger.low-hp"
    ]
   }
  },
@@ -14274,7 +13082,7 @@
      "cooldownMs": 30000,
      "zone": "decision",
      "icon": null,
-     "seq": 72,
+     "seq": 53,
      "createdWallMs": 5800000,
      "expiresWallMs": 5847000,
      "clock": 1100,
@@ -14287,7 +13095,7 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.smoke"
+    "danger.low-hp"
    ]
   }
  },
@@ -14332,7 +13140,7 @@
      "cooldownMs": 120000,
      "zone": "timing",
      "icon": "item:tpscroll",
-     "seq": 76,
+     "seq": 55,
      "createdWallMs": 5843000,
      "expiresWallMs": 5853000,
      "clock": 1143,
@@ -14346,127 +13154,8 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.smoke",
+    "danger.low-hp",
     "economy.tp"
-   ]
-  }
- },
- {
-  "t": 850,
-  "tick": {
-   "wallMs": 5850000,
-   "shown": [],
-   "expired": [
-    {
-     "id": "danger.smoke",
-     "ruleId": "danger.smoke",
-     "category": "danger",
-     "priority": "critical",
-     "confidence": 0.6,
-     "short": "Возможен Smoke of Deceit: 5 героев пропали",
-     "detail": {
-      "normal": "5 врагов исчезли с мини-карты почти одновременно — похоже на Smoke of Deceit. Будьте рядом с союзниками.",
-      "detailed": "5 врагов исчезли с мини-карты почти одновременно — похоже на Smoke of Deceit. Будьте рядом с союзниками. · Пропали одновременно: 5 (вывод, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "smoke",
-       "label": "Пропали одновременно",
-       "value": 5,
-       "source": "derived",
-       "ageSec": 0,
-       "confidence": 0.6,
-       "verified": true
-      }
-     ],
-     "ttlMs": 10000,
-     "cooldownMs": 60000,
-     "zone": "alert",
-     "icon": null,
-     "seq": 75,
-     "createdWallMs": 5840000,
-     "expiresWallMs": 5850000,
-     "clock": 1140,
-     "textSource": "template"
-    }
-   ],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
-   "visible": [
-    "economy.tp"
-   ]
-  }
- },
- {
-  "t": 851,
-  "tick": {
-   "wallMs": 5851000,
-   "shown": [
-    {
-     "id": "danger.missing",
-     "ruleId": "danger.missing",
-     "category": "danger",
-     "priority": "advice",
-     "confidence": 0.75,
-     "short": "5 врагов не видно — осторожно",
-     "detail": {
-      "normal": "5 врагов нет на мини-карте, вы один — держитесь ближе к своим.",
-      "detailed": "5 врагов нет на мини-карте, вы один — держитесь ближе к своим. · Врагов не видно: 5 (вывод, 0 с) · Сторона карты: own (вывод, 0 с) · Союзников рядом нет: да (вывод, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "missing",
-       "label": "Врагов не видно",
-       "value": 5,
-       "source": "derived",
-       "ageSec": 0,
-       "confidence": 0.75,
-       "verified": true
-      },
-      {
-       "key": "side",
-       "label": "Сторона карты",
-       "value": "own",
-       "source": "derived",
-       "ageSec": 0,
-       "confidence": 0.7,
-       "verified": true
-      },
-      {
-       "key": "alone",
-       "label": "Союзников рядом нет",
-       "value": true,
-       "source": "derived",
-       "ageSec": 0,
-       "confidence": 0.7,
-       "verified": true
-      }
-     ],
-     "ttlMs": 8000,
-     "cooldownMs": 45000,
-     "zone": "alert",
-     "icon": null,
-     "seq": 77,
-     "createdWallMs": 5851000,
-     "expiresWallMs": 5877000,
-     "clock": 1151,
-     "textSource": "template"
-    }
-   ],
-   "expired": [],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
-   "visible": [
-    "economy.tp",
-    "danger.missing"
    ]
   }
  },
@@ -14512,7 +13201,7 @@
      "cooldownMs": 120000,
      "zone": "timing",
      "icon": "item:tpscroll",
-     "seq": 76,
+     "seq": 55,
      "createdWallMs": 5843000,
      "expiresWallMs": 5853000,
      "clock": 1143,
@@ -14525,7 +13214,7 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.missing"
+    "danger.low-hp"
    ]
   }
  },
@@ -14534,66 +13223,6 @@
   "tick": {
    "wallMs": 5870000,
    "shown": [
-    {
-     "id": "danger.low-hp",
-     "ruleId": "danger.low-hp",
-     "category": "danger",
-     "priority": "critical",
-     "confidence": 0.9,
-     "short": "Мало здоровья, нет регена — назад",
-     "detail": {
-      "normal": "Здоровья 25%, нет регенерации и Town Portal Scroll, врагов не видно — уходите к базе.",
-      "detailed": "Здоровья 25%, нет регенерации и Town Portal Scroll, врагов не видно — уходите к базе. · Здоровье, %: 25 (игра, 0 с) · Есть реген: нет (вывод, 0 с) · Town Portal Scroll готов: нет (вывод, 0 с) · Врагов не видно: 5 (вывод, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "hp",
-       "label": "Здоровье, %",
-       "value": 25,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      },
-      {
-       "key": "regen",
-       "label": "Есть реген",
-       "value": false,
-       "source": "derived",
-       "ageSec": 0,
-       "confidence": 0.9,
-       "verified": true
-      },
-      {
-       "key": "tp",
-       "label": "Town Portal Scroll готов",
-       "value": false,
-       "source": "derived",
-       "ageSec": 0,
-       "confidence": 0.9,
-       "verified": true
-      },
-      {
-       "key": "missing",
-       "label": "Врагов не видно",
-       "value": 5,
-       "source": "derived",
-       "ageSec": 0,
-       "confidence": 0.75,
-       "verified": true
-      }
-     ],
-     "ttlMs": 8000,
-     "cooldownMs": 30000,
-     "zone": "alert",
-     "icon": null,
-     "seq": 78,
-     "createdWallMs": 5870000,
-     "expiresWallMs": 5887000,
-     "clock": 1170,
-     "textSource": "template"
-    },
     {
      "id": "timing.tormentor",
      "ruleId": "timing.tormentor",
@@ -14630,7 +13259,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 79,
+     "seq": 56,
      "createdWallMs": 5870000,
      "expiresWallMs": 5885000,
      "clock": 1170,
@@ -14709,10 +13338,10 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 78,
-     "createdWallMs": 5870000,
+     "seq": 54,
+     "createdWallMs": 5840000,
      "expiresWallMs": 5887000,
-     "clock": 1170,
+     "clock": 1140,
      "textSource": "template"
     }
    ],
@@ -14776,7 +13405,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": "item:bfury",
-     "seq": 80,
+     "seq": 57,
      "createdWallMs": 5883000,
      "expiresWallMs": 5893000,
      "clock": 1183,
@@ -14857,7 +13486,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 81,
+     "seq": 58,
      "createdWallMs": 5885000,
      "expiresWallMs": 5900000,
      "clock": 1185,
@@ -14877,38 +13506,28 @@
   }
  },
  {
-  "t": 893,
+  "t": 890,
   "tick": {
-   "wallMs": 5893000,
-   "shown": [],
-   "expired": [
+   "wallMs": 5890000,
+   "shown": [
     {
-     "id": "economy.late:bfury",
-     "ruleId": "economy.late",
-     "category": "economy",
+     "id": "timing.rune-power",
+     "ruleId": "timing.rune-power",
+     "category": "timing",
      "priority": "info",
-     "confidence": 0.7,
-     "short": "Battle Fury запаздывает",
+     "confidence": 0.8,
+     "short": "Руна силы через 15 с, бежать 17 с",
      "detail": {
-      "normal": "Battle Fury профи патча берут к 14 мин, сейчас 19. Ускорьте фарм.",
-      "detailed": "Battle Fury профи патча берут к 14 мин, сейчас 19. Ускорьте фарм. · Предмет: Battle Fury (статистика патча, не проверено) · Обычно к минуте: 13.7 (статистика патча, не проверено) · Игровое время, с: 1183 (игра, 0 с)"
+      "normal": "Руна силы через 15 с, бежать 17 с (20:00).",
+      "detailed": "Руна силы через 15 с, бежать 17 с (20:00). · Руна силы: 20:00 (база, не проверено) · Игровое время, с: 1185 (игра, 0 с)"
      },
      "percent": null,
      "facts": [
       {
-       "key": "item",
-       "label": "Предмет",
-       "value": "Battle Fury",
-       "source": "stats",
-       "ageSec": null,
-       "confidence": 1,
-       "verified": false
-      },
-      {
-       "key": "median-min",
-       "label": "Обычно к минуте",
-       "value": 13.7,
-       "source": "stats",
+       "key": "rune-power",
+       "label": "Руна силы",
+       "value": "20:00",
+       "source": "kb",
        "ageSec": null,
        "confidence": 1,
        "verified": false
@@ -14916,31 +13535,33 @@
       {
        "key": "clock",
        "label": "Игровое время, с",
-       "value": 1183,
+       "value": 1185,
        "source": "gsi",
        "ageSec": 0,
        "confidence": 1,
        "verified": true
       }
      ],
-     "ttlMs": 10000,
+     "ttlMs": 15000,
      "cooldownMs": 0,
      "zone": "timing",
-     "icon": "item:bfury",
-     "seq": 80,
-     "createdWallMs": 5883000,
-     "expiresWallMs": 5893000,
-     "clock": 1183,
+     "icon": null,
+     "seq": 59,
+     "createdWallMs": 5890000,
+     "expiresWallMs": 5905000,
+     "clock": 1190,
      "textSource": "template"
     }
    ],
+   "expired": [],
    "changed": [],
    "mistakes": [],
    "deathReview": null,
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "timing.rune-bounty"
+    "timing.rune-bounty",
+    "timing.rune-power"
    ]
   }
  },
@@ -14976,7 +13597,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 82,
+     "seq": 60,
      "createdWallMs": 5896000,
      "expiresWallMs": 5904000,
      "clock": 1196,
@@ -14991,66 +13612,7 @@
    "inFight": false,
    "visible": [
     "danger.building:tower1_mid",
-    "timing.rune-bounty"
-   ]
-  }
- },
- {
-  "t": 900,
-  "tick": {
-   "wallMs": 5900000,
-   "shown": [],
-   "expired": [
-    {
-     "id": "timing.rune-bounty",
-     "ruleId": "timing.rune-bounty",
-     "category": "timing",
-     "priority": "info",
-     "confidence": 0.8,
-     "short": "Руна богатства через 15 с, бежать 13 с",
-     "detail": {
-      "normal": "Руна богатства через 15 с, бежать 13 с (20:00).",
-      "detailed": "Руна богатства через 15 с, бежать 13 с (20:00). · Руна богатства: 20:00 (база, не проверено) · Игровое время, с: 1185 (игра, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "rune-bounty",
-       "label": "Руна богатства",
-       "value": "20:00",
-       "source": "kb",
-       "ageSec": null,
-       "confidence": 1,
-       "verified": false
-      },
-      {
-       "key": "clock",
-       "label": "Игровое время, с",
-       "value": 1185,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      }
-     ],
-     "ttlMs": 15000,
-     "cooldownMs": 0,
-     "zone": "timing",
-     "icon": null,
-     "seq": 81,
-     "createdWallMs": 5885000,
-     "expiresWallMs": 5900000,
-     "clock": 1185,
-     "textSource": "template"
-    }
-   ],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
-   "visible": [
-    "danger.building:tower1_mid"
+    "timing.rune-power"
    ]
   }
  },
@@ -15520,7 +14082,7 @@
      "cooldownMs": 0,
      "zone": "decision",
      "icon": null,
-     "seq": 83,
+     "seq": 61,
      "createdWallMs": 5903000,
      "expiresWallMs": 5913000,
      "clock": 1203,
@@ -15572,7 +14134,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 82,
+     "seq": 60,
      "createdWallMs": 5896000,
      "expiresWallMs": 5904000,
      "clock": 1196,
@@ -15649,7 +14211,7 @@
      "cooldownMs": 0,
      "zone": "decision",
      "icon": null,
-     "seq": 83,
+     "seq": 61,
      "createdWallMs": 5903000,
      "expiresWallMs": 5913000,
      "clock": 1203,
@@ -15668,41 +14230,7 @@
   "t": 925,
   "tick": {
    "wallMs": 5925000,
-   "shown": [
-    {
-     "id": "mistake.missed-rune",
-     "ruleId": "mistake.missed-rune",
-     "category": "mistake",
-     "priority": "info",
-     "confidence": 0.7,
-     "short": "Пропущенная руна",
-     "detail": {
-      "normal": "Руна силы в 20:00 без внимания. За 10 с до появления руны идите к реке — или попросите саппорта.",
-      "detailed": "Руна силы в 20:00 без внимания. За 10 с до появления руны идите к реке — или попросите саппорта. · Руна силы: 20:00 (база, не проверено)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "rune",
-       "label": "Руна силы",
-       "value": "20:00",
-       "source": "kb",
-       "ageSec": null,
-       "confidence": 0.8,
-       "verified": false
-      }
-     ],
-     "ttlMs": 10000,
-     "cooldownMs": 60000,
-     "zone": "timing",
-     "icon": null,
-     "seq": 84,
-     "createdWallMs": 5925000,
-     "expiresWallMs": 5935000,
-     "clock": 1225,
-     "textSource": "template"
-    }
-   ],
+   "shown": [],
    "expired": [],
    "changed": [],
    "mistakes": [
@@ -15730,116 +14258,7 @@
    "deathReview": null,
    "matchReview": null,
    "inFight": false,
-   "visible": [
-    "mistake.missed-rune"
-   ]
-  }
- },
- {
-  "t": 935,
-  "tick": {
-   "wallMs": 5935000,
-   "shown": [],
-   "expired": [
-    {
-     "id": "mistake.missed-rune",
-     "ruleId": "mistake.missed-rune",
-     "category": "mistake",
-     "priority": "info",
-     "confidence": 0.7,
-     "short": "Пропущенная руна",
-     "detail": {
-      "normal": "Руна силы в 20:00 без внимания. За 10 с до появления руны идите к реке — или попросите саппорта.",
-      "detailed": "Руна силы в 20:00 без внимания. За 10 с до появления руны идите к реке — или попросите саппорта. · Руна силы: 20:00 (база, не проверено)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "rune",
-       "label": "Руна силы",
-       "value": "20:00",
-       "source": "kb",
-       "ageSec": null,
-       "confidence": 0.8,
-       "verified": false
-      }
-     ],
-     "ttlMs": 10000,
-     "cooldownMs": 60000,
-     "zone": "timing",
-     "icon": null,
-     "seq": 84,
-     "createdWallMs": 5925000,
-     "expiresWallMs": 5935000,
-     "clock": 1225,
-     "textSource": "template"
-    }
-   ],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
    "visible": []
-  }
- },
- {
-  "t": 945,
-  "tick": {
-   "wallMs": 5945000,
-   "shown": [
-    {
-     "id": "timing.shrine-of-wisdom",
-     "ruleId": "timing.shrine-of-wisdom",
-     "category": "timing",
-     "priority": "info",
-     "confidence": 0.8,
-     "short": "Святилище мудрости через 15 с",
-     "detail": {
-      "normal": "Святилище мудрости через 15 с (21:00).",
-      "detailed": "Святилище мудрости через 15 с (21:00). · Святилище мудрости: 21:00 (база, не проверено) · Игровое время, с: 1245 (игра, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "shrine-of-wisdom",
-       "label": "Святилище мудрости",
-       "value": "21:00",
-       "source": "kb",
-       "ageSec": null,
-       "confidence": 1,
-       "verified": false
-      },
-      {
-       "key": "clock",
-       "label": "Игровое время, с",
-       "value": 1245,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      }
-     ],
-     "ttlMs": 15000,
-     "cooldownMs": 0,
-     "zone": "timing",
-     "icon": null,
-     "seq": 85,
-     "createdWallMs": 5945000,
-     "expiresWallMs": 5960000,
-     "clock": 1245,
-     "textSource": "template"
-    }
-   ],
-   "expired": [],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
-   "visible": [
-    "timing.shrine-of-wisdom"
-   ]
   }
  },
  {
@@ -15973,57 +14392,14 @@
      "cooldownMs": 30000,
      "zone": "decision",
      "icon": null,
-     "seq": 86,
+     "seq": 62,
      "createdWallMs": 5960000,
      "expiresWallMs": 6007000,
      "clock": 1260,
      "textSource": "template"
     }
    ],
-   "expired": [
-    {
-     "id": "timing.shrine-of-wisdom",
-     "ruleId": "timing.shrine-of-wisdom",
-     "category": "timing",
-     "priority": "info",
-     "confidence": 0.8,
-     "short": "Святилище мудрости через 15 с",
-     "detail": {
-      "normal": "Святилище мудрости через 15 с (21:00).",
-      "detailed": "Святилище мудрости через 15 с (21:00). · Святилище мудрости: 21:00 (база, не проверено) · Игровое время, с: 1245 (игра, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "shrine-of-wisdom",
-       "label": "Святилище мудрости",
-       "value": "21:00",
-       "source": "kb",
-       "ageSec": null,
-       "confidence": 1,
-       "verified": false
-      },
-      {
-       "key": "clock",
-       "label": "Игровое время, с",
-       "value": 1245,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      }
-     ],
-     "ttlMs": 15000,
-     "cooldownMs": 0,
-     "zone": "timing",
-     "icon": null,
-     "seq": 85,
-     "createdWallMs": 5945000,
-     "expiresWallMs": 5960000,
-     "clock": 1245,
-     "textSource": "template"
-    }
-   ],
+   "expired": [],
    "changed": [],
    "mistakes": [],
    "deathReview": null,
@@ -16442,66 +14818,6 @@
   }
  },
  {
-  "t": 966,
-  "tick": {
-   "wallMs": 5966000,
-   "shown": [
-    {
-     "id": "fight.target:axe",
-     "ruleId": "fight.target",
-     "category": "fight",
-     "priority": "advice",
-     "confidence": 0.8,
-     "short": "Фокус: Axe, 50% здоровья",
-     "detail": {
-      "normal": "Бейте Axe: у него меньше всех здоровья (50%).",
-      "detailed": "Бейте Axe: у него меньше всех здоровья (50%). · Цель: axe (экран, 0 с) · Здоровье цели, %: 50 (экран, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "target",
-       "label": "Цель",
-       "value": "axe",
-       "source": "screen",
-       "ageSec": 0,
-       "confidence": 0.95,
-       "verified": true
-      },
-      {
-       "key": "target-hp",
-       "label": "Здоровье цели, %",
-       "value": 50,
-       "source": "screen",
-       "ageSec": 0,
-       "confidence": 0.8,
-       "verified": true
-      }
-     ],
-     "ttlMs": 5000,
-     "cooldownMs": 8000,
-     "zone": "decision",
-     "icon": "hero:axe",
-     "seq": 87,
-     "createdWallMs": 5966000,
-     "expiresWallMs": 5980000,
-     "clock": 1266,
-     "textSource": "template"
-    }
-   ],
-   "expired": [],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": true,
-   "visible": [
-    "fight.engage",
-    "fight.target:axe"
-   ]
-  }
- },
- {
   "t": 976,
   "tick": {
    "wallMs": 5976000,
@@ -16533,7 +14849,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 88,
+     "seq": 63,
      "createdWallMs": 5976000,
      "expiresWallMs": 5984000,
      "clock": 1276,
@@ -16553,62 +14869,52 @@
   }
  },
  {
-  "t": 983,
+  "t": 984,
   "tick": {
-   "wallMs": 5983000,
-   "shown": [
+   "wallMs": 5984000,
+   "shown": [],
+   "expired": [
     {
-     "id": "fight.target:axe",
-     "ruleId": "fight.target",
-     "category": "fight",
+     "id": "danger.building:tower1_mid",
+     "ruleId": "danger.building",
+     "category": "danger",
      "priority": "advice",
-     "confidence": 0.8,
-     "short": "Фокус: Axe, 50% здоровья",
+     "confidence": 0.9,
+     "short": "Бьют башню T1 на средней линии (82%)",
      "detail": {
-      "normal": "Бейте Axe: у него меньше всех здоровья (50%).",
-      "detailed": "Бейте Axe: у него меньше всех здоровья (50%). · Цель: axe (экран, 0 с) · Здоровье цели, %: 50 (экран, 0 с)"
+      "normal": "Башню T1 на средней линии под атакой: 82% здоровья. Защитите или телепорт.",
+      "detailed": "Башню T1 на средней линии под атакой: 82% здоровья. Защитите или телепорт. · Здоровье здания, %: 82 (игра, 0 с)"
      },
      "percent": null,
      "facts": [
       {
-       "key": "target",
-       "label": "Цель",
-       "value": "axe",
-       "source": "screen",
+       "key": "building-hp",
+       "label": "Здоровье здания, %",
+       "value": 82,
+       "source": "gsi",
        "ageSec": 0,
-       "confidence": 0.95,
-       "verified": true
-      },
-      {
-       "key": "target-hp",
-       "label": "Здоровье цели, %",
-       "value": 50,
-       "source": "screen",
-       "ageSec": 0,
-       "confidence": 0.8,
+       "confidence": 1,
        "verified": true
       }
      ],
-     "ttlMs": 5000,
-     "cooldownMs": 8000,
-     "zone": "decision",
-     "icon": "hero:axe",
-     "seq": 89,
-     "createdWallMs": 5983000,
-     "expiresWallMs": 6004000,
-     "clock": 1283,
+     "ttlMs": 8000,
+     "cooldownMs": 45000,
+     "zone": "alert",
+     "icon": null,
+     "seq": 63,
+     "createdWallMs": 5976000,
+     "expiresWallMs": 5984000,
+     "clock": 1276,
      "textSource": "template"
     }
    ],
-   "expired": [],
    "changed": [],
    "mistakes": [],
    "deathReview": null,
    "matchReview": null,
    "inFight": true,
    "visible": [
-    "fight.engage",
-    "fight.target:axe"
+    "fight.engage"
    ]
   }
  },
@@ -16671,7 +14977,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 90,
+     "seq": 64,
      "createdWallMs": 6000000,
      "expiresWallMs": 6008000,
      "clock": 1300,
@@ -16701,10 +15007,10 @@
       }
      ],
      "ttlMs": 10000,
-     "cooldownMs": 60000,
+     "cooldownMs": 180000,
      "zone": "alert",
      "icon": null,
-     "seq": 91,
+     "seq": 65,
      "createdWallMs": 6000000,
      "expiresWallMs": 6010000,
      "clock": 1300,
@@ -16855,7 +15161,7 @@
      "cooldownMs": 30000,
      "zone": "decision",
      "icon": null,
-     "seq": 86,
+     "seq": 62,
      "createdWallMs": 5960000,
      "expiresWallMs": 6007000,
      "clock": 1260,
@@ -16913,7 +15219,7 @@
      "cooldownMs": 120000,
      "zone": "timing",
      "icon": "item:tpscroll",
-     "seq": 92,
+     "seq": 66,
      "createdWallMs": 6003000,
      "expiresWallMs": 6013000,
      "clock": 1303,
@@ -16962,10 +15268,10 @@
       }
      ],
      "ttlMs": 10000,
-     "cooldownMs": 60000,
+     "cooldownMs": 180000,
      "zone": "alert",
      "icon": null,
-     "seq": 91,
+     "seq": 65,
      "createdWallMs": 6000000,
      "expiresWallMs": 6010000,
      "clock": 1300,
@@ -17029,10 +15335,10 @@
       }
      ],
      "ttlMs": 8000,
-     "cooldownMs": 45000,
+     "cooldownMs": 90000,
      "zone": "alert",
      "icon": null,
-     "seq": 93,
+     "seq": 67,
      "createdWallMs": 6011000,
      "expiresWallMs": 6037000,
      "clock": 1311,
@@ -17093,7 +15399,7 @@
      "cooldownMs": 120000,
      "zone": "timing",
      "icon": "item:tpscroll",
-     "seq": 92,
+     "seq": 66,
      "createdWallMs": 6003000,
      "expiresWallMs": 6013000,
      "clock": 1303,
@@ -17576,7 +15882,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 94,
+     "seq": 68,
      "createdWallMs": 6030000,
      "expiresWallMs": 6044000,
      "clock": 1330,
@@ -17626,7 +15932,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 95,
+     "seq": 69,
      "createdWallMs": 6036000,
      "expiresWallMs": 6044000,
      "clock": 1336,
@@ -17685,7 +15991,7 @@
      "cooldownMs": 300000,
      "zone": "timing",
      "icon": null,
-     "seq": 96,
+     "seq": 70,
      "createdWallMs": 6040000,
      "expiresWallMs": 6050000,
      "clock": 1340,
@@ -17737,7 +16043,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 95,
+     "seq": 69,
      "createdWallMs": 6036000,
      "expiresWallMs": 6044000,
      "clock": 1336,
@@ -17796,7 +16102,7 @@
      "cooldownMs": 300000,
      "zone": "timing",
      "icon": null,
-     "seq": 96,
+     "seq": 70,
      "createdWallMs": 6040000,
      "expiresWallMs": 6050000,
      "clock": 1340,
@@ -17861,7 +16167,7 @@
      "cooldownMs": 300000,
      "zone": "timing",
      "icon": null,
-     "seq": 97,
+     "seq": 71,
      "createdWallMs": 6080000,
      "expiresWallMs": 6088000,
      "clock": 1380,
@@ -18337,7 +16643,7 @@
      "cooldownMs": 300000,
      "zone": "timing",
      "icon": null,
-     "seq": 97,
+     "seq": 71,
      "createdWallMs": 6080000,
      "expiresWallMs": 6088000,
      "clock": 1380,
@@ -18353,9 +16659,77 @@
   }
  },
  {
-  "t": 1120,
+  "t": 1119,
   "tick": {
-   "wallMs": 6120000,
+   "wallMs": 6119000,
+   "shown": [
+    {
+     "id": "danger.invis",
+     "ruleId": "danger.invis",
+     "category": "danger",
+     "priority": "advice",
+     "confidence": 0.7,
+     "short": "Riki невидим — купите пыль",
+     "detail": {
+      "normal": "У врага Riki есть невидимость, а у вас нет пыли или сентри. Пыль стоит 80.",
+      "detailed": "У врага Riki есть невидимость, а у вас нет пыли или сентри. Пыль стоит 80. · Невидимый враг: riki (экран, 0 с) · Цена пыли: 80 (база, не проверено) · Невидимость (по описанию способностей): да (база, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "invis-hero",
+       "label": "Невидимый враг",
+       "value": "riki",
+       "source": "screen",
+       "ageSec": 0,
+       "confidence": 0.95,
+       "verified": true
+      },
+      {
+       "key": "dust-cost",
+       "label": "Цена пыли",
+       "value": 80,
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      },
+      {
+       "key": "invis",
+       "label": "Невидимость (по описанию способностей)",
+       "value": "да",
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 480000,
+     "zone": "timing",
+     "icon": "item:dust",
+     "seq": 72,
+     "createdWallMs": 6119000,
+     "expiresWallMs": 6129000,
+     "clock": 1419,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "danger.invis"
+   ]
+  }
+ },
+ {
+  "t": 1123,
+  "tick": {
+   "wallMs": 6123000,
    "shown": [
     {
      "id": "fight.engage",
@@ -18483,10 +16857,10 @@
      "cooldownMs": 30000,
      "zone": "decision",
      "icon": null,
-     "seq": 98,
-     "createdWallMs": 6120000,
+     "seq": 73,
+     "createdWallMs": 6123000,
      "expiresWallMs": 6167000,
-     "clock": 1420,
+     "clock": 1423,
      "textSource": "template"
     }
    ],
@@ -18497,15 +16871,17 @@
    "matchReview": null,
    "inFight": true,
    "visible": [
-    "fight.engage"
+    "fight.engage",
+    "danger.invis"
    ]
   }
  },
  {
-  "t": 1126,
+  "t": 1129,
   "tick": {
-   "wallMs": 6126000,
-   "shown": [
+   "wallMs": 6129000,
+   "shown": [],
+   "expired": [
     {
      "id": "danger.invis",
      "ruleId": "danger.invis",
@@ -18551,82 +16927,20 @@
      "cooldownMs": 480000,
      "zone": "timing",
      "icon": "item:dust",
-     "seq": 99,
-     "createdWallMs": 6126000,
-     "expiresWallMs": 6140000,
-     "clock": 1426,
+     "seq": 72,
+     "createdWallMs": 6119000,
+     "expiresWallMs": 6129000,
+     "clock": 1419,
      "textSource": "template"
     }
    ],
-   "expired": [],
    "changed": [],
    "mistakes": [],
    "deathReview": null,
    "matchReview": null,
    "inFight": true,
    "visible": [
-    "fight.engage",
-    "danger.invis"
-   ]
-  }
- },
- {
-  "t": 1130,
-  "tick": {
-   "wallMs": 6130000,
-   "shown": [
-    {
-     "id": "fight.target:axe",
-     "ruleId": "fight.target",
-     "category": "fight",
-     "priority": "advice",
-     "confidence": 0.8,
-     "short": "Фокус: Axe, 50% здоровья",
-     "detail": {
-      "normal": "Бейте Axe: у него меньше всех здоровья (50%).",
-      "detailed": "Бейте Axe: у него меньше всех здоровья (50%). · Цель: axe (экран, 0 с) · Здоровье цели, %: 50 (экран, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "target",
-       "label": "Цель",
-       "value": "axe",
-       "source": "screen",
-       "ageSec": 0,
-       "confidence": 0.95,
-       "verified": true
-      },
-      {
-       "key": "target-hp",
-       "label": "Здоровье цели, %",
-       "value": 50,
-       "source": "screen",
-       "ageSec": 0,
-       "confidence": 0.8,
-       "verified": true
-      }
-     ],
-     "ttlMs": 5000,
-     "cooldownMs": 8000,
-     "zone": "decision",
-     "icon": "hero:axe",
-     "seq": 100,
-     "createdWallMs": 6130000,
-     "expiresWallMs": 6140000,
-     "clock": 1430,
-     "textSource": "template"
-    }
-   ],
-   "expired": [],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": true,
-   "visible": [
-    "fight.engage",
-    "fight.target:axe"
+    "fight.engage"
    ]
   }
  },
@@ -18662,7 +16976,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 101,
+     "seq": 74,
      "createdWallMs": 6136000,
      "expiresWallMs": 6144000,
      "clock": 1436,
@@ -19121,7 +17435,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 101,
+     "seq": 74,
      "createdWallMs": 6136000,
      "expiresWallMs": 6144000,
      "clock": 1436,
@@ -19135,66 +17449,6 @@
    "inFight": true,
    "visible": [
     "fight.engage"
-   ]
-  }
- },
- {
-  "t": 1145,
-  "tick": {
-   "wallMs": 6145000,
-   "shown": [
-    {
-     "id": "fight.target:axe",
-     "ruleId": "fight.target",
-     "category": "fight",
-     "priority": "advice",
-     "confidence": 0.8,
-     "short": "Фокус: Axe, 50% здоровья",
-     "detail": {
-      "normal": "Бейте Axe: у него меньше всех здоровья (50%).",
-      "detailed": "Бейте Axe: у него меньше всех здоровья (50%). · Цель: axe (экран, 0 с) · Здоровье цели, %: 50 (экран, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "target",
-       "label": "Цель",
-       "value": "axe",
-       "source": "screen",
-       "ageSec": 0,
-       "confidence": 0.95,
-       "verified": true
-      },
-      {
-       "key": "target-hp",
-       "label": "Здоровье цели, %",
-       "value": 50,
-       "source": "screen",
-       "ageSec": 0,
-       "confidence": 0.8,
-       "verified": true
-      }
-     ],
-     "ttlMs": 5000,
-     "cooldownMs": 8000,
-     "zone": "decision",
-     "icon": "hero:axe",
-     "seq": 102,
-     "createdWallMs": 6145000,
-     "expiresWallMs": 6164000,
-     "clock": 1445,
-     "textSource": "template"
-    }
-   ],
-   "expired": [],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": true,
-   "visible": [
-    "fight.engage",
-    "fight.target:axe"
    ]
   }
  },
@@ -19257,42 +17511,9 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 103,
+     "seq": 75,
      "createdWallMs": 6160000,
-     "expiresWallMs": 6168000,
-     "clock": 1460,
-     "textSource": "template"
-    },
-    {
-     "id": "danger.smoke",
-     "ruleId": "danger.smoke",
-     "category": "danger",
-     "priority": "critical",
-     "confidence": 0.6,
-     "short": "Возможен Smoke of Deceit: 5 героев пропали",
-     "detail": {
-      "normal": "5 врагов исчезли с мини-карты почти одновременно — похоже на Smoke of Deceit. Будьте рядом с союзниками.",
-      "detailed": "5 врагов исчезли с мини-карты почти одновременно — похоже на Smoke of Deceit. Будьте рядом с союзниками. · Пропали одновременно: 5 (вывод, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "smoke",
-       "label": "Пропали одновременно",
-       "value": 5,
-       "source": "derived",
-       "ageSec": 0,
-       "confidence": 0.6,
-       "verified": true
-      }
-     ],
-     "ttlMs": 10000,
-     "cooldownMs": 60000,
-     "zone": "alert",
-     "icon": null,
-     "seq": 104,
-     "createdWallMs": 6160000,
-     "expiresWallMs": 6170000,
+     "expiresWallMs": 6207000,
      "clock": 1460,
      "textSource": "template"
     }
@@ -19305,7 +17526,7 @@
    "inFight": false,
    "visible": [
     "fight.engage",
-    "danger.smoke"
+    "danger.low-hp"
    ]
   }
  },
@@ -19441,10 +17662,10 @@
      "cooldownMs": 30000,
      "zone": "decision",
      "icon": null,
-     "seq": 98,
-     "createdWallMs": 6120000,
+     "seq": 73,
+     "createdWallMs": 6123000,
      "expiresWallMs": 6167000,
-     "clock": 1420,
+     "clock": 1423,
      "textSource": "template"
     }
    ],
@@ -19454,7 +17675,7 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.smoke"
+    "danger.low-hp"
    ]
   }
  },
@@ -19499,7 +17720,7 @@
      "cooldownMs": 120000,
      "zone": "timing",
      "icon": "item:tpscroll",
-     "seq": 105,
+     "seq": 76,
      "createdWallMs": 6163000,
      "expiresWallMs": 6173000,
      "clock": 1463,
@@ -19513,127 +17734,8 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.smoke",
+    "danger.low-hp",
     "economy.tp"
-   ]
-  }
- },
- {
-  "t": 1170,
-  "tick": {
-   "wallMs": 6170000,
-   "shown": [],
-   "expired": [
-    {
-     "id": "danger.smoke",
-     "ruleId": "danger.smoke",
-     "category": "danger",
-     "priority": "critical",
-     "confidence": 0.6,
-     "short": "Возможен Smoke of Deceit: 5 героев пропали",
-     "detail": {
-      "normal": "5 врагов исчезли с мини-карты почти одновременно — похоже на Smoke of Deceit. Будьте рядом с союзниками.",
-      "detailed": "5 врагов исчезли с мини-карты почти одновременно — похоже на Smoke of Deceit. Будьте рядом с союзниками. · Пропали одновременно: 5 (вывод, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "smoke",
-       "label": "Пропали одновременно",
-       "value": 5,
-       "source": "derived",
-       "ageSec": 0,
-       "confidence": 0.6,
-       "verified": true
-      }
-     ],
-     "ttlMs": 10000,
-     "cooldownMs": 60000,
-     "zone": "alert",
-     "icon": null,
-     "seq": 104,
-     "createdWallMs": 6160000,
-     "expiresWallMs": 6170000,
-     "clock": 1460,
-     "textSource": "template"
-    }
-   ],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
-   "visible": [
-    "economy.tp"
-   ]
-  }
- },
- {
-  "t": 1171,
-  "tick": {
-   "wallMs": 6171000,
-   "shown": [
-    {
-     "id": "danger.missing",
-     "ruleId": "danger.missing",
-     "category": "danger",
-     "priority": "advice",
-     "confidence": 0.75,
-     "short": "5 врагов не видно — осторожно",
-     "detail": {
-      "normal": "5 врагов нет на мини-карте, вы один — держитесь ближе к своим.",
-      "detailed": "5 врагов нет на мини-карте, вы один — держитесь ближе к своим. · Врагов не видно: 5 (вывод, 0 с) · Сторона карты: own (вывод, 0 с) · Союзников рядом нет: да (вывод, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "missing",
-       "label": "Врагов не видно",
-       "value": 5,
-       "source": "derived",
-       "ageSec": 0,
-       "confidence": 0.75,
-       "verified": true
-      },
-      {
-       "key": "side",
-       "label": "Сторона карты",
-       "value": "own",
-       "source": "derived",
-       "ageSec": 0,
-       "confidence": 0.7,
-       "verified": true
-      },
-      {
-       "key": "alone",
-       "label": "Союзников рядом нет",
-       "value": true,
-       "source": "derived",
-       "ageSec": 0,
-       "confidence": 0.7,
-       "verified": true
-      }
-     ],
-     "ttlMs": 8000,
-     "cooldownMs": 45000,
-     "zone": "alert",
-     "icon": null,
-     "seq": 106,
-     "createdWallMs": 6171000,
-     "expiresWallMs": 6197000,
-     "clock": 1471,
-     "textSource": "template"
-    }
-   ],
-   "expired": [],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
-   "visible": [
-    "economy.tp",
-    "danger.missing"
    ]
   }
  },
@@ -19679,7 +17781,7 @@
      "cooldownMs": 120000,
      "zone": "timing",
      "icon": "item:tpscroll",
-     "seq": 105,
+     "seq": 76,
      "createdWallMs": 6163000,
      "expiresWallMs": 6173000,
      "clock": 1463,
@@ -19692,145 +17794,7 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.missing"
-   ]
-  }
- },
- {
-  "t": 1186,
-  "tick": {
-   "wallMs": 6186000,
-   "shown": [
-    {
-     "id": "timing.day-night",
-     "ruleId": "timing.day-night",
-     "category": "timing",
-     "priority": "info",
-     "confidence": 0.8,
-     "short": "Скоро наступит ночь",
-     "detail": {
-      "normal": "Скоро наступит ночь (25:00).",
-      "detailed": "Скоро наступит ночь (25:00). · Смена дня и ночи: 25:00 (база, не проверено) · Игровое время, с: 1485 (игра, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "day-night",
-       "label": "Смена дня и ночи",
-       "value": "25:00",
-       "source": "kb",
-       "ageSec": null,
-       "confidence": 1,
-       "verified": false
-      },
-      {
-       "key": "clock",
-       "label": "Игровое время, с",
-       "value": 1485,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      }
-     ],
-     "ttlMs": 15000,
-     "cooldownMs": 0,
-     "zone": "timing",
-     "icon": null,
-     "seq": 107,
-     "createdWallMs": 6186000,
-     "expiresWallMs": 6201000,
-     "clock": 1486,
-     "textSource": "template"
-    }
-   ],
-   "expired": [],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
-   "visible": [
-    "danger.missing",
-    "timing.day-night"
-   ]
-  }
- },
- {
-  "t": 1190,
-  "tick": {
-   "wallMs": 6190000,
-   "shown": [
-    {
-     "id": "danger.low-hp",
-     "ruleId": "danger.low-hp",
-     "category": "danger",
-     "priority": "critical",
-     "confidence": 0.9,
-     "short": "Мало здоровья, нет регена — назад",
-     "detail": {
-      "normal": "Здоровья 25%, нет регенерации и Town Portal Scroll, врагов не видно — уходите к базе.",
-      "detailed": "Здоровья 25%, нет регенерации и Town Portal Scroll, врагов не видно — уходите к базе. · Здоровье, %: 25 (игра, 0 с) · Есть реген: нет (вывод, 0 с) · Town Portal Scroll готов: нет (вывод, 0 с) · Врагов не видно: 5 (вывод, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "hp",
-       "label": "Здоровье, %",
-       "value": 25,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      },
-      {
-       "key": "regen",
-       "label": "Есть реген",
-       "value": false,
-       "source": "derived",
-       "ageSec": 0,
-       "confidence": 0.9,
-       "verified": true
-      },
-      {
-       "key": "tp",
-       "label": "Town Portal Scroll готов",
-       "value": false,
-       "source": "derived",
-       "ageSec": 0,
-       "confidence": 0.9,
-       "verified": true
-      },
-      {
-       "key": "missing",
-       "label": "Врагов не видно",
-       "value": 5,
-       "source": "derived",
-       "ageSec": 0,
-       "confidence": 0.75,
-       "verified": true
-      }
-     ],
-     "ttlMs": 8000,
-     "cooldownMs": 30000,
-     "zone": "alert",
-     "icon": null,
-     "seq": 108,
-     "createdWallMs": 6190000,
-     "expiresWallMs": 6207000,
-     "clock": 1490,
-     "textSource": "template"
-    }
-   ],
-   "expired": [],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
-   "visible": [
-    "danger.low-hp",
-    "timing.day-night"
+    "danger.low-hp"
    ]
   }
  },
@@ -19866,7 +17830,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 109,
+     "seq": 77,
      "createdWallMs": 6200000,
      "expiresWallMs": 6210000,
      "clock": 1500,
@@ -20352,10 +18316,10 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 108,
-     "createdWallMs": 6190000,
+     "seq": 75,
+     "createdWallMs": 6160000,
      "expiresWallMs": 6207000,
-     "clock": 1490,
+     "clock": 1460,
      "textSource": "template"
     }
    ],
@@ -20370,9 +18334,9 @@
   }
  },
  {
-  "t": 1205,
+  "t": 1203,
   "tick": {
-   "wallMs": 6205000,
+   "wallMs": 6203000,
    "shown": [
     {
      "id": "laning.bench",
@@ -20428,10 +18392,10 @@
      "cooldownMs": 0,
      "zone": "decision",
      "icon": null,
-     "seq": 110,
-     "createdWallMs": 6205000,
-     "expiresWallMs": 6215000,
-     "clock": 1505,
+     "seq": 78,
+     "createdWallMs": 6203000,
+     "expiresWallMs": 6213000,
+     "clock": 1503,
      "textSource": "template"
     }
    ],
@@ -20480,7 +18444,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 109,
+     "seq": 77,
      "createdWallMs": 6200000,
      "expiresWallMs": 6210000,
      "clock": 1500,
@@ -20498,9 +18462,9 @@
   }
  },
  {
-  "t": 1215,
+  "t": 1213,
   "tick": {
-   "wallMs": 6215000,
+   "wallMs": 6213000,
    "shown": [],
    "expired": [
     {
@@ -20557,10 +18521,10 @@
      "cooldownMs": 0,
      "zone": "decision",
      "icon": null,
-     "seq": 110,
-     "createdWallMs": 6205000,
-     "expiresWallMs": 6215000,
-     "clock": 1505,
+     "seq": 78,
+     "createdWallMs": 6203000,
+     "expiresWallMs": 6213000,
+     "clock": 1503,
      "textSource": "template"
     }
    ],
@@ -20573,9 +18537,9 @@
   }
  },
  {
-  "t": 1236,
+  "t": 1216,
   "tick": {
-   "wallMs": 6236000,
+   "wallMs": 6216000,
    "shown": [
     {
      "id": "danger.building:tower1_mid",
@@ -20583,17 +18547,17 @@
      "category": "danger",
      "priority": "advice",
      "confidence": 0.9,
-     "short": "Бьют башню T1 на средней линии (60%)",
+     "short": "Бьют башню T1 на средней линии (82%)",
      "detail": {
-      "normal": "Башню T1 на средней линии под атакой: 60% здоровья. Защитите или телепорт.",
-      "detailed": "Башню T1 на средней линии под атакой: 60% здоровья. Защитите или телепорт. · Здоровье здания, %: 60 (игра, 0 с)"
+      "normal": "Башню T1 на средней линии под атакой: 82% здоровья. Защитите или телепорт.",
+      "detailed": "Башню T1 на средней линии под атакой: 82% здоровья. Защитите или телепорт. · Здоровье здания, %: 82 (игра, 0 с)"
      },
      "percent": null,
      "facts": [
       {
        "key": "building-hp",
        "label": "Здоровье здания, %",
-       "value": 60,
+       "value": 82,
        "source": "gsi",
        "ageSec": 0,
        "confidence": 1,
@@ -20604,10 +18568,10 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 111,
-     "createdWallMs": 6236000,
-     "expiresWallMs": 6244000,
-     "clock": 1536,
+     "seq": 79,
+     "createdWallMs": 6216000,
+     "expiresWallMs": 6224000,
+     "clock": 1516,
      "textSource": "template"
     }
    ],
@@ -20623,9 +18587,9 @@
   }
  },
  {
-  "t": 1244,
+  "t": 1224,
   "tick": {
-   "wallMs": 6244000,
+   "wallMs": 6224000,
    "shown": [],
    "expired": [
     {
@@ -20634,17 +18598,17 @@
      "category": "danger",
      "priority": "advice",
      "confidence": 0.9,
-     "short": "Бьют башню T1 на средней линии (60%)",
+     "short": "Бьют башню T1 на средней линии (82%)",
      "detail": {
-      "normal": "Башню T1 на средней линии под атакой: 60% здоровья. Защитите или телепорт.",
-      "detailed": "Башню T1 на средней линии под атакой: 60% здоровья. Защитите или телепорт. · Здоровье здания, %: 60 (игра, 0 с)"
+      "normal": "Башню T1 на средней линии под атакой: 82% здоровья. Защитите или телепорт.",
+      "detailed": "Башню T1 на средней линии под атакой: 82% здоровья. Защитите или телепорт. · Здоровье здания, %: 82 (игра, 0 с)"
      },
      "percent": null,
      "facts": [
       {
        "key": "building-hp",
        "label": "Здоровье здания, %",
-       "value": 60,
+       "value": 82,
        "source": "gsi",
        "ageSec": 0,
        "confidence": 1,
@@ -20655,10 +18619,10 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 111,
-     "createdWallMs": 6236000,
-     "expiresWallMs": 6244000,
-     "clock": 1536,
+     "seq": 79,
+     "createdWallMs": 6216000,
+     "expiresWallMs": 6224000,
+     "clock": 1516,
      "textSource": "template"
     }
    ],
@@ -20711,7 +18675,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 112,
+     "seq": 80,
      "createdWallMs": 6245000,
      "expiresWallMs": 6260000,
      "clock": 1545,
@@ -20771,7 +18735,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 112,
+     "seq": 80,
      "createdWallMs": 6245000,
      "expiresWallMs": 6260000,
      "clock": 1545,
@@ -21199,65 +19163,6 @@
    "wallMs": 6280000,
    "shown": [
     {
-     "id": "fight.target:axe",
-     "ruleId": "fight.target",
-     "category": "fight",
-     "priority": "advice",
-     "confidence": 0.8,
-     "short": "Фокус: Axe, 50% здоровья",
-     "detail": {
-      "normal": "Бейте Axe: у него меньше всех здоровья (50%).",
-      "detailed": "Бейте Axe: у него меньше всех здоровья (50%). · Цель: axe (экран, 0 с) · Здоровье цели, %: 50 (экран, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "target",
-       "label": "Цель",
-       "value": "axe",
-       "source": "screen",
-       "ageSec": 0,
-       "confidence": 0.95,
-       "verified": true
-      },
-      {
-       "key": "target-hp",
-       "label": "Здоровье цели, %",
-       "value": 50,
-       "source": "screen",
-       "ageSec": 0,
-       "confidence": 0.8,
-       "verified": true
-      }
-     ],
-     "ttlMs": 5000,
-     "cooldownMs": 8000,
-     "zone": "decision",
-     "icon": "hero:axe",
-     "seq": 113,
-     "createdWallMs": 6280000,
-     "expiresWallMs": 6324000,
-     "clock": 1580,
-     "textSource": "template"
-    }
-   ],
-   "expired": [],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": true,
-   "visible": [
-    "fight.target:axe"
-   ]
-  }
- },
- {
-  "t": 1286,
-  "tick": {
-   "wallMs": 6286000,
-   "shown": [
-    {
      "id": "fight.engage",
      "ruleId": "fight.engage",
      "category": "fight",
@@ -21383,10 +19288,10 @@
      "cooldownMs": 30000,
      "zone": "decision",
      "icon": null,
-     "seq": 114,
-     "createdWallMs": 6286000,
+     "seq": 81,
+     "createdWallMs": 6280000,
      "expiresWallMs": 6327000,
-     "clock": 1586,
+     "clock": 1580,
      "textSource": "template"
     }
    ],
@@ -21397,7 +19302,6 @@
    "matchReview": null,
    "inFight": true,
    "visible": [
-    "fight.target:axe",
     "fight.engage"
    ]
   }
@@ -21461,7 +19365,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 115,
+     "seq": 82,
      "createdWallMs": 6320000,
      "expiresWallMs": 6328000,
      "clock": 1620,
@@ -21491,10 +19395,10 @@
       }
      ],
      "ttlMs": 10000,
-     "cooldownMs": 60000,
+     "cooldownMs": 180000,
      "zone": "alert",
      "icon": null,
-     "seq": 116,
+     "seq": 83,
      "createdWallMs": 6320000,
      "expiresWallMs": 6330000,
      "clock": 1620,
@@ -21536,7 +19440,7 @@
      "cooldownMs": 120000,
      "zone": "timing",
      "icon": "item:tpscroll",
-     "seq": 117,
+     "seq": 84,
      "createdWallMs": 6320000,
      "expiresWallMs": 6330000,
      "clock": 1620,
@@ -21992,10 +19896,10 @@
       }
      ],
      "ttlMs": 10000,
-     "cooldownMs": 60000,
+     "cooldownMs": 180000,
      "zone": "alert",
      "icon": null,
-     "seq": 116,
+     "seq": 83,
      "createdWallMs": 6320000,
      "expiresWallMs": 6330000,
      "clock": 1620,
@@ -22037,7 +19941,7 @@
      "cooldownMs": 120000,
      "zone": "timing",
      "icon": "item:tpscroll",
-     "seq": 117,
+     "seq": 84,
      "createdWallMs": 6320000,
      "expiresWallMs": 6330000,
      "clock": 1620,
@@ -22099,10 +20003,10 @@
       }
      ],
      "ttlMs": 8000,
-     "cooldownMs": 45000,
+     "cooldownMs": 90000,
      "zone": "alert",
      "icon": null,
-     "seq": 118,
+     "seq": 85,
      "createdWallMs": 6331000,
      "expiresWallMs": 6357000,
      "clock": 1631,
@@ -22179,7 +20083,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 119,
+     "seq": 86,
      "createdWallMs": 6350000,
      "expiresWallMs": 6367000,
      "clock": 1650,
@@ -22238,7 +20142,7 @@
      "cooldownMs": 300000,
      "zone": "timing",
      "icon": null,
-     "seq": 120,
+     "seq": 87,
      "createdWallMs": 6360000,
      "expiresWallMs": 6370000,
      "clock": 1660,
@@ -22317,7 +20221,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 119,
+     "seq": 86,
      "createdWallMs": 6350000,
      "expiresWallMs": 6367000,
      "clock": 1650,
@@ -22375,7 +20279,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 121,
+     "seq": 88,
      "createdWallMs": 6365000,
      "expiresWallMs": 6380000,
      "clock": 1665,
@@ -22435,7 +20339,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 122,
+     "seq": 89,
      "createdWallMs": 6370000,
      "expiresWallMs": 6385000,
      "clock": 1670,
@@ -22486,7 +20390,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 123,
+     "seq": 90,
      "createdWallMs": 6376000,
      "expiresWallMs": 6384000,
      "clock": 1676,
@@ -22945,7 +20849,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 123,
+     "seq": 90,
      "createdWallMs": 6376000,
      "expiresWallMs": 6384000,
      "clock": 1676,
@@ -23004,7 +20908,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 122,
+     "seq": 89,
      "createdWallMs": 6370000,
      "expiresWallMs": 6385000,
      "clock": 1670,
@@ -23069,7 +20973,7 @@
      "cooldownMs": 300000,
      "zone": "timing",
      "icon": null,
-     "seq": 124,
+     "seq": 91,
      "createdWallMs": 6400000,
      "expiresWallMs": 6408000,
      "clock": 1700,
@@ -23138,7 +21042,7 @@
      "cooldownMs": 300000,
      "zone": "timing",
      "icon": null,
-     "seq": 124,
+     "seq": 91,
      "createdWallMs": 6400000,
      "expiresWallMs": 6408000,
      "clock": 1700,
@@ -23159,44 +21063,134 @@
    "wallMs": 6440000,
    "shown": [
     {
-     "id": "fight.target:axe",
-     "ruleId": "fight.target",
+     "id": "fight.engage",
+     "ruleId": "fight.engage",
      "category": "fight",
      "priority": "advice",
-     "confidence": 0.8,
-     "short": "Фокус: Axe, 50% здоровья",
+     "confidence": 0.77,
+     "short": "Драка на равных: 42%",
      "detail": {
-      "normal": "Бейте Axe: у него меньше всех здоровья (50%).",
-      "detailed": "Бейте Axe: у него меньше всех здоровья (50%). · Цель: axe (экран, 0 с) · Здоровье цели, %: 50 (экран, 0 с)"
+      "normal": "Драка на равных: 42%. 5 врагов рядом.",
+      "detailed": "Драка на равных: 42%. 5 врагов рядом. Почему: Союзники и враги рядом -47%, Здоровье: вы против врагов +23%, Ульта +14%; неизвестно: ценность героев."
      },
-     "percent": null,
+     "percent": {
+      "label": "Драка",
+      "estimate": {
+       "value": 42,
+       "confidence": 0.77,
+       "factors": [
+        {
+         "id": "hp",
+         "label": "Здоровье: вы против врагов",
+         "known": true,
+         "effect": 22.9
+        },
+        {
+         "id": "mana",
+         "label": "Мана",
+         "known": true,
+         "effect": 5.6
+        },
+        {
+         "id": "ult",
+         "label": "Ульта",
+         "known": true,
+         "effect": 14.2
+        },
+        {
+         "id": "items",
+         "label": "Ключевые предметы",
+         "known": true,
+         "effect": 0
+        },
+        {
+         "id": "numbers",
+         "label": "Союзники и враги рядом",
+         "known": true,
+         "effect": -46.6
+        },
+        {
+         "id": "missing",
+         "label": "Враги не на карте",
+         "known": true,
+         "effect": 0
+        },
+        {
+         "id": "level",
+         "label": "Разница уровней",
+         "known": true,
+         "effect": -7.4
+        },
+        {
+         "id": "position",
+         "label": "Сторона карты",
+         "known": true,
+         "effect": 5
+        },
+        {
+         "id": "buyback",
+         "label": "Выкуп",
+         "known": true,
+         "effect": 4.8
+        },
+        {
+         "id": "aegis",
+         "label": "Аегис",
+         "known": true,
+         "effect": 0
+        },
+        {
+         "id": "matchup",
+         "label": "Матчап (статистика патча)",
+         "known": true,
+         "effect": -0.9
+        },
+        {
+         "id": "networth",
+         "label": "Ценность героев",
+         "known": false,
+         "effect": 0
+        }
+       ],
+       "showable": true
+      }
+     },
      "facts": [
       {
-       "key": "target",
-       "label": "Цель",
-       "value": "axe",
-       "source": "screen",
-       "ageSec": 0,
-       "confidence": 0.95,
-       "verified": true
-      },
-      {
-       "key": "target-hp",
-       "label": "Здоровье цели, %",
-       "value": 50,
-       "source": "screen",
+       "key": "enemies-near",
+       "label": "Врагов рядом",
+       "value": 5,
+       "source": "derived",
        "ageSec": 0,
        "confidence": 0.8,
        "verified": true
+      },
+      {
+       "key": "hp",
+       "label": "Здоровье, %",
+       "value": 90,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      },
+      {
+       "key": "engage",
+       "label": "Шанс в драке, %",
+       "value": 42,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.77,
+       "verified": true
       }
      ],
-     "ttlMs": 5000,
-     "cooldownMs": 8000,
+     "ttlMs": 8000,
+     "cooldownMs": 30000,
      "zone": "decision",
-     "icon": "hero:axe",
-     "seq": 125,
+     "icon": null,
+     "seq": 92,
      "createdWallMs": 6440000,
-     "expiresWallMs": 6460000,
+     "expiresWallMs": 6487000,
      "clock": 1740,
      "textSource": "template"
     }
@@ -23208,7 +21202,7 @@
    "matchReview": null,
    "inFight": true,
    "visible": [
-    "fight.target:axe"
+    "fight.engage"
    ]
   }
  },
@@ -23620,156 +21614,6 @@
   }
  },
  {
-  "t": 1446,
-  "tick": {
-   "wallMs": 6446000,
-   "shown": [
-    {
-     "id": "fight.engage",
-     "ruleId": "fight.engage",
-     "category": "fight",
-     "priority": "advice",
-     "confidence": 0.77,
-     "short": "Драка на равных: 42%",
-     "detail": {
-      "normal": "Драка на равных: 42%. 5 врагов рядом.",
-      "detailed": "Драка на равных: 42%. 5 врагов рядом. Почему: Союзники и враги рядом -47%, Здоровье: вы против врагов +23%, Ульта +14%; неизвестно: ценность героев."
-     },
-     "percent": {
-      "label": "Драка",
-      "estimate": {
-       "value": 42,
-       "confidence": 0.77,
-       "factors": [
-        {
-         "id": "hp",
-         "label": "Здоровье: вы против врагов",
-         "known": true,
-         "effect": 22.9
-        },
-        {
-         "id": "mana",
-         "label": "Мана",
-         "known": true,
-         "effect": 5.6
-        },
-        {
-         "id": "ult",
-         "label": "Ульта",
-         "known": true,
-         "effect": 14.2
-        },
-        {
-         "id": "items",
-         "label": "Ключевые предметы",
-         "known": true,
-         "effect": 0
-        },
-        {
-         "id": "numbers",
-         "label": "Союзники и враги рядом",
-         "known": true,
-         "effect": -46.6
-        },
-        {
-         "id": "missing",
-         "label": "Враги не на карте",
-         "known": true,
-         "effect": 0
-        },
-        {
-         "id": "level",
-         "label": "Разница уровней",
-         "known": true,
-         "effect": -7.4
-        },
-        {
-         "id": "position",
-         "label": "Сторона карты",
-         "known": true,
-         "effect": 5
-        },
-        {
-         "id": "buyback",
-         "label": "Выкуп",
-         "known": true,
-         "effect": 4.8
-        },
-        {
-         "id": "aegis",
-         "label": "Аегис",
-         "known": true,
-         "effect": 0
-        },
-        {
-         "id": "matchup",
-         "label": "Матчап (статистика патча)",
-         "known": true,
-         "effect": -0.9
-        },
-        {
-         "id": "networth",
-         "label": "Ценность героев",
-         "known": false,
-         "effect": 0
-        }
-       ],
-       "showable": true
-      }
-     },
-     "facts": [
-      {
-       "key": "enemies-near",
-       "label": "Врагов рядом",
-       "value": 5,
-       "source": "derived",
-       "ageSec": 0,
-       "confidence": 0.8,
-       "verified": true
-      },
-      {
-       "key": "hp",
-       "label": "Здоровье, %",
-       "value": 90,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      },
-      {
-       "key": "engage",
-       "label": "Шанс в драке, %",
-       "value": 42,
-       "source": "derived",
-       "ageSec": 0,
-       "confidence": 0.77,
-       "verified": true
-      }
-     ],
-     "ttlMs": 8000,
-     "cooldownMs": 30000,
-     "zone": "decision",
-     "icon": null,
-     "seq": 126,
-     "createdWallMs": 6446000,
-     "expiresWallMs": 6470000,
-     "clock": 1746,
-     "textSource": "template"
-    }
-   ],
-   "expired": [],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": true,
-   "visible": [
-    "fight.target:axe",
-    "fight.engage"
-   ]
-  }
- },
- {
   "t": 1456,
   "tick": {
    "wallMs": 6456000,
@@ -23801,7 +21645,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 127,
+     "seq": 93,
      "createdWallMs": 6456000,
      "expiresWallMs": 6464000,
      "clock": 1756,
@@ -23817,66 +21661,6 @@
    "visible": [
     "fight.engage",
     "danger.building:tower1_mid"
-   ]
-  }
- },
- {
-  "t": 1463,
-  "tick": {
-   "wallMs": 6463000,
-   "shown": [
-    {
-     "id": "fight.target:axe",
-     "ruleId": "fight.target",
-     "category": "fight",
-     "priority": "advice",
-     "confidence": 0.8,
-     "short": "Фокус: Axe, 50% здоровья",
-     "detail": {
-      "normal": "Бейте Axe: у него меньше всех здоровья (50%).",
-      "detailed": "Бейте Axe: у него меньше всех здоровья (50%). · Цель: axe (экран, 0 с) · Здоровье цели, %: 50 (экран, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "target",
-       "label": "Цель",
-       "value": "axe",
-       "source": "screen",
-       "ageSec": 0,
-       "confidence": 0.95,
-       "verified": true
-      },
-      {
-       "key": "target-hp",
-       "label": "Здоровье цели, %",
-       "value": 50,
-       "source": "screen",
-       "ageSec": 0,
-       "confidence": 0.8,
-       "verified": true
-      }
-     ],
-     "ttlMs": 5000,
-     "cooldownMs": 8000,
-     "zone": "decision",
-     "icon": "hero:axe",
-     "seq": 128,
-     "createdWallMs": 6463000,
-     "expiresWallMs": 6484000,
-     "clock": 1763,
-     "textSource": "template"
-    }
-   ],
-   "expired": [],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": true,
-   "visible": [
-    "danger.building:tower1_mid",
-    "fight.target:axe"
    ]
   }
  },
@@ -23913,7 +21697,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 127,
+     "seq": 93,
      "createdWallMs": 6456000,
      "expiresWallMs": 6464000,
      "clock": 1756,
@@ -23926,7 +21710,7 @@
    "matchReview": null,
    "inFight": true,
    "visible": [
-    "fight.target:axe"
+    "fight.engage"
    ]
   }
  },
@@ -23989,42 +21773,9 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 129,
+     "seq": 94,
      "createdWallMs": 6480000,
-     "expiresWallMs": 6488000,
-     "clock": 1780,
-     "textSource": "template"
-    },
-    {
-     "id": "danger.smoke",
-     "ruleId": "danger.smoke",
-     "category": "danger",
-     "priority": "critical",
-     "confidence": 0.6,
-     "short": "Возможен Smoke of Deceit: 5 героев пропали",
-     "detail": {
-      "normal": "5 врагов исчезли с мини-карты почти одновременно — похоже на Smoke of Deceit. Будьте рядом с союзниками.",
-      "detailed": "5 врагов исчезли с мини-карты почти одновременно — похоже на Smoke of Deceit. Будьте рядом с союзниками. · Пропали одновременно: 5 (вывод, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "smoke",
-       "label": "Пропали одновременно",
-       "value": 5,
-       "source": "derived",
-       "ageSec": 0,
-       "confidence": 0.6,
-       "verified": true
-      }
-     ],
-     "ttlMs": 10000,
-     "cooldownMs": 60000,
-     "zone": "alert",
-     "icon": null,
-     "seq": 130,
-     "createdWallMs": 6480000,
-     "expiresWallMs": 6490000,
+     "expiresWallMs": 6524000,
      "clock": 1780,
      "textSource": "template"
     },
@@ -24064,7 +21815,7 @@
      "cooldownMs": 120000,
      "zone": "timing",
      "icon": "item:tpscroll",
-     "seq": 131,
+     "seq": 95,
      "createdWallMs": 6480000,
      "expiresWallMs": 6490000,
      "clock": 1780,
@@ -24078,7 +21829,7 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.smoke",
+    "danger.low-hp",
     "economy.tp"
    ]
   }
@@ -24090,39 +21841,6 @@
    "shown": [],
    "expired": [
     {
-     "id": "danger.smoke",
-     "ruleId": "danger.smoke",
-     "category": "danger",
-     "priority": "critical",
-     "confidence": 0.6,
-     "short": "Возможен Smoke of Deceit: 5 героев пропали",
-     "detail": {
-      "normal": "5 врагов исчезли с мини-карты почти одновременно — похоже на Smoke of Deceit. Будьте рядом с союзниками.",
-      "detailed": "5 врагов исчезли с мини-карты почти одновременно — похоже на Smoke of Deceit. Будьте рядом с союзниками. · Пропали одновременно: 5 (вывод, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "smoke",
-       "label": "Пропали одновременно",
-       "value": 5,
-       "source": "derived",
-       "ageSec": 0,
-       "confidence": 0.6,
-       "verified": true
-      }
-     ],
-     "ttlMs": 10000,
-     "cooldownMs": 60000,
-     "zone": "alert",
-     "icon": null,
-     "seq": 130,
-     "createdWallMs": 6480000,
-     "expiresWallMs": 6490000,
-     "clock": 1780,
-     "textSource": "template"
-    },
-    {
      "id": "economy.tp",
      "ruleId": "economy.tp",
      "category": "economy",
@@ -24158,7 +21876,7 @@
      "cooldownMs": 120000,
      "zone": "timing",
      "icon": "item:tpscroll",
-     "seq": 131,
+     "seq": 95,
      "createdWallMs": 6480000,
      "expiresWallMs": 6490000,
      "clock": 1780,
@@ -24170,74 +21888,8 @@
    "deathReview": null,
    "matchReview": null,
    "inFight": false,
-   "visible": []
-  }
- },
- {
-  "t": 1500,
-  "tick": {
-   "wallMs": 6500000,
-   "shown": [
-    {
-     "id": "danger.missing",
-     "ruleId": "danger.missing",
-     "category": "danger",
-     "priority": "advice",
-     "confidence": 0.75,
-     "short": "5 врагов не видно — осторожно",
-     "detail": {
-      "normal": "5 врагов нет на мини-карте, вы один — держитесь ближе к своим.",
-      "detailed": "5 врагов нет на мини-карте, вы один — держитесь ближе к своим. · Врагов не видно: 5 (вывод, 0 с) · Сторона карты: own (вывод, 0 с) · Союзников рядом нет: да (вывод, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "missing",
-       "label": "Врагов не видно",
-       "value": 5,
-       "source": "derived",
-       "ageSec": 0,
-       "confidence": 0.75,
-       "verified": true
-      },
-      {
-       "key": "side",
-       "label": "Сторона карты",
-       "value": "own",
-       "source": "derived",
-       "ageSec": 0,
-       "confidence": 0.7,
-       "verified": true
-      },
-      {
-       "key": "alone",
-       "label": "Союзников рядом нет",
-       "value": true,
-       "source": "derived",
-       "ageSec": 0,
-       "confidence": 0.7,
-       "verified": true
-      }
-     ],
-     "ttlMs": 8000,
-     "cooldownMs": 45000,
-     "zone": "alert",
-     "icon": null,
-     "seq": 132,
-     "createdWallMs": 6500000,
-     "expiresWallMs": 6517000,
-     "clock": 1800,
-     "textSource": "template"
-    }
-   ],
-   "expired": [],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
    "visible": [
-    "danger.missing"
+    "danger.low-hp"
    ]
   }
  },
@@ -24649,83 +22301,6 @@
   }
  },
  {
-  "t": 1510,
-  "tick": {
-   "wallMs": 6510000,
-   "shown": [
-    {
-     "id": "danger.low-hp",
-     "ruleId": "danger.low-hp",
-     "category": "danger",
-     "priority": "critical",
-     "confidence": 0.9,
-     "short": "Мало здоровья, нет регена — назад",
-     "detail": {
-      "normal": "Здоровья 25%, нет регенерации и Town Portal Scroll, врагов не видно — уходите к базе.",
-      "detailed": "Здоровья 25%, нет регенерации и Town Portal Scroll, врагов не видно — уходите к базе. · Здоровье, %: 25 (игра, 0 с) · Есть реген: нет (вывод, 0 с) · Town Portal Scroll готов: нет (вывод, 0 с) · Врагов не видно: 5 (вывод, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "hp",
-       "label": "Здоровье, %",
-       "value": 25,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      },
-      {
-       "key": "regen",
-       "label": "Есть реген",
-       "value": false,
-       "source": "derived",
-       "ageSec": 0,
-       "confidence": 0.9,
-       "verified": true
-      },
-      {
-       "key": "tp",
-       "label": "Town Portal Scroll готов",
-       "value": false,
-       "source": "derived",
-       "ageSec": 0,
-       "confidence": 0.9,
-       "verified": true
-      },
-      {
-       "key": "missing",
-       "label": "Врагов не видно",
-       "value": 5,
-       "source": "derived",
-       "ageSec": 0,
-       "confidence": 0.75,
-       "verified": true
-      }
-     ],
-     "ttlMs": 8000,
-     "cooldownMs": 30000,
-     "zone": "alert",
-     "icon": null,
-     "seq": 133,
-     "createdWallMs": 6510000,
-     "expiresWallMs": 6524000,
-     "clock": 1810,
-     "textSource": "template"
-    }
-   ],
-   "expired": [],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
-   "visible": [
-    "danger.low-hp"
-   ]
-  }
- },
- {
   "t": 1516,
   "tick": {
    "wallMs": 6516000,
@@ -24757,7 +22332,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 134,
+     "seq": 96,
      "createdWallMs": 6516000,
      "expiresWallMs": 6524000,
      "clock": 1816,
@@ -24808,7 +22383,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 134,
+     "seq": 96,
      "createdWallMs": 6516000,
      "expiresWallMs": 6524000,
      "clock": 1816,
@@ -25231,50 +22806,59 @@
   }
  },
  {
-  "t": 1600,
+  "t": 1599,
   "tick": {
-   "wallMs": 6600000,
+   "wallMs": 6599000,
    "shown": [
     {
-     "id": "fight.target:axe",
-     "ruleId": "fight.target",
-     "category": "fight",
+     "id": "danger.invis",
+     "ruleId": "danger.invis",
+     "category": "danger",
      "priority": "advice",
-     "confidence": 0.8,
-     "short": "Фокус: Axe, 50% здоровья",
+     "confidence": 0.7,
+     "short": "Riki невидим — купите пыль",
      "detail": {
-      "normal": "Бейте Axe: у него меньше всех здоровья (50%).",
-      "detailed": "Бейте Axe: у него меньше всех здоровья (50%). · Цель: axe (экран, 0 с) · Здоровье цели, %: 50 (экран, 0 с)"
+      "normal": "У врага Riki есть невидимость, а у вас нет пыли или сентри. Пыль стоит 80.",
+      "detailed": "У врага Riki есть невидимость, а у вас нет пыли или сентри. Пыль стоит 80. · Невидимый враг: riki (экран, 0 с) · Цена пыли: 80 (база, не проверено) · Невидимость (по описанию способностей): да (база, не проверено)"
      },
      "percent": null,
      "facts": [
       {
-       "key": "target",
-       "label": "Цель",
-       "value": "axe",
+       "key": "invis-hero",
+       "label": "Невидимый враг",
+       "value": "riki",
        "source": "screen",
        "ageSec": 0,
        "confidence": 0.95,
        "verified": true
       },
       {
-       "key": "target-hp",
-       "label": "Здоровье цели, %",
-       "value": 50,
-       "source": "screen",
-       "ageSec": 0,
-       "confidence": 0.8,
-       "verified": true
+       "key": "dust-cost",
+       "label": "Цена пыли",
+       "value": 80,
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      },
+      {
+       "key": "invis",
+       "label": "Невидимость (по описанию способностей)",
+       "value": "да",
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
       }
      ],
-     "ttlMs": 5000,
-     "cooldownMs": 8000,
-     "zone": "decision",
-     "icon": "hero:axe",
-     "seq": 135,
-     "createdWallMs": 6600000,
-     "expiresWallMs": 6614000,
-     "clock": 1900,
+     "ttlMs": 10000,
+     "cooldownMs": 480000,
+     "zone": "timing",
+     "icon": "item:dust",
+     "seq": 97,
+     "createdWallMs": 6599000,
+     "expiresWallMs": 6609000,
+     "clock": 1899,
      "textSource": "template"
     }
    ],
@@ -25283,16 +22867,16 @@
    "mistakes": [],
    "deathReview": null,
    "matchReview": null,
-   "inFight": true,
+   "inFight": false,
    "visible": [
-    "fight.target:axe"
+    "danger.invis"
    ]
   }
  },
  {
-  "t": 1606,
+  "t": 1603,
   "tick": {
-   "wallMs": 6606000,
+   "wallMs": 6603000,
    "shown": [
     {
      "id": "fight.engage",
@@ -25420,10 +23004,10 @@
      "cooldownMs": 30000,
      "zone": "decision",
      "icon": null,
-     "seq": 136,
-     "createdWallMs": 6606000,
-     "expiresWallMs": 6623000,
-     "clock": 1906,
+     "seq": 98,
+     "createdWallMs": 6603000,
+     "expiresWallMs": 6647000,
+     "clock": 1903,
      "textSource": "template"
     }
    ],
@@ -25434,16 +23018,17 @@
    "matchReview": null,
    "inFight": true,
    "visible": [
-    "fight.target:axe",
+    "danger.invis",
     "fight.engage"
    ]
   }
  },
  {
-  "t": 1610,
+  "t": 1609,
   "tick": {
-   "wallMs": 6610000,
-   "shown": [
+   "wallMs": 6609000,
+   "shown": [],
+   "expired": [
     {
      "id": "danger.invis",
      "ruleId": "danger.invis",
@@ -25489,22 +23074,20 @@
      "cooldownMs": 480000,
      "zone": "timing",
      "icon": "item:dust",
-     "seq": 137,
-     "createdWallMs": 6610000,
-     "expiresWallMs": 6630000,
-     "clock": 1910,
+     "seq": 97,
+     "createdWallMs": 6599000,
+     "expiresWallMs": 6609000,
+     "clock": 1899,
      "textSource": "template"
     }
    ],
-   "expired": [],
    "changed": [],
    "mistakes": [],
    "deathReview": null,
    "matchReview": null,
    "inFight": true,
    "visible": [
-    "fight.engage",
-    "danger.invis"
+    "fight.engage"
    ]
   }
  },
@@ -25540,7 +23123,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 138,
+     "seq": 99,
      "createdWallMs": 6616000,
      "expiresWallMs": 6624000,
      "clock": 1916,
@@ -25555,67 +23138,7 @@
    "inFight": true,
    "visible": [
     "danger.building:tower1_mid",
-    "danger.invis"
-   ]
-  }
- },
- {
-  "t": 1620,
-  "tick": {
-   "wallMs": 6620000,
-   "shown": [
-    {
-     "id": "fight.target:axe",
-     "ruleId": "fight.target",
-     "category": "fight",
-     "priority": "advice",
-     "confidence": 0.8,
-     "short": "Фокус: Axe, 50% здоровья",
-     "detail": {
-      "normal": "Бейте Axe: у него меньше всех здоровья (50%).",
-      "detailed": "Бейте Axe: у него меньше всех здоровья (50%). · Цель: axe (экран, 0 с) · Здоровье цели, %: 50 (экран, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "target",
-       "label": "Цель",
-       "value": "axe",
-       "source": "screen",
-       "ageSec": 0,
-       "confidence": 0.95,
-       "verified": true
-      },
-      {
-       "key": "target-hp",
-       "label": "Здоровье цели, %",
-       "value": 50,
-       "source": "screen",
-       "ageSec": 0,
-       "confidence": 0.8,
-       "verified": true
-      }
-     ],
-     "ttlMs": 5000,
-     "cooldownMs": 8000,
-     "zone": "decision",
-     "icon": "hero:axe",
-     "seq": 139,
-     "createdWallMs": 6620000,
-     "expiresWallMs": 6644000,
-     "clock": 1920,
-     "textSource": "template"
-    }
-   ],
-   "expired": [],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": true,
-   "visible": [
-    "danger.building:tower1_mid",
-    "fight.target:axe"
+    "fight.engage"
    ]
   }
  },
@@ -26059,7 +23582,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 138,
+     "seq": 99,
      "createdWallMs": 6616000,
      "expiresWallMs": 6624000,
      "clock": 1916,
@@ -26072,7 +23595,7 @@
    "matchReview": null,
    "inFight": true,
    "visible": [
-    "fight.target:axe"
+    "fight.engage"
    ]
   }
  },
@@ -26135,7 +23658,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 140,
+     "seq": 100,
      "createdWallMs": 6640000,
      "expiresWallMs": 6648000,
      "clock": 1940,
@@ -26165,10 +23688,10 @@
       }
      ],
      "ttlMs": 10000,
-     "cooldownMs": 60000,
+     "cooldownMs": 180000,
      "zone": "alert",
      "icon": null,
-     "seq": 141,
+     "seq": 101,
      "createdWallMs": 6640000,
      "expiresWallMs": 6650000,
      "clock": 1940,
@@ -26210,7 +23733,7 @@
      "cooldownMs": 120000,
      "zone": "timing",
      "icon": "item:tpscroll",
-     "seq": 142,
+     "seq": 102,
      "createdWallMs": 6640000,
      "expiresWallMs": 6650000,
      "clock": 1940,
@@ -26259,10 +23782,10 @@
       }
      ],
      "ttlMs": 10000,
-     "cooldownMs": 60000,
+     "cooldownMs": 180000,
      "zone": "alert",
      "icon": null,
-     "seq": 141,
+     "seq": 101,
      "createdWallMs": 6640000,
      "expiresWallMs": 6650000,
      "clock": 1940,
@@ -26304,7 +23827,7 @@
      "cooldownMs": 120000,
      "zone": "timing",
      "icon": "item:tpscroll",
-     "seq": 142,
+     "seq": 102,
      "createdWallMs": 6640000,
      "expiresWallMs": 6650000,
      "clock": 1940,
@@ -26320,9 +23843,9 @@
   }
  },
  {
-  "t": 1660,
+  "t": 1651,
   "tick": {
-   "wallMs": 6660000,
+   "wallMs": 6651000,
    "shown": [
     {
      "id": "danger.missing",
@@ -26366,13 +23889,13 @@
       }
      ],
      "ttlMs": 8000,
-     "cooldownMs": 45000,
+     "cooldownMs": 90000,
      "zone": "alert",
      "icon": null,
-     "seq": 143,
-     "createdWallMs": 6660000,
+     "seq": 103,
+     "createdWallMs": 6651000,
      "expiresWallMs": 6677000,
-     "clock": 1960,
+     "clock": 1951,
      "textSource": "template"
     }
    ],
@@ -26446,7 +23969,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 144,
+     "seq": 104,
      "createdWallMs": 6670000,
      "expiresWallMs": 6687000,
      "clock": 1970,
@@ -26505,7 +24028,7 @@
      "cooldownMs": 300000,
      "zone": "timing",
      "icon": null,
-     "seq": 145,
+     "seq": 105,
      "createdWallMs": 6680000,
      "expiresWallMs": 6690000,
      "clock": 1980,
@@ -26991,7 +24514,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 144,
+     "seq": 104,
      "createdWallMs": 6670000,
      "expiresWallMs": 6687000,
      "clock": 1970,
@@ -27050,7 +24573,7 @@
      "cooldownMs": 300000,
      "zone": "timing",
      "icon": null,
-     "seq": 145,
+     "seq": 105,
      "createdWallMs": 6680000,
      "expiresWallMs": 6690000,
      "clock": 1980,
@@ -27097,7 +24620,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 146,
+     "seq": 106,
      "createdWallMs": 6696000,
      "expiresWallMs": 6704000,
      "clock": 1996,
@@ -27148,7 +24671,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 146,
+     "seq": 106,
      "createdWallMs": 6696000,
      "expiresWallMs": 6704000,
      "clock": 1996,
@@ -27213,7 +24736,7 @@
      "cooldownMs": 300000,
      "zone": "timing",
      "icon": null,
-     "seq": 147,
+     "seq": 107,
      "createdWallMs": 6720000,
      "expiresWallMs": 6728000,
      "clock": 2020,
@@ -27272,7 +24795,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 148,
+     "seq": 108,
      "createdWallMs": 6725000,
      "expiresWallMs": 6740000,
      "clock": 2025,
@@ -27342,7 +24865,7 @@
      "cooldownMs": 300000,
      "zone": "timing",
      "icon": null,
-     "seq": 147,
+     "seq": 107,
      "createdWallMs": 6720000,
      "expiresWallMs": 6728000,
      "clock": 2020,
@@ -27401,7 +24924,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 148,
+     "seq": 108,
      "createdWallMs": 6725000,
      "expiresWallMs": 6740000,
      "clock": 2025,
@@ -27829,65 +25352,6 @@
    "wallMs": 6760000,
    "shown": [
     {
-     "id": "fight.target:axe",
-     "ruleId": "fight.target",
-     "category": "fight",
-     "priority": "advice",
-     "confidence": 0.8,
-     "short": "Фокус: Axe, 50% здоровья",
-     "detail": {
-      "normal": "Бейте Axe: у него меньше всех здоровья (50%).",
-      "detailed": "Бейте Axe: у него меньше всех здоровья (50%). · Цель: axe (экран, 0 с) · Здоровье цели, %: 50 (экран, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "target",
-       "label": "Цель",
-       "value": "axe",
-       "source": "screen",
-       "ageSec": 0,
-       "confidence": 0.95,
-       "verified": true
-      },
-      {
-       "key": "target-hp",
-       "label": "Здоровье цели, %",
-       "value": 50,
-       "source": "screen",
-       "ageSec": 0,
-       "confidence": 0.8,
-       "verified": true
-      }
-     ],
-     "ttlMs": 5000,
-     "cooldownMs": 8000,
-     "zone": "decision",
-     "icon": "hero:axe",
-     "seq": 149,
-     "createdWallMs": 6760000,
-     "expiresWallMs": 6804000,
-     "clock": 2060,
-     "textSource": "template"
-    }
-   ],
-   "expired": [],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": true,
-   "visible": [
-    "fight.target:axe"
-   ]
-  }
- },
- {
-  "t": 1766,
-  "tick": {
-   "wallMs": 6766000,
-   "shown": [
-    {
      "id": "fight.engage",
      "ruleId": "fight.engage",
      "category": "fight",
@@ -28013,10 +25477,10 @@
      "cooldownMs": 30000,
      "zone": "decision",
      "icon": null,
-     "seq": 150,
-     "createdWallMs": 6766000,
+     "seq": 109,
+     "createdWallMs": 6760000,
      "expiresWallMs": 6807000,
-     "clock": 2066,
+     "clock": 2060,
      "textSource": "template"
     }
    ],
@@ -28027,7 +25491,6 @@
    "matchReview": null,
    "inFight": true,
    "visible": [
-    "fight.target:axe",
     "fight.engage"
    ]
   }
@@ -28043,27 +25506,11 @@
     "source": "template"
    },
    {
-    "wallMs": 5006000,
-    "clock": 306,
-    "kind": "hint",
-    "id": "fight.target:axe",
-    "text": "Фокус: Axe, 50% здоровья",
-    "source": "template"
-   },
-   {
     "wallMs": 5016000,
     "clock": 316,
     "kind": "hint",
     "id": "danger.building:tower1_mid",
     "text": "Бьют башню T1 на средней линии (82%)",
-    "source": "template"
-   },
-   {
-    "wallMs": 5023000,
-    "clock": 323,
-    "kind": "hint",
-    "id": "fight.target:axe",
-    "text": "Фокус: Axe, 50% здоровья",
     "source": "template"
    },
    {
@@ -28099,11 +25546,19 @@
     "source": "template"
    },
    {
-    "wallMs": 5066000,
-    "clock": 366,
+    "wallMs": 5060000,
+    "clock": 360,
     "kind": "hint",
     "id": "danger.invis",
     "text": "Riki невидим — купите пыль",
+    "source": "template"
+   },
+   {
+    "wallMs": 5063000,
+    "clock": 363,
+    "kind": "hint",
+    "id": "economy.tp",
+    "text": "Нет Town Portal Scroll — купите",
     "source": "template"
    },
    {
@@ -28123,11 +25578,11 @@
     "source": "template"
    },
    {
-    "wallMs": 5076000,
-    "clock": 376,
+    "wallMs": 5083000,
+    "clock": 383,
     "kind": "hint",
-    "id": "economy.tp",
-    "text": "Нет Town Portal Scroll — купите",
+    "id": "economy.neutral",
+    "text": "Пустой слот нейтрального предмета",
     "source": "template"
    },
    {
@@ -28139,32 +25594,16 @@
     "source": "template"
    },
    {
-    "wallMs": 5089000,
-    "clock": 389,
-    "kind": "hint",
-    "id": "mistake.missed-rune",
-    "text": "Пропущенная руна",
-    "source": "template"
-   },
-   {
     "wallMs": 5103000,
     "clock": 403,
     "kind": "hint",
-    "id": "economy.neutral",
-    "text": "Пустой слот нейтрального предмета",
+    "id": "economy.next:wraith_band",
+    "text": "Дальше: Wraith Band",
     "source": "template"
    },
    {
-    "wallMs": 5111000,
-    "clock": 411,
-    "kind": "hint",
-    "id": "timing.shrine-of-wisdom",
-    "text": "Святилище мудрости через 15 с",
-    "source": "template"
-   },
-   {
-    "wallMs": 5126000,
-    "clock": 426,
+    "wallMs": 5123000,
+    "clock": 423,
     "kind": "hint",
     "id": "fight.keep-buyback",
     "text": "Держите 500 золота на выкуп",
@@ -28179,14 +25618,6 @@
     "source": "template"
    },
    {
-    "wallMs": 5166000,
-    "clock": 466,
-    "kind": "hint",
-    "id": "fight.target:axe",
-    "text": "Фокус: Axe, 50% здоровья",
-    "source": "template"
-   },
-   {
     "wallMs": 5176000,
     "clock": 476,
     "kind": "hint",
@@ -28195,27 +25626,11 @@
     "source": "template"
    },
    {
-    "wallMs": 5185000,
-    "clock": 485,
-    "kind": "hint",
-    "id": "fight.target:axe",
-    "text": "Фокус: Axe, 50% здоровья",
-    "source": "template"
-   },
-   {
     "wallMs": 5200000,
     "clock": 500,
     "kind": "hint",
     "id": "danger.low-hp",
     "text": "Мало здоровья, нет регена — назад",
-    "source": "template"
-   },
-   {
-    "wallMs": 5200000,
-    "clock": 500,
-    "kind": "hint",
-    "id": "danger.smoke",
-    "text": "Возможен Smoke of Deceit: 5 героев пропали",
     "source": "template"
    },
    {
@@ -28235,22 +25650,6 @@
     "source": "template"
    },
    {
-    "wallMs": 5211000,
-    "clock": 511,
-    "kind": "hint",
-    "id": "danger.missing",
-    "text": "5 врагов не видно — осторожно",
-    "source": "template"
-   },
-   {
-    "wallMs": 5230000,
-    "clock": 530,
-    "kind": "hint",
-    "id": "danger.low-hp",
-    "text": "Мало здоровья, нет регена — назад",
-    "source": "template"
-   },
-   {
     "wallMs": 5256000,
     "clock": 556,
     "kind": "hint",
@@ -28264,14 +25663,6 @@
     "kind": "hint",
     "id": "timing.rune-power",
     "text": "Руна силы через 15 с, бежать 14 с",
-    "source": "template"
-   },
-   {
-    "wallMs": 5290000,
-    "clock": 590,
-    "kind": "hint",
-    "id": "timing.day-night",
-    "text": "Скоро наступит день",
     "source": "template"
    },
    {
@@ -28296,14 +25687,6 @@
     "kind": "mistake",
     "id": "m3",
     "text": "Руна силы в 10:00 без внимания",
-    "source": "template"
-   },
-   {
-    "wallMs": 5326000,
-    "clock": 626,
-    "kind": "hint",
-    "id": "fight.target:axe",
-    "text": "Фокус: Axe, 50% здоровья",
     "source": "template"
    },
    {
@@ -28347,6 +25730,14 @@
     "source": "template"
    },
    {
+    "wallMs": 5400000,
+    "clock": 700,
+    "kind": "hint",
+    "id": "economy.neutral",
+    "text": "Пустой слот нейтрального предмета",
+    "source": "template"
+   },
+   {
     "wallMs": 5405000,
     "clock": 705,
     "kind": "hint",
@@ -28360,14 +25751,6 @@
     "kind": "hint",
     "id": "timing.rune-power",
     "text": "Руна силы через 15 с, бежать 17 с",
-    "source": "template"
-   },
-   {
-    "wallMs": 5413000,
-    "clock": 713,
-    "kind": "hint",
-    "id": "economy.neutral",
-    "text": "Пустой слот нейтрального предмета",
     "source": "template"
    },
    {
@@ -28411,14 +25794,6 @@
     "source": "template"
    },
    {
-    "wallMs": 5486000,
-    "clock": 786,
-    "kind": "hint",
-    "id": "fight.target:axe",
-    "text": "Фокус: Axe, 50% здоровья",
-    "source": "template"
-   },
-   {
     "wallMs": 5496000,
     "clock": 796,
     "kind": "hint",
@@ -28427,27 +25802,11 @@
     "source": "template"
    },
    {
-    "wallMs": 5503000,
-    "clock": 803,
-    "kind": "hint",
-    "id": "fight.target:axe",
-    "text": "Фокус: Axe, 50% здоровья",
-    "source": "template"
-   },
-   {
     "wallMs": 5520000,
     "clock": 820,
     "kind": "hint",
     "id": "danger.low-hp",
     "text": "Мало здоровья, нет регена — назад",
-    "source": "template"
-   },
-   {
-    "wallMs": 5520000,
-    "clock": 820,
-    "kind": "hint",
-    "id": "danger.smoke",
-    "text": "Возможен Smoke of Deceit: 5 героев пропали",
     "source": "template"
    },
    {
@@ -28459,27 +25818,11 @@
     "source": "template"
    },
    {
-    "wallMs": 5531000,
-    "clock": 831,
+    "wallMs": 5549000,
+    "clock": 849,
     "kind": "hint",
-    "id": "timing.shrine-of-wisdom",
-    "text": "Святилище мудрости через 15 с",
-    "source": "template"
-   },
-   {
-    "wallMs": 5546000,
-    "clock": 846,
-    "kind": "hint",
-    "id": "danger.missing",
-    "text": "5 врагов не видно — осторожно",
-    "source": "template"
-   },
-   {
-    "wallMs": 5550000,
-    "clock": 850,
-    "kind": "hint",
-    "id": "danger.low-hp",
-    "text": "Мало здоровья, нет регена — назад",
+    "id": "danger.invis",
+    "text": "Riki невидим — купите пыль",
     "source": "template"
    },
    {
@@ -28488,14 +25831,6 @@
     "kind": "hint",
     "id": "danger.building:tower1_mid",
     "text": "Бьют башню T1 на средней линии (16%)",
-    "source": "template"
-   },
-   {
-    "wallMs": 5564000,
-    "clock": 864,
-    "kind": "hint",
-    "id": "danger.invis",
-    "text": "Riki невидим — купите пыль",
     "source": "template"
    },
    {
@@ -28515,14 +25850,6 @@
     "source": "template"
    },
    {
-    "wallMs": 5585000,
-    "clock": 885,
-    "kind": "hint",
-    "id": "timing.day-night",
-    "text": "Скоро наступит ночь",
-    "source": "template"
-   },
-   {
     "wallMs": 5600000,
     "clock": 900,
     "kind": "hint",
@@ -28531,8 +25858,8 @@
     "source": "template"
    },
    {
-    "wallMs": 5606000,
-    "clock": 906,
+    "wallMs": 5604000,
+    "clock": 904,
     "kind": "hint",
     "id": "laning.bench",
     "text": "Добивания 40 к 15:00, у профи ~103",
@@ -28547,27 +25874,11 @@
     "source": "template"
    },
    {
-    "wallMs": 5646000,
-    "clock": 946,
-    "kind": "hint",
-    "id": "fight.target:axe",
-    "text": "Фокус: Axe, 50% здоровья",
-    "source": "template"
-   },
-   {
     "wallMs": 5656000,
     "clock": 956,
     "kind": "hint",
     "id": "danger.building:tower1_mid",
     "text": "Бьют башню T1 на средней линии (38%)",
-    "source": "template"
-   },
-   {
-    "wallMs": 5665000,
-    "clock": 965,
-    "kind": "hint",
-    "id": "fight.target:axe",
-    "text": "Фокус: Axe, 50% здоровья",
     "source": "template"
    },
    {
@@ -28667,27 +25978,11 @@
     "source": "template"
    },
    {
-    "wallMs": 5806000,
-    "clock": 1106,
-    "kind": "hint",
-    "id": "fight.target:axe",
-    "text": "Фокус: Axe, 50% здоровья",
-    "source": "template"
-   },
-   {
     "wallMs": 5840000,
     "clock": 1140,
     "kind": "hint",
     "id": "danger.low-hp",
     "text": "Мало здоровья, нет регена — назад",
-    "source": "template"
-   },
-   {
-    "wallMs": 5840000,
-    "clock": 1140,
-    "kind": "hint",
-    "id": "danger.smoke",
-    "text": "Возможен Smoke of Deceit: 5 героев пропали",
     "source": "template"
    },
    {
@@ -28696,22 +25991,6 @@
     "kind": "hint",
     "id": "economy.tp",
     "text": "Нет Town Portal Scroll — купите",
-    "source": "template"
-   },
-   {
-    "wallMs": 5851000,
-    "clock": 1151,
-    "kind": "hint",
-    "id": "danger.missing",
-    "text": "5 врагов не видно — осторожно",
-    "source": "template"
-   },
-   {
-    "wallMs": 5870000,
-    "clock": 1170,
-    "kind": "hint",
-    "id": "danger.low-hp",
-    "text": "Мало здоровья, нет регена — назад",
     "source": "template"
    },
    {
@@ -28747,6 +26026,14 @@
     "source": "template"
    },
    {
+    "wallMs": 5890000,
+    "clock": 1190,
+    "kind": "hint",
+    "id": "timing.rune-power",
+    "text": "Руна силы через 15 с, бежать 17 с",
+    "source": "template"
+   },
+   {
     "wallMs": 5896000,
     "clock": 1196,
     "kind": "hint",
@@ -28771,22 +26058,6 @@
     "source": "template"
    },
    {
-    "wallMs": 5925000,
-    "clock": 1225,
-    "kind": "hint",
-    "id": "mistake.missed-rune",
-    "text": "Пропущенная руна",
-    "source": "template"
-   },
-   {
-    "wallMs": 5945000,
-    "clock": 1245,
-    "kind": "hint",
-    "id": "timing.shrine-of-wisdom",
-    "text": "Святилище мудрости через 15 с",
-    "source": "template"
-   },
-   {
     "wallMs": 5960000,
     "clock": 1260,
     "kind": "hint",
@@ -28795,27 +26066,11 @@
     "source": "template"
    },
    {
-    "wallMs": 5966000,
-    "clock": 1266,
-    "kind": "hint",
-    "id": "fight.target:axe",
-    "text": "Фокус: Axe, 50% здоровья",
-    "source": "template"
-   },
-   {
     "wallMs": 5976000,
     "clock": 1276,
     "kind": "hint",
     "id": "danger.building:tower1_mid",
     "text": "Бьют башню T1 на средней линии (82%)",
-    "source": "template"
-   },
-   {
-    "wallMs": 5983000,
-    "clock": 1283,
-    "kind": "hint",
-    "id": "fight.target:axe",
-    "text": "Фокус: Axe, 50% здоровья",
     "source": "template"
    },
    {
@@ -28883,27 +26138,19 @@
     "source": "template"
    },
    {
-    "wallMs": 6120000,
-    "clock": 1420,
-    "kind": "hint",
-    "id": "fight.engage",
-    "text": "Не вступать: шанс 37%",
-    "source": "template"
-   },
-   {
-    "wallMs": 6126000,
-    "clock": 1426,
+    "wallMs": 6119000,
+    "clock": 1419,
     "kind": "hint",
     "id": "danger.invis",
     "text": "Riki невидим — купите пыль",
     "source": "template"
    },
    {
-    "wallMs": 6130000,
-    "clock": 1430,
+    "wallMs": 6123000,
+    "clock": 1423,
     "kind": "hint",
-    "id": "fight.target:axe",
-    "text": "Фокус: Axe, 50% здоровья",
+    "id": "fight.engage",
+    "text": "Не вступать: шанс 37%",
     "source": "template"
    },
    {
@@ -28915,27 +26162,11 @@
     "source": "template"
    },
    {
-    "wallMs": 6145000,
-    "clock": 1445,
-    "kind": "hint",
-    "id": "fight.target:axe",
-    "text": "Фокус: Axe, 50% здоровья",
-    "source": "template"
-   },
-   {
     "wallMs": 6160000,
     "clock": 1460,
     "kind": "hint",
     "id": "danger.low-hp",
     "text": "Мало здоровья, нет регена — назад",
-    "source": "template"
-   },
-   {
-    "wallMs": 6160000,
-    "clock": 1460,
-    "kind": "hint",
-    "id": "danger.smoke",
-    "text": "Возможен Smoke of Deceit: 5 героев пропали",
     "source": "template"
    },
    {
@@ -28947,30 +26178,6 @@
     "source": "template"
    },
    {
-    "wallMs": 6171000,
-    "clock": 1471,
-    "kind": "hint",
-    "id": "danger.missing",
-    "text": "5 врагов не видно — осторожно",
-    "source": "template"
-   },
-   {
-    "wallMs": 6186000,
-    "clock": 1486,
-    "kind": "hint",
-    "id": "timing.day-night",
-    "text": "Скоро наступит ночь",
-    "source": "template"
-   },
-   {
-    "wallMs": 6190000,
-    "clock": 1490,
-    "kind": "hint",
-    "id": "danger.low-hp",
-    "text": "Мало здоровья, нет регена — назад",
-    "source": "template"
-   },
-   {
     "wallMs": 6200000,
     "clock": 1500,
     "kind": "hint",
@@ -28979,19 +26186,19 @@
     "source": "template"
    },
    {
-    "wallMs": 6205000,
-    "clock": 1505,
+    "wallMs": 6203000,
+    "clock": 1503,
     "kind": "hint",
     "id": "laning.bench",
     "text": "Добивания 40 к 25:00, у профи ~252",
     "source": "template"
    },
    {
-    "wallMs": 6236000,
-    "clock": 1536,
+    "wallMs": 6216000,
+    "clock": 1516,
     "kind": "hint",
     "id": "danger.building:tower1_mid",
-    "text": "Бьют башню T1 на средней линии (60%)",
+    "text": "Бьют башню T1 на средней линии (82%)",
     "source": "template"
    },
    {
@@ -29005,14 +26212,6 @@
    {
     "wallMs": 6280000,
     "clock": 1580,
-    "kind": "hint",
-    "id": "fight.target:axe",
-    "text": "Фокус: Axe, 50% здоровья",
-    "source": "template"
-   },
-   {
-    "wallMs": 6286000,
-    "clock": 1586,
     "kind": "hint",
     "id": "fight.engage",
     "text": "Драка на равных: 42%",
@@ -29102,14 +26301,6 @@
     "wallMs": 6440000,
     "clock": 1740,
     "kind": "hint",
-    "id": "fight.target:axe",
-    "text": "Фокус: Axe, 50% здоровья",
-    "source": "template"
-   },
-   {
-    "wallMs": 6446000,
-    "clock": 1746,
-    "kind": "hint",
     "id": "fight.engage",
     "text": "Драка на равных: 42%",
     "source": "template"
@@ -29123,27 +26314,11 @@
     "source": "template"
    },
    {
-    "wallMs": 6463000,
-    "clock": 1763,
-    "kind": "hint",
-    "id": "fight.target:axe",
-    "text": "Фокус: Axe, 50% здоровья",
-    "source": "template"
-   },
-   {
     "wallMs": 6480000,
     "clock": 1780,
     "kind": "hint",
     "id": "danger.low-hp",
     "text": "Мало здоровья, нет регена — назад",
-    "source": "template"
-   },
-   {
-    "wallMs": 6480000,
-    "clock": 1780,
-    "kind": "hint",
-    "id": "danger.smoke",
-    "text": "Возможен Smoke of Deceit: 5 героев пропали",
     "source": "template"
    },
    {
@@ -29152,22 +26327,6 @@
     "kind": "hint",
     "id": "economy.tp",
     "text": "Нет Town Portal Scroll — купите",
-    "source": "template"
-   },
-   {
-    "wallMs": 6500000,
-    "clock": 1800,
-    "kind": "hint",
-    "id": "danger.missing",
-    "text": "5 врагов не видно — осторожно",
-    "source": "template"
-   },
-   {
-    "wallMs": 6510000,
-    "clock": 1810,
-    "kind": "hint",
-    "id": "danger.low-hp",
-    "text": "Мало здоровья, нет регена — назад",
     "source": "template"
    },
    {
@@ -29179,27 +26338,19 @@
     "source": "template"
    },
    {
-    "wallMs": 6600000,
-    "clock": 1900,
-    "kind": "hint",
-    "id": "fight.target:axe",
-    "text": "Фокус: Axe, 50% здоровья",
-    "source": "template"
-   },
-   {
-    "wallMs": 6606000,
-    "clock": 1906,
-    "kind": "hint",
-    "id": "fight.engage",
-    "text": "Драка на равных: 42%",
-    "source": "template"
-   },
-   {
-    "wallMs": 6610000,
-    "clock": 1910,
+    "wallMs": 6599000,
+    "clock": 1899,
     "kind": "hint",
     "id": "danger.invis",
     "text": "Riki невидим — купите пыль",
+    "source": "template"
+   },
+   {
+    "wallMs": 6603000,
+    "clock": 1903,
+    "kind": "hint",
+    "id": "fight.engage",
+    "text": "Драка на равных: 42%",
     "source": "template"
    },
    {
@@ -29208,14 +26359,6 @@
     "kind": "hint",
     "id": "danger.building:tower1_mid",
     "text": "Бьют башню T1 на средней линии (38%)",
-    "source": "template"
-   },
-   {
-    "wallMs": 6620000,
-    "clock": 1920,
-    "kind": "hint",
-    "id": "fight.target:axe",
-    "text": "Фокус: Axe, 50% здоровья",
     "source": "template"
    },
    {
@@ -29243,8 +26386,8 @@
     "source": "template"
    },
    {
-    "wallMs": 6660000,
-    "clock": 1960,
+    "wallMs": 6651000,
+    "clock": 1951,
     "kind": "hint",
     "id": "danger.missing",
     "text": "5 врагов не видно — осторожно",
@@ -29293,14 +26436,6 @@
    {
     "wallMs": 6760000,
     "clock": 2060,
-    "kind": "hint",
-    "id": "fight.target:axe",
-    "text": "Фокус: Axe, 50% здоровья",
-    "source": "template"
-   },
-   {
-    "wallMs": 6766000,
-    "clock": 2066,
     "kind": "hint",
     "id": "fight.engage",
     "text": "Драка на равных: 42%",

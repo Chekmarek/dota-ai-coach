@@ -52,6 +52,8 @@ export const matchupRule: Rule = (c) => {
   if (!playing(c)) return null;
   const near = nearEnemies(c.v);
   if (near.length !== 1 || !near[0]!.hero.value) return null;
+  // В лайнинге 1×1 на линии — постоянно: процент каждые 30 с только мешал (режим тени: 781 раз на 100 игроков)
+  if (game(c).stage === 'laning') return null;
   const enemy = near[0]!;
   const e = matchupPercent(c.v, enemy, c.look, c.settings.minPercentConfidence);
   if (!e.showable) return null;
@@ -135,11 +137,17 @@ export const actionRule: Rule = (c) => {
   });
 };
 
+/** «Фокус» — только если у цели меньше этой доли здоровья: иначе выбор цели — дело героя и драки, а не процентов */
+export const TARGET_MAX_HP = 50;
+
 export const targetRule: Rule = (c) => {
-  if (!playing(c)) return null;
+  // Только в драке (режим тени: 2 150 раз на 100 игроков — звучало на каждой встрече у линии)
+  if (!playing(c) || !c.mem.inFight) return null;
   const near = nearEnemies(c.v).filter((e) => e.hpPercent.value !== null && e.hero.value && (e.hpPercent.ageSec ?? 99) <= 2);
   if (near.length < 2) return null;
   const t = near.reduce((a, b) => (b.hpPercent.value! < a.hpPercent.value! ? b : a));
+  // 0% — цель уже мертва или полоска гаснет (режим тени: «Фокус: Sand King, 0% здоровья»)
+  if (t.hpPercent.value! >= TARGET_MAX_HP || t.hpPercent.value! <= 3) return null;
   const name = c.look.heroName(t.hero.value);
   const hp = Math.round(t.hpPercent.value!);
   return draft({
@@ -152,7 +160,7 @@ export const targetRule: Rule = (c) => {
     normal: `Бейте ${name}: у него меньше всех здоровья (${hp}%).`,
     facts: [fact('target', 'Цель', t.hero), fact('target-hp', 'Здоровье цели, %', { ...t.hpPercent, value: hp })],
     ttlSec: 5,
-    cooldownSec: 8,
+    cooldownSec: 20,
     icon: `hero:${t.hero.value}`,
   });
 };

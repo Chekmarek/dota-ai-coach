@@ -164,6 +164,8 @@ export const itemTimingRule: Rule = (c) => {
   const hero = c.v.me.hero.value;
   // «Запаздывает» — по минутам профи обычных матчей; в Турбо норм нет
   if (!playing(c) || clock === null || !hero || !c.v.me.itemsKnown || !c.look.hasNorms) return null;
+  // «Запаздывает» — корам: у саппортов тайминги предметов слишком разные (режим тени: «Essence Distiller запаздывает» пятёрке)
+  if (game(c).core === false) return null;
   const owned = new Set([...c.mem.items.keys(), ...c.v.me.items.map((i) => i.key)]);
   // только профи патча: у запасной сборки минута примерная — «запаздывает» по ней не скажешь
   const core = c.look.buildFor(hero.id, hero.key).filter((b) => b.source === 'pro' && b.share >= 0.4 && (c.look.itemCost(b.key) ?? 0) >= 1500);

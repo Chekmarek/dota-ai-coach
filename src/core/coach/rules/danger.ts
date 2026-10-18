@@ -34,7 +34,8 @@ export const missingRule: Rule = (c) => {
     normal: (critical ? `${n} врагов нет на мини-карте, а вы на их стороне карты — отойдите к своим башням.` : `${n} врагов нет на мини-карте, вы один — держитесь ближе к своим.`) + personalNote(c.look.data.profile, critical ? 'position' : 'laning-deaths'),
     facts: [derivedFact('missing', 'Врагов не видно', n, 0.75), derivedFact('side', 'Сторона карты', side, 0.7), derivedFact('alone', 'Союзников рядом нет', alone, 0.7)],
     ttlSec: 8,
-    cooldownSec: 45,
+    // реже (этап 5, режим тени: 2 270 раз на 100 игроков про-матчей)
+    cooldownSec: 90,
   });
 };
 
@@ -53,7 +54,7 @@ export const smokeRule: Rule = (c) => {
     normal: `${n} врагов исчезли с мини-карты почти одновременно — похоже на Smoke of Deceit. Будьте рядом с союзниками.`,
     facts: [derivedFact('smoke', 'Пропали одновременно', n, 0.6)],
     ttlSec: 10,
-    cooldownSec: 60,
+    cooldownSec: 180,
   });
 };
 
@@ -64,6 +65,8 @@ export const gankerRule: Rule = (c) => {
   // В лайнинге — только при малом здоровье (на чужой половине вы и так стоите на линии)
   const laning = game(c).stage === 'laning';
   if (!((hp !== null && hp < 50) || (side === 'enemy' && !laning))) return null;
+  // С союзниками рядом ганк не страшен — предупреждаем одиночку (режим тени: 923 раза на 100 игроков); в драке — не до того
+  if (alliesNear(c) > 0 || c.mem.inFight) return null;
   const g = c.v.enemies.find((e) => {
     if (e.missing !== true || !e.hero.value) return false;
     const t = e.missingForSec ?? 0;
@@ -83,7 +86,7 @@ export const gankerRule: Rule = (c) => {
     normal: `${name} не виден ${Math.round(g.missingForSec ?? 0)} с — он умеет ловить. ${hp !== null && hp < 50 ? 'У вас мало здоровья.' : 'Вы на чужой стороне.'}`,
     facts: [fact('ganker', 'Пропал', g.hero), derivedFact('missing-for', 'Не виден, с', Math.round(g.missingForSec ?? 0), 0.7), kbFact('roles', 'Роли (база)', 'Initiator/Disabler', false)],
     ttlSec: 8,
-    cooldownSec: 90,
+    cooldownSec: 150,
     icon: `hero:${g.hero.value}`,
   });
 };
@@ -91,6 +94,9 @@ export const gankerRule: Rule = (c) => {
 export const deepRule: Rule = (c) => {
   if (!playing(c) || !c.v.team) return null;
   if (!isEnemyJungle(c.v.me.zone, c.v.team) || alliesNear(c) > 0) return null;
+  // В лайнинге оффлейнер и саппорт ходят через чужой лес на линию — а в начале игры «не видны» все враги сразу:
+  // «опасно» звучало в 0:04 (режим тени, про-матчи STRATZ)
+  if (game(c).stage === 'laning') return null;
   const night = c.v.dayNight.value === 'night';
   const missing = c.v.enemies.filter((e) => e.missing === true).length;
   if (!night && missing < 2) return null;
@@ -202,7 +208,8 @@ export const roshanRule: Rule = (c) => {
 export const invisRule: Rule = (c) => {
   const clock = c.v.clock.value;
   if (!playing(c) || clock === null || clock < 6 * 60 || !c.v.me.itemsKnown) return null;
-  if (hasItem(c.v, DETECTION_ITEMS)) return null;
+  // в драке «купите пыль» не к месту (режим тени) — скажем после
+  if (hasItem(c.v, DETECTION_ITEMS) || c.mem.inFight) return null;
   const inv = c.v.enemies.find((e) => e.hero.value && c.look.invisHeroes.has(e.hero.value) && e.alive.value !== false);
   if (!inv) return null;
   const name = c.look.heroName(inv.hero.value);

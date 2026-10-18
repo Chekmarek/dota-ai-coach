@@ -99,7 +99,9 @@ export function deathCauses(d: DeathRecord, stage: GameStage, look: Pick<CoachLo
     });
   }
   // 4. мог уйти: телепорт готов, а здоровье падало дольше телепорта (3 с) с запасом
-  if (d.tpReady === true && drop !== null && drop >= 5) {
+  // Только в одиночку: из командной драки с союзниками рядом уход телепортом — не очевидно верный совет (режим тени:
+  // на смертях профи «можно было уйти» звучало и там, где команда дралась до конца)
+  if (d.tpReady === true && drop !== null && drop >= 6 && allies === 0) {
     out.push({
       id: 'escape',
       why: `Можно было уйти: Town Portal Scroll был готов, а здоровье падало ${Math.round(drop)} с`,

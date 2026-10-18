@@ -1,0 +1,954 @@
+{
+ "matches": 10,
+ "players": 100,
+ "checks": {
+  "total": 13470,
+  "farmInFight": 0,
+  "jungleInLaningCore": 0,
+  "retreatThenWon": 50,
+  "retreatCount": 1483,
+  "engageThenDied": 38,
+  "engageCount": 1232,
+  "benchLagPro": 35,
+  "deaths": 538,
+  "deathsWarned": 347,
+  "playerSeconds": 223420
+ },
+ "perMin": 3.62,
+ "byRule": {
+  "fight.engage": 2616,
+  "danger.missing": 1590,
+  "fight.target": 883,
+  "macro.help": 836,
+  "timing.rune-power": 700,
+  "economy.next": 677,
+  "fight.disengage": 576,
+  "review.death": 538,
+  "danger.smoke": 495,
+  "macro.push": 441,
+  "timing.rune-bounty": 436,
+  "danger.ganker": 344,
+  "mistake.missed-fight": 268,
+  "economy.tp": 248,
+  "fight.no-buyback": 247,
+  "timing.enemy-item": 241,
+  "danger.deep": 215,
+  "danger.invis": 213,
+  "macro.group": 209,
+  "timing.neutral-tier": 208,
+  "timing.stack": 168,
+  "economy.gpm": 155,
+  "economy.sell": 128,
+  "timing.lotus": 110,
+  "fight.keep-buyback": 109,
+  "timing.shrine-of-wisdom": 107,
+  "laning.bench": 91,
+  "timing.tormentor": 82,
+  "macro.outpost": 81,
+  "economy.wards": 52,
+  "draft.overview": 50,
+  "laning.level6": 49,
+  "draft.item": 45,
+  "danger.low-hp": 42,
+  "laning.buy-regen": 35,
+  "laning.use-regen": 35,
+  "fight.matchup": 31,
+  "laning.bottle": 28,
+  "mistake.missed-rune": 22,
+  "laning.use-mana": 18,
+  "economy.idle": 15,
+  "timing.rune-water": 14,
+  "economy.late": 11,
+  "economy.route": 5,
+  "economy.gold": 4,
+  "laning.enemy6": 2
+ },
+ "deathCheck": [
+  {
+   "stratz": "было лечение, в драке",
+   "coach": "Вы были в меньшинстве: 2 врага против вас одного"
+  },
+  {
+   "stratz": "в драке",
+   "coach": "Коуч не уверен в причине: ни меньшинства, ни плохой позиции, ни неиспользованных предметов не видно"
+  },
+  {
+   "stratz": "было лечение, в драке",
+   "coach": "Вы были в меньшинстве: 4 врага против вас и 1 союзника"
+  },
+  {
+   "stratz": "в драке",
+   "coach": "Коуч не уверен в причине: ни меньшинства, ни плохой позиции, ни неиспользованных предметов не видно"
+  },
+  {
+   "stratz": "в драке",
+   "coach": "Вы были в меньшинстве: 2 врага против вас одного; Позиция: вы были на стороне врага (нижняя линия) — без союзников, 2 врагов не было видно"
+  },
+  {
+   "stratz": "в драке",
+   "coach": "Коуч не уверен в причине: ни меньшинства, ни плохой позиции, ни неиспользованных предметов не видно"
+  },
+  {
+   "stratz": "—",
+   "coach": "Коуч не уверен в причине: ни меньшинства, ни плохой позиции, ни неиспользованных предметов не видно"
+  },
+  {
+   "stratz": "быстрый урон, было лечение, в драке",
+   "coach": "Вы были в меньшинстве: 3 врага против вас и 1 союзника; Враги были сильнее: уровень 9 против вашего 6"
+  },
+  {
+   "stratz": "—",
+   "coach": "Коуч не уверен в причине: ни меньшинства, ни плохой позиции, ни неиспользованных предметов не видно"
+  },
+  {
+   "stratz": "быстрый урон",
+   "coach": "Вы были в меньшинстве: 2 врага против вас одного; Можно было уйти: Town Portal Scroll был готов, а здоровье падало 10 с"
+  },
+  {
+   "stratz": "в драке",
+   "coach": "Враги были сильнее: уровень 14 против вашего 12"
+  },
+  {
+   "stratz": "в драке",
+   "coach": "Коуч не уверен в причине: ни меньшинства, ни плохой позиции, ни неиспользованных предметов не видно"
+  },
+  {
+   "stratz": "в драке",
+   "coach": "Коуч не уверен в причине: ни меньшинства, ни плохой позиции, ни неиспользованных предметов не видно"
+  },
+  {
+   "stratz": "быстрый урон",
+   "coach": "Позиция: вы были на стороне врага (лес Сил Тьмы) — 2 врагов не было видно"
+  },
+  {
+   "stratz": "в драке",
+   "coach": "Позиция: вы были на стороне врага (лес Сил Тьмы) — без союзников; Вы были в меньшинстве: 3 врага против вас одного"
+  },
+  {
+   "stratz": "быстрый урон, было лечение",
+   "coach": "Позиция: вы были на стороне врага (верхняя линия) — 2 врагов не было видно"
+  },
+  {
+   "stratz": "было лечение",
+   "coach": "Враги были сильнее: уровень 11 против вашего 6"
+  },
+  {
+   "stratz": "было лечение",
+   "coach": "Вы были в меньшинстве: 5 врагов против вас и 3 союзников"
+  },
+  {
+   "stratz": "было лечение, в драке",
+   "coach": "Можно было уйти: Town Portal Scroll был готов, а здоровье падало 6 с; Враги были сильнее: уровень 14 против вашего 12"
+  },
+  {
+   "stratz": "было лечение, в драке",
+   "coach": "Коуч не уверен в причине: ни меньшинства, ни плохой позиции, ни неиспользованных предметов не видно"
+  },
+  {
+   "stratz": "было лечение",
+   "coach": "В инвентаре был Healing Salve, а здоровье падало 10 с — можно было подлечиться"
+  },
+  {
+   "stratz": "было лечение, в драке",
+   "coach": "Коуч не уверен в причине: ни меньшинства, ни плохой позиции, ни неиспользованных предметов не видно"
+  },
+  {
+   "stratz": "было лечение",
+   "coach": "Вы были в меньшинстве: 5 врагов против вас и 3 союзников"
+  },
+  {
+   "stratz": "—",
+   "coach": "Коуч не уверен в причине: ни меньшинства, ни плохой позиции, ни неиспользованных предметов не видно"
+  },
+  {
+   "stratz": "—",
+   "coach": "Коуч не уверен в причине: ни меньшинства, ни плохой позиции, ни неиспользованных предметов не видно"
+  },
+  {
+   "stratz": "было лечение, в драке",
+   "coach": "Вы были в меньшинстве: 3 врага против вас и 1 союзника"
+  },
+  {
+   "stratz": "было лечение, в драке",
+   "coach": "Вы были в меньшинстве: 3 врага против вас и 1 союзника"
+  },
+  {
+   "stratz": "—",
+   "coach": "Враги были сильнее: уровень 12 против вашего 9"
+  },
+  {
+   "stratz": "быстрый урон, было лечение",
+   "coach": "Враги были сильнее: уровень 13 против вашего 10"
+  },
+  {
+   "stratz": "—",
+   "coach": "Коуч не уверен в причине: ни меньшинства, ни плохой позиции, ни неиспользованных предметов не видно"
+  },
+  {
+   "stratz": "было лечение, в драке",
+   "coach": "Враги были сильнее: уровень 20 против вашего 15"
+  },
+  {
+   "stratz": "в драке",
+   "coach": "Вы были в меньшинстве: 5 врагов против вас и 1 союзника"
+  },
+  {
+   "stratz": "—",
+   "coach": "Коуч не уверен в причине: ни меньшинства, ни плохой позиции, ни неиспользованных предметов не видно"
+  },
+  {
+   "stratz": "—",
+   "coach": "Вы были в меньшинстве: 5 врагов против вас и 1 союзника"
+  },
+  {
+   "stratz": "было лечение",
+   "coach": "Коуч не уверен в причине: ни меньшинства, ни плохой позиции, ни неиспользованных предметов не видно"
+  },
+  {
+   "stratz": "—",
+   "coach": "Коуч не уверен в причине: ни меньшинства, ни плохой позиции, ни неиспользованных предметов не видно"
+  },
+  {
+   "stratz": "в драке",
+   "coach": "Коуч не уверен в причине: ни меньшинства, ни плохой позиции, ни неиспользованных предметов не видно"
+  },
+  {
+   "stratz": "в драке",
+   "coach": "Вы были в меньшинстве: 5 врагов против вас одного"
+  },
+  {
+   "stratz": "в драке",
+   "coach": "Позиция: вы были на стороне врага (верхняя линия) — без союзников; Вы были в меньшинстве: 4 врага против вас одного"
+  },
+  {
+   "stratz": "было лечение",
+   "coach": "Коуч не уверен в причине: ни меньшинства, ни плохой позиции, ни неиспользованных предметов не видно"
+  }
+ ],
+ "examples": {
+  "farmInFight": [],
+  "jungle": []
+ },
+ "sample": [
+  {
+   "match": 9046647438,
+   "hero": "brewmaster",
+   "pos": "3",
+   "t": 1960,
+   "id": "danger.deep",
+   "short": "Чужой лес без обзора — опасно",
+   "category": "danger",
+   "inFight": false,
+   "hpPct": 99,
+   "enemiesNear": 0
+  },
+  {
+   "match": 9046647438,
+   "hero": "brewmaster",
+   "pos": "3",
+   "t": 388,
+   "id": "danger.ganker",
+   "short": "Sand King не видно 49 с — опасность ганка",
+   "category": "danger",
+   "inFight": false,
+   "hpPct": 11,
+   "enemiesNear": 0
+  },
+  {
+   "match": 9046647438,
+   "hero": "brewmaster",
+   "pos": "3",
+   "t": 901,
+   "id": "danger.smoke",
+   "short": "Возможен Smoke of Deceit: 3 героя пропали",
+   "category": "danger",
+   "inFight": false,
+   "hpPct": 100,
+   "enemiesNear": 0
+  },
+  {
+   "match": 9046698685,
+   "hero": "pangolier",
+   "pos": "2",
+   "t": 1330,
+   "id": "danger.deep",
+   "short": "Чужой лес без обзора — опасно",
+   "category": "danger",
+   "inFight": false,
+   "hpPct": 100,
+   "enemiesNear": 0
+  },
+  {
+   "match": 9046698685,
+   "hero": "primal_beast",
+   "pos": "3",
+   "t": 1670,
+   "id": "timing.rune-power",
+   "short": "Руна силы через 15 с, бежать 5 с",
+   "category": "timing",
+   "inFight": false,
+   "hpPct": 0,
+   "enemiesNear": 0
+  },
+  {
+   "match": 9046698685,
+   "hero": "dragon_knight",
+   "pos": "2",
+   "t": 1171,
+   "id": "macro.help",
+   "short": "Бой: средняя линия — телепорт",
+   "category": "macro",
+   "inFight": false,
+   "hpPct": 78,
+   "enemiesNear": 0
+  },
+  {
+   "match": 9046698685,
+   "hero": "hoodwink",
+   "pos": "5",
+   "t": 829,
+   "id": "fight.disengage",
+   "short": "Отходи: союзник погиб",
+   "category": "fight",
+   "inFight": true,
+   "hpPct": 94,
+   "enemiesNear": 3
+  },
+  {
+   "match": 9046698685,
+   "hero": "life_stealer",
+   "pos": "1",
+   "t": 946,
+   "id": "macro.help",
+   "short": "Бой: верхняя линия — телепорт",
+   "category": "macro",
+   "inFight": false,
+   "hpPct": 100,
+   "enemiesNear": 0
+  },
+  {
+   "match": 9046698685,
+   "hero": "pangolier",
+   "pos": "2",
+   "t": 353,
+   "id": "fight.target:dragon_knight",
+   "short": "Фокус: Dragon Knight, 33% здоровья",
+   "category": "fight",
+   "inFight": true,
+   "hpPct": 88,
+   "enemiesNear": 2
+  },
+  {
+   "match": 9046698685,
+   "hero": "terrorblade",
+   "pos": "1",
+   "t": 1284,
+   "id": "macro.push",
+   "short": "2 врага мертвы — давите",
+   "category": "macro",
+   "inFight": false,
+   "hpPct": 92,
+   "enemiesNear": 0
+  },
+  {
+   "match": 9046698685,
+   "hero": "terrorblade",
+   "pos": "1",
+   "t": 344,
+   "id": "review.death:1",
+   "short": "Разбор смерти",
+   "category": "review",
+   "inFight": true,
+   "hpPct": 2,
+   "enemiesNear": 2
+  },
+  {
+   "match": 9046654198,
+   "hero": "necrolyte",
+   "pos": "1",
+   "t": 1810,
+   "id": "danger.missing",
+   "short": "5 врагов не видно — осторожно",
+   "category": "danger",
+   "inFight": false,
+   "hpPct": 100,
+   "enemiesNear": 0
+  },
+  {
+   "match": 9046654198,
+   "hero": "terrorblade",
+   "pos": "1",
+   "t": 486,
+   "id": "fight.engage",
+   "short": "Вступать: шанс 77%",
+   "category": "fight",
+   "inFight": true,
+   "hpPct": 100,
+   "enemiesNear": 2
+  },
+  {
+   "match": 9046698685,
+   "hero": "dragon_knight",
+   "pos": "2",
+   "t": 1755,
+   "id": "fight.disengage",
+   "short": "Отходи: пришли ещё враги",
+   "category": "fight",
+   "inFight": true,
+   "hpPct": 100,
+   "enemiesNear": 4
+  },
+  {
+   "match": 9046698685,
+   "hero": "witch_doctor",
+   "pos": "5",
+   "t": 914,
+   "id": "macro.help",
+   "short": "Бой: река — телепорт",
+   "category": "macro",
+   "inFight": false,
+   "hpPct": 100,
+   "enemiesNear": 0
+  },
+  {
+   "match": 9046654198,
+   "hero": "keeper_of_the_light",
+   "pos": "2",
+   "t": 2007,
+   "id": "fight.disengage",
+   "short": "Отходи: союзник погиб",
+   "category": "fight",
+   "inFight": true,
+   "hpPct": 91,
+   "enemiesNear": 4
+  },
+  {
+   "match": 9046654198,
+   "hero": "necrolyte",
+   "pos": "1",
+   "t": 488,
+   "id": "laning.level6",
+   "short": "6 уровень: ульта — ищите убийство",
+   "category": "laning",
+   "inFight": false,
+   "hpPct": 100,
+   "enemiesNear": 0
+  },
+  {
+   "match": 9046698685,
+   "hero": "witch_doctor",
+   "pos": "5",
+   "t": 880,
+   "id": "danger.missing",
+   "short": "4 врагов не видно — осторожно",
+   "category": "danger",
+   "inFight": false,
+   "hpPct": 31,
+   "enemiesNear": 0
+  },
+  {
+   "match": 9046698685,
+   "hero": "dragon_knight",
+   "pos": "2",
+   "t": 1091,
+   "id": "fight.engage",
+   "short": "Не вступать: шанс 36%",
+   "category": "fight",
+   "inFight": true,
+   "hpPct": 99,
+   "enemiesNear": 1
+  },
+  {
+   "match": 9046654198,
+   "hero": "terrorblade",
+   "pos": "1",
+   "t": 1739,
+   "id": "mistake.missed-fight",
+   "short": "Команда дралась без вас",
+   "category": "mistake",
+   "inFight": false,
+   "hpPct": 89,
+   "enemiesNear": 0
+  },
+  {
+   "match": 9046654198,
+   "hero": "necrolyte",
+   "pos": "1",
+   "t": 221,
+   "id": "fight.engage",
+   "short": "Вступать: шанс 65%",
+   "category": "fight",
+   "inFight": true,
+   "hpPct": 85,
+   "enemiesNear": 2
+  },
+  {
+   "match": 9046698685,
+   "hero": "hoodwink",
+   "pos": "5",
+   "t": 1275,
+   "id": "review.death:5",
+   "short": "Разбор смерти",
+   "category": "review",
+   "inFight": false,
+   "hpPct": 3,
+   "enemiesNear": 0
+  },
+  {
+   "match": 9046654198,
+   "hero": "necrolyte",
+   "pos": "1",
+   "t": 929,
+   "id": "danger.smoke",
+   "short": "Возможен Smoke of Deceit: 4 героя пропали",
+   "category": "danger",
+   "inFight": false,
+   "hpPct": 100,
+   "enemiesNear": 0
+  },
+  {
+   "match": 9046654198,
+   "hero": "terrorblade",
+   "pos": "1",
+   "t": 2015,
+   "id": "fight.engage",
+   "short": "Не вступать: шанс 25%",
+   "category": "fight",
+   "inFight": true,
+   "hpPct": 80,
+   "enemiesNear": 5
+  },
+  {
+   "match": 9046654198,
+   "hero": "necrolyte",
+   "pos": "1",
+   "t": 705,
+   "id": "timing.rune-bounty",
+   "short": "Руна богатства через 15 с, бежать 17 с",
+   "category": "timing",
+   "inFight": false,
+   "hpPct": 0,
+   "enemiesNear": 0
+  },
+  {
+   "match": 9046654198,
+   "hero": "terrorblade",
+   "pos": "1",
+   "t": 2011,
+   "id": "danger.smoke",
+   "short": "Возможен Smoke of Deceit: 3 героя пропали",
+   "category": "danger",
+   "inFight": false,
+   "hpPct": 100,
+   "enemiesNear": 0
+  },
+  {
+   "match": 9046654198,
+   "hero": "terrorblade",
+   "pos": "1",
+   "t": 2028,
+   "id": "fight.disengage",
+   "short": "Отходи: пришли ещё враги",
+   "category": "fight",
+   "inFight": true,
+   "hpPct": 67,
+   "enemiesNear": 3
+  },
+  {
+   "match": 9046698685,
+   "hero": "dragon_knight",
+   "pos": "2",
+   "t": 1545,
+   "id": "timing.rune-power",
+   "short": "Руна силы через 15 с, бежать 25 с",
+   "category": "timing",
+   "inFight": false,
+   "hpPct": 0,
+   "enemiesNear": 0
+  },
+  {
+   "match": 9046698685,
+   "hero": "dragon_knight",
+   "pos": "2",
+   "t": 1425,
+   "id": "timing.rune-bounty",
+   "short": "Руна богатства через 15 с, бежать 15 с",
+   "category": "timing",
+   "inFight": false,
+   "hpPct": 94,
+   "enemiesNear": 0
+  },
+  {
+   "match": 9046698685,
+   "hero": "dragon_knight",
+   "pos": "2",
+   "t": 1670,
+   "id": "timing.rune-power",
+   "short": "Руна силы через 15 с, бежать 6 с",
+   "category": "timing",
+   "inFight": false,
+   "hpPct": 0,
+   "enemiesNear": 0
+  },
+  {
+   "match": 9046654198,
+   "hero": "keeper_of_the_light",
+   "pos": "2",
+   "t": 945,
+   "id": "timing.rune-bounty",
+   "short": "Руна богатства через 15 с, бежать 16 с",
+   "category": "timing",
+   "inFight": false,
+   "hpPct": 100,
+   "enemiesNear": 0
+  },
+  {
+   "match": 9046654198,
+   "hero": "terrorblade",
+   "pos": "1",
+   "t": 1471,
+   "id": "fight.engage",
+   "short": "Вступать: шанс 82%",
+   "category": "fight",
+   "inFight": true,
+   "hpPct": 94,
+   "enemiesNear": 4
+  },
+  {
+   "match": 9046654198,
+   "hero": "keeper_of_the_light",
+   "pos": "2",
+   "t": 1569,
+   "id": "fight.target:witch_doctor",
+   "short": "Фокус: Witch Doctor, 34% здоровья",
+   "category": "fight",
+   "inFight": true,
+   "hpPct": 100,
+   "enemiesNear": 3
+  },
+  {
+   "match": 9046771209,
+   "hero": "rattletrap",
+   "pos": "4",
+   "t": 2076,
+   "id": "fight.no-buyback",
+   "short": "Выкуп 500, у вас 238",
+   "category": "fight",
+   "inFight": false,
+   "hpPct": 100,
+   "enemiesNear": 1
+  },
+  {
+   "match": 9046771209,
+   "hero": "witch_doctor",
+   "pos": "5",
+   "t": 1601,
+   "id": "fight.engage",
+   "short": "Не вступать: шанс 39%",
+   "category": "fight",
+   "inFight": true,
+   "hpPct": 100,
+   "enemiesNear": 1
+  },
+  {
+   "match": 9046654198,
+   "hero": "terrorblade",
+   "pos": "1",
+   "t": 1156,
+   "id": "danger.missing",
+   "short": "3 врага пропали — назад",
+   "category": "danger",
+   "inFight": false,
+   "hpPct": 89,
+   "enemiesNear": 0
+  },
+  {
+   "match": 9046771209,
+   "hero": "windrunner",
+   "pos": "4",
+   "t": 2373,
+   "id": "danger.smoke",
+   "short": "Возможен Smoke of Deceit: 3 героя пропали",
+   "category": "danger",
+   "inFight": false,
+   "hpPct": 100,
+   "enemiesNear": 1
+  },
+  {
+   "match": 9046654198,
+   "hero": "necrolyte",
+   "pos": "1",
+   "t": 829,
+   "id": "macro.help",
+   "short": "Бой: лес Сил Тьмы — телепорт",
+   "category": "macro",
+   "inFight": false,
+   "hpPct": 0,
+   "enemiesNear": 0
+  },
+  {
+   "match": 9046771209,
+   "hero": "rattletrap",
+   "pos": "4",
+   "t": 1961,
+   "id": "fight.no-buyback",
+   "short": "Выкуп 500, у вас 333",
+   "category": "fight",
+   "inFight": false,
+   "hpPct": 63,
+   "enemiesNear": 1
+  },
+  {
+   "match": 9046771209,
+   "hero": "dark_seer",
+   "pos": "3",
+   "t": 2376,
+   "id": "danger.missing",
+   "short": "3 врага пропали — назад",
+   "category": "danger",
+   "inFight": true,
+   "hpPct": 100,
+   "enemiesNear": 1
+  },
+  {
+   "match": 9046698685,
+   "hero": "dragon_knight",
+   "pos": "2",
+   "t": 356,
+   "id": "review.death:0",
+   "short": "Разбор смерти",
+   "category": "review",
+   "inFight": true,
+   "hpPct": 1,
+   "enemiesNear": 2
+  },
+  {
+   "match": 9046698685,
+   "hero": "witch_doctor",
+   "pos": "5",
+   "t": 998,
+   "id": "danger.missing",
+   "short": "3 врагов не видно — осторожно",
+   "category": "danger",
+   "inFight": false,
+   "hpPct": 39,
+   "enemiesNear": 0
+  },
+  {
+   "match": 9046654198,
+   "hero": "keeper_of_the_light",
+   "pos": "2",
+   "t": 117,
+   "id": "fight.disengage",
+   "short": "Отходи: пришли ещё враги",
+   "category": "fight",
+   "inFight": true,
+   "hpPct": 78,
+   "enemiesNear": 3
+  },
+  {
+   "match": 9046771209,
+   "hero": "rattletrap",
+   "pos": "4",
+   "t": 2134,
+   "id": "danger.missing",
+   "short": "4 врага пропали — назад",
+   "category": "danger",
+   "inFight": false,
+   "hpPct": 100,
+   "enemiesNear": 0
+  },
+  {
+   "match": 9046771209,
+   "hero": "rattletrap",
+   "pos": "4",
+   "t": 0,
+   "id": "draft.overview",
+   "short": "Против врагов: Ghost Scepter, Eul's Scepter of Divinity",
+   "category": "economy",
+   "inFight": false,
+   "hpPct": 100,
+   "enemiesNear": 0
+  },
+  {
+   "match": 9046698685,
+   "hero": "hoodwink",
+   "pos": "5",
+   "t": 1685,
+   "id": "danger.missing",
+   "short": "5 врагов не видно — осторожно",
+   "category": "danger",
+   "inFight": false,
+   "hpPct": 100,
+   "enemiesNear": 0
+  },
+  {
+   "match": 9046771209,
+   "hero": "witch_doctor",
+   "pos": "5",
+   "t": 322,
+   "id": "fight.engage",
+   "short": "Не вступать: шанс 28%",
+   "category": "fight",
+   "inFight": true,
+   "hpPct": 100,
+   "enemiesNear": 3
+  },
+  {
+   "match": 9046771209,
+   "hero": "rattletrap",
+   "pos": "4",
+   "t": 2266,
+   "id": "fight.engage",
+   "short": "Драка на равных: 52%",
+   "category": "fight",
+   "inFight": true,
+   "hpPct": 64,
+   "enemiesNear": 3
+  },
+  {
+   "match": 9046771209,
+   "hero": "rattletrap",
+   "pos": "4",
+   "t": 1128,
+   "id": "timing.stack",
+   "short": "Стак в :54 — к лагерю",
+   "category": "timing",
+   "inFight": false,
+   "hpPct": 78,
+   "enemiesNear": 0
+  },
+  {
+   "match": 9046698685,
+   "hero": "witch_doctor",
+   "pos": "5",
+   "t": 918,
+   "id": "danger.smoke",
+   "short": "Возможен Smoke of Deceit: 3 героя пропали",
+   "category": "danger",
+   "inFight": false,
+   "hpPct": 100,
+   "enemiesNear": 0
+  },
+  {
+   "match": 9046771209,
+   "hero": "rattletrap",
+   "pos": "4",
+   "t": 227,
+   "id": "timing.stack",
+   "short": "Стак в :54 — к лагерю",
+   "category": "timing",
+   "inFight": false,
+   "hpPct": 62,
+   "enemiesNear": 0
+  },
+  {
+   "match": 9046698685,
+   "hero": "dragon_knight",
+   "pos": "2",
+   "t": 1275,
+   "id": "mistake.missed-fight",
+   "short": "Команда дралась без вас",
+   "category": "mistake",
+   "inFight": false,
+   "hpPct": 100,
+   "enemiesNear": 0
+  },
+  {
+   "match": 9046698685,
+   "hero": "witch_doctor",
+   "pos": "5",
+   "t": 1390,
+   "id": "fight.engage",
+   "short": "Вступать: шанс 73%",
+   "category": "fight",
+   "inFight": true,
+   "hpPct": 72,
+   "enemiesNear": 1
+  },
+  {
+   "match": 9046698685,
+   "hero": "rubick",
+   "pos": "4",
+   "t": 1313,
+   "id": "timing.enemy-item:brewmaster:blink",
+   "short": "Brewmaster: Blink Dagger к ~23:00",
+   "category": "timing",
+   "inFight": false,
+   "hpPct": 100,
+   "enemiesNear": 0
+  },
+  {
+   "match": 9046771209,
+   "hero": "rattletrap",
+   "pos": "4",
+   "t": 601,
+   "id": "fight.target:slark",
+   "short": "Фокус: Slark, 37% здоровья",
+   "category": "fight",
+   "inFight": true,
+   "hpPct": 52,
+   "enemiesNear": 5
+  },
+  {
+   "match": 9046771209,
+   "hero": "rattletrap",
+   "pos": "4",
+   "t": 1950,
+   "id": "fight.target:techies",
+   "short": "Фокус: Techies, 34% здоровья",
+   "category": "fight",
+   "inFight": true,
+   "hpPct": 98,
+   "enemiesNear": 4
+  },
+  {
+   "match": 9046698685,
+   "hero": "terrorblade",
+   "pos": "1",
+   "t": 1748,
+   "id": "fight.engage",
+   "short": "Вступать: шанс 83%",
+   "category": "fight",
+   "inFight": true,
+   "hpPct": 71,
+   "enemiesNear": 1
+  },
+  {
+   "match": 9046698685,
+   "hero": "primal_beast",
+   "pos": "3",
+   "t": 76,
+   "id": "fight.target:terrorblade",
+   "short": "Фокус: Terrorblade, 26% здоровья",
+   "category": "fight",
+   "inFight": true,
+   "hpPct": 87,
+   "enemiesNear": 2
+  },
+  {
+   "match": 9046698685,
+   "hero": "rubick",
+   "pos": "4",
+   "t": 1430,
+   "id": "timing.rune-power",
+   "short": "Руна силы через 15 с, бежать 20 с",
+   "category": "timing",
+   "inFight": false,
+   "hpPct": 100,
+   "enemiesNear": 0
+  },
+  {
+   "match": 9046771209,
+   "hero": "rattletrap",
+   "pos": "4",
+   "t": 121,
+   "id": "fight.engage",
+   "short": "Драка на равных: 47%",
+   "category": "fight",
+   "inFight": true,
+   "hpPct": 71,
+   "enemiesNear": 2
+  }
+ ]
+}

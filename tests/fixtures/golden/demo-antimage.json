@@ -3285,65 +3285,6 @@
   }
  },
  {
-  "t": 1791911932392,
-  "tick": {
-   "wallMs": 1791911932392,
-   "shown": [
-    {
-     "id": "timing.day-night",
-     "ruleId": "timing.day-night",
-     "category": "timing",
-     "priority": "info",
-     "confidence": 0.8,
-     "short": "Скоро наступит ночь",
-     "detail": {
-      "normal": "Скоро наступит ночь (5:00).",
-      "detailed": "Скоро наступит ночь (5:00). · Смена дня и ночи: 5:00 (база, не проверено) · Игровое время, с: 285.18399999999997 (игра, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "day-night",
-       "label": "Смена дня и ночи",
-       "value": "5:00",
-       "source": "kb",
-       "ageSec": null,
-       "confidence": 1,
-       "verified": false
-      },
-      {
-       "key": "clock",
-       "label": "Игровое время, с",
-       "value": 285.18399999999997,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      }
-     ],
-     "ttlMs": 15000,
-     "cooldownMs": 0,
-     "zone": "timing",
-     "icon": null,
-     "seq": 14,
-     "createdWallMs": 1791911932392,
-     "expiresWallMs": 1791911947392,
-     "clock": 285.18399999999997,
-     "textSource": "template"
-    }
-   ],
-   "expired": [],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
-   "visible": [
-    "timing.day-night"
-   ]
-  }
- },
- {
   "t": 1791911937510,
   "tick": {
    "wallMs": 1791911937510,
@@ -3384,7 +3325,7 @@
      "cooldownMs": 45000,
      "zone": "timing",
      "icon": null,
-     "seq": 15,
+     "seq": 14,
      "createdWallMs": 1791911937510,
      "expiresWallMs": 1791911947510,
      "clock": 290.302,
@@ -3398,8 +3339,7 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "economy.skill",
-    "timing.day-night"
+    "economy.skill"
    ]
   }
  },
@@ -3884,7 +3824,7 @@
      "cooldownMs": 0,
      "zone": "decision",
      "icon": null,
-     "seq": 16,
+     "seq": 15,
      "createdWallMs": 1791911947432,
      "expiresWallMs": 1791911957432,
      "clock": 300.224,
@@ -3945,7 +3885,7 @@
      "cooldownMs": 45000,
      "zone": "timing",
      "icon": null,
-     "seq": 15,
+     "seq": 14,
      "createdWallMs": 1791911937510,
      "expiresWallMs": 1791911947510,
      "clock": 290.302,
@@ -4022,7 +3962,7 @@
      "cooldownMs": 0,
      "zone": "decision",
      "icon": null,
-     "seq": 16,
+     "seq": 15,
      "createdWallMs": 1791911947432,
      "expiresWallMs": 1791911957432,
      "clock": 300.224,
@@ -4069,7 +4009,7 @@
      "cooldownMs": 60000,
      "zone": "timing",
      "icon": null,
-     "seq": 17,
+     "seq": 16,
      "createdWallMs": 1791911965515,
      "expiresWallMs": 1791911973515,
      "clock": 318.307,
@@ -4120,7 +4060,7 @@
      "cooldownMs": 60000,
      "zone": "timing",
      "icon": null,
-     "seq": 17,
+     "seq": 16,
      "createdWallMs": 1791911965515,
      "expiresWallMs": 1791911973515,
      "clock": 318.307,
@@ -4167,7 +4107,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 18,
+     "seq": 17,
      "createdWallMs": 1791911992411,
      "expiresWallMs": 1791912000411,
      "clock": 345.203,
@@ -4226,7 +4166,7 @@
      "cooldownMs": 45000,
      "zone": "timing",
      "icon": null,
-     "seq": 19,
+     "seq": 18,
      "createdWallMs": 1791911992913,
      "expiresWallMs": 1791912002913,
      "clock": 345.70500000000004,
@@ -4278,7 +4218,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 18,
+     "seq": 17,
      "createdWallMs": 1791911992411,
      "expiresWallMs": 1791912000411,
      "clock": 345.203,
@@ -4759,7 +4699,7 @@
      "cooldownMs": 45000,
      "zone": "timing",
      "icon": null,
-     "seq": 19,
+     "seq": 18,
      "createdWallMs": 1791911992913,
      "expiresWallMs": 1791912002913,
      "clock": 345.70500000000004,
@@ -4824,7 +4764,7 @@
      "cooldownMs": 90000,
      "zone": "timing",
      "icon": "item:wraith_band",
-     "seq": 20,
+     "seq": 19,
      "createdWallMs": 1791912017518,
      "expiresWallMs": 1791912027518,
      "clock": 370.31,
@@ -4893,7 +4833,7 @@
      "cooldownMs": 90000,
      "zone": "timing",
      "icon": "item:wraith_band",
-     "seq": 20,
+     "seq": 19,
      "createdWallMs": 1791912017518,
      "expiresWallMs": 1791912027518,
      "clock": 370.31,
@@ -4940,7 +4880,7 @@
      "cooldownMs": 60000,
      "zone": "timing",
      "icon": null,
-     "seq": 21,
+     "seq": 20,
      "createdWallMs": 1791912037748,
      "expiresWallMs": 1791912045748,
      "clock": 390.53999999999996,
@@ -4991,7 +4931,7 @@
      "cooldownMs": 60000,
      "zone": "timing",
      "icon": null,
-     "seq": 21,
+     "seq": 20,
      "createdWallMs": 1791912037748,
      "expiresWallMs": 1791912045748,
      "clock": 390.53999999999996,
@@ -5004,65 +4944,6 @@
    "matchReview": null,
    "inFight": false,
    "visible": []
-  }
- },
- {
-  "t": 1791912052236,
-  "tick": {
-   "wallMs": 1791912052236,
-   "shown": [
-    {
-     "id": "timing.shrine-of-wisdom",
-     "ruleId": "timing.shrine-of-wisdom",
-     "category": "timing",
-     "priority": "info",
-     "confidence": 0.8,
-     "short": "Святилище мудрости через 15 с",
-     "detail": {
-      "normal": "Святилище мудрости через 15 с (7:00).",
-      "detailed": "Святилище мудрости через 15 с (7:00). · Святилище мудрости: 7:00 (база, не проверено) · Игровое время, с: 405.028 (игра, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "shrine-of-wisdom",
-       "label": "Святилище мудрости",
-       "value": "7:00",
-       "source": "kb",
-       "ageSec": null,
-       "confidence": 1,
-       "verified": false
-      },
-      {
-       "key": "clock",
-       "label": "Игровое время, с",
-       "value": 405.028,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      }
-     ],
-     "ttlMs": 15000,
-     "cooldownMs": 0,
-     "zone": "timing",
-     "icon": null,
-     "seq": 22,
-     "createdWallMs": 1791912052236,
-     "expiresWallMs": 1791912067236,
-     "clock": 405.028,
-     "textSource": "template"
-    }
-   ],
-   "expired": [],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
-   "visible": [
-    "timing.shrine-of-wisdom"
-   ]
   }
  },
  {
@@ -5106,7 +4987,7 @@
      "cooldownMs": 45000,
      "zone": "timing",
      "icon": null,
-     "seq": 23,
+     "seq": 21,
      "createdWallMs": 1791912057993,
      "expiresWallMs": 1791912067993,
      "clock": 410.78499999999997,
@@ -5120,8 +5001,7 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "economy.skill",
-    "timing.shrine-of-wisdom"
+    "economy.skill"
    ]
   }
  },
@@ -5548,65 +5428,6 @@
   }
  },
  {
-  "t": 1791912067493,
-  "tick": {
-   "wallMs": 1791912067493,
-   "shown": [],
-   "expired": [
-    {
-     "id": "timing.shrine-of-wisdom",
-     "ruleId": "timing.shrine-of-wisdom",
-     "category": "timing",
-     "priority": "info",
-     "confidence": 0.8,
-     "short": "Святилище мудрости через 15 с",
-     "detail": {
-      "normal": "Святилище мудрости через 15 с (7:00).",
-      "detailed": "Святилище мудрости через 15 с (7:00). · Святилище мудрости: 7:00 (база, не проверено) · Игровое время, с: 405.028 (игра, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "shrine-of-wisdom",
-       "label": "Святилище мудрости",
-       "value": "7:00",
-       "source": "kb",
-       "ageSec": null,
-       "confidence": 1,
-       "verified": false
-      },
-      {
-       "key": "clock",
-       "label": "Игровое время, с",
-       "value": 405.028,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      }
-     ],
-     "ttlMs": 15000,
-     "cooldownMs": 0,
-     "zone": "timing",
-     "icon": null,
-     "seq": 22,
-     "createdWallMs": 1791912052236,
-     "expiresWallMs": 1791912067236,
-     "clock": 405.028,
-     "textSource": "template"
-    }
-   ],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
-   "visible": [
-    "economy.skill"
-   ]
-  }
- },
- {
   "t": 1791912067994,
   "tick": {
    "wallMs": 1791912067994,
@@ -5648,7 +5469,7 @@
      "cooldownMs": 45000,
      "zone": "timing",
      "icon": null,
-     "seq": 23,
+     "seq": 21,
      "createdWallMs": 1791912057993,
      "expiresWallMs": 1791912067993,
      "clock": 410.78499999999997,
@@ -5695,7 +5516,7 @@
      "cooldownMs": 60000,
      "zone": "timing",
      "icon": null,
-     "seq": 24,
+     "seq": 22,
      "createdWallMs": 1791912105956,
      "expiresWallMs": 1791912113956,
      "clock": 458.748,
@@ -5746,7 +5567,7 @@
      "cooldownMs": 60000,
      "zone": "timing",
      "icon": null,
-     "seq": 24,
+     "seq": 22,
      "createdWallMs": 1791912105956,
      "expiresWallMs": 1791912113956,
      "clock": 458.748,
@@ -6233,7 +6054,7 @@
      "cooldownMs": 90000,
      "zone": "timing",
      "icon": "item:wraith_band",
-     "seq": 25,
+     "seq": 23,
      "createdWallMs": 1791912126097,
      "expiresWallMs": 1791912136097,
      "clock": 478.889,
@@ -6302,7 +6123,7 @@
      "cooldownMs": 90000,
      "zone": "timing",
      "icon": "item:wraith_band",
-     "seq": 25,
+     "seq": 23,
      "createdWallMs": 1791912126097,
      "expiresWallMs": 1791912136097,
      "clock": 478.889,
@@ -6358,7 +6179,7 @@
      "cooldownMs": 45000,
      "zone": "timing",
      "icon": null,
-     "seq": 26,
+     "seq": 24,
      "createdWallMs": 1791912146364,
      "expiresWallMs": 1791912156364,
      "clock": 499.156,
@@ -6418,7 +6239,7 @@
      "cooldownMs": 45000,
      "zone": "timing",
      "icon": null,
-     "seq": 26,
+     "seq": 24,
      "createdWallMs": 1791912146364,
      "expiresWallMs": 1791912156364,
      "clock": 499.156,
@@ -6465,7 +6286,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 27,
+     "seq": 25,
      "createdWallMs": 1791912172282,
      "expiresWallMs": 1791912180282,
      "clock": 525.0740000000001,
@@ -6515,7 +6336,7 @@
      "cooldownMs": 60000,
      "zone": "timing",
      "icon": null,
-     "seq": 28,
+     "seq": 26,
      "createdWallMs": 1791912174453,
      "expiresWallMs": 1791912182453,
      "clock": 527.245,
@@ -6567,7 +6388,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 27,
+     "seq": 25,
      "createdWallMs": 1791912172282,
      "expiresWallMs": 1791912180282,
      "clock": 525.0740000000001,
@@ -7039,7 +6860,7 @@
      "cooldownMs": 60000,
      "zone": "timing",
      "icon": null,
-     "seq": 28,
+     "seq": 26,
      "createdWallMs": 1791912174453,
      "expiresWallMs": 1791912182453,
      "clock": 527.245,
@@ -7095,7 +6916,7 @@
      "cooldownMs": 300000,
      "zone": "timing",
      "icon": null,
-     "seq": 29,
+     "seq": 27,
      "createdWallMs": 1791912194510,
      "expiresWallMs": 1791912204510,
      "clock": 547.302,
@@ -7155,7 +6976,7 @@
      "cooldownMs": 300000,
      "zone": "timing",
      "icon": null,
-     "seq": 29,
+     "seq": 27,
      "createdWallMs": 1791912194510,
      "expiresWallMs": 1791912204510,
      "clock": 547.302,
@@ -7211,7 +7032,7 @@
      "cooldownMs": 45000,
      "zone": "timing",
      "icon": null,
-     "seq": 30,
+     "seq": 28,
      "createdWallMs": 1791912214545,
      "expiresWallMs": 1791912224545,
      "clock": 567.337,
@@ -7271,7 +7092,7 @@
      "cooldownMs": 45000,
      "zone": "timing",
      "icon": null,
-     "seq": 30,
+     "seq": 28,
      "createdWallMs": 1791912214545,
      "expiresWallMs": 1791912224545,
      "clock": 567.337,
@@ -7284,65 +7105,6 @@
    "matchReview": null,
    "inFight": false,
    "visible": []
-  }
- },
- {
-  "t": 1791912232233,
-  "tick": {
-   "wallMs": 1791912232233,
-   "shown": [
-    {
-     "id": "timing.day-night",
-     "ruleId": "timing.day-night",
-     "category": "timing",
-     "priority": "info",
-     "confidence": 0.8,
-     "short": "Скоро наступит день",
-     "detail": {
-      "normal": "Скоро наступит день (10:00).",
-      "detailed": "Скоро наступит день (10:00). · Смена дня и ночи: 10:00 (база, не проверено) · Игровое время, с: 585.025 (игра, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "day-night",
-       "label": "Смена дня и ночи",
-       "value": "10:00",
-       "source": "kb",
-       "ageSec": null,
-       "confidence": 1,
-       "verified": false
-      },
-      {
-       "key": "clock",
-       "label": "Игровое время, с",
-       "value": 585.025,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      }
-     ],
-     "ttlMs": 15000,
-     "cooldownMs": 0,
-     "zone": "timing",
-     "icon": null,
-     "seq": 31,
-     "createdWallMs": 1791912232233,
-     "expiresWallMs": 1791912247233,
-     "clock": 585.025,
-     "textSource": "template"
-    }
-   ],
-   "expired": [],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
-   "visible": [
-    "timing.day-night"
-   ]
   }
  },
  {
@@ -7395,7 +7157,7 @@
      "cooldownMs": 90000,
      "zone": "timing",
      "icon": "item:power_treads",
-     "seq": 32,
+     "seq": 29,
      "createdWallMs": 1791912234735,
      "expiresWallMs": 1791912244735,
      "clock": 587.527,
@@ -7409,8 +7171,7 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "economy.gold",
-    "timing.day-night"
+    "economy.gold"
    ]
   }
  },
@@ -7887,7 +7648,7 @@
      "cooldownMs": 90000,
      "zone": "timing",
      "icon": "item:power_treads",
-     "seq": 32,
+     "seq": 29,
      "createdWallMs": 1791912234735,
      "expiresWallMs": 1791912244735,
      "clock": 587.527,
@@ -7899,9 +7660,7 @@
    "deathReview": null,
    "matchReview": null,
    "inFight": false,
-   "visible": [
-    "timing.day-night"
-   ]
+   "visible": []
   }
  },
  {
@@ -7963,57 +7722,14 @@
      "cooldownMs": 0,
      "zone": "decision",
      "icon": null,
-     "seq": 33,
+     "seq": 30,
      "createdWallMs": 1791912247455,
      "expiresWallMs": 1791912257455,
      "clock": 600.2470000000001,
      "textSource": "template"
     }
    ],
-   "expired": [
-    {
-     "id": "timing.day-night",
-     "ruleId": "timing.day-night",
-     "category": "timing",
-     "priority": "info",
-     "confidence": 0.8,
-     "short": "Скоро наступит день",
-     "detail": {
-      "normal": "Скоро наступит день (10:00).",
-      "detailed": "Скоро наступит день (10:00). · Смена дня и ночи: 10:00 (база, не проверено) · Игровое время, с: 585.025 (игра, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "day-night",
-       "label": "Смена дня и ночи",
-       "value": "10:00",
-       "source": "kb",
-       "ageSec": null,
-       "confidence": 1,
-       "verified": false
-      },
-      {
-       "key": "clock",
-       "label": "Игровое время, с",
-       "value": 585.025,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      }
-     ],
-     "ttlMs": 15000,
-     "cooldownMs": 0,
-     "zone": "timing",
-     "icon": null,
-     "seq": 31,
-     "createdWallMs": 1791912232233,
-     "expiresWallMs": 1791912247233,
-     "clock": 585.025,
-     "textSource": "template"
-    }
-   ],
+   "expired": [],
    "changed": [],
    "mistakes": [],
    "deathReview": null,
@@ -8056,7 +7772,7 @@
      "cooldownMs": 60000,
      "zone": "timing",
      "icon": null,
-     "seq": 34,
+     "seq": 31,
      "createdWallMs": 1791912254983,
      "expiresWallMs": 1791912262983,
      "clock": 607.775,
@@ -8135,7 +7851,7 @@
      "cooldownMs": 0,
      "zone": "decision",
      "icon": null,
-     "seq": 33,
+     "seq": 30,
      "createdWallMs": 1791912247455,
      "expiresWallMs": 1791912257455,
      "clock": 600.2470000000001,
@@ -8185,7 +7901,7 @@
      "cooldownMs": 60000,
      "zone": "timing",
      "icon": null,
-     "seq": 34,
+     "seq": 31,
      "createdWallMs": 1791912254983,
      "expiresWallMs": 1791912262983,
      "clock": 607.775,
@@ -8241,7 +7957,7 @@
      "cooldownMs": 45000,
      "zone": "timing",
      "icon": null,
-     "seq": 35,
+     "seq": 32,
      "createdWallMs": 1791912275045,
      "expiresWallMs": 1791912285045,
      "clock": 627.837,
@@ -8301,7 +8017,7 @@
      "cooldownMs": 45000,
      "zone": "timing",
      "icon": null,
-     "seq": 35,
+     "seq": 32,
      "createdWallMs": 1791912275045,
      "expiresWallMs": 1791912285045,
      "clock": 627.837,
@@ -8770,7 +8486,7 @@
      "cooldownMs": 60000,
      "zone": "timing",
      "icon": null,
-     "seq": 36,
+     "seq": 33,
      "createdWallMs": 1791912323156,
      "expiresWallMs": 1791912331156,
      "clock": 675.948,
@@ -8821,7 +8537,7 @@
      "cooldownMs": 60000,
      "zone": "timing",
      "icon": null,
-     "seq": 36,
+     "seq": 33,
      "createdWallMs": 1791912323156,
      "expiresWallMs": 1791912331156,
      "clock": 675.948,
@@ -8886,7 +8602,7 @@
      "cooldownMs": 90000,
      "zone": "timing",
      "icon": "item:bfury",
-     "seq": 37,
+     "seq": 34,
      "createdWallMs": 1791912343347,
      "expiresWallMs": 1791912353347,
      "clock": 696.139,
@@ -8945,7 +8661,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 38,
+     "seq": 35,
      "createdWallMs": 1791912352345,
      "expiresWallMs": 1791912367345,
      "clock": 705.137,
@@ -9015,7 +8731,7 @@
      "cooldownMs": 90000,
      "zone": "timing",
      "icon": "item:bfury",
-     "seq": 37,
+     "seq": 34,
      "createdWallMs": 1791912343347,
      "expiresWallMs": 1791912353347,
      "clock": 696.139,
@@ -9073,7 +8789,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 39,
+     "seq": 36,
      "createdWallMs": 1791912357474,
      "expiresWallMs": 1791912372474,
      "clock": 710.254,
@@ -9555,7 +9271,7 @@
      "cooldownMs": 45000,
      "zone": "timing",
      "icon": null,
-     "seq": 40,
+     "seq": 37,
      "createdWallMs": 1791912363461,
      "expiresWallMs": 1791912373461,
      "clock": 716.241,
@@ -9616,7 +9332,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 39,
+     "seq": 36,
      "createdWallMs": 1791912357474,
      "expiresWallMs": 1791912372474,
      "clock": 710.254,
@@ -9675,7 +9391,7 @@
      "cooldownMs": 45000,
      "zone": "timing",
      "icon": null,
-     "seq": 40,
+     "seq": 37,
      "createdWallMs": 1791912363461,
      "expiresWallMs": 1791912373461,
      "clock": 716.241,
@@ -9722,7 +9438,7 @@
      "cooldownMs": 60000,
      "zone": "timing",
      "icon": null,
-     "seq": 41,
+     "seq": 38,
      "createdWallMs": 1791912391481,
      "expiresWallMs": 1791912399481,
      "clock": 744.261,
@@ -9773,7 +9489,7 @@
      "cooldownMs": 60000,
      "zone": "timing",
      "icon": null,
-     "seq": 41,
+     "seq": 38,
      "createdWallMs": 1791912391481,
      "expiresWallMs": 1791912399481,
      "clock": 744.261,
@@ -9829,7 +9545,7 @@
      "cooldownMs": 45000,
      "zone": "timing",
      "icon": null,
-     "seq": 42,
+     "seq": 39,
      "createdWallMs": 1791912418883,
      "expiresWallMs": 1791912428883,
      "clock": 771.666,
@@ -10311,7 +10027,7 @@
      "cooldownMs": 45000,
      "zone": "timing",
      "icon": null,
-     "seq": 42,
+     "seq": 39,
      "createdWallMs": 1791912418883,
      "expiresWallMs": 1791912428883,
      "clock": 771.666,
@@ -10376,7 +10092,7 @@
      "cooldownMs": 90000,
      "zone": "timing",
      "icon": "item:bfury",
-     "seq": 43,
+     "seq": 40,
      "createdWallMs": 1791912443734,
      "expiresWallMs": 1791912453734,
      "clock": 796.517,
@@ -10445,7 +10161,7 @@
      "cooldownMs": 90000,
      "zone": "timing",
      "icon": "item:bfury",
-     "seq": 43,
+     "seq": 40,
      "createdWallMs": 1791912443734,
      "expiresWallMs": 1791912453734,
      "clock": 796.517,
@@ -10492,7 +10208,7 @@
      "cooldownMs": 60000,
      "zone": "timing",
      "icon": null,
-     "seq": 44,
+     "seq": 41,
      "createdWallMs": 1791912464060,
      "expiresWallMs": 1791912472060,
      "clock": 816.843,
@@ -10551,7 +10267,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 45,
+     "seq": 42,
      "createdWallMs": 1791912472290,
      "expiresWallMs": 1791912487290,
      "clock": 825.073,
@@ -10586,7 +10302,7 @@
      "cooldownMs": 60000,
      "zone": "timing",
      "icon": null,
-     "seq": 44,
+     "seq": 41,
      "createdWallMs": 1791912464060,
      "expiresWallMs": 1791912472060,
      "clock": 816.843,
@@ -10600,66 +10316,6 @@
    "inFight": false,
    "visible": [
     "timing.rune-power"
-   ]
-  }
- },
- {
-  "t": 1791912477448,
-  "tick": {
-   "wallMs": 1791912477448,
-   "shown": [
-    {
-     "id": "timing.shrine-of-wisdom",
-     "ruleId": "timing.shrine-of-wisdom",
-     "category": "timing",
-     "priority": "info",
-     "confidence": 0.8,
-     "short": "Святилище мудрости через 15 с",
-     "detail": {
-      "normal": "Святилище мудрости через 15 с (14:00).",
-      "detailed": "Святилище мудрости через 15 с (14:00). · Святилище мудрости: 14:00 (база, не проверено) · Игровое время, с: 825.073 (игра, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "shrine-of-wisdom",
-       "label": "Святилище мудрости",
-       "value": "14:00",
-       "source": "kb",
-       "ageSec": null,
-       "confidence": 1,
-       "verified": false
-      },
-      {
-       "key": "clock",
-       "label": "Игровое время, с",
-       "value": 825.073,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      }
-     ],
-     "ttlMs": 15000,
-     "cooldownMs": 0,
-     "zone": "timing",
-     "icon": null,
-     "seq": 46,
-     "createdWallMs": 1791912477448,
-     "expiresWallMs": 1791912492448,
-     "clock": 830.231,
-     "textSource": "template"
-    }
-   ],
-   "expired": [],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
-   "visible": [
-    "timing.rune-power",
-    "timing.shrine-of-wisdom"
    ]
   }
  },
@@ -11126,7 +10782,7 @@
      "cooldownMs": 45000,
      "zone": "timing",
      "icon": null,
-     "seq": 47,
+     "seq": 43,
      "createdWallMs": 1791912484300,
      "expiresWallMs": 1791912494300,
      "clock": 837.083,
@@ -11141,32 +10797,32 @@
    "inFight": false,
    "visible": [
     "economy.skill",
-    "timing.shrine-of-wisdom"
+    "timing.rune-power"
    ]
   }
  },
  {
-  "t": 1791912492484,
+  "t": 1791912487448,
   "tick": {
-   "wallMs": 1791912492484,
+   "wallMs": 1791912487448,
    "shown": [],
    "expired": [
     {
-     "id": "timing.shrine-of-wisdom",
-     "ruleId": "timing.shrine-of-wisdom",
+     "id": "timing.rune-power",
+     "ruleId": "timing.rune-power",
      "category": "timing",
      "priority": "info",
      "confidence": 0.8,
-     "short": "Святилище мудрости через 15 с",
+     "short": "Руна силы через 15 с, бежать 2 с",
      "detail": {
-      "normal": "Святилище мудрости через 15 с (14:00).",
-      "detailed": "Святилище мудрости через 15 с (14:00). · Святилище мудрости: 14:00 (база, не проверено) · Игровое время, с: 825.073 (игра, 0 с)"
+      "normal": "Руна силы через 15 с, бежать 2 с (14:00).",
+      "detailed": "Руна силы через 15 с, бежать 2 с (14:00). · Руна силы: 14:00 (база, не проверено) · Игровое время, с: 825.073 (игра, 0 с)"
      },
      "percent": null,
      "facts": [
       {
-       "key": "shrine-of-wisdom",
-       "label": "Святилище мудрости",
+       "key": "rune-power",
+       "label": "Руна силы",
        "value": "14:00",
        "source": "kb",
        "ageSec": null,
@@ -11187,10 +10843,10 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 46,
-     "createdWallMs": 1791912477448,
-     "expiresWallMs": 1791912492448,
-     "clock": 830.231,
+     "seq": 42,
+     "createdWallMs": 1791912472290,
+     "expiresWallMs": 1791912487290,
+     "clock": 825.073,
      "textSource": "template"
     }
    ],
@@ -11246,7 +10902,7 @@
      "cooldownMs": 45000,
      "zone": "timing",
      "icon": null,
-     "seq": 47,
+     "seq": 43,
      "createdWallMs": 1791912484300,
      "expiresWallMs": 1791912494300,
      "clock": 837.083,
@@ -11302,7 +10958,7 @@
      "cooldownMs": 300000,
      "zone": "timing",
      "icon": null,
-     "seq": 48,
+     "seq": 44,
      "createdWallMs": 1791912504929,
      "expiresWallMs": 1791912514929,
      "clock": 857.712,
@@ -11362,7 +11018,7 @@
      "cooldownMs": 300000,
      "zone": "timing",
      "icon": null,
-     "seq": 48,
+     "seq": 44,
      "createdWallMs": 1791912504929,
      "expiresWallMs": 1791912514929,
      "clock": 857.712,
@@ -11409,51 +11065,9 @@
      "cooldownMs": 60000,
      "zone": "timing",
      "icon": null,
-     "seq": 49,
+     "seq": 45,
      "createdWallMs": 1791912532296,
      "expiresWallMs": 1791912540296,
-     "clock": 885.079,
-     "textSource": "template"
-    },
-    {
-     "id": "timing.day-night",
-     "ruleId": "timing.day-night",
-     "category": "timing",
-     "priority": "info",
-     "confidence": 0.8,
-     "short": "Скоро наступит ночь",
-     "detail": {
-      "normal": "Скоро наступит ночь (15:00).",
-      "detailed": "Скоро наступит ночь (15:00). · Смена дня и ночи: 15:00 (база, не проверено) · Игровое время, с: 885.079 (игра, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "day-night",
-       "label": "Смена дня и ночи",
-       "value": "15:00",
-       "source": "kb",
-       "ageSec": null,
-       "confidence": 1,
-       "verified": false
-      },
-      {
-       "key": "clock",
-       "label": "Игровое время, с",
-       "value": 885.079,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      }
-     ],
-     "ttlMs": 15000,
-     "cooldownMs": 0,
-     "zone": "timing",
-     "icon": null,
-     "seq": 50,
-     "createdWallMs": 1791912532296,
-     "expiresWallMs": 1791912547296,
      "clock": 885.079,
      "textSource": "template"
     }
@@ -11465,8 +11079,7 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "economy.idle",
-    "timing.day-night"
+    "economy.idle"
    ]
   }
  },
@@ -11503,7 +11116,7 @@
      "cooldownMs": 60000,
      "zone": "timing",
      "icon": null,
-     "seq": 49,
+     "seq": 45,
      "createdWallMs": 1791912532296,
      "expiresWallMs": 1791912540296,
      "clock": 885.079,
@@ -11515,9 +11128,7 @@
    "deathReview": null,
    "matchReview": null,
    "inFight": false,
-   "visible": [
-    "timing.day-night"
-   ]
+   "visible": []
   }
  },
  {
@@ -11974,7 +11585,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 51,
+     "seq": 46,
      "createdWallMs": 1791912547266,
      "expiresWallMs": 1791912557266,
      "clock": 900.049,
@@ -12034,7 +11645,7 @@
      "cooldownMs": 0,
      "zone": "decision",
      "icon": null,
-     "seq": 52,
+     "seq": 47,
      "createdWallMs": 1791912547266,
      "expiresWallMs": 1791912557266,
      "clock": 900.049,
@@ -12054,117 +11665,9 @@
   }
  },
  {
-  "t": 1791912557461,
+  "t": 1791912552423,
   "tick": {
-   "wallMs": 1791912557461,
-   "shown": [],
-   "expired": [
-    {
-     "id": "timing.neutral-tier:2",
-     "ruleId": "timing.neutral-tier",
-     "category": "timing",
-     "priority": "info",
-     "confidence": 0.8,
-     "short": "Нейтралки 2-го уровня",
-     "detail": {
-      "normal": "С 15:00 доступны нейтральные предметы 2-го уровня — обновите свой.",
-      "detailed": "С 15:00 доступны нейтральные предметы 2-го уровня — обновите свой. · Нейтральные 2-го уровня с: 15:00 (база, не проверено)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "neutral-tier",
-       "label": "Нейтральные 2-го уровня с",
-       "value": "15:00",
-       "source": "kb",
-       "ageSec": null,
-       "confidence": 1,
-       "verified": false
-      }
-     ],
-     "ttlMs": 10000,
-     "cooldownMs": 0,
-     "zone": "timing",
-     "icon": null,
-     "seq": 51,
-     "createdWallMs": 1791912547266,
-     "expiresWallMs": 1791912557266,
-     "clock": 900.049,
-     "textSource": "template"
-    },
-    {
-     "id": "laning.bench",
-     "ruleId": "laning.bench",
-     "category": "laning",
-     "priority": "info",
-     "confidence": 0.75,
-     "short": "Добивания 0 к 15:00, у профи ~114",
-     "detail": {
-      "normal": "Добивания: 0 к 15:00, у профи на antimage (позиция 1) обычно ~114. Добивайте крипов: не пропускайте волны между драками.",
-      "detailed": "Добивания: 0 к 15:00, у профи на antimage (позиция 1) обычно ~114. Добивайте крипов: не пропускайте волны между драками. · Добиваний: 0 (игра, 0 с) · Золота заработано (GPM × минуты): 101361 (вывод, 0 с) · Добивания к 15:00 — профи патча, медиана: 114 (статистика патча, не проверено) · Золото к 15:00 — профи патча, медиана: 6718 (статистика патча, не проверено)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "lh",
-       "label": "Добиваний",
-       "value": 0,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      },
-      {
-       "key": "gold-earned",
-       "label": "Золота заработано (GPM × минуты)",
-       "value": 101361,
-       "source": "derived",
-       "ageSec": 0,
-       "confidence": 0.8,
-       "verified": true
-      },
-      {
-       "key": "ref-lh",
-       "label": "Добивания к 15:00 — профи патча, медиана",
-       "value": 114,
-       "source": "stats",
-       "ageSec": null,
-       "confidence": 1,
-       "verified": false
-      },
-      {
-       "key": "ref-gold",
-       "label": "Золото к 15:00 — профи патча, медиана",
-       "value": 6718,
-       "source": "stats",
-       "ageSec": null,
-       "confidence": 1,
-       "verified": false
-      }
-     ],
-     "ttlMs": 10000,
-     "cooldownMs": 0,
-     "zone": "decision",
-     "icon": null,
-     "seq": 52,
-     "createdWallMs": 1791912547266,
-     "expiresWallMs": 1791912557266,
-     "clock": 900.049,
-     "textSource": "template"
-    }
-   ],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
-   "visible": []
-  }
- },
- {
-  "t": 1791912564993,
-  "tick": {
-   "wallMs": 1791912564993,
+   "wallMs": 1791912552423,
    "shown": [
     {
      "id": "economy.gold",
@@ -12211,14 +11714,92 @@
      "cooldownMs": 90000,
      "zone": "timing",
      "icon": "item:bfury",
-     "seq": 53,
-     "createdWallMs": 1791912564993,
-     "expiresWallMs": 1791912574993,
-     "clock": 917.7760000000001,
+     "seq": 48,
+     "createdWallMs": 1791912552423,
+     "expiresWallMs": 1791912562423,
+     "clock": 905.206,
      "textSource": "template"
     }
    ],
    "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "economy.gold",
+    "laning.bench"
+   ]
+  }
+ },
+ {
+  "t": 1791912557461,
+  "tick": {
+   "wallMs": 1791912557461,
+   "shown": [],
+   "expired": [
+    {
+     "id": "laning.bench",
+     "ruleId": "laning.bench",
+     "category": "laning",
+     "priority": "info",
+     "confidence": 0.75,
+     "short": "Добивания 0 к 15:00, у профи ~114",
+     "detail": {
+      "normal": "Добивания: 0 к 15:00, у профи на antimage (позиция 1) обычно ~114. Добивайте крипов: не пропускайте волны между драками.",
+      "detailed": "Добивания: 0 к 15:00, у профи на antimage (позиция 1) обычно ~114. Добивайте крипов: не пропускайте волны между драками. · Добиваний: 0 (игра, 0 с) · Золота заработано (GPM × минуты): 101361 (вывод, 0 с) · Добивания к 15:00 — профи патча, медиана: 114 (статистика патча, не проверено) · Золото к 15:00 — профи патча, медиана: 6718 (статистика патча, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "lh",
+       "label": "Добиваний",
+       "value": 0,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      },
+      {
+       "key": "gold-earned",
+       "label": "Золота заработано (GPM × минуты)",
+       "value": 101361,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.8,
+       "verified": true
+      },
+      {
+       "key": "ref-lh",
+       "label": "Добивания к 15:00 — профи патча, медиана",
+       "value": 114,
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      },
+      {
+       "key": "ref-gold",
+       "label": "Золото к 15:00 — профи патча, медиана",
+       "value": 6718,
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 0,
+     "zone": "decision",
+     "icon": null,
+     "seq": 47,
+     "createdWallMs": 1791912547266,
+     "expiresWallMs": 1791912557266,
+     "clock": 900.049,
+     "textSource": "template"
+    }
+   ],
    "changed": [],
    "mistakes": [],
    "deathReview": null,
@@ -12230,9 +11811,9 @@
   }
  },
  {
-  "t": 1791912575035,
+  "t": 1791912562694,
   "tick": {
-   "wallMs": 1791912575035,
+   "wallMs": 1791912562694,
    "shown": [],
    "expired": [
     {
@@ -12280,10 +11861,126 @@
      "cooldownMs": 90000,
      "zone": "timing",
      "icon": "item:bfury",
-     "seq": 53,
-     "createdWallMs": 1791912564993,
-     "expiresWallMs": 1791912574993,
-     "clock": 917.7760000000001,
+     "seq": 48,
+     "createdWallMs": 1791912552423,
+     "expiresWallMs": 1791912562423,
+     "clock": 905.206,
+     "textSource": "template"
+    }
+   ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": []
+  }
+ },
+ {
+  "t": 1791912572474,
+  "tick": {
+   "wallMs": 1791912572474,
+   "shown": [
+    {
+     "id": "economy.skill",
+     "ruleId": "economy.skill",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.6,
+     "short": "Очко навыка: Mana Break",
+     "detail": {
+      "normal": "Неиспользованных очков: 2. На 3 уровне профи патча чаще берут Mana Break.",
+      "detailed": "Неиспользованных очков: 2. На 3 уровне профи патча чаще берут Mana Break. · Свободных очков: 2 (вывод, 0 с) · Навык 3 уровня (профи патча): Mana Break (статистика патча, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "unspent",
+       "label": "Свободных очков",
+       "value": 2,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.6,
+       "verified": true
+      },
+      {
+       "key": "skill",
+       "label": "Навык 3 уровня (профи патча)",
+       "value": "Mana Break",
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 45000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 49,
+     "createdWallMs": 1791912572474,
+     "expiresWallMs": 1791912582474,
+     "clock": 925.2570000000001,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "economy.skill"
+   ]
+  }
+ },
+ {
+  "t": 1791912582732,
+  "tick": {
+   "wallMs": 1791912582732,
+   "shown": [],
+   "expired": [
+    {
+     "id": "economy.skill",
+     "ruleId": "economy.skill",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.6,
+     "short": "Очко навыка: Mana Break",
+     "detail": {
+      "normal": "Неиспользованных очков: 2. На 3 уровне профи патча чаще берут Mana Break.",
+      "detailed": "Неиспользованных очков: 2. На 3 уровне профи патча чаще берут Mana Break. · Свободных очков: 2 (вывод, 0 с) · Навык 3 уровня (профи патча): Mana Break (статистика патча, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "unspent",
+       "label": "Свободных очков",
+       "value": 2,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.6,
+       "verified": true
+      },
+      {
+       "key": "skill",
+       "label": "Навык 3 уровня (профи патча)",
+       "value": "Mana Break",
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 45000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 49,
+     "createdWallMs": 1791912572474,
+     "expiresWallMs": 1791912582474,
+     "clock": 925.2570000000001,
      "textSource": "template"
     }
    ],
@@ -12336,51 +12033,9 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 54,
+     "seq": 50,
      "createdWallMs": 1791912592451,
      "expiresWallMs": 1791912607451,
-     "clock": 945.234,
-     "textSource": "template"
-    },
-    {
-     "id": "economy.skill",
-     "ruleId": "economy.skill",
-     "category": "economy",
-     "priority": "advice",
-     "confidence": 0.6,
-     "short": "Очко навыка: Mana Break",
-     "detail": {
-      "normal": "Неиспользованных очков: 2. На 3 уровне профи патча чаще берут Mana Break.",
-      "detailed": "Неиспользованных очков: 2. На 3 уровне профи патча чаще берут Mana Break. · Свободных очков: 2 (вывод, 0 с) · Навык 3 уровня (профи патча): Mana Break (статистика патча, не проверено)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "unspent",
-       "label": "Свободных очков",
-       "value": 2,
-       "source": "derived",
-       "ageSec": 0,
-       "confidence": 0.6,
-       "verified": true
-      },
-      {
-       "key": "skill",
-       "label": "Навык 3 уровня (профи патча)",
-       "value": "Mana Break",
-       "source": "stats",
-       "ageSec": null,
-       "confidence": 1,
-       "verified": false
-      }
-     ],
-     "ttlMs": 10000,
-     "cooldownMs": 45000,
-     "zone": "timing",
-     "icon": null,
-     "seq": 55,
-     "createdWallMs": 1791912592451,
-     "expiresWallMs": 1791912602451,
      "clock": 945.234,
      "textSource": "template"
     }
@@ -12392,7 +12047,6 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "economy.skill",
     "timing.rune-bounty"
    ]
   }
@@ -12820,60 +12474,52 @@
   }
  },
  {
-  "t": 1791912602467,
+  "t": 1791912607342,
   "tick": {
-   "wallMs": 1791912602467,
-   "shown": [],
-   "expired": [
+   "wallMs": 1791912607342,
+   "shown": [
     {
-     "id": "economy.skill",
-     "ruleId": "economy.skill",
+     "id": "economy.idle",
+     "ruleId": "economy.idle",
      "category": "economy",
      "priority": "advice",
-     "confidence": 0.6,
-     "short": "Очко навыка: Mana Break",
+     "confidence": 0.75,
+     "short": "Простой 820 с — идите фармить",
      "detail": {
-      "normal": "Неиспользованных очков: 2. На 3 уровне профи патча чаще берут Mana Break.",
-      "detailed": "Неиспользованных очков: 2. На 3 уровне профи патча чаще берут Mana Break. · Свободных очков: 2 (вывод, 0 с) · Навык 3 уровня (профи патча): Mana Break (статистика патча, не проверено)"
+      "normal": "Вы 820 с на одном месте без приказов. Каждая минута простоя — потерянное золото.",
+      "detailed": "Вы 820 с на одном месте без приказов. Каждая минута простоя — потерянное золото. · Без движения, с: 820 (вывод, 0 с)"
      },
      "percent": null,
      "facts": [
       {
-       "key": "unspent",
-       "label": "Свободных очков",
-       "value": 2,
+       "key": "idle",
+       "label": "Без движения, с",
+       "value": 820,
        "source": "derived",
        "ageSec": 0,
-       "confidence": 0.6,
+       "confidence": 0.75,
        "verified": true
-      },
-      {
-       "key": "skill",
-       "label": "Навык 3 уровня (профи патча)",
-       "value": "Mana Break",
-       "source": "stats",
-       "ageSec": null,
-       "confidence": 1,
-       "verified": false
       }
      ],
-     "ttlMs": 10000,
-     "cooldownMs": 45000,
+     "ttlMs": 8000,
+     "cooldownMs": 60000,
      "zone": "timing",
      "icon": null,
-     "seq": 55,
-     "createdWallMs": 1791912592451,
-     "expiresWallMs": 1791912602451,
-     "clock": 945.234,
+     "seq": 51,
+     "createdWallMs": 1791912607342,
+     "expiresWallMs": 1791912615342,
+     "clock": 960.125,
      "textSource": "template"
     }
    ],
+   "expired": [],
    "changed": [],
    "mistakes": [],
    "deathReview": null,
    "matchReview": null,
    "inFight": false,
    "visible": [
+    "economy.idle",
     "timing.rune-bounty"
    ]
   }
@@ -12920,7 +12566,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 54,
+     "seq": 50,
      "createdWallMs": 1791912592451,
      "expiresWallMs": 1791912607451,
      "clock": 945.234,
@@ -12932,63 +12578,15 @@
    "deathReview": null,
    "matchReview": null,
    "inFight": false,
-   "visible": []
-  }
- },
- {
-  "t": 1791912612513,
-  "tick": {
-   "wallMs": 1791912612513,
-   "shown": [
-    {
-     "id": "economy.idle",
-     "ruleId": "economy.idle",
-     "category": "economy",
-     "priority": "advice",
-     "confidence": 0.75,
-     "short": "Простой 825 с — идите фармить",
-     "detail": {
-      "normal": "Вы 825 с на одном месте без приказов. Каждая минута простоя — потерянное золото.",
-      "detailed": "Вы 825 с на одном месте без приказов. Каждая минута простоя — потерянное золото. · Без движения, с: 825 (вывод, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "idle",
-       "label": "Без движения, с",
-       "value": 825,
-       "source": "derived",
-       "ageSec": 0,
-       "confidence": 0.75,
-       "verified": true
-      }
-     ],
-     "ttlMs": 8000,
-     "cooldownMs": 60000,
-     "zone": "timing",
-     "icon": null,
-     "seq": 56,
-     "createdWallMs": 1791912612513,
-     "expiresWallMs": 1791912620513,
-     "clock": 965.296,
-     "textSource": "template"
-    }
-   ],
-   "expired": [],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
    "visible": [
     "economy.idle"
    ]
   }
  },
  {
-  "t": 1791912620541,
+  "t": 1791912615542,
   "tick": {
-   "wallMs": 1791912620541,
+   "wallMs": 1791912615542,
    "shown": [],
    "expired": [
     {
@@ -12997,17 +12595,17 @@
      "category": "economy",
      "priority": "advice",
      "confidence": 0.75,
-     "short": "Простой 825 с — идите фармить",
+     "short": "Простой 820 с — идите фармить",
      "detail": {
-      "normal": "Вы 825 с на одном месте без приказов. Каждая минута простоя — потерянное золото.",
-      "detailed": "Вы 825 с на одном месте без приказов. Каждая минута простоя — потерянное золото. · Без движения, с: 825 (вывод, 0 с)"
+      "normal": "Вы 820 с на одном месте без приказов. Каждая минута простоя — потерянное золото.",
+      "detailed": "Вы 820 с на одном месте без приказов. Каждая минута простоя — потерянное золото. · Без движения, с: 820 (вывод, 0 с)"
      },
      "percent": null,
      "facts": [
       {
        "key": "idle",
        "label": "Без движения, с",
-       "value": 825,
+       "value": 820,
        "source": "derived",
        "ageSec": 0,
        "confidence": 0.75,
@@ -13018,10 +12616,10 @@
      "cooldownMs": 60000,
      "zone": "timing",
      "icon": null,
-     "seq": 56,
-     "createdWallMs": 1791912612513,
-     "expiresWallMs": 1791912620513,
-     "clock": 965.296,
+     "seq": 51,
+     "createdWallMs": 1791912607342,
+     "expiresWallMs": 1791912615342,
+     "clock": 960.125,
      "textSource": "template"
     }
    ],
@@ -13034,9 +12632,9 @@
   }
  },
  {
-  "t": 1791912647668,
+  "t": 1791912627796,
   "tick": {
-   "wallMs": 1791912647668,
+   "wallMs": 1791912627796,
    "shown": [
     {
      "id": "economy.skill",
@@ -13074,10 +12672,10 @@
      "cooldownMs": 45000,
      "zone": "timing",
      "icon": null,
-     "seq": 57,
-     "createdWallMs": 1791912647668,
-     "expiresWallMs": 1791912657668,
-     "clock": 1000.451,
+     "seq": 52,
+     "createdWallMs": 1791912627796,
+     "expiresWallMs": 1791912637796,
+     "clock": 980.579,
      "textSource": "template"
     }
    ],
@@ -13093,9 +12691,9 @@
   }
  },
  {
-  "t": 1791912657738,
+  "t": 1791912637981,
   "tick": {
-   "wallMs": 1791912657738,
+   "wallMs": 1791912637981,
    "shown": [],
    "expired": [
     {
@@ -13134,10 +12732,10 @@
      "cooldownMs": 45000,
      "zone": "timing",
      "icon": null,
-     "seq": 57,
-     "createdWallMs": 1791912647668,
-     "expiresWallMs": 1791912657668,
-     "clock": 1000.451,
+     "seq": 52,
+     "createdWallMs": 1791912627796,
+     "expiresWallMs": 1791912637796,
+     "clock": 980.579,
      "textSource": "template"
     }
    ],
@@ -13147,6 +12745,74 @@
    "matchReview": null,
    "inFight": false,
    "visible": []
+  }
+ },
+ {
+  "t": 1791912652825,
+  "tick": {
+   "wallMs": 1791912652825,
+   "shown": [
+    {
+     "id": "economy.gold",
+     "ruleId": "economy.gold",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.8,
+     "short": "Золото 99999: купите Battle Fury",
+     "detail": {
+      "normal": "99999 золота лежит без дела. Следующий предмет по сборке — Battle Fury (3900).",
+      "detailed": "99999 золота лежит без дела. Следующий предмет по сборке — Battle Fury (3900). · Золото: 99999 (игра, 0 с) · Следующий предмет (профи патча): Battle Fury (статистика патча, не проверено) · Цена: 3900 (база, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "gold",
+       "label": "Золото",
+       "value": 99999,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      },
+      {
+       "key": "next-item",
+       "label": "Следующий предмет (профи патча)",
+       "value": "Battle Fury",
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      },
+      {
+       "key": "item-cost",
+       "label": "Цена",
+       "value": 3900,
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 90000,
+     "zone": "timing",
+     "icon": "item:bfury",
+     "seq": 53,
+     "createdWallMs": 1791912652825,
+     "expiresWallMs": 1791912662825,
+     "clock": 1005.608,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "economy.gold"
+   ]
   }
  },
  {
@@ -13572,77 +13238,9 @@
   }
  },
  {
-  "t": 1791912667914,
+  "t": 1791912663071,
   "tick": {
-   "wallMs": 1791912667914,
-   "shown": [
-    {
-     "id": "economy.gold",
-     "ruleId": "economy.gold",
-     "category": "economy",
-     "priority": "advice",
-     "confidence": 0.8,
-     "short": "Золото 99999: купите Battle Fury",
-     "detail": {
-      "normal": "99999 золота лежит без дела. Следующий предмет по сборке — Battle Fury (3900).",
-      "detailed": "99999 золота лежит без дела. Следующий предмет по сборке — Battle Fury (3900). · Золото: 99999 (игра, 0 с) · Следующий предмет (профи патча): Battle Fury (статистика патча, не проверено) · Цена: 3900 (база, не проверено)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "gold",
-       "label": "Золото",
-       "value": 99999,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      },
-      {
-       "key": "next-item",
-       "label": "Следующий предмет (профи патча)",
-       "value": "Battle Fury",
-       "source": "stats",
-       "ageSec": null,
-       "confidence": 1,
-       "verified": false
-      },
-      {
-       "key": "item-cost",
-       "label": "Цена",
-       "value": 3900,
-       "source": "kb",
-       "ageSec": null,
-       "confidence": 1,
-       "verified": false
-      }
-     ],
-     "ttlMs": 10000,
-     "cooldownMs": 90000,
-     "zone": "timing",
-     "icon": "item:bfury",
-     "seq": 58,
-     "createdWallMs": 1791912667914,
-     "expiresWallMs": 1791912677914,
-     "clock": 1020.697,
-     "textSource": "template"
-    }
-   ],
-   "expired": [],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
-   "visible": [
-    "economy.gold"
-   ]
-  }
- },
- {
-  "t": 1791912678070,
-  "tick": {
-   "wallMs": 1791912678070,
+   "wallMs": 1791912663071,
    "shown": [],
    "expired": [
     {
@@ -13690,10 +13288,10 @@
      "cooldownMs": 90000,
      "zone": "timing",
      "icon": "item:bfury",
-     "seq": 58,
-     "createdWallMs": 1791912667914,
-     "expiresWallMs": 1791912677914,
-     "clock": 1020.697,
+     "seq": 53,
+     "createdWallMs": 1791912652825,
+     "expiresWallMs": 1791912662825,
+     "clock": 1005.608,
      "textSource": "template"
     }
    ],
@@ -13706,9 +13304,9 @@
   }
  },
  {
-  "t": 1791912688066,
+  "t": 1791912675589,
   "tick": {
-   "wallMs": 1791912688066,
+   "wallMs": 1791912675589,
    "shown": [
     {
      "id": "economy.idle",
@@ -13716,17 +13314,17 @@
      "category": "economy",
      "priority": "advice",
      "confidence": 0.75,
-     "short": "Простой 901 с — идите фармить",
+     "short": "Простой 889 с — идите фармить",
      "detail": {
-      "normal": "Вы 901 с на одном месте без приказов. Каждая минута простоя — потерянное золото.",
-      "detailed": "Вы 901 с на одном месте без приказов. Каждая минута простоя — потерянное золото. · Без движения, с: 901 (вывод, 0 с)"
+      "normal": "Вы 889 с на одном месте без приказов. Каждая минута простоя — потерянное золото.",
+      "detailed": "Вы 889 с на одном месте без приказов. Каждая минута простоя — потерянное золото. · Без движения, с: 889 (вывод, 0 с)"
      },
      "percent": null,
      "facts": [
       {
        "key": "idle",
        "label": "Без движения, с",
-       "value": 901,
+       "value": 889,
        "source": "derived",
        "ageSec": 0,
        "confidence": 0.75,
@@ -13737,10 +13335,10 @@
      "cooldownMs": 60000,
      "zone": "timing",
      "icon": null,
-     "seq": 59,
-     "createdWallMs": 1791912688066,
-     "expiresWallMs": 1791912696066,
-     "clock": 1040.849,
+     "seq": 54,
+     "createdWallMs": 1791912675589,
+     "expiresWallMs": 1791912683589,
+     "clock": 1028.372,
      "textSource": "template"
     }
    ],
@@ -13756,9 +13354,9 @@
   }
  },
  {
-  "t": 1791912696164,
+  "t": 1791912683762,
   "tick": {
-   "wallMs": 1791912696164,
+   "wallMs": 1791912683762,
    "shown": [],
    "expired": [
     {
@@ -13767,17 +13365,17 @@
      "category": "economy",
      "priority": "advice",
      "confidence": 0.75,
-     "short": "Простой 901 с — идите фармить",
+     "short": "Простой 889 с — идите фармить",
      "detail": {
-      "normal": "Вы 901 с на одном месте без приказов. Каждая минута простоя — потерянное золото.",
-      "detailed": "Вы 901 с на одном месте без приказов. Каждая минута простоя — потерянное золото. · Без движения, с: 901 (вывод, 0 с)"
+      "normal": "Вы 889 с на одном месте без приказов. Каждая минута простоя — потерянное золото.",
+      "detailed": "Вы 889 с на одном месте без приказов. Каждая минута простоя — потерянное золото. · Без движения, с: 889 (вывод, 0 с)"
      },
      "percent": null,
      "facts": [
       {
        "key": "idle",
        "label": "Без движения, с",
-       "value": 901,
+       "value": 889,
        "source": "derived",
        "ageSec": 0,
        "confidence": 0.75,
@@ -13788,10 +13386,10 @@
      "cooldownMs": 60000,
      "zone": "timing",
      "icon": null,
-     "seq": 59,
-     "createdWallMs": 1791912688066,
-     "expiresWallMs": 1791912696066,
-     "clock": 1040.849,
+     "seq": 54,
+     "createdWallMs": 1791912675589,
+     "expiresWallMs": 1791912683589,
+     "clock": 1028.372,
      "textSource": "template"
     }
    ],
@@ -13804,9 +13402,9 @@
   }
  },
  {
-  "t": 1791912708325,
+  "t": 1791912695870,
   "tick": {
-   "wallMs": 1791912708325,
+   "wallMs": 1791912695870,
    "shown": [
     {
      "id": "economy.skill",
@@ -13844,10 +13442,10 @@
      "cooldownMs": 45000,
      "zone": "timing",
      "icon": null,
-     "seq": 60,
-     "createdWallMs": 1791912708325,
-     "expiresWallMs": 1791912718325,
-     "clock": 1061.108,
+     "seq": 55,
+     "createdWallMs": 1791912695870,
+     "expiresWallMs": 1791912705870,
+     "clock": 1048.653,
      "textSource": "template"
     }
    ],
@@ -13860,6 +13458,63 @@
    "visible": [
     "economy.skill"
    ]
+  }
+ },
+ {
+  "t": 1791912706036,
+  "tick": {
+   "wallMs": 1791912706036,
+   "shown": [],
+   "expired": [
+    {
+     "id": "economy.skill",
+     "ruleId": "economy.skill",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.6,
+     "short": "Очко навыка: Mana Break",
+     "detail": {
+      "normal": "Неиспользованных очков: 2. На 3 уровне профи патча чаще берут Mana Break.",
+      "detailed": "Неиспользованных очков: 2. На 3 уровне профи патча чаще берут Mana Break. · Свободных очков: 2 (вывод, 0 с) · Навык 3 уровня (профи патча): Mana Break (статистика патча, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "unspent",
+       "label": "Свободных очков",
+       "value": 2,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.6,
+       "verified": true
+      },
+      {
+       "key": "skill",
+       "label": "Навык 3 уровня (профи патча)",
+       "value": "Mana Break",
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 45000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 55,
+     "createdWallMs": 1791912695870,
+     "expiresWallMs": 1791912705870,
+     "clock": 1048.653,
+     "textSource": "template"
+    }
+   ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": []
   }
  },
  {
@@ -13903,7 +13558,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 61,
+     "seq": 56,
      "createdWallMs": 1791912712306,
      "expiresWallMs": 1791912727306,
      "clock": 1065.089,
@@ -13911,66 +13566,6 @@
     }
    ],
    "expired": [],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
-   "visible": [
-    "economy.skill",
-    "timing.rune-power"
-   ]
-  }
- },
- {
-  "t": 1791912718357,
-  "tick": {
-   "wallMs": 1791912718357,
-   "shown": [],
-   "expired": [
-    {
-     "id": "economy.skill",
-     "ruleId": "economy.skill",
-     "category": "economy",
-     "priority": "advice",
-     "confidence": 0.6,
-     "short": "Очко навыка: Mana Break",
-     "detail": {
-      "normal": "Неиспользованных очков: 2. На 3 уровне профи патча чаще берут Mana Break.",
-      "detailed": "Неиспользованных очков: 2. На 3 уровне профи патча чаще берут Mana Break. · Свободных очков: 2 (вывод, 0 с) · Навык 3 уровня (профи патча): Mana Break (статистика патча, не проверено)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "unspent",
-       "label": "Свободных очков",
-       "value": 2,
-       "source": "derived",
-       "ageSec": 0,
-       "confidence": 0.6,
-       "verified": true
-      },
-      {
-       "key": "skill",
-       "label": "Навык 3 уровня (профи патча)",
-       "value": "Mana Break",
-       "source": "stats",
-       "ageSec": null,
-       "confidence": 1,
-       "verified": false
-      }
-     ],
-     "ttlMs": 10000,
-     "cooldownMs": 45000,
-     "zone": "timing",
-     "icon": null,
-     "seq": 60,
-     "createdWallMs": 1791912708325,
-     "expiresWallMs": 1791912718325,
-     "clock": 1061.108,
-     "textSource": "template"
-    }
-   ],
    "changed": [],
    "mistakes": [],
    "deathReview": null,
@@ -14445,7 +14040,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 61,
+     "seq": 56,
      "createdWallMs": 1791912712306,
      "expiresWallMs": 1791912727306,
      "clock": 1065.089,
@@ -14461,9 +14056,9 @@
   }
  },
  {
-  "t": 1791912756197,
+  "t": 1791912744030,
   "tick": {
-   "wallMs": 1791912756197,
+   "wallMs": 1791912744030,
    "shown": [
     {
      "id": "economy.idle",
@@ -14471,17 +14066,17 @@
      "category": "economy",
      "priority": "advice",
      "confidence": 0.75,
-     "short": "Простой 969 с — идите фармить",
+     "short": "Простой 957 с — идите фармить",
      "detail": {
-      "normal": "Вы 969 с на одном месте без приказов. Каждая минута простоя — потерянное золото.",
-      "detailed": "Вы 969 с на одном месте без приказов. Каждая минута простоя — потерянное золото. · Без движения, с: 969 (вывод, 0 с)"
+      "normal": "Вы 957 с на одном месте без приказов. Каждая минута простоя — потерянное золото.",
+      "detailed": "Вы 957 с на одном месте без приказов. Каждая минута простоя — потерянное золото. · Без движения, с: 957 (вывод, 0 с)"
      },
      "percent": null,
      "facts": [
       {
        "key": "idle",
        "label": "Без движения, с",
-       "value": 969,
+       "value": 957,
        "source": "derived",
        "ageSec": 0,
        "confidence": 0.75,
@@ -14492,10 +14087,10 @@
      "cooldownMs": 60000,
      "zone": "timing",
      "icon": null,
-     "seq": 62,
-     "createdWallMs": 1791912756197,
-     "expiresWallMs": 1791912764197,
-     "clock": 1108.98,
+     "seq": 57,
+     "createdWallMs": 1791912744030,
+     "expiresWallMs": 1791912752030,
+     "clock": 1096.813,
      "textSource": "template"
     }
    ],
@@ -14511,9 +14106,9 @@
   }
  },
  {
-  "t": 1791912764404,
+  "t": 1791912752064,
   "tick": {
-   "wallMs": 1791912764404,
+   "wallMs": 1791912752064,
    "shown": [],
    "expired": [
     {
@@ -14522,17 +14117,17 @@
      "category": "economy",
      "priority": "advice",
      "confidence": 0.75,
-     "short": "Простой 969 с — идите фармить",
+     "short": "Простой 957 с — идите фармить",
      "detail": {
-      "normal": "Вы 969 с на одном месте без приказов. Каждая минута простоя — потерянное золото.",
-      "detailed": "Вы 969 с на одном месте без приказов. Каждая минута простоя — потерянное золото. · Без движения, с: 969 (вывод, 0 с)"
+      "normal": "Вы 957 с на одном месте без приказов. Каждая минута простоя — потерянное золото.",
+      "detailed": "Вы 957 с на одном месте без приказов. Каждая минута простоя — потерянное золото. · Без движения, с: 957 (вывод, 0 с)"
      },
      "percent": null,
      "facts": [
       {
        "key": "idle",
        "label": "Без движения, с",
-       "value": 969,
+       "value": 957,
        "source": "derived",
        "ageSec": 0,
        "confidence": 0.75,
@@ -14543,10 +14138,10 @@
      "cooldownMs": 60000,
      "zone": "timing",
      "icon": null,
-     "seq": 62,
-     "createdWallMs": 1791912756197,
-     "expiresWallMs": 1791912764197,
-     "clock": 1108.98,
+     "seq": 57,
+     "createdWallMs": 1791912744030,
+     "expiresWallMs": 1791912752030,
+     "clock": 1096.813,
      "textSource": "template"
     }
    ],
@@ -14559,9 +14154,9 @@
   }
  },
  {
-  "t": 1791912776374,
+  "t": 1791912764128,
   "tick": {
-   "wallMs": 1791912776374,
+   "wallMs": 1791912764128,
    "shown": [
     {
      "id": "economy.gold",
@@ -14608,10 +14203,10 @@
      "cooldownMs": 90000,
      "zone": "timing",
      "icon": "item:bfury",
-     "seq": 63,
-     "createdWallMs": 1791912776374,
-     "expiresWallMs": 1791912786374,
-     "clock": 1129.157,
+     "seq": 58,
+     "createdWallMs": 1791912764128,
+     "expiresWallMs": 1791912774128,
+     "clock": 1116.911,
      "textSource": "template"
     }
    ],
@@ -14624,6 +14219,72 @@
    "visible": [
     "economy.gold"
    ]
+  }
+ },
+ {
+  "t": 1791912774349,
+  "tick": {
+   "wallMs": 1791912774349,
+   "shown": [],
+   "expired": [
+    {
+     "id": "economy.gold",
+     "ruleId": "economy.gold",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.8,
+     "short": "Золото 99999: купите Battle Fury",
+     "detail": {
+      "normal": "99999 золота лежит без дела. Следующий предмет по сборке — Battle Fury (3900).",
+      "detailed": "99999 золота лежит без дела. Следующий предмет по сборке — Battle Fury (3900). · Золото: 99999 (игра, 0 с) · Следующий предмет (профи патча): Battle Fury (статистика патча, не проверено) · Цена: 3900 (база, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "gold",
+       "label": "Золото",
+       "value": 99999,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      },
+      {
+       "key": "next-item",
+       "label": "Следующий предмет (профи патча)",
+       "value": "Battle Fury",
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      },
+      {
+       "key": "item-cost",
+       "label": "Цена",
+       "value": 3900,
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 90000,
+     "zone": "timing",
+     "icon": "item:bfury",
+     "seq": 58,
+     "createdWallMs": 1791912764128,
+     "expiresWallMs": 1791912774128,
+     "clock": 1116.911,
+     "textSource": "template"
+    }
+   ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": []
   }
  },
  {
@@ -15049,69 +14710,62 @@
   }
  },
  {
-  "t": 1791912786593,
+  "t": 1791912784269,
   "tick": {
-   "wallMs": 1791912786593,
-   "shown": [],
-   "expired": [
+   "wallMs": 1791912784269,
+   "shown": [
     {
-     "id": "economy.gold",
-     "ruleId": "economy.gold",
+     "id": "economy.skill",
+     "ruleId": "economy.skill",
      "category": "economy",
      "priority": "advice",
-     "confidence": 0.8,
-     "short": "Золото 99999: купите Battle Fury",
+     "confidence": 0.6,
+     "short": "Очко навыка: Mana Break",
      "detail": {
-      "normal": "99999 золота лежит без дела. Следующий предмет по сборке — Battle Fury (3900).",
-      "detailed": "99999 золота лежит без дела. Следующий предмет по сборке — Battle Fury (3900). · Золото: 99999 (игра, 0 с) · Следующий предмет (профи патча): Battle Fury (статистика патча, не проверено) · Цена: 3900 (база, не проверено)"
+      "normal": "Неиспользованных очков: 2. На 3 уровне профи патча чаще берут Mana Break.",
+      "detailed": "Неиспользованных очков: 2. На 3 уровне профи патча чаще берут Mana Break. · Свободных очков: 2 (вывод, 0 с) · Навык 3 уровня (профи патча): Mana Break (статистика патча, не проверено)"
      },
      "percent": null,
      "facts": [
       {
-       "key": "gold",
-       "label": "Золото",
-       "value": 99999,
-       "source": "gsi",
+       "key": "unspent",
+       "label": "Свободных очков",
+       "value": 2,
+       "source": "derived",
        "ageSec": 0,
-       "confidence": 1,
+       "confidence": 0.6,
        "verified": true
       },
       {
-       "key": "next-item",
-       "label": "Следующий предмет (профи патча)",
-       "value": "Battle Fury",
+       "key": "skill",
+       "label": "Навык 3 уровня (профи патча)",
+       "value": "Mana Break",
        "source": "stats",
-       "ageSec": null,
-       "confidence": 1,
-       "verified": false
-      },
-      {
-       "key": "item-cost",
-       "label": "Цена",
-       "value": 3900,
-       "source": "kb",
        "ageSec": null,
        "confidence": 1,
        "verified": false
       }
      ],
      "ttlMs": 10000,
-     "cooldownMs": 90000,
+     "cooldownMs": 45000,
      "zone": "timing",
-     "icon": "item:bfury",
-     "seq": 63,
-     "createdWallMs": 1791912776374,
-     "expiresWallMs": 1791912786374,
-     "clock": 1129.157,
+     "icon": null,
+     "seq": 59,
+     "createdWallMs": 1791912784269,
+     "expiresWallMs": 1791912794269,
+     "clock": 1137.0520000000001,
      "textSource": "template"
     }
    ],
+   "expired": [],
    "changed": [],
    "mistakes": [],
    "deathReview": null,
    "matchReview": null,
    "inFight": false,
-   "visible": []
+   "visible": [
+    "economy.skill"
+   ]
   }
  },
  {
@@ -15237,14 +14891,6 @@
     "source": "template"
    },
    {
-    "wallMs": 1791911932392,
-    "clock": 285.18399999999997,
-    "kind": "hint",
-    "id": "timing.day-night",
-    "text": "Скоро наступит ночь",
-    "source": "template"
-   },
-   {
     "wallMs": 1791911937510,
     "clock": 290.302,
     "kind": "hint",
@@ -15298,14 +14944,6 @@
     "kind": "hint",
     "id": "economy.idle",
     "text": "Простой 243 с — идите фармить",
-    "source": "template"
-   },
-   {
-    "wallMs": 1791912052236,
-    "clock": 405.028,
-    "kind": "hint",
-    "id": "timing.shrine-of-wisdom",
-    "text": "Святилище мудрости через 15 с",
     "source": "template"
    },
    {
@@ -15370,14 +15008,6 @@
     "kind": "hint",
     "id": "economy.skill",
     "text": "Очко навыка: Mana Break",
-    "source": "template"
-   },
-   {
-    "wallMs": 1791912232233,
-    "clock": 585.025,
-    "kind": "hint",
-    "id": "timing.day-night",
-    "text": "Скоро наступит день",
     "source": "template"
    },
    {
@@ -15493,14 +15123,6 @@
     "source": "template"
    },
    {
-    "wallMs": 1791912477448,
-    "clock": 830.231,
-    "kind": "hint",
-    "id": "timing.shrine-of-wisdom",
-    "text": "Святилище мудрости через 15 с",
-    "source": "template"
-   },
-   {
     "wallMs": 1791912484300,
     "clock": 837.083,
     "kind": "hint",
@@ -15525,14 +15147,6 @@
     "source": "template"
    },
    {
-    "wallMs": 1791912532296,
-    "clock": 885.079,
-    "kind": "hint",
-    "id": "timing.day-night",
-    "text": "Скоро наступит ночь",
-    "source": "template"
-   },
-   {
     "wallMs": 1791912547266,
     "clock": 900.049,
     "kind": "hint",
@@ -15549,11 +15163,19 @@
     "source": "template"
    },
    {
-    "wallMs": 1791912564993,
-    "clock": 917.7760000000001,
+    "wallMs": 1791912552423,
+    "clock": 905.206,
     "kind": "hint",
     "id": "economy.gold",
     "text": "Золото 99999: купите Battle Fury",
+    "source": "template"
+   },
+   {
+    "wallMs": 1791912572474,
+    "clock": 925.2570000000001,
+    "kind": "hint",
+    "id": "economy.skill",
+    "text": "Очко навыка: Mana Break",
     "source": "template"
    },
    {
@@ -15565,48 +15187,40 @@
     "source": "template"
    },
    {
-    "wallMs": 1791912592451,
-    "clock": 945.234,
-    "kind": "hint",
-    "id": "economy.skill",
-    "text": "Очко навыка: Mana Break",
-    "source": "template"
-   },
-   {
-    "wallMs": 1791912612513,
-    "clock": 965.296,
+    "wallMs": 1791912607342,
+    "clock": 960.125,
     "kind": "hint",
     "id": "economy.idle",
-    "text": "Простой 817 с — идите фармить",
+    "text": "Простой 812 с — идите фармить",
     "source": "template"
    },
    {
-    "wallMs": 1791912647668,
-    "clock": 1000.451,
+    "wallMs": 1791912627796,
+    "clock": 980.579,
     "kind": "hint",
     "id": "economy.skill",
     "text": "Очко навыка: Mana Break",
     "source": "template"
    },
    {
-    "wallMs": 1791912667914,
-    "clock": 1020.697,
+    "wallMs": 1791912652825,
+    "clock": 1005.608,
     "kind": "hint",
     "id": "economy.gold",
     "text": "Золото 99999: купите Battle Fury",
     "source": "template"
    },
    {
-    "wallMs": 1791912688066,
-    "clock": 1040.849,
+    "wallMs": 1791912675589,
+    "clock": 1028.372,
     "kind": "hint",
     "id": "economy.idle",
-    "text": "Простой 893 с — идите фармить",
+    "text": "Простой 880 с — идите фармить",
     "source": "template"
    },
    {
-    "wallMs": 1791912708325,
-    "clock": 1061.108,
+    "wallMs": 1791912695870,
+    "clock": 1048.653,
     "kind": "hint",
     "id": "economy.skill",
     "text": "Очко навыка: Mana Break",
@@ -15621,19 +15235,27 @@
     "source": "template"
    },
    {
-    "wallMs": 1791912756197,
-    "clock": 1108.98,
+    "wallMs": 1791912744030,
+    "clock": 1096.813,
     "kind": "hint",
     "id": "economy.idle",
-    "text": "Простой 961 с — идите фармить",
+    "text": "Простой 949 с — идите фармить",
     "source": "template"
    },
    {
-    "wallMs": 1791912776374,
-    "clock": 1129.157,
+    "wallMs": 1791912764128,
+    "clock": 1116.911,
     "kind": "hint",
     "id": "economy.gold",
     "text": "Золото 99999: купите Battle Fury",
+    "source": "template"
+   },
+   {
+    "wallMs": 1791912784269,
+    "clock": 1137.0520000000001,
+    "kind": "hint",
+    "id": "economy.skill",
+    "text": "Очко навыка: Mana Break",
     "source": "template"
    }
   ],

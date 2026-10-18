@@ -16,6 +16,9 @@ const isSupport = (c: RuleContext): boolean => {
 export const stackRule: Rule = (c) => {
   const clock = c.v.clock.value;
   if (!playing(c) || clock === null || clock < 3 * 60 || clock > 20 * 60 || c.mem.inFight || !isSupport(c)) return null;
+  // Стак — когда это безопасно: здоровья хотя бы половина и врагов рядом нет (режим тени: «Стак» при 25% здоровья)
+  const hp = game(c).now.hpPct;
+  if ((hp !== null && hp < 50) || game(c).now.enemiesNear > 0) return null;
   const e = upcomingEvents(c.look.mechanics, clock).find((x) => x.id === 'stack-window');
   if (!e || e.status !== 'ok' || e.inSec === null || e.at === null || e.inSec > 12 || e.inSec < 5) return null;
   const sec = Math.round(((e.at % 60) + 60) % 60);

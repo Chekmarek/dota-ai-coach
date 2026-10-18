@@ -82,7 +82,8 @@ export const helpRule: Rule = (c) => {
     const tp = tpReady(c.v);
     const name = a.hero.value ? c.look.heroName(a.hero.value) : 'союзник';
     return draft({
-      id: `macro.help:${a.slot}`,
+      // один номер на правило: с номером по союзнику пауза не работала (режим тени: 1 075 раз на 100 игроков)
+      id: 'macro.help',
       ruleId: 'macro.help',
       category: 'macro',
       priority: 'advice',
@@ -91,7 +92,8 @@ export const helpRule: Rule = (c) => {
       normal: `Возле ${name} ${around.length} врага (${zone}).${tp ? ' Town Portal Scroll готов — можно успеть.' : ' Идите на помощь.'}${personalNote(c.look.data.profile, 'missed-fights')}`,
       facts: [derivedFact('enemies-around-ally', 'Врагов у союзника', around.length, 0.7), derivedFact('distance', 'До союзника', Math.round(d), 0.7), derivedFact('tp', 'Town Portal Scroll готов', tp, 0.9)],
       ttlSec: 8,
-      cooldownSec: 30,
+      // реже (режим тени: 1 012 раз на 100 игроков про-матчей)
+      cooldownSec: 60,
       icon: a.hero.value ? `hero:${a.hero.value}` : null,
     });
   }
@@ -150,6 +152,10 @@ export const timersRule: Rule = (c) => {
     if (e.status !== 'ok' || e.inSec === null || e.at === null) continue;
     if (!['rune-power', 'rune-bounty', 'rune-water', 'day-night', 'tormentor', 'roshan-respawn', 'shrine-of-wisdom'].includes(e.id)) continue;
     if (!runeForMe(e.id, e.at, g)) continue;
+    // «Скоро ночь» — к месту, только когда ночь меняет драку: у врагов Night Stalker (ночью он сильнее и видит дальше)
+    if (e.id === 'day-night' && !c.v.enemies.some((x) => x.hero.value === 'night_stalker')) continue;
+    // Святилище мудрости — опыт для саппортов (4–5); позиция не известна — как раньше
+    if (e.id === 'shrine-of-wisdom' && g.position !== null && g.position < 4) continue;
     const lead = e.id === 'roshan-respawn' || e.id === 'tormentor' ? 30 : 15;
     if (e.inSec > lead || e.inSec < 3) continue;
     // Руна — только если успеваете добежать (время бега до ближайшей точки этой руны ≤ до появления + 20 с);

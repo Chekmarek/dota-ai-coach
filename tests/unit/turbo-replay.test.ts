@@ -20,7 +20,8 @@ function replay(gameMode: CoachSettings['gameMode']): { journal: JournalEntry[];
   const tracker = new GameModeTracker();
   const model = new MatchStateModel();
   let now = 0;
-  const engine = new CoachEngine({ data: realData(), now: () => now, settings: { ...defaultCoachSettings(), gameMode } });
+  // позиция 5: проверяем расписание таймингов (Святилище мудрости — подсказка саппортам), а не выбор роли
+  const engine = new CoachEngine({ data: realData(), now: () => now, settings: { ...defaultCoachSettings(), gameMode, position: '5' } });
   let last: GsiReading | null = null;
   let lastMs: number | null = null;
   const modes = new Set<string>();
@@ -83,7 +84,8 @@ describe('настоящий матч Турбо через коуча', () => {
     const r = turbo.review!;
     expect(r).not.toBeNull();
     expect(r.result).toBe('win');
-    for (const label of ['GPM', 'XPM', 'Добивания к 10:00']) {
+    // «Добивания к 10:00» у саппорта (позиция 5 в этом прогоне) в разборе нет — проверяем то, что есть
+    for (const label of ['GPM', 'XPM', 'Добивания к 10:00'].filter((l) => r.stats.some((x) => x.label === l))) {
       const s = r.stats.find((x) => x.label === label)!;
       expect(s.ref, label).toBeNull();
       expect(s.verdict, label).toBeNull();
