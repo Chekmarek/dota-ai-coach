@@ -11,6 +11,7 @@ import { join } from 'node:path';
 import { IPC, type ReleaseInfo, type UpdateState } from '@shared/ipc';
 import { compareVersions } from '@shared/version';
 import { liveLog } from './live';
+import { streamToFile } from './stream-to-file';
 
 const FIRST_CHECK_DELAY_MS = 5e3;
 const CHECK_INTERVAL_MS = 6 * 60 * 60 * 1e3;
@@ -180,26 +181,18 @@ class Updater {
     if (!res.ok || !res.body) throw new Error(`загрузка: HTTP ${res.status}`);
     const total = Number(res.headers.get('content-length')) || r.asarSize || 0;
     const hash = createHash('sha256');
-    const out = fs.createWriteStream(target);
     let got = 0;
     let lastSent = 0;
-    const reader = res.body.getReader();
-    try {
-      for (;;) {
-        const { value, done } = await reader.read();
-        if (done) break;
-        hash.update(value);
-        got += value.length;
-        if (!out.write(Buffer.from(value))) await new Promise<void>((ok) => out.once('drain', () => ok()));
-        const now = Date.now();
-        if (total && now - lastSent > 200) {
-          lastSent = now;
-          this.set({ progress: Math.min(99, Math.round((got * 100) / total)) });
-        }
+    // ошибка диска — понятный текст и статус «ошибка», а не вечное «Скачивается…» (stream-to-file.ts)
+    await streamToFile(res.body, target, (value) => {
+      hash.update(value);
+      got += value.length;
+      const now = Date.now();
+      if (total && now - lastSent > 200) {
+        lastSent = now;
+        this.set({ progress: Math.min(99, Math.round((got * 100) / total)) });
       }
-    } finally {
-      await new Promise<void>((ok) => out.end(ok));
-    }
+    });
     const actual = hash.digest('hex');
     if (actual !== expected) {
       fs.rmSync(target, { force: true });
