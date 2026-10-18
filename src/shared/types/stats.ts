@@ -6,6 +6,13 @@ const pct = z.object({ p50: z.number().nullable(), p80: z.number().nullable() })
 
 const popularList = z.array(z.object({ key: z.string(), count: z.number() }));
 
+/** Минуты кривых профи */
+export const CURVE_MINUTES = [5, 10, 15, 20, 25, 30, 35, 40] as const;
+/** Порядок чисел в точке кривой */
+export const CURVE_FIELDS = ['lh50', 'lh75', 'gold50', 'gold75', 'xp50', 'xp75'] as const;
+const curveSchema = z.object({ n: z.number(), at: z.record(z.string(), z.array(z.number().nullable()).length(CURVE_FIELDS.length)) });
+export type HeroCurve = z.infer<typeof curveSchema>;
+
 export const heroStatsSchema = z.object({
   id: z.number().int(),
   key: z.string(),
@@ -28,6 +35,12 @@ export const heroStatsSchema = z.object({
       lhAt10: z.record(z.string(), z.object({ median: z.number(), n: z.number() })),
       /** Доли позиций 1…5 (место по GPM в команде); null — нет данных */
       positions: z.array(z.number()).length(5).nullable().catch(null),
+      /**
+       * Как играют профи на этом герое по минутам (этап 3 «понимания игры»): позиция '1'…'5' или 'all' →
+       * число игроков и для минут 5, 10, 15 … — [добивания p50, p75, золото p50, p75, опыт p50, p75] (золото и опыт —
+       * заработанные к этой минуте, OpenDota gold_t / xp_t). В старых stats.json поля нет — {}.
+       */
+      curves: z.record(z.string(), curveSchema).catch({}),
     })
     .nullable()
     .catch(null),

@@ -66,6 +66,17 @@ const median = (a) => {
   return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2;
 };
 const r3 = (x) => Math.round(x * 1000) / 1000;
+/** Квантиль (линейная интерполяция), null — пусто */
+const quantile = (a, q) => {
+  if (!a.length) return null;
+  const s = [...a].sort((x, y) => x - y);
+  const i = (s.length - 1) * q;
+  const lo = Math.floor(i);
+  return s[lo] + (s[Math.min(lo + 1, s.length - 1)] - s[lo]) * (i - lo);
+};
+/** Кривые профи: минуты и сколько игроков нужно, чтобы точка считалась (меньше — шум) */
+const CURVE_MINUTES = [5, 10, 15, 20, 25, 30, 35, 40];
+const CURVE_MIN_N = 8;
 
 // --- Патч: база знаний и Valve должны совпадать ---
 const { patch } = JSON.parse(readFileSync(join(root, 'resources/data/kb/current.json'), 'utf8'));
@@ -186,7 +197,7 @@ if (TURBO) {
 const proRows = [];
 for (let lastId = 0; ; ) {
   const rows = await sql(
-    `select m.match_id, m.duration, m.radiant_win, pm.player_slot, pm.hero_id, pm.lane_role, pm.gold_per_min, pm.purchase_log, pm.ability_upgrades_arr, pm.lh_t
+    `select m.match_id, m.duration, m.radiant_win, pm.player_slot, pm.hero_id, pm.lane_role, pm.gold_per_min, pm.purchase_log, pm.ability_upgrades_arr, pm.lh_t, pm.gold_t, pm.xp_t
        from matches m join player_matches pm using(match_id)
       where m.start_time >= ${patchStart} and m.match_id > ${lastId}
       order by m.match_id, pm.player_slot limit ${PRO_PAGE}`,
@@ -265,7 +276,28 @@ for (const [heroId, rows] of byHero) {
   for (const [role, v] of Object.entries(lhByRole)) if (v.length >= 3) lhAt10[role] = { median: median(v), n: v.length };
   const posN = posCount.reduce((a, b) => a + b, 0);
   const positions = posN ? posCount.map((c) => r3(c / posN)) : null;
-  h.pro = { games: n, winrate: r3(wins / n), build, startItems, skills, lhAt10, positions };
+  // Кривые профи по минутам: по позиции (где игроков ≥ CURVE_MIN_N) и по всем позициям героя вместе
+  const curves = {};
+  const curveOf = (list) => {
+    const at = {};
+    for (const m of CURVE_MINUTES) {
+      const val = (arr) => list.map((r) => (Array.isArray(r[arr]) && r[arr].length > m ? r[arr][m] : null)).filter((x) => typeof x === 'number');
+      const lh = val('lh_t');
+      const gold = val('gold_t');
+      const xp = val('xp_t');
+      // матчи короче этой минуты выпадают сами: точку пишем, только пока игроков достаточно
+      if (lh.length < CURVE_MIN_N) break;
+      at[m] = [quantile(lh, 0.5), quantile(lh, 0.75), quantile(gold, 0.5), quantile(gold, 0.75), quantile(xp, 0.5), quantile(xp, 0.75)].map((x) => (x === null ? null : Math.round(x)));
+    }
+    return Object.keys(at).length ? { n: list.length, at } : null;
+  };
+  for (let p = 1; p <= 5; p++) {
+    const c = curveOf(rows.filter((r) => r.pos === p));
+    if (c) curves[p] = c;
+  }
+  const all = curveOf(rows);
+  if (all) curves.all = all;
+  h.pro = { games: n, winrate: r3(wins / n), build, startItems, skills, lhAt10, positions, curves };
 }
 
 // --- Ориентиры: OpenDota benchmarks (свежие публичные матчи) ---
@@ -317,7 +349,7 @@ const stats = {
   note: 'Собрано автоматически из OpenDota только по матчам текущего патча. Публичные данные — ранговые All Pick за последние дни, сборки и навыки — профессиональные матчи патча.',
   sources: [
     { name: 'OpenDota explorer: public_matches', covers: ['matchups', 'winrate'], since: new Date(since * 1000).toISOString(), matches: pubMatches },
-    { name: 'OpenDota explorer: matches / player_matches (профессиональные)', covers: ['build', 'startItems', 'skills', 'lhAt10'], since: new Date(patchStart * 1000).toISOString(), matches: proMatches },
+    { name: 'OpenDota explorer: matches / player_matches (профессиональные)', covers: ['build', 'startItems', 'skills', 'lhAt10', 'curves'], since: new Date(patchStart * 1000).toISOString(), matches: proMatches },
     { name: 'OpenDota /benchmarks', covers: ['bench'], heroes: benchOk },
     { name: 'OpenDota explorer: public_matches (одна команда)', covers: ['synergy'], since: new Date(since * 1000).toISOString(), matches: pubMatches },
     { name: 'OpenDota /heroes/{id}/itemPopularity (недавние разобранные матчи, не только этот патч)', covers: ['popular'], heroes: popularOk },

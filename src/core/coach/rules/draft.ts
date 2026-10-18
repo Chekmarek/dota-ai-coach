@@ -70,7 +70,12 @@ export const counterItemRule: Rule = (c) => {
   const role = myRole(c);
   if (!role) return null;
   const have = owned(c);
+  // Несрочный предмет против угрозы (Radiance, Shiva's Guard…) — только если профи на этом герое его собирают:
+  // иначе совет «против иллюзий: Radiance» получал любой кор. Срочные (пыль, сентри) — всем
+  const hero = c.v.me.hero.value;
+  const build = new Set(hero ? c.look.buildFor(hero.id, hero.key).map((b) => b.key) : []);
   for (const s of counterItems(enemyThreats(enemies, c.look.invisHeroes), role, have)) {
+    if (!s.urgent && !build.has(s.key)) continue;
     if (!s.urgent && clock < 8 * 60) continue;
     const once = `draft:item:${s.key}`;
     if (c.mem.once.has(once)) continue;

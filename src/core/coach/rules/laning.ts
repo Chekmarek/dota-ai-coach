@@ -214,5 +214,75 @@ export const stackRule: Rule = (c) => {
   });
 };
 
+/** Минуты сравнения с профи (обычная игра) */
+export const BENCH_MINUTES = [5, 10, 15, 20, 25] as const;
+/** Отставание, о котором стоит сказать: меньше этой доли медианы профи */
+export const BENCH_LOW = 0.75;
+
+/**
+ * Сравнение с сильными игроками на этом герое (этап 3): на 5, 10, 15, 20, 25-й минуте — добивания (корам), заработанное
+ * золото и опыт против медианы профи патча на той же позиции (OpenDota, gold_t / xp_t / lh_t). Говорим о самом большом
+ * отставании (меньше 75% медианы) или хвалим, если добивания выше верхней четверти профи. Один раз на минуту сравнения.
+ * В Турбо молчит: профи в Турбо не играют, а пересчитывать нормы обычной игры «на глаз» нельзя.
+ */
+export const benchRule: Rule = (c) => {
+  const clock = c.v.clock.value;
+  if (!playing(c) || clock === null || c.mem.inFight) return null;
+  const min = BENCH_MINUTES.find((m) => clock >= m * 60 && clock < m * 60 + 45);
+  if (min === undefined || c.mem.once.has(`bench:${min}`)) return null;
+  const g = game(c);
+  const p = c.look.proAt(g.hero.key, g.position, min);
+  if (!p) return null;
+  c.mem.once.add(`bench:${min}`);
+  const lh = c.v.me.lastHits.value;
+  const gpm = c.v.me.gpm.value;
+  const xpm = c.v.me.xpm.value;
+  const gold = gpm === null ? null : Math.round(gpm * (clock / 60));
+  const xp = xpm === null ? null : Math.round(xpm * (clock / 60));
+  const who = `у профи на ${g.hero.name ?? 'этом герое'}${p.position !== null ? ` (позиция ${p.position})` : ''}`;
+  const core = g.core !== false;
+  type Gap = { what: string; mine: number; ref: number; ratio: number };
+  const gaps: Gap[] = [];
+  if (core && lh !== null && p.lh50) gaps.push({ what: 'Добивания', mine: lh, ref: p.lh50, ratio: lh / p.lh50 });
+  if (gold !== null && p.gold50) gaps.push({ what: 'Золото', mine: gold, ref: p.gold50, ratio: gold / p.gold50 });
+  if (xp !== null && p.xp50) gaps.push({ what: 'Опыт', mine: xp, ref: p.xp50, ratio: xp / p.xp50 });
+  const worst = gaps.filter((x) => x.ratio < BENCH_LOW).sort((a, b) => a.ratio - b.ratio)[0];
+  const facts = [
+    fact('lh', 'Добиваний', c.v.me.lastHits),
+    derivedFact('gold-earned', 'Золота заработано (GPM × минуты)', gold, 0.8),
+    { key: 'pro-lh', label: `Добивания профи к ${min}:00, медиана`, value: p.lh50, source: 'stats' as const, ageSec: null, confidence: Math.min(1, p.n / 40), verified: false },
+    { key: 'pro-gold', label: `Золото профи к ${min}:00, медиана`, value: p.gold50, source: 'stats' as const, ageSec: null, confidence: Math.min(1, p.n / 40), verified: false },
+  ];
+  if (worst) {
+    const how = worst.what === 'Добивания' ? 'Добивайте крипов: не пропускайте волны между драками.' : worst.what === 'Золото' ? 'Больше фарма: волна, лагерь, снова волна.' : 'Больше опыта: стойте у волн, не пропускайте драки рядом.';
+    return draft({
+      id: 'laning.bench',
+      category: 'laning',
+      priority: 'info',
+      confidence: 0.75,
+      short: `${worst.what} ${worst.mine} к ${min}:00, у профи ~${worst.ref}`,
+      normal: `${worst.what}: ${worst.mine} к ${min}:00, ${who} обычно ~${worst.ref}. ${how}`,
+      facts,
+      ttlSec: 10,
+      cooldownSec: 0,
+    });
+  }
+  if (core && lh !== null && p.lh75 && lh >= p.lh75) {
+    return draft({
+      id: 'laning.bench',
+      category: 'laning',
+      priority: 'info',
+      confidence: 0.75,
+      short: `Отличный фарм: ${lh} добиваний к ${min}:00`,
+      normal: `${lh} добиваний к ${min}:00 — больше, чем у трёх четвертей профи на этом герое (~${p.lh75}). Так держать.`,
+      facts,
+      ttlSec: 8,
+      cooldownSec: 0,
+    });
+  }
+  return null;
+};
+
+// csRule (добивания против lhAt10) заменён benchRule: тот же ориентир профи, но по минутам и с золотом и опытом
 // stackRule этого файла не подключён: дублировал timing.stack из timings.ts (одинаковый id, разные тексты — аудит, этап 1)
-export const LANING_RULES: Rule[] = [regenRule, levelRule, csRule];
+export const LANING_RULES: Rule[] = [regenRule, levelRule, benchRule];

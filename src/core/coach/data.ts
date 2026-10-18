@@ -44,6 +44,24 @@ export const KEY_ITEMS = ['black_king_bar', 'blink', 'refresher', 'sphere', 'aeo
 
 /** Меньше стольких игр профи — сборка по популярным предметам */
 export const PRO_BUILD_MIN = 15;
+/** Кривая позиции берётся, если на ней столько профи-игроков героя; меньше — кривая по всем позициям */
+export const PRO_CURVE_MIN_N = 12;
+/** Кривая «все позиции» годится, если доля роли (кор 1–3 или саппорт 4–5) у профи на герое не меньше */
+export const PRO_CURVE_SAME_ROLE = 0.75;
+
+/** Профи на герое к минуте: медиана (50) и верхняя четверть (75); null — точки нет */
+export interface ProPoint {
+  lh50: number | null;
+  lh75: number | null;
+  gold50: number | null;
+  gold75: number | null;
+  xp50: number | null;
+  xp75: number | null;
+  /** Сколько игроков в выборке */
+  n: number;
+  /** По какой позиции кривая; null — по всем позициям героя */
+  position: number | null;
+}
 /** Примерная минута фаз OpenDota itemPopularity: ранняя 0–10, средняя 10–25, поздняя 25+ */
 const POPULAR_PHASE_MIN: readonly ['early' | 'mid' | 'late', number][] = [
   ['early', 7],
@@ -143,6 +161,33 @@ export class CoachLookup {
     }
     return null;
   }
+  /**
+   * Как играют профи на этом герое к минуте (обычная игра): добивания, заработанное золото и опыт — медиана и верхняя
+   * четверть, по позиции (если игроков на ней хватает) или по всем позициям героя. null — нет данных, минута вне
+   * кривой или Турбо (профи в Турбо не играют, а умножать нормы «на глаз» нельзя).
+   */
+  proAt(heroKey: string | null, position: number | null, minute: number): ProPoint | null {
+    if (!this.hasNorms || !heroKey) return null;
+    const curves = this.statsFor(null, heroKey)?.pro?.curves;
+    if (!curves) return null;
+    const byPos = position !== null ? curves[String(position)] : undefined;
+    // Своей позиции мало — кривая по всем позициям героя, но только если герой почти всегда в той же роли (кор или
+    // саппорт), что и вы: у Ogre Magi «все позиции» — это и центр, и пятёрка (32 добивания к 10:00 — не ориентир саппорту)
+    const shares = this.statsFor(null, heroKey)?.pro?.positions ?? null;
+    const sameRole = position === null || (shares !== null && (position <= 3 ? shares[0]! + shares[1]! + shares[2]! : shares[3]! + shares[4]!) >= PRO_CURVE_SAME_ROLE);
+    const c = byPos && byPos.n >= PRO_CURVE_MIN_N ? byPos : sameRole ? curves['all'] : undefined;
+    if (!c) return null;
+    const mins = Object.keys(c.at).map(Number).sort((a, b) => a - b);
+    if (!mins.length || minute < mins[0]! || minute > mins[mins.length - 1]!) return null;
+    const hi = mins.find((m) => m >= minute)!;
+    const lo = [...mins].reverse().find((m) => m <= minute)!;
+    const a = c.at[String(lo)]!;
+    const b = c.at[String(hi)]!;
+    const t = hi === lo ? 0 : (minute - lo) / (hi - lo);
+    const v = (i: number) => (a[i] == null || b[i] == null ? null : Math.round(a[i]! + (b[i]! - a[i]!) * t));
+    return { lh50: v(0), lh75: v(1), gold50: v(2), gold75: v(3), xp50: v(4), xp75: v(5), n: c.n, position: c === byPos ? position : null };
+  }
+
   /** Составная часть другого предмета (её саму в сборке не советуем); дорогие (≥ 2000) — исключение: Blink и т. п. */
   isComponent(key: string): boolean {
     this.components ??= new Set(this.data.items.flatMap((i) => i.components));

@@ -1,6 +1,7 @@
 // D. Фарм и экономика: GPM/XPM против ориентиров, простой, непотраченное золото и следующий предмет,
 // тайминги предметов, очки навыков, ТП, варды, нейтральный предмет, маршрут фарма.
 import { TP_ITEMS } from '../data.ts';
+import { enemyThreats } from '../../draft/index.ts';
 import { hasItem, nearEnemyCount, tpReady } from '../memory.ts';
 import { actionChoice, nearEnemies } from '../prob.ts';
 import { isOwnBase } from '../geo.ts';
@@ -16,8 +17,27 @@ export const IDLE_SEC = 20;
 export const EARLY_ITEM_COST = 1500;
 export const EARLY_ITEM_LATE_MIN = 6;
 
-/** Следующий предмет сборки (профи патча), которого у героя ещё нет; ранние дешёвые, чьё время прошло, пропускаются */
-export function nextItem(c: RuleContext): { key: string; name: string; cost: number | null; medianMin: number; share: number; source: 'pro' | 'popular' } | null {
+/** Предмет против угрозы врагов берётся вперёд, если он среди стольких ближайших предметов сборки */
+export const COUNTER_LOOKAHEAD = 3;
+
+export interface NextItem {
+  key: string;
+  name: string;
+  cost: number | null;
+  medianMin: number;
+  share: number;
+  source: 'pro' | 'popular';
+  /** Взят вперёд против угрозы врагов: что за угроза и у кого */
+  vs: { threatRu: string; heroes: string[] } | null;
+}
+
+/**
+ * Следующий предмет сборки (что реально покупают профи на этом герое), которого у героя ещё нет; ранние дешёвые, чьё
+ * время прошло, пропускаются. Поправка на врагов: если среди ближайших предметов сборки есть предмет против угрозы
+ * вражеской команды (Mjollnir против иллюзий и т. п.), он идёт первым — но только из сборки профи этого героя, а не
+ * «Radiance любому кору против Phantom Lancer».
+ */
+export function nextItem(c: RuleContext): NextItem | null {
   const hero = c.v.me.hero.value;
   if (!hero) return null;
   const owned = new Set([...c.mem.items.keys(), ...c.v.me.items.map((i) => i.key)]);
@@ -25,8 +45,17 @@ export function nextItem(c: RuleContext): { key: string; name: string; cost: num
   // Минуты сборки — из обычных матчей; в Турбо игра идёт примерно вдвое быстрее (золото и опыт ×2)
   const scale = c.look.isTurbo ? 0.5 : 1;
   const passed = (x: { key: string; medianMin: number }) => (c.look.itemCost(x.key) ?? Infinity) < EARLY_ITEM_COST && min > x.medianMin * scale + EARLY_ITEM_LATE_MIN;
-  const b = c.look.buildFor(hero.id, hero.key).find((x) => !owned.has(x.key) && !passed(x));
-  return b ? { key: b.key, name: c.look.itemName(b.key), cost: c.look.itemCost(b.key), medianMin: b.medianMin, share: b.share, source: b.source } : null;
+  const left = c.look.buildFor(hero.id, hero.key).filter((x) => !owned.has(x.key) && !passed(x));
+  const out = (b: (typeof left)[number], vs: NextItem['vs']): NextItem => ({ key: b.key, name: c.look.itemName(b.key), cost: c.look.itemCost(b.key), medianMin: b.medianMin, share: b.share, source: b.source, vs });
+  const enemies = [...new Set(c.v.enemies.map((e) => e.hero.value).filter((k): k is string => !!k))];
+  if (enemies.length) {
+    const soon = left.slice(0, COUNTER_LOOKAHEAD);
+    for (const t of enemyThreats(enemies, c.look.invisHeroes)) {
+      const b = soon.find((x) => t.threat.items.some((it) => it.key === x.key));
+      if (b) return out(b, { threatRu: t.threat.nameRu, heroes: t.heroes });
+    }
+  }
+  return left[0] ? out(left[0], null) : null;
 }
 
 export const gpmRule: Rule = (c) => {
@@ -108,10 +137,11 @@ export const nextItemRule: Rule = (c) => {
     category: 'economy',
     priority: 'info',
     confidence: 0.7,
-    short: `Дальше: ${next.name}`,
+    short: next.vs ? `Дальше: ${next.name} — против ${c.look.heroName(next.vs.heroes[0]!)}` : `Дальше: ${next.name}`,
     // Минута профи — из обычных матчей; в Турбо её не называем
-    normal:
-      next.source === 'pro' && c.look.hasNorms
+    normal: next.vs
+      ? `Следующий предмет: ${next.name} — у врагов ${next.vs.threatRu} (${next.vs.heroes.map((h) => c.look.heroName(h)).join(', ')}); профи на этом герое его тоже собирают.`
+      : next.source === 'pro' && c.look.hasNorms
         ? `Следующий предмет: ${next.name} — профи патча берут его к ${Math.round(next.medianMin)} мин.`
         : `Следующий предмет: ${next.name} — его чаще всего собирают на этом герое.`,
     facts: [kbFact('next-item', 'Следующий предмет (профи патча)', next.name, false, 'stats'), ...(c.look.hasNorms ? [kbFact('median-min', 'Обычно к минуте', next.medianMin, false, 'stats')] : [])],

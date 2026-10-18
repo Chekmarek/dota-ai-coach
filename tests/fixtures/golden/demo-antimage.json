@@ -2762,6 +2762,165 @@
   }
  },
  {
+  "t": 1791911947432,
+  "tick": {
+   "wallMs": 1791911947432,
+   "shown": [
+    {
+     "id": "laning.bench",
+     "ruleId": "laning.bench",
+     "category": "laning",
+     "priority": "info",
+     "confidence": 0.75,
+     "short": "Добивания 0 к 5:00, у профи ~25",
+     "detail": {
+      "normal": "Добивания: 0 к 5:00, у профи на antimage (позиция 1) обычно ~25. Добивайте крипов: не пропускайте волны между драками.",
+      "detailed": "Добивания: 0 к 5:00, у профи на antimage (позиция 1) обычно ~25. Добивайте крипов: не пропускайте волны между драками. · Добиваний: 0 (игра, 0 с) · Золота заработано (GPM × минуты): 100445 (вывод, 0 с) · Добивания профи к 5:00, медиана: 25 (статистика патча, не проверено) · Золото профи к 5:00, медиана: 1686 (статистика патча, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "lh",
+       "label": "Добиваний",
+       "value": 0,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      },
+      {
+       "key": "gold-earned",
+       "label": "Золота заработано (GPM × минуты)",
+       "value": 100445,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.8,
+       "verified": true
+      },
+      {
+       "key": "pro-lh",
+       "label": "Добивания профи к 5:00, медиана",
+       "value": 25,
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      },
+      {
+       "key": "pro-gold",
+       "label": "Золото профи к 5:00, медиана",
+       "value": 1686,
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 0,
+     "zone": "decision",
+     "icon": null,
+     "seq": 8,
+     "createdWallMs": 1791911947432,
+     "expiresWallMs": 1791911957432,
+     "clock": 300.224,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "economy.skill",
+    "economy.gold",
+    "economy.idle",
+    "laning.bench"
+   ]
+  }
+ },
+ {
+  "t": 1791911957552,
+  "tick": {
+   "wallMs": 1791911957552,
+   "shown": [],
+   "expired": [
+    {
+     "id": "laning.bench",
+     "ruleId": "laning.bench",
+     "category": "laning",
+     "priority": "info",
+     "confidence": 0.75,
+     "short": "Добивания 0 к 5:00, у профи ~25",
+     "detail": {
+      "normal": "Добивания: 0 к 5:00, у профи на antimage (позиция 1) обычно ~25. Добивайте крипов: не пропускайте волны между драками.",
+      "detailed": "Добивания: 0 к 5:00, у профи на antimage (позиция 1) обычно ~25. Добивайте крипов: не пропускайте волны между драками. · Добиваний: 0 (игра, 0 с) · Золота заработано (GPM × минуты): 100445 (вывод, 0 с) · Добивания профи к 5:00, медиана: 25 (статистика патча, не проверено) · Золото профи к 5:00, медиана: 1686 (статистика патча, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "lh",
+       "label": "Добиваний",
+       "value": 0,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      },
+      {
+       "key": "gold-earned",
+       "label": "Золота заработано (GPM × минуты)",
+       "value": 100445,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.8,
+       "verified": true
+      },
+      {
+       "key": "pro-lh",
+       "label": "Добивания профи к 5:00, медиана",
+       "value": 25,
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      },
+      {
+       "key": "pro-gold",
+       "label": "Золото профи к 5:00, медиана",
+       "value": 1686,
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 0,
+     "zone": "decision",
+     "icon": null,
+     "seq": 8,
+     "createdWallMs": 1791911947432,
+     "expiresWallMs": 1791911957432,
+     "clock": 300.224,
+     "textSource": "template"
+    }
+   ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "economy.skill",
+    "economy.gold",
+    "economy.idle"
+   ]
+  }
+ },
+ {
   "t": 1791912000520,
   "aiContext": {
    "schema": "dota-coach.ai-context",
@@ -4869,6 +5028,165 @@
      }
     ]
    }
+  }
+ },
+ {
+  "t": 1791912247455,
+  "tick": {
+   "wallMs": 1791912247455,
+   "shown": [
+    {
+     "id": "laning.bench",
+     "ruleId": "laning.bench",
+     "category": "laning",
+     "priority": "info",
+     "confidence": 0.75,
+     "short": "Добивания 0 к 10:00, у профи ~62",
+     "detail": {
+      "normal": "Добивания: 0 к 10:00, у профи на antimage (позиция 1) обычно ~62. Добивайте крипов: не пропускайте волны между драками.",
+      "detailed": "Добивания: 0 к 10:00, у профи на antimage (позиция 1) обычно ~62. Добивайте крипов: не пропускайте волны между драками. · Добиваний: 0 (игра, 0 с) · Золота заработано (GPM × минуты): 100892 (вывод, 0 с) · Добивания профи к 10:00, медиана: 62 (статистика патча, не проверено) · Золото профи к 10:00, медиана: 4034 (статистика патча, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "lh",
+       "label": "Добиваний",
+       "value": 0,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      },
+      {
+       "key": "gold-earned",
+       "label": "Золота заработано (GPM × минуты)",
+       "value": 100892,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.8,
+       "verified": true
+      },
+      {
+       "key": "pro-lh",
+       "label": "Добивания профи к 10:00, медиана",
+       "value": 62,
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      },
+      {
+       "key": "pro-gold",
+       "label": "Золото профи к 10:00, медиана",
+       "value": 4034,
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 0,
+     "zone": "decision",
+     "icon": null,
+     "seq": 9,
+     "createdWallMs": 1791912247455,
+     "expiresWallMs": 1791912257455,
+     "clock": 600.2470000000001,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "economy.skill",
+    "economy.gold",
+    "economy.idle",
+    "laning.bench"
+   ]
+  }
+ },
+ {
+  "t": 1791912257698,
+  "tick": {
+   "wallMs": 1791912257698,
+   "shown": [],
+   "expired": [
+    {
+     "id": "laning.bench",
+     "ruleId": "laning.bench",
+     "category": "laning",
+     "priority": "info",
+     "confidence": 0.75,
+     "short": "Добивания 0 к 10:00, у профи ~62",
+     "detail": {
+      "normal": "Добивания: 0 к 10:00, у профи на antimage (позиция 1) обычно ~62. Добивайте крипов: не пропускайте волны между драками.",
+      "detailed": "Добивания: 0 к 10:00, у профи на antimage (позиция 1) обычно ~62. Добивайте крипов: не пропускайте волны между драками. · Добиваний: 0 (игра, 0 с) · Золота заработано (GPM × минуты): 100892 (вывод, 0 с) · Добивания профи к 10:00, медиана: 62 (статистика патча, не проверено) · Золото профи к 10:00, медиана: 4034 (статистика патча, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "lh",
+       "label": "Добиваний",
+       "value": 0,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      },
+      {
+       "key": "gold-earned",
+       "label": "Золота заработано (GPM × минуты)",
+       "value": 100892,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.8,
+       "verified": true
+      },
+      {
+       "key": "pro-lh",
+       "label": "Добивания профи к 10:00, медиана",
+       "value": 62,
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      },
+      {
+       "key": "pro-gold",
+       "label": "Золото профи к 10:00, медиана",
+       "value": 4034,
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 0,
+     "zone": "decision",
+     "icon": null,
+     "seq": 9,
+     "createdWallMs": 1791912247455,
+     "expiresWallMs": 1791912257455,
+     "clock": 600.2470000000001,
+     "textSource": "template"
+    }
+   ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "economy.skill",
+    "economy.gold",
+    "economy.idle"
+   ]
   }
  },
  {
@@ -6982,6 +7300,165 @@
   }
  },
  {
+  "t": 1791912547266,
+  "tick": {
+   "wallMs": 1791912547266,
+   "shown": [
+    {
+     "id": "laning.bench",
+     "ruleId": "laning.bench",
+     "category": "laning",
+     "priority": "info",
+     "confidence": 0.75,
+     "short": "Добивания 0 к 15:00, у профи ~114",
+     "detail": {
+      "normal": "Добивания: 0 к 15:00, у профи на antimage (позиция 1) обычно ~114. Добивайте крипов: не пропускайте волны между драками.",
+      "detailed": "Добивания: 0 к 15:00, у профи на antimage (позиция 1) обычно ~114. Добивайте крипов: не пропускайте волны между драками. · Добиваний: 0 (игра, 0 с) · Золота заработано (GPM × минуты): 101361 (вывод, 0 с) · Добивания профи к 15:00, медиана: 114 (статистика патча, не проверено) · Золото профи к 15:00, медиана: 6718 (статистика патча, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "lh",
+       "label": "Добиваний",
+       "value": 0,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      },
+      {
+       "key": "gold-earned",
+       "label": "Золота заработано (GPM × минуты)",
+       "value": 101361,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.8,
+       "verified": true
+      },
+      {
+       "key": "pro-lh",
+       "label": "Добивания профи к 15:00, медиана",
+       "value": 114,
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      },
+      {
+       "key": "pro-gold",
+       "label": "Золото профи к 15:00, медиана",
+       "value": 6718,
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 0,
+     "zone": "decision",
+     "icon": null,
+     "seq": 10,
+     "createdWallMs": 1791912547266,
+     "expiresWallMs": 1791912557266,
+     "clock": 900.049,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "economy.skill",
+    "economy.gold",
+    "economy.idle",
+    "laning.bench"
+   ]
+  }
+ },
+ {
+  "t": 1791912557461,
+  "tick": {
+   "wallMs": 1791912557461,
+   "shown": [],
+   "expired": [
+    {
+     "id": "laning.bench",
+     "ruleId": "laning.bench",
+     "category": "laning",
+     "priority": "info",
+     "confidence": 0.75,
+     "short": "Добивания 0 к 15:00, у профи ~114",
+     "detail": {
+      "normal": "Добивания: 0 к 15:00, у профи на antimage (позиция 1) обычно ~114. Добивайте крипов: не пропускайте волны между драками.",
+      "detailed": "Добивания: 0 к 15:00, у профи на antimage (позиция 1) обычно ~114. Добивайте крипов: не пропускайте волны между драками. · Добиваний: 0 (игра, 0 с) · Золота заработано (GPM × минуты): 101361 (вывод, 0 с) · Добивания профи к 15:00, медиана: 114 (статистика патча, не проверено) · Золото профи к 15:00, медиана: 6718 (статистика патча, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "lh",
+       "label": "Добиваний",
+       "value": 0,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      },
+      {
+       "key": "gold-earned",
+       "label": "Золота заработано (GPM × минуты)",
+       "value": 101361,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.8,
+       "verified": true
+      },
+      {
+       "key": "pro-lh",
+       "label": "Добивания профи к 15:00, медиана",
+       "value": 114,
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      },
+      {
+       "key": "pro-gold",
+       "label": "Золото профи к 15:00, медиана",
+       "value": 6718,
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 0,
+     "zone": "decision",
+     "icon": null,
+     "seq": 10,
+     "createdWallMs": 1791912547266,
+     "expiresWallMs": 1791912557266,
+     "clock": 900.049,
+     "textSource": "template"
+    }
+   ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "economy.skill",
+    "economy.gold",
+    "economy.idle"
+   ]
+  }
+ },
+ {
   "t": 1791912602241,
   "aiContext": {
    "schema": "dota-coach.ai-context",
@@ -8741,6 +9218,30 @@
     "kind": "hint",
     "id": "economy.idle",
     "text": "Простой 60 с — идите фармить",
+    "source": "template"
+   },
+   {
+    "wallMs": 1791911947432,
+    "clock": 300.224,
+    "kind": "hint",
+    "id": "laning.bench",
+    "text": "Добивания 0 к 5:00, у профи ~25",
+    "source": "template"
+   },
+   {
+    "wallMs": 1791912247455,
+    "clock": 600.2470000000001,
+    "kind": "hint",
+    "id": "laning.bench",
+    "text": "Добивания 0 к 10:00, у профи ~62",
+    "source": "template"
+   },
+   {
+    "wallMs": 1791912547266,
+    "clock": 900.049,
+    "kind": "hint",
+    "id": "laning.bench",
+    "text": "Добивания 0 к 15:00, у профи ~114",
     "source": "template"
    }
   ],
