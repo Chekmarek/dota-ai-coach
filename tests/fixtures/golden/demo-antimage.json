@@ -108,7 +108,7 @@
      "icon": "item:wraith_band",
      "seq": 1,
      "createdWallMs": 1791911643966,
-     "expiresWallMs": 1791911714338,
+     "expiresWallMs": 1791911653966,
      "clock": 0.591,
      "textSource": "template"
     }
@@ -125,6 +125,63 @@
   }
  },
  {
+  "t": 1791911654024,
+  "tick": {
+   "wallMs": 1791911654024,
+   "shown": [],
+   "expired": [
+    {
+     "id": "economy.next:wraith_band",
+     "ruleId": "economy.next",
+     "category": "economy",
+     "priority": "info",
+     "confidence": 0.7,
+     "short": "Дальше: Wraith Band",
+     "detail": {
+      "normal": "Следующий предмет: Wraith Band — профи патча берут его к 2 мин.",
+      "detailed": "Следующий предмет: Wraith Band — профи патча берут его к 2 мин. · Следующий предмет (профи патча): Wraith Band (статистика патча, не проверено) · Обычно к минуте: 2.4 (статистика патча, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "next-item",
+       "label": "Следующий предмет (профи патча)",
+       "value": "Wraith Band",
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      },
+      {
+       "key": "median-min",
+       "label": "Обычно к минуте",
+       "value": 2.4,
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 300000,
+     "zone": "timing",
+     "icon": "item:wraith_band",
+     "seq": 1,
+     "createdWallMs": 1791911643966,
+     "expiresWallMs": 1791911653966,
+     "clock": 0.591,
+     "textSource": "template"
+    }
+   ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": []
+  }
+ },
+ {
   "t": 1791911664088,
   "tick": {
    "wallMs": 1791911664088,
@@ -135,17 +192,17 @@
      "category": "economy",
      "priority": "advice",
      "confidence": 0.75,
-     "short": "Простой 151 с — идите фармить",
+     "short": "Простой 28 с — идите фармить",
      "detail": {
-      "normal": "Вы 151 с на одном месте без приказов. Каждая минута простоя — потерянное золото.",
-      "detailed": "Вы 151 с на одном месте без приказов. Каждая минута простоя — потерянное золото. · Без движения, с: 151 (вывод, 0 с)"
+      "normal": "Вы 28 с на одном месте без приказов. Каждая минута простоя — потерянное золото.",
+      "detailed": "Вы 28 с на одном месте без приказов. Каждая минута простоя — потерянное золото. · Без движения, с: 28 (вывод, 0 с)"
      },
      "percent": null,
      "facts": [
       {
        "key": "idle",
        "label": "Без движения, с",
-       "value": 151,
+       "value": 28,
        "source": "derived",
        "ageSec": 0,
        "confidence": 0.75,
@@ -158,7 +215,7 @@
      "icon": null,
      "seq": 2,
      "createdWallMs": 1791911664088,
-     "expiresWallMs": 1791911802696,
+     "expiresWallMs": 1791911672088,
      "clock": 20.834,
      "textSource": "template"
     }
@@ -170,9 +227,56 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "economy.idle",
-    "economy.next:wraith_band"
+    "economy.idle"
    ]
+  }
+ },
+ {
+  "t": 1791911672289,
+  "tick": {
+   "wallMs": 1791911672289,
+   "shown": [],
+   "expired": [
+    {
+     "id": "economy.idle",
+     "ruleId": "economy.idle",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.75,
+     "short": "Простой 28 с — идите фармить",
+     "detail": {
+      "normal": "Вы 28 с на одном месте без приказов. Каждая минута простоя — потерянное золото.",
+      "detailed": "Вы 28 с на одном месте без приказов. Каждая минута простоя — потерянное золото. · Без движения, с: 28 (вывод, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "idle",
+       "label": "Без движения, с",
+       "value": 28,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.75,
+       "verified": true
+      }
+     ],
+     "ttlMs": 8000,
+     "cooldownMs": 60000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 2,
+     "createdWallMs": 1791911664088,
+     "expiresWallMs": 1791911672088,
+     "clock": 20.834,
+     "textSource": "template"
+    }
+   ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": []
   }
  },
  {
@@ -188,15 +292,15 @@
      "confidence": 0.6,
      "short": "Очко навыка: Mana Break",
      "detail": {
-      "normal": "Неиспользованных очков: 2. На 3 уровне профи патча чаще берут Mana Break.",
-      "detailed": "Неиспользованных очков: 2. На 3 уровне профи патча чаще берут Mana Break. · Свободных очков: 2 (вывод, 0 с) · Навык 3 уровня (профи патча): Mana Break (статистика патча, не проверено)"
+      "normal": "Неиспользованных очков: 1. На 1 уровне профи патча чаще берут Mana Break.",
+      "detailed": "Неиспользованных очков: 1. На 1 уровне профи патча чаще берут Mana Break. · Свободных очков: 1 (вывод, 0 с) · Навык 1 уровня (профи патча): Mana Break (статистика патча, не проверено)"
      },
      "percent": null,
      "facts": [
       {
        "key": "unspent",
        "label": "Свободных очков",
-       "value": 2,
+       "value": 1,
        "source": "derived",
        "ageSec": 0,
        "confidence": 0.6,
@@ -204,7 +308,7 @@
       },
       {
        "key": "skill",
-       "label": "Навык 3 уровня (профи патча)",
+       "label": "Навык 1 уровня (профи патча)",
        "value": "Mana Break",
        "source": "stats",
        "ageSec": null,
@@ -218,7 +322,7 @@
      "icon": null,
      "seq": 3,
      "createdWallMs": 1791911684386,
-     "expiresWallMs": 1791912803995,
+     "expiresWallMs": 1791911694386,
      "clock": 41.132000000000005,
      "textSource": "template"
     }
@@ -230,10 +334,65 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "economy.idle",
-    "economy.skill",
-    "economy.next:wraith_band"
+    "economy.skill"
    ]
+  }
+ },
+ {
+  "t": 1791911694578,
+  "tick": {
+   "wallMs": 1791911694578,
+   "shown": [],
+   "expired": [
+    {
+     "id": "economy.skill",
+     "ruleId": "economy.skill",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.6,
+     "short": "Очко навыка: Mana Break",
+     "detail": {
+      "normal": "Неиспользованных очков: 1. На 1 уровне профи патча чаще берут Mana Break.",
+      "detailed": "Неиспользованных очков: 1. На 1 уровне профи патча чаще берут Mana Break. · Свободных очков: 1 (вывод, 0 с) · Навык 1 уровня (профи патча): Mana Break (статистика патча, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "unspent",
+       "label": "Свободных очков",
+       "value": 1,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.6,
+       "verified": true
+      },
+      {
+       "key": "skill",
+       "label": "Навык 1 уровня (профи патча)",
+       "value": "Mana Break",
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 45000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 3,
+     "createdWallMs": 1791911684386,
+     "expiresWallMs": 1791911694386,
+     "clock": 41.132000000000005,
+     "textSource": "template"
+    }
+   ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": []
   }
  },
  {
@@ -669,10 +828,10 @@
      "category": "economy",
      "priority": "advice",
      "confidence": 0.8,
-     "short": "Золото 99999: купите Battle Fury",
+     "short": "Золото 99999: купите Wraith Band",
      "detail": {
-      "normal": "99999 золота лежит без дела. Следующий предмет по сборке профи патча — Battle Fury (3900).",
-      "detailed": "99999 золота лежит без дела. Следующий предмет по сборке профи патча — Battle Fury (3900). · Золото: 99999 (игра, 0 с) · Следующий предмет (профи патча): Battle Fury (статистика патча, не проверено) · Цена: 3900 (база, не проверено)"
+      "normal": "99999 золота лежит без дела. Следующий предмет по сборке профи патча — Wraith Band (505).",
+      "detailed": "99999 золота лежит без дела. Следующий предмет по сборке профи патча — Wraith Band (505). · Золото: 99999 (игра, 0 с) · Следующий предмет (профи патча): Wraith Band (статистика патча, не проверено) · Цена: 505 (база, не проверено)"
      },
      "percent": null,
      "facts": [
@@ -688,7 +847,7 @@
       {
        "key": "next-item",
        "label": "Следующий предмет (профи патча)",
-       "value": "Battle Fury",
+       "value": "Wraith Band",
        "source": "stats",
        "ageSec": null,
        "confidence": 1,
@@ -697,7 +856,7 @@
       {
        "key": "item-cost",
        "label": "Цена",
-       "value": 3900,
+       "value": 505,
        "source": "kb",
        "ageSec": null,
        "confidence": 1,
@@ -707,10 +866,10 @@
      "ttlMs": 10000,
      "cooldownMs": 90000,
      "zone": "timing",
-     "icon": "item:bfury",
+     "icon": "item:wraith_band",
      "seq": 4,
      "createdWallMs": 1791911704620,
-     "expiresWallMs": 1791912803995,
+     "expiresWallMs": 1791911714620,
      "clock": 61.366,
      "textSource": "template"
     }
@@ -722,9 +881,123 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "economy.idle",
-    "economy.skill",
     "economy.gold"
+   ]
+  }
+ },
+ {
+  "t": 1791911718403,
+  "tick": {
+   "wallMs": 1791911718403,
+   "shown": [],
+   "expired": [
+    {
+     "id": "economy.gold",
+     "ruleId": "economy.gold",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.8,
+     "short": "Золото 99999: купите Wraith Band",
+     "detail": {
+      "normal": "99999 золота лежит без дела. Следующий предмет по сборке профи патча — Wraith Band (505).",
+      "detailed": "99999 золота лежит без дела. Следующий предмет по сборке профи патча — Wraith Band (505). · Золото: 99999 (игра, 0 с) · Следующий предмет (профи патча): Wraith Band (статистика патча, не проверено) · Цена: 505 (база, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "gold",
+       "label": "Золото",
+       "value": 99999,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      },
+      {
+       "key": "next-item",
+       "label": "Следующий предмет (профи патча)",
+       "value": "Wraith Band",
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      },
+      {
+       "key": "item-cost",
+       "label": "Цена",
+       "value": 505,
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 90000,
+     "zone": "timing",
+     "icon": "item:wraith_band",
+     "seq": 4,
+     "createdWallMs": 1791911704620,
+     "expiresWallMs": 1791911714620,
+     "clock": 61.366,
+     "textSource": "template"
+    }
+   ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": []
+  }
+ },
+ {
+  "t": 1791911759691,
+  "tick": {
+   "wallMs": 1791911759691,
+   "shown": [
+    {
+     "id": "economy.idle",
+     "ruleId": "economy.idle",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.75,
+     "short": "Простой 124 с — идите фармить",
+     "detail": {
+      "normal": "Вы 124 с на одном месте без приказов. Каждая минута простоя — потерянное золото.",
+      "detailed": "Вы 124 с на одном месте без приказов. Каждая минута простоя — потерянное золото. · Без движения, с: 124 (вывод, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "idle",
+       "label": "Без движения, с",
+       "value": 124,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.75,
+       "verified": true
+      }
+     ],
+     "ttlMs": 8000,
+     "cooldownMs": 60000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 5,
+     "createdWallMs": 1791911759691,
+     "expiresWallMs": 1791911767691,
+     "clock": 110,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "economy.idle"
    ]
   }
  },
@@ -1155,7 +1428,41 @@
   "tick": {
    "wallMs": 1791911767944,
    "shown": [],
-   "expired": [],
+   "expired": [
+    {
+     "id": "economy.idle",
+     "ruleId": "economy.idle",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.75,
+     "short": "Простой 124 с — идите фармить",
+     "detail": {
+      "normal": "Вы 124 с на одном месте без приказов. Каждая минута простоя — потерянное золото.",
+      "detailed": "Вы 124 с на одном месте без приказов. Каждая минута простоя — потерянное золото. · Без движения, с: 124 (вывод, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "idle",
+       "label": "Без движения, с",
+       "value": 124,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.75,
+       "verified": true
+      }
+     ],
+     "ttlMs": 8000,
+     "cooldownMs": 60000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 5,
+     "createdWallMs": 1791911759691,
+     "expiresWallMs": 1791911767691,
+     "clock": 110,
+     "textSource": "template"
+    }
+   ],
    "changed": [],
    "mistakes": [
     {
@@ -1182,11 +1489,123 @@
    "deathReview": null,
    "matchReview": null,
    "inFight": false,
+   "visible": []
+  }
+ },
+ {
+  "t": 1791911779794,
+  "tick": {
+   "wallMs": 1791911779794,
+   "shown": [
+    {
+     "id": "economy.skill",
+     "ruleId": "economy.skill",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.6,
+     "short": "Очко навыка: Blink",
+     "detail": {
+      "normal": "Неиспользованных очков: 2. На 2 уровне профи патча чаще берут Blink.",
+      "detailed": "Неиспользованных очков: 2. На 2 уровне профи патча чаще берут Blink. · Свободных очков: 2 (вывод, 0 с) · Навык 2 уровня (профи патча): Blink (статистика патча, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "unspent",
+       "label": "Свободных очков",
+       "value": 2,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.6,
+       "verified": true
+      },
+      {
+       "key": "skill",
+       "label": "Навык 2 уровня (профи патча)",
+       "value": "Blink",
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 45000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 6,
+     "createdWallMs": 1791911779794,
+     "expiresWallMs": 1791911789794,
+     "clock": 132.553,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
    "visible": [
-    "economy.idle",
-    "economy.skill",
-    "economy.gold"
+    "economy.skill"
    ]
+  }
+ },
+ {
+  "t": 1791911789894,
+  "tick": {
+   "wallMs": 1791911789894,
+   "shown": [],
+   "expired": [
+    {
+     "id": "economy.skill",
+     "ruleId": "economy.skill",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.6,
+     "short": "Очко навыка: Blink",
+     "detail": {
+      "normal": "Неиспользованных очков: 2. На 2 уровне профи патча чаще берут Blink.",
+      "detailed": "Неиспользованных очков: 2. На 2 уровне профи патча чаще берут Blink. · Свободных очков: 2 (вывод, 0 с) · Навык 2 уровня (профи патча): Blink (статистика патча, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "unspent",
+       "label": "Свободных очков",
+       "value": 2,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.6,
+       "verified": true
+      },
+      {
+       "key": "skill",
+       "label": "Навык 2 уровня (профи патча)",
+       "value": "Blink",
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 45000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 6,
+     "createdWallMs": 1791911779794,
+     "expiresWallMs": 1791911789794,
+     "clock": 132.553,
+     "textSource": "template"
+    }
+   ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": []
   }
  },
  {
@@ -1221,60 +1640,73 @@
    "deathReview": null,
    "matchReview": null,
    "inFight": false,
-   "visible": [
-    "economy.idle",
-    "economy.skill",
-    "economy.gold"
-   ]
+   "visible": []
   }
  },
  {
-  "t": 1791911802862,
+  "t": 1791911808660,
   "tick": {
-   "wallMs": 1791911802862,
-   "shown": [],
-   "expired": [
+   "wallMs": 1791911808660,
+   "shown": [
     {
-     "id": "economy.idle",
-     "ruleId": "economy.idle",
+     "id": "economy.gold",
+     "ruleId": "economy.gold",
      "category": "economy",
      "priority": "advice",
-     "confidence": 0.75,
-     "short": "Простой 151 с — идите фармить",
+     "confidence": 0.8,
+     "short": "Золото 99999: купите Wraith Band",
      "detail": {
-      "normal": "Вы 151 с на одном месте без приказов. Каждая минута простоя — потерянное золото.",
-      "detailed": "Вы 151 с на одном месте без приказов. Каждая минута простоя — потерянное золото. · Без движения, с: 151 (вывод, 0 с)"
+      "normal": "99999 золота лежит без дела. Следующий предмет по сборке профи патча — Wraith Band (505).",
+      "detailed": "99999 золота лежит без дела. Следующий предмет по сборке профи патча — Wraith Band (505). · Золото: 99999 (игра, 0 с) · Следующий предмет (профи патча): Wraith Band (статистика патча, не проверено) · Цена: 505 (база, не проверено)"
      },
      "percent": null,
      "facts": [
       {
-       "key": "idle",
-       "label": "Без движения, с",
-       "value": 151,
-       "source": "derived",
+       "key": "gold",
+       "label": "Золото",
+       "value": 99999,
+       "source": "gsi",
        "ageSec": 0,
-       "confidence": 0.75,
+       "confidence": 1,
        "verified": true
+      },
+      {
+       "key": "next-item",
+       "label": "Следующий предмет (профи патча)",
+       "value": "Wraith Band",
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      },
+      {
+       "key": "item-cost",
+       "label": "Цена",
+       "value": 505,
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
       }
      ],
-     "ttlMs": 8000,
-     "cooldownMs": 60000,
+     "ttlMs": 10000,
+     "cooldownMs": 90000,
      "zone": "timing",
-     "icon": null,
-     "seq": 2,
-     "createdWallMs": 1791911664088,
-     "expiresWallMs": 1791911802696,
-     "clock": 20.834,
+     "icon": "item:wraith_band",
+     "seq": 7,
+     "createdWallMs": 1791911808660,
+     "expiresWallMs": 1791911818660,
+     "clock": 161.445,
      "textSource": "template"
     }
    ],
+   "expired": [],
    "changed": [],
    "mistakes": [],
    "deathReview": null,
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "economy.skill",
     "economy.gold"
    ]
   }
@@ -1311,7 +1743,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 5,
+     "seq": 8,
      "createdWallMs": 1791911812249,
      "expiresWallMs": 1791911820249,
      "clock": 165.034,
@@ -1325,8 +1757,75 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "economy.skill",
     "economy.gold",
+    "timing.lotus"
+   ]
+  }
+ },
+ {
+  "t": 1791911818770,
+  "tick": {
+   "wallMs": 1791911818770,
+   "shown": [],
+   "expired": [
+    {
+     "id": "economy.gold",
+     "ruleId": "economy.gold",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.8,
+     "short": "Золото 99999: купите Wraith Band",
+     "detail": {
+      "normal": "99999 золота лежит без дела. Следующий предмет по сборке профи патча — Wraith Band (505).",
+      "detailed": "99999 золота лежит без дела. Следующий предмет по сборке профи патча — Wraith Band (505). · Золото: 99999 (игра, 0 с) · Следующий предмет (профи патча): Wraith Band (статистика патча, не проверено) · Цена: 505 (база, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "gold",
+       "label": "Золото",
+       "value": 99999,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      },
+      {
+       "key": "next-item",
+       "label": "Следующий предмет (профи патча)",
+       "value": "Wraith Band",
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      },
+      {
+       "key": "item-cost",
+       "label": "Цена",
+       "value": 505,
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 90000,
+     "zone": "timing",
+     "icon": "item:wraith_band",
+     "seq": 7,
+     "createdWallMs": 1791911808660,
+     "expiresWallMs": 1791911818660,
+     "clock": 161.445,
+     "textSource": "template"
+    }
+   ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
     "timing.lotus"
    ]
   }
@@ -1786,7 +2285,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 5,
+     "seq": 8,
      "createdWallMs": 1791911812249,
      "expiresWallMs": 1791911820249,
      "clock": 165.034,
@@ -1798,16 +2297,227 @@
    "deathReview": null,
    "matchReview": null,
    "inFight": false,
+   "visible": []
+  }
+ },
+ {
+  "t": 1791911828954,
+  "tick": {
+   "wallMs": 1791911828954,
+   "shown": [
+    {
+     "id": "economy.idle",
+     "ruleId": "economy.idle",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.75,
+     "short": "Простой 42 с — идите фармить",
+     "detail": {
+      "normal": "Вы 42 с на одном месте без приказов. Каждая минута простоя — потерянное золото.",
+      "detailed": "Вы 42 с на одном месте без приказов. Каждая минута простоя — потерянное золото. · Без движения, с: 42 (вывод, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "idle",
+       "label": "Без движения, с",
+       "value": 42,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.75,
+       "verified": true
+      }
+     ],
+     "ttlMs": 8000,
+     "cooldownMs": 60000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 9,
+     "createdWallMs": 1791911828954,
+     "expiresWallMs": 1791911836954,
+     "clock": 181.739,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
    "visible": [
-    "economy.skill",
-    "economy.gold"
+    "economy.idle"
    ]
   }
  },
  {
-  "t": 1791911827458,
+  "t": 1791911837136,
   "tick": {
-   "wallMs": 1791911827458,
+   "wallMs": 1791911837136,
+   "shown": [],
+   "expired": [
+    {
+     "id": "economy.idle",
+     "ruleId": "economy.idle",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.75,
+     "short": "Простой 42 с — идите фармить",
+     "detail": {
+      "normal": "Вы 42 с на одном месте без приказов. Каждая минута простоя — потерянное золото.",
+      "detailed": "Вы 42 с на одном месте без приказов. Каждая минута простоя — потерянное золото. · Без движения, с: 42 (вывод, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "idle",
+       "label": "Без движения, с",
+       "value": 42,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.75,
+       "verified": true
+      }
+     ],
+     "ttlMs": 8000,
+     "cooldownMs": 60000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 9,
+     "createdWallMs": 1791911828954,
+     "expiresWallMs": 1791911836954,
+     "clock": 181.739,
+     "textSource": "template"
+    }
+   ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": []
+  }
+ },
+ {
+  "t": 1791911849045,
+  "tick": {
+   "wallMs": 1791911849045,
+   "shown": [
+    {
+     "id": "economy.skill",
+     "ruleId": "economy.skill",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.6,
+     "short": "Очко навыка: Mana Break",
+     "detail": {
+      "normal": "Неиспользованных очков: 2. На 3 уровне профи патча чаще берут Mana Break.",
+      "detailed": "Неиспользованных очков: 2. На 3 уровне профи патча чаще берут Mana Break. · Свободных очков: 2 (вывод, 0 с) · Навык 3 уровня (профи патча): Mana Break (статистика патча, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "unspent",
+       "label": "Свободных очков",
+       "value": 2,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.6,
+       "verified": true
+      },
+      {
+       "key": "skill",
+       "label": "Навык 3 уровня (профи патча)",
+       "value": "Mana Break",
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 45000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 10,
+     "createdWallMs": 1791911849045,
+     "expiresWallMs": 1791911859045,
+     "clock": 201.837,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "economy.skill"
+   ]
+  }
+ },
+ {
+  "t": 1791911859168,
+  "tick": {
+   "wallMs": 1791911859168,
+   "shown": [],
+   "expired": [
+    {
+     "id": "economy.skill",
+     "ruleId": "economy.skill",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.6,
+     "short": "Очко навыка: Mana Break",
+     "detail": {
+      "normal": "Неиспользованных очков: 2. На 3 уровне профи патча чаще берут Mana Break.",
+      "detailed": "Неиспользованных очков: 2. На 3 уровне профи патча чаще берут Mana Break. · Свободных очков: 2 (вывод, 0 с) · Навык 3 уровня (профи патча): Mana Break (статистика патча, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "unspent",
+       "label": "Свободных очков",
+       "value": 2,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.6,
+       "verified": true
+      },
+      {
+       "key": "skill",
+       "label": "Навык 3 уровня (профи патча)",
+       "value": "Mana Break",
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 45000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 10,
+     "createdWallMs": 1791911849045,
+     "expiresWallMs": 1791911859045,
+     "clock": 201.837,
+     "textSource": "template"
+    }
+   ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": []
+  }
+ },
+ {
+  "t": 1791911869260,
+  "tick": {
+   "wallMs": 1791911869260,
    "shown": [
     {
      "id": "economy.neutral",
@@ -1845,10 +2555,10 @@
      "cooldownMs": 300000,
      "zone": "timing",
      "icon": null,
-     "seq": 6,
-     "createdWallMs": 1791911827458,
-     "expiresWallMs": 1791911864546,
-     "clock": 180.243,
+     "seq": 11,
+     "createdWallMs": 1791911869260,
+     "expiresWallMs": 1791911879260,
+     "clock": 222.052,
      "textSource": "template"
     }
    ],
@@ -1859,62 +2569,65 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "economy.skill",
-    "economy.gold",
     "economy.neutral"
    ]
   }
  },
  {
-  "t": 1791911854863,
+  "t": 1791911879467,
   "tick": {
-   "wallMs": 1791911854863,
-   "shown": [
+   "wallMs": 1791911879467,
+   "shown": [],
+   "expired": [
     {
-     "id": "economy.idle",
-     "ruleId": "economy.idle",
+     "id": "economy.neutral",
+     "ruleId": "economy.neutral",
      "category": "economy",
-     "priority": "advice",
-     "confidence": 0.75,
-     "short": "Простой 999 с — идите фармить",
+     "priority": "info",
+     "confidence": 0.8,
+     "short": "Пустой слот нейтрального предмета",
      "detail": {
-      "normal": "Вы 999 с на одном месте без приказов. Каждая минута простоя — потерянное золото.",
-      "detailed": "Вы 999 с на одном месте без приказов. Каждая минута простоя — потерянное золото. · Без движения, с: 999 (вывод, 0 с)"
+      "normal": "Слот нейтрального предмета пуст — выберите предмет текущего уровня.",
+      "detailed": "Слот нейтрального предмета пуст — выберите предмет текущего уровня. · Нейтральный слот: пусто (игра, 0 с) · Нейтральные предметы с, с: 0 (база)"
      },
      "percent": null,
      "facts": [
       {
-       "key": "idle",
-       "label": "Без движения, с",
-       "value": 999,
-       "source": "derived",
+       "key": "neutral",
+       "label": "Нейтральный слот",
+       "value": "пусто",
+       "source": "gsi",
        "ageSec": 0,
-       "confidence": 0.75,
+       "confidence": 1,
+       "verified": true
+      },
+      {
+       "key": "neutral-t1",
+       "label": "Нейтральные предметы с, с",
+       "value": 0,
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
        "verified": true
       }
      ],
-     "ttlMs": 8000,
-     "cooldownMs": 60000,
+     "ttlMs": 10000,
+     "cooldownMs": 300000,
      "zone": "timing",
      "icon": null,
-     "seq": 7,
-     "createdWallMs": 1791911854863,
-     "expiresWallMs": 1791912801995,
-     "clock": 207.655,
+     "seq": 11,
+     "createdWallMs": 1791911869260,
+     "expiresWallMs": 1791911879260,
+     "clock": 222.052,
      "textSource": "template"
     }
    ],
-   "expired": [],
    "changed": [],
    "mistakes": [],
    "deathReview": null,
    "matchReview": null,
    "inFight": false,
-   "visible": [
-    "economy.skill",
-    "economy.gold",
-    "economy.idle"
-   ]
+   "visible": []
   }
  },
  {
@@ -2337,6 +3050,357 @@
      }
     ]
    }
+  }
+ },
+ {
+  "t": 1791911897293,
+  "tick": {
+   "wallMs": 1791911897293,
+   "shown": [
+    {
+     "id": "economy.idle",
+     "ruleId": "economy.idle",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.75,
+     "short": "Простой 110 с — идите фармить",
+     "detail": {
+      "normal": "Вы 110 с на одном месте без приказов. Каждая минута простоя — потерянное золото.",
+      "detailed": "Вы 110 с на одном месте без приказов. Каждая минута простоя — потерянное золото. · Без движения, с: 110 (вывод, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "idle",
+       "label": "Без движения, с",
+       "value": 110,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.75,
+       "verified": true
+      }
+     ],
+     "ttlMs": 8000,
+     "cooldownMs": 60000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 12,
+     "createdWallMs": 1791911897293,
+     "expiresWallMs": 1791911905293,
+     "clock": 250.085,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "economy.idle"
+   ]
+  }
+ },
+ {
+  "t": 1791911905500,
+  "tick": {
+   "wallMs": 1791911905500,
+   "shown": [],
+   "expired": [
+    {
+     "id": "economy.idle",
+     "ruleId": "economy.idle",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.75,
+     "short": "Простой 110 с — идите фармить",
+     "detail": {
+      "normal": "Вы 110 с на одном месте без приказов. Каждая минута простоя — потерянное золото.",
+      "detailed": "Вы 110 с на одном месте без приказов. Каждая минута простоя — потерянное золото. · Без движения, с: 110 (вывод, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "idle",
+       "label": "Без движения, с",
+       "value": 110,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.75,
+       "verified": true
+      }
+     ],
+     "ttlMs": 8000,
+     "cooldownMs": 60000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 12,
+     "createdWallMs": 1791911897293,
+     "expiresWallMs": 1791911905293,
+     "clock": 250.085,
+     "textSource": "template"
+    }
+   ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": []
+  }
+ },
+ {
+  "t": 1791911917296,
+  "tick": {
+   "wallMs": 1791911917296,
+   "shown": [
+    {
+     "id": "economy.gold",
+     "ruleId": "economy.gold",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.8,
+     "short": "Золото 99999: купите Wraith Band",
+     "detail": {
+      "normal": "99999 золота лежит без дела. Следующий предмет по сборке профи патча — Wraith Band (505).",
+      "detailed": "99999 золота лежит без дела. Следующий предмет по сборке профи патча — Wraith Band (505). · Золото: 99999 (игра, 0 с) · Следующий предмет (профи патча): Wraith Band (статистика патча, не проверено) · Цена: 505 (база, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "gold",
+       "label": "Золото",
+       "value": 99999,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      },
+      {
+       "key": "next-item",
+       "label": "Следующий предмет (профи патча)",
+       "value": "Wraith Band",
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      },
+      {
+       "key": "item-cost",
+       "label": "Цена",
+       "value": 505,
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 90000,
+     "zone": "timing",
+     "icon": "item:wraith_band",
+     "seq": 13,
+     "createdWallMs": 1791911917296,
+     "expiresWallMs": 1791911927296,
+     "clock": 270.08799999999997,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "economy.gold"
+   ]
+  }
+ },
+ {
+  "t": 1791911927420,
+  "tick": {
+   "wallMs": 1791911927420,
+   "shown": [],
+   "expired": [
+    {
+     "id": "economy.gold",
+     "ruleId": "economy.gold",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.8,
+     "short": "Золото 99999: купите Wraith Band",
+     "detail": {
+      "normal": "99999 золота лежит без дела. Следующий предмет по сборке профи патча — Wraith Band (505).",
+      "detailed": "99999 золота лежит без дела. Следующий предмет по сборке профи патча — Wraith Band (505). · Золото: 99999 (игра, 0 с) · Следующий предмет (профи патча): Wraith Band (статистика патча, не проверено) · Цена: 505 (база, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "gold",
+       "label": "Золото",
+       "value": 99999,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      },
+      {
+       "key": "next-item",
+       "label": "Следующий предмет (профи патча)",
+       "value": "Wraith Band",
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      },
+      {
+       "key": "item-cost",
+       "label": "Цена",
+       "value": 505,
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 90000,
+     "zone": "timing",
+     "icon": "item:wraith_band",
+     "seq": 13,
+     "createdWallMs": 1791911917296,
+     "expiresWallMs": 1791911927296,
+     "clock": 270.08799999999997,
+     "textSource": "template"
+    }
+   ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": []
+  }
+ },
+ {
+  "t": 1791911932392,
+  "tick": {
+   "wallMs": 1791911932392,
+   "shown": [
+    {
+     "id": "timing.day-night",
+     "ruleId": "timing.day-night",
+     "category": "timing",
+     "priority": "info",
+     "confidence": 0.8,
+     "short": "Скоро наступит ночь",
+     "detail": {
+      "normal": "Скоро наступит ночь (5:00).",
+      "detailed": "Скоро наступит ночь (5:00). · Смена дня и ночи: 5:00 (база, не проверено) · Игровое время, с: 285.18399999999997 (игра, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "day-night",
+       "label": "Смена дня и ночи",
+       "value": "5:00",
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      },
+      {
+       "key": "clock",
+       "label": "Игровое время, с",
+       "value": 285.18399999999997,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      }
+     ],
+     "ttlMs": 15000,
+     "cooldownMs": 0,
+     "zone": "timing",
+     "icon": null,
+     "seq": 14,
+     "createdWallMs": 1791911932392,
+     "expiresWallMs": 1791911947392,
+     "clock": 285.18399999999997,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "timing.day-night"
+   ]
+  }
+ },
+ {
+  "t": 1791911937510,
+  "tick": {
+   "wallMs": 1791911937510,
+   "shown": [
+    {
+     "id": "economy.skill",
+     "ruleId": "economy.skill",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.6,
+     "short": "Очко навыка: Mana Break",
+     "detail": {
+      "normal": "Неиспользованных очков: 2. На 3 уровне профи патча чаще берут Mana Break.",
+      "detailed": "Неиспользованных очков: 2. На 3 уровне профи патча чаще берут Mana Break. · Свободных очков: 2 (вывод, 0 с) · Навык 3 уровня (профи патча): Mana Break (статистика патча, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "unspent",
+       "label": "Свободных очков",
+       "value": 2,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.6,
+       "verified": true
+      },
+      {
+       "key": "skill",
+       "label": "Навык 3 уровня (профи патча)",
+       "value": "Mana Break",
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 45000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 15,
+     "createdWallMs": 1791911937510,
+     "expiresWallMs": 1791911947510,
+     "clock": 290.302,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "economy.skill",
+    "timing.day-night"
+   ]
   }
  },
  {
@@ -2820,7 +3884,7 @@
      "cooldownMs": 0,
      "zone": "decision",
      "icon": null,
-     "seq": 8,
+     "seq": 16,
      "createdWallMs": 1791911947432,
      "expiresWallMs": 1791911957432,
      "clock": 300.224,
@@ -2835,8 +3899,65 @@
    "inFight": false,
    "visible": [
     "economy.skill",
-    "economy.gold",
-    "economy.idle",
+    "laning.bench"
+   ]
+  }
+ },
+ {
+  "t": 1791911947727,
+  "tick": {
+   "wallMs": 1791911947727,
+   "shown": [],
+   "expired": [
+    {
+     "id": "economy.skill",
+     "ruleId": "economy.skill",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.6,
+     "short": "Очко навыка: Mana Break",
+     "detail": {
+      "normal": "Неиспользованных очков: 2. На 3 уровне профи патча чаще берут Mana Break.",
+      "detailed": "Неиспользованных очков: 2. На 3 уровне профи патча чаще берут Mana Break. · Свободных очков: 2 (вывод, 0 с) · Навык 3 уровня (профи патча): Mana Break (статистика патча, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "unspent",
+       "label": "Свободных очков",
+       "value": 2,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.6,
+       "verified": true
+      },
+      {
+       "key": "skill",
+       "label": "Навык 3 уровня (профи патча)",
+       "value": "Mana Break",
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 45000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 15,
+     "createdWallMs": 1791911937510,
+     "expiresWallMs": 1791911947510,
+     "clock": 290.302,
+     "textSource": "template"
+    }
+   ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
     "laning.bench"
    ]
   }
@@ -2901,7 +4022,7 @@
      "cooldownMs": 0,
      "zone": "decision",
      "icon": null,
-     "seq": 8,
+     "seq": 16,
      "createdWallMs": 1791911947432,
      "expiresWallMs": 1791911957432,
      "clock": 300.224,
@@ -2913,10 +4034,264 @@
    "deathReview": null,
    "matchReview": null,
    "inFight": false,
+   "visible": []
+  }
+ },
+ {
+  "t": 1791911965515,
+  "tick": {
+   "wallMs": 1791911965515,
+   "shown": [
+    {
+     "id": "economy.idle",
+     "ruleId": "economy.idle",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.75,
+     "short": "Простой 178 с — идите фармить",
+     "detail": {
+      "normal": "Вы 178 с на одном месте без приказов. Каждая минута простоя — потерянное золото.",
+      "detailed": "Вы 178 с на одном месте без приказов. Каждая минута простоя — потерянное золото. · Без движения, с: 178 (вывод, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "idle",
+       "label": "Без движения, с",
+       "value": 178,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.75,
+       "verified": true
+      }
+     ],
+     "ttlMs": 8000,
+     "cooldownMs": 60000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 17,
+     "createdWallMs": 1791911965515,
+     "expiresWallMs": 1791911973515,
+     "clock": 318.307,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "economy.idle"
+   ]
+  }
+ },
+ {
+  "t": 1791911973567,
+  "tick": {
+   "wallMs": 1791911973567,
+   "shown": [],
+   "expired": [
+    {
+     "id": "economy.idle",
+     "ruleId": "economy.idle",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.75,
+     "short": "Простой 178 с — идите фармить",
+     "detail": {
+      "normal": "Вы 178 с на одном месте без приказов. Каждая минута простоя — потерянное золото.",
+      "detailed": "Вы 178 с на одном месте без приказов. Каждая минута простоя — потерянное золото. · Без движения, с: 178 (вывод, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "idle",
+       "label": "Без движения, с",
+       "value": 178,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.75,
+       "verified": true
+      }
+     ],
+     "ttlMs": 8000,
+     "cooldownMs": 60000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 17,
+     "createdWallMs": 1791911965515,
+     "expiresWallMs": 1791911973515,
+     "clock": 318.307,
+     "textSource": "template"
+    }
+   ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": []
+  }
+ },
+ {
+  "t": 1791911992411,
+  "tick": {
+   "wallMs": 1791911992411,
+   "shown": [
+    {
+     "id": "timing.lotus",
+     "ruleId": "timing.lotus",
+     "category": "timing",
+     "priority": "info",
+     "confidence": 0.8,
+     "short": "Лотос через 15 с",
+     "detail": {
+      "normal": "В 6:00 у пруда появится лотос (лечение и мана). Ближайший — заберите.",
+      "detailed": "В 6:00 у пруда появится лотос (лечение и мана). Ближайший — заберите. · Лотос: 6:00 (база, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "lotus",
+       "label": "Лотос",
+       "value": "6:00",
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 8000,
+     "cooldownMs": 0,
+     "zone": "timing",
+     "icon": null,
+     "seq": 18,
+     "createdWallMs": 1791911992411,
+     "expiresWallMs": 1791912000411,
+     "clock": 345.203,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "timing.lotus"
+   ]
+  }
+ },
+ {
+  "t": 1791911992913,
+  "tick": {
+   "wallMs": 1791911992913,
+   "shown": [
+    {
+     "id": "economy.skill",
+     "ruleId": "economy.skill",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.6,
+     "short": "Очко навыка: Mana Break",
+     "detail": {
+      "normal": "Неиспользованных очков: 2. На 3 уровне профи патча чаще берут Mana Break.",
+      "detailed": "Неиспользованных очков: 2. На 3 уровне профи патча чаще берут Mana Break. · Свободных очков: 2 (вывод, 0 с) · Навык 3 уровня (профи патча): Mana Break (статистика патча, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "unspent",
+       "label": "Свободных очков",
+       "value": 2,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.6,
+       "verified": true
+      },
+      {
+       "key": "skill",
+       "label": "Навык 3 уровня (профи патча)",
+       "value": "Mana Break",
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 45000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 19,
+     "createdWallMs": 1791911992913,
+     "expiresWallMs": 1791912002913,
+     "clock": 345.70500000000004,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
    "visible": [
     "economy.skill",
-    "economy.gold",
-    "economy.idle"
+    "timing.lotus"
+   ]
+  }
+ },
+ {
+  "t": 1791912000520,
+  "tick": {
+   "wallMs": 1791912000520,
+   "shown": [],
+   "expired": [
+    {
+     "id": "timing.lotus",
+     "ruleId": "timing.lotus",
+     "category": "timing",
+     "priority": "info",
+     "confidence": 0.8,
+     "short": "Лотос через 15 с",
+     "detail": {
+      "normal": "В 6:00 у пруда появится лотос (лечение и мана). Ближайший — заберите.",
+      "detailed": "В 6:00 у пруда появится лотос (лечение и мана). Ближайший — заберите. · Лотос: 6:00 (база, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "lotus",
+       "label": "Лотос",
+       "value": "6:00",
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 8000,
+     "cooldownMs": 0,
+     "zone": "timing",
+     "icon": null,
+     "seq": 18,
+     "createdWallMs": 1791911992411,
+     "expiresWallMs": 1791912000411,
+     "clock": 345.203,
+     "textSource": "template"
+    }
+   ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "economy.skill"
    ]
   }
  },
@@ -3343,6 +4718,414 @@
   }
  },
  {
+  "t": 1791912003061,
+  "tick": {
+   "wallMs": 1791912003061,
+   "shown": [],
+   "expired": [
+    {
+     "id": "economy.skill",
+     "ruleId": "economy.skill",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.6,
+     "short": "Очко навыка: Mana Break",
+     "detail": {
+      "normal": "Неиспользованных очков: 2. На 3 уровне профи патча чаще берут Mana Break.",
+      "detailed": "Неиспользованных очков: 2. На 3 уровне профи патча чаще берут Mana Break. · Свободных очков: 2 (вывод, 0 с) · Навык 3 уровня (профи патча): Mana Break (статистика патча, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "unspent",
+       "label": "Свободных очков",
+       "value": 2,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.6,
+       "verified": true
+      },
+      {
+       "key": "skill",
+       "label": "Навык 3 уровня (профи патча)",
+       "value": "Mana Break",
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 45000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 19,
+     "createdWallMs": 1791911992913,
+     "expiresWallMs": 1791912002913,
+     "clock": 345.70500000000004,
+     "textSource": "template"
+    }
+   ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": []
+  }
+ },
+ {
+  "t": 1791912017518,
+  "tick": {
+   "wallMs": 1791912017518,
+   "shown": [
+    {
+     "id": "economy.gold",
+     "ruleId": "economy.gold",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.8,
+     "short": "Золото 99999: купите Wraith Band",
+     "detail": {
+      "normal": "99999 золота лежит без дела. Следующий предмет по сборке профи патча — Wraith Band (505).",
+      "detailed": "99999 золота лежит без дела. Следующий предмет по сборке профи патча — Wraith Band (505). · Золото: 99999 (игра, 0 с) · Следующий предмет (профи патча): Wraith Band (статистика патча, не проверено) · Цена: 505 (база, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "gold",
+       "label": "Золото",
+       "value": 99999,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      },
+      {
+       "key": "next-item",
+       "label": "Следующий предмет (профи патча)",
+       "value": "Wraith Band",
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      },
+      {
+       "key": "item-cost",
+       "label": "Цена",
+       "value": 505,
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 90000,
+     "zone": "timing",
+     "icon": "item:wraith_band",
+     "seq": 20,
+     "createdWallMs": 1791912017518,
+     "expiresWallMs": 1791912027518,
+     "clock": 370.31,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "economy.gold"
+   ]
+  }
+ },
+ {
+  "t": 1791912027689,
+  "tick": {
+   "wallMs": 1791912027689,
+   "shown": [],
+   "expired": [
+    {
+     "id": "economy.gold",
+     "ruleId": "economy.gold",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.8,
+     "short": "Золото 99999: купите Wraith Band",
+     "detail": {
+      "normal": "99999 золота лежит без дела. Следующий предмет по сборке профи патча — Wraith Band (505).",
+      "detailed": "99999 золота лежит без дела. Следующий предмет по сборке профи патча — Wraith Band (505). · Золото: 99999 (игра, 0 с) · Следующий предмет (профи патча): Wraith Band (статистика патча, не проверено) · Цена: 505 (база, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "gold",
+       "label": "Золото",
+       "value": 99999,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      },
+      {
+       "key": "next-item",
+       "label": "Следующий предмет (профи патча)",
+       "value": "Wraith Band",
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      },
+      {
+       "key": "item-cost",
+       "label": "Цена",
+       "value": 505,
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 90000,
+     "zone": "timing",
+     "icon": "item:wraith_band",
+     "seq": 20,
+     "createdWallMs": 1791912017518,
+     "expiresWallMs": 1791912027518,
+     "clock": 370.31,
+     "textSource": "template"
+    }
+   ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": []
+  }
+ },
+ {
+  "t": 1791912037748,
+  "tick": {
+   "wallMs": 1791912037748,
+   "shown": [
+    {
+     "id": "economy.idle",
+     "ruleId": "economy.idle",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.75,
+     "short": "Простой 251 с — идите фармить",
+     "detail": {
+      "normal": "Вы 251 с на одном месте без приказов. Каждая минута простоя — потерянное золото.",
+      "detailed": "Вы 251 с на одном месте без приказов. Каждая минута простоя — потерянное золото. · Без движения, с: 251 (вывод, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "idle",
+       "label": "Без движения, с",
+       "value": 251,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.75,
+       "verified": true
+      }
+     ],
+     "ttlMs": 8000,
+     "cooldownMs": 60000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 21,
+     "createdWallMs": 1791912037748,
+     "expiresWallMs": 1791912045748,
+     "clock": 390.53999999999996,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "economy.idle"
+   ]
+  }
+ },
+ {
+  "t": 1791912045956,
+  "tick": {
+   "wallMs": 1791912045956,
+   "shown": [],
+   "expired": [
+    {
+     "id": "economy.idle",
+     "ruleId": "economy.idle",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.75,
+     "short": "Простой 251 с — идите фармить",
+     "detail": {
+      "normal": "Вы 251 с на одном месте без приказов. Каждая минута простоя — потерянное золото.",
+      "detailed": "Вы 251 с на одном месте без приказов. Каждая минута простоя — потерянное золото. · Без движения, с: 251 (вывод, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "idle",
+       "label": "Без движения, с",
+       "value": 251,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.75,
+       "verified": true
+      }
+     ],
+     "ttlMs": 8000,
+     "cooldownMs": 60000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 21,
+     "createdWallMs": 1791912037748,
+     "expiresWallMs": 1791912045748,
+     "clock": 390.53999999999996,
+     "textSource": "template"
+    }
+   ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": []
+  }
+ },
+ {
+  "t": 1791912052236,
+  "tick": {
+   "wallMs": 1791912052236,
+   "shown": [
+    {
+     "id": "timing.shrine-of-wisdom",
+     "ruleId": "timing.shrine-of-wisdom",
+     "category": "timing",
+     "priority": "info",
+     "confidence": 0.8,
+     "short": "Святилище мудрости через 15 с",
+     "detail": {
+      "normal": "Святилище мудрости через 15 с (7:00).",
+      "detailed": "Святилище мудрости через 15 с (7:00). · Святилище мудрости: 7:00 (база, не проверено) · Игровое время, с: 405.028 (игра, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "shrine-of-wisdom",
+       "label": "Святилище мудрости",
+       "value": "7:00",
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      },
+      {
+       "key": "clock",
+       "label": "Игровое время, с",
+       "value": 405.028,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      }
+     ],
+     "ttlMs": 15000,
+     "cooldownMs": 0,
+     "zone": "timing",
+     "icon": null,
+     "seq": 22,
+     "createdWallMs": 1791912052236,
+     "expiresWallMs": 1791912067236,
+     "clock": 405.028,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "timing.shrine-of-wisdom"
+   ]
+  }
+ },
+ {
+  "t": 1791912057993,
+  "tick": {
+   "wallMs": 1791912057993,
+   "shown": [
+    {
+     "id": "economy.skill",
+     "ruleId": "economy.skill",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.6,
+     "short": "Очко навыка: Mana Break",
+     "detail": {
+      "normal": "Неиспользованных очков: 2. На 3 уровне профи патча чаще берут Mana Break.",
+      "detailed": "Неиспользованных очков: 2. На 3 уровне профи патча чаще берут Mana Break. · Свободных очков: 2 (вывод, 0 с) · Навык 3 уровня (профи патча): Mana Break (статистика патча, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "unspent",
+       "label": "Свободных очков",
+       "value": 2,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.6,
+       "verified": true
+      },
+      {
+       "key": "skill",
+       "label": "Навык 3 уровня (профи патча)",
+       "value": "Mana Break",
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 45000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 23,
+     "createdWallMs": 1791912057993,
+     "expiresWallMs": 1791912067993,
+     "clock": 410.78499999999997,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "economy.skill",
+    "timing.shrine-of-wisdom"
+   ]
+  }
+ },
+ {
   "t": 1791912060524,
   "aiContext": {
    "schema": "dota-coach.ai-context",
@@ -3762,6 +5545,220 @@
      }
     ]
    }
+  }
+ },
+ {
+  "t": 1791912067493,
+  "tick": {
+   "wallMs": 1791912067493,
+   "shown": [],
+   "expired": [
+    {
+     "id": "timing.shrine-of-wisdom",
+     "ruleId": "timing.shrine-of-wisdom",
+     "category": "timing",
+     "priority": "info",
+     "confidence": 0.8,
+     "short": "Святилище мудрости через 15 с",
+     "detail": {
+      "normal": "Святилище мудрости через 15 с (7:00).",
+      "detailed": "Святилище мудрости через 15 с (7:00). · Святилище мудрости: 7:00 (база, не проверено) · Игровое время, с: 405.028 (игра, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "shrine-of-wisdom",
+       "label": "Святилище мудрости",
+       "value": "7:00",
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      },
+      {
+       "key": "clock",
+       "label": "Игровое время, с",
+       "value": 405.028,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      }
+     ],
+     "ttlMs": 15000,
+     "cooldownMs": 0,
+     "zone": "timing",
+     "icon": null,
+     "seq": 22,
+     "createdWallMs": 1791912052236,
+     "expiresWallMs": 1791912067236,
+     "clock": 405.028,
+     "textSource": "template"
+    }
+   ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "economy.skill"
+   ]
+  }
+ },
+ {
+  "t": 1791912067994,
+  "tick": {
+   "wallMs": 1791912067994,
+   "shown": [],
+   "expired": [
+    {
+     "id": "economy.skill",
+     "ruleId": "economy.skill",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.6,
+     "short": "Очко навыка: Mana Break",
+     "detail": {
+      "normal": "Неиспользованных очков: 2. На 3 уровне профи патча чаще берут Mana Break.",
+      "detailed": "Неиспользованных очков: 2. На 3 уровне профи патча чаще берут Mana Break. · Свободных очков: 2 (вывод, 0 с) · Навык 3 уровня (профи патча): Mana Break (статистика патча, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "unspent",
+       "label": "Свободных очков",
+       "value": 2,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.6,
+       "verified": true
+      },
+      {
+       "key": "skill",
+       "label": "Навык 3 уровня (профи патча)",
+       "value": "Mana Break",
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 45000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 23,
+     "createdWallMs": 1791912057993,
+     "expiresWallMs": 1791912067993,
+     "clock": 410.78499999999997,
+     "textSource": "template"
+    }
+   ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": []
+  }
+ },
+ {
+  "t": 1791912105956,
+  "tick": {
+   "wallMs": 1791912105956,
+   "shown": [
+    {
+     "id": "economy.idle",
+     "ruleId": "economy.idle",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.75,
+     "short": "Простой 319 с — идите фармить",
+     "detail": {
+      "normal": "Вы 319 с на одном месте без приказов. Каждая минута простоя — потерянное золото.",
+      "detailed": "Вы 319 с на одном месте без приказов. Каждая минута простоя — потерянное золото. · Без движения, с: 319 (вывод, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "idle",
+       "label": "Без движения, с",
+       "value": 319,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.75,
+       "verified": true
+      }
+     ],
+     "ttlMs": 8000,
+     "cooldownMs": 60000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 24,
+     "createdWallMs": 1791912105956,
+     "expiresWallMs": 1791912113956,
+     "clock": 458.748,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "economy.idle"
+   ]
+  }
+ },
+ {
+  "t": 1791912114229,
+  "tick": {
+   "wallMs": 1791912114229,
+   "shown": [],
+   "expired": [
+    {
+     "id": "economy.idle",
+     "ruleId": "economy.idle",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.75,
+     "short": "Простой 319 с — идите фармить",
+     "detail": {
+      "normal": "Вы 319 с на одном месте без приказов. Каждая минута простоя — потерянное золото.",
+      "detailed": "Вы 319 с на одном месте без приказов. Каждая минута простоя — потерянное золото. · Без движения, с: 319 (вывод, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "idle",
+       "label": "Без движения, с",
+       "value": 319,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.75,
+       "verified": true
+      }
+     ],
+     "ttlMs": 8000,
+     "cooldownMs": 60000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 24,
+     "createdWallMs": 1791912105956,
+     "expiresWallMs": 1791912113956,
+     "clock": 458.748,
+     "textSource": "template"
+    }
+   ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": []
   }
  },
  {
@@ -4187,6 +6184,407 @@
   }
  },
  {
+  "t": 1791912126097,
+  "tick": {
+   "wallMs": 1791912126097,
+   "shown": [
+    {
+     "id": "economy.gold",
+     "ruleId": "economy.gold",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.8,
+     "short": "Золото 99999: купите Wraith Band",
+     "detail": {
+      "normal": "99999 золота лежит без дела. Следующий предмет по сборке профи патча — Wraith Band (505).",
+      "detailed": "99999 золота лежит без дела. Следующий предмет по сборке профи патча — Wraith Band (505). · Золото: 99999 (игра, 0 с) · Следующий предмет (профи патча): Wraith Band (статистика патча, не проверено) · Цена: 505 (база, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "gold",
+       "label": "Золото",
+       "value": 99999,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      },
+      {
+       "key": "next-item",
+       "label": "Следующий предмет (профи патча)",
+       "value": "Wraith Band",
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      },
+      {
+       "key": "item-cost",
+       "label": "Цена",
+       "value": 505,
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 90000,
+     "zone": "timing",
+     "icon": "item:wraith_band",
+     "seq": 25,
+     "createdWallMs": 1791912126097,
+     "expiresWallMs": 1791912136097,
+     "clock": 478.889,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "economy.gold"
+   ]
+  }
+ },
+ {
+  "t": 1791912136298,
+  "tick": {
+   "wallMs": 1791912136298,
+   "shown": [],
+   "expired": [
+    {
+     "id": "economy.gold",
+     "ruleId": "economy.gold",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.8,
+     "short": "Золото 99999: купите Wraith Band",
+     "detail": {
+      "normal": "99999 золота лежит без дела. Следующий предмет по сборке профи патча — Wraith Band (505).",
+      "detailed": "99999 золота лежит без дела. Следующий предмет по сборке профи патча — Wraith Band (505). · Золото: 99999 (игра, 0 с) · Следующий предмет (профи патча): Wraith Band (статистика патча, не проверено) · Цена: 505 (база, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "gold",
+       "label": "Золото",
+       "value": 99999,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      },
+      {
+       "key": "next-item",
+       "label": "Следующий предмет (профи патча)",
+       "value": "Wraith Band",
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      },
+      {
+       "key": "item-cost",
+       "label": "Цена",
+       "value": 505,
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 90000,
+     "zone": "timing",
+     "icon": "item:wraith_band",
+     "seq": 25,
+     "createdWallMs": 1791912126097,
+     "expiresWallMs": 1791912136097,
+     "clock": 478.889,
+     "textSource": "template"
+    }
+   ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": []
+  }
+ },
+ {
+  "t": 1791912146364,
+  "tick": {
+   "wallMs": 1791912146364,
+   "shown": [
+    {
+     "id": "economy.skill",
+     "ruleId": "economy.skill",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.6,
+     "short": "Очко навыка: Mana Break",
+     "detail": {
+      "normal": "Неиспользованных очков: 2. На 3 уровне профи патча чаще берут Mana Break.",
+      "detailed": "Неиспользованных очков: 2. На 3 уровне профи патча чаще берут Mana Break. · Свободных очков: 2 (вывод, 0 с) · Навык 3 уровня (профи патча): Mana Break (статистика патча, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "unspent",
+       "label": "Свободных очков",
+       "value": 2,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.6,
+       "verified": true
+      },
+      {
+       "key": "skill",
+       "label": "Навык 3 уровня (профи патча)",
+       "value": "Mana Break",
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 45000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 26,
+     "createdWallMs": 1791912146364,
+     "expiresWallMs": 1791912156364,
+     "clock": 499.156,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "economy.skill"
+   ]
+  }
+ },
+ {
+  "t": 1791912156464,
+  "tick": {
+   "wallMs": 1791912156464,
+   "shown": [],
+   "expired": [
+    {
+     "id": "economy.skill",
+     "ruleId": "economy.skill",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.6,
+     "short": "Очко навыка: Mana Break",
+     "detail": {
+      "normal": "Неиспользованных очков: 2. На 3 уровне профи патча чаще берут Mana Break.",
+      "detailed": "Неиспользованных очков: 2. На 3 уровне профи патча чаще берут Mana Break. · Свободных очков: 2 (вывод, 0 с) · Навык 3 уровня (профи патча): Mana Break (статистика патча, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "unspent",
+       "label": "Свободных очков",
+       "value": 2,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.6,
+       "verified": true
+      },
+      {
+       "key": "skill",
+       "label": "Навык 3 уровня (профи патча)",
+       "value": "Mana Break",
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 45000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 26,
+     "createdWallMs": 1791912146364,
+     "expiresWallMs": 1791912156364,
+     "clock": 499.156,
+     "textSource": "template"
+    }
+   ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": []
+  }
+ },
+ {
+  "t": 1791912172282,
+  "tick": {
+   "wallMs": 1791912172282,
+   "shown": [
+    {
+     "id": "timing.lotus",
+     "ruleId": "timing.lotus",
+     "category": "timing",
+     "priority": "info",
+     "confidence": 0.8,
+     "short": "Лотос через 15 с",
+     "detail": {
+      "normal": "В 9:00 у пруда появится лотос (лечение и мана). Ближайший — заберите.",
+      "detailed": "В 9:00 у пруда появится лотос (лечение и мана). Ближайший — заберите. · Лотос: 9:00 (база, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "lotus",
+       "label": "Лотос",
+       "value": "9:00",
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 8000,
+     "cooldownMs": 0,
+     "zone": "timing",
+     "icon": null,
+     "seq": 27,
+     "createdWallMs": 1791912172282,
+     "expiresWallMs": 1791912180282,
+     "clock": 525.0740000000001,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "timing.lotus"
+   ]
+  }
+ },
+ {
+  "t": 1791912174453,
+  "tick": {
+   "wallMs": 1791912174453,
+   "shown": [
+    {
+     "id": "economy.idle",
+     "ruleId": "economy.idle",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.75,
+     "short": "Простой 387 с — идите фармить",
+     "detail": {
+      "normal": "Вы 387 с на одном месте без приказов. Каждая минута простоя — потерянное золото.",
+      "detailed": "Вы 387 с на одном месте без приказов. Каждая минута простоя — потерянное золото. · Без движения, с: 387 (вывод, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "idle",
+       "label": "Без движения, с",
+       "value": 387,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.75,
+       "verified": true
+      }
+     ],
+     "ttlMs": 8000,
+     "cooldownMs": 60000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 28,
+     "createdWallMs": 1791912174453,
+     "expiresWallMs": 1791912182453,
+     "clock": 527.245,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "economy.idle",
+    "timing.lotus"
+   ]
+  }
+ },
+ {
+  "t": 1791912180536,
+  "tick": {
+   "wallMs": 1791912180536,
+   "shown": [],
+   "expired": [
+    {
+     "id": "timing.lotus",
+     "ruleId": "timing.lotus",
+     "category": "timing",
+     "priority": "info",
+     "confidence": 0.8,
+     "short": "Лотос через 15 с",
+     "detail": {
+      "normal": "В 9:00 у пруда появится лотос (лечение и мана). Ближайший — заберите.",
+      "detailed": "В 9:00 у пруда появится лотос (лечение и мана). Ближайший — заберите. · Лотос: 9:00 (база, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "lotus",
+       "label": "Лотос",
+       "value": "9:00",
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 8000,
+     "cooldownMs": 0,
+     "zone": "timing",
+     "icon": null,
+     "seq": 27,
+     "createdWallMs": 1791912172282,
+     "expiresWallMs": 1791912180282,
+     "clock": 525.0740000000001,
+     "textSource": "template"
+    }
+   ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "economy.idle"
+   ]
+  }
+ },
+ {
   "t": 1791912180811,
   "aiContext": {
    "schema": "dota-coach.ai-context",
@@ -4606,6 +7004,414 @@
      }
     ]
    }
+  }
+ },
+ {
+  "t": 1791912182486,
+  "tick": {
+   "wallMs": 1791912182486,
+   "shown": [],
+   "expired": [
+    {
+     "id": "economy.idle",
+     "ruleId": "economy.idle",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.75,
+     "short": "Простой 387 с — идите фармить",
+     "detail": {
+      "normal": "Вы 387 с на одном месте без приказов. Каждая минута простоя — потерянное золото.",
+      "detailed": "Вы 387 с на одном месте без приказов. Каждая минута простоя — потерянное золото. · Без движения, с: 387 (вывод, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "idle",
+       "label": "Без движения, с",
+       "value": 387,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.75,
+       "verified": true
+      }
+     ],
+     "ttlMs": 8000,
+     "cooldownMs": 60000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 28,
+     "createdWallMs": 1791912174453,
+     "expiresWallMs": 1791912182453,
+     "clock": 527.245,
+     "textSource": "template"
+    }
+   ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": []
+  }
+ },
+ {
+  "t": 1791912194510,
+  "tick": {
+   "wallMs": 1791912194510,
+   "shown": [
+    {
+     "id": "economy.neutral",
+     "ruleId": "economy.neutral",
+     "category": "economy",
+     "priority": "info",
+     "confidence": 0.8,
+     "short": "Пустой слот нейтрального предмета",
+     "detail": {
+      "normal": "Слот нейтрального предмета пуст — выберите предмет текущего уровня.",
+      "detailed": "Слот нейтрального предмета пуст — выберите предмет текущего уровня. · Нейтральный слот: пусто (игра, 0 с) · Нейтральные предметы с, с: 0 (база)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "neutral",
+       "label": "Нейтральный слот",
+       "value": "пусто",
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      },
+      {
+       "key": "neutral-t1",
+       "label": "Нейтральные предметы с, с",
+       "value": 0,
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": true
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 300000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 29,
+     "createdWallMs": 1791912194510,
+     "expiresWallMs": 1791912204510,
+     "clock": 547.302,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "economy.neutral"
+   ]
+  }
+ },
+ {
+  "t": 1791912204671,
+  "tick": {
+   "wallMs": 1791912204671,
+   "shown": [],
+   "expired": [
+    {
+     "id": "economy.neutral",
+     "ruleId": "economy.neutral",
+     "category": "economy",
+     "priority": "info",
+     "confidence": 0.8,
+     "short": "Пустой слот нейтрального предмета",
+     "detail": {
+      "normal": "Слот нейтрального предмета пуст — выберите предмет текущего уровня.",
+      "detailed": "Слот нейтрального предмета пуст — выберите предмет текущего уровня. · Нейтральный слот: пусто (игра, 0 с) · Нейтральные предметы с, с: 0 (база)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "neutral",
+       "label": "Нейтральный слот",
+       "value": "пусто",
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      },
+      {
+       "key": "neutral-t1",
+       "label": "Нейтральные предметы с, с",
+       "value": 0,
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": true
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 300000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 29,
+     "createdWallMs": 1791912194510,
+     "expiresWallMs": 1791912204510,
+     "clock": 547.302,
+     "textSource": "template"
+    }
+   ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": []
+  }
+ },
+ {
+  "t": 1791912214545,
+  "tick": {
+   "wallMs": 1791912214545,
+   "shown": [
+    {
+     "id": "economy.skill",
+     "ruleId": "economy.skill",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.6,
+     "short": "Очко навыка: Mana Break",
+     "detail": {
+      "normal": "Неиспользованных очков: 2. На 3 уровне профи патча чаще берут Mana Break.",
+      "detailed": "Неиспользованных очков: 2. На 3 уровне профи патча чаще берут Mana Break. · Свободных очков: 2 (вывод, 0 с) · Навык 3 уровня (профи патча): Mana Break (статистика патча, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "unspent",
+       "label": "Свободных очков",
+       "value": 2,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.6,
+       "verified": true
+      },
+      {
+       "key": "skill",
+       "label": "Навык 3 уровня (профи патча)",
+       "value": "Mana Break",
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 45000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 30,
+     "createdWallMs": 1791912214545,
+     "expiresWallMs": 1791912224545,
+     "clock": 567.337,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "economy.skill"
+   ]
+  }
+ },
+ {
+  "t": 1791912224751,
+  "tick": {
+   "wallMs": 1791912224751,
+   "shown": [],
+   "expired": [
+    {
+     "id": "economy.skill",
+     "ruleId": "economy.skill",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.6,
+     "short": "Очко навыка: Mana Break",
+     "detail": {
+      "normal": "Неиспользованных очков: 2. На 3 уровне профи патча чаще берут Mana Break.",
+      "detailed": "Неиспользованных очков: 2. На 3 уровне профи патча чаще берут Mana Break. · Свободных очков: 2 (вывод, 0 с) · Навык 3 уровня (профи патча): Mana Break (статистика патча, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "unspent",
+       "label": "Свободных очков",
+       "value": 2,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.6,
+       "verified": true
+      },
+      {
+       "key": "skill",
+       "label": "Навык 3 уровня (профи патча)",
+       "value": "Mana Break",
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 45000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 30,
+     "createdWallMs": 1791912214545,
+     "expiresWallMs": 1791912224545,
+     "clock": 567.337,
+     "textSource": "template"
+    }
+   ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": []
+  }
+ },
+ {
+  "t": 1791912232233,
+  "tick": {
+   "wallMs": 1791912232233,
+   "shown": [
+    {
+     "id": "timing.day-night",
+     "ruleId": "timing.day-night",
+     "category": "timing",
+     "priority": "info",
+     "confidence": 0.8,
+     "short": "Скоро наступит день",
+     "detail": {
+      "normal": "Скоро наступит день (10:00).",
+      "detailed": "Скоро наступит день (10:00). · Смена дня и ночи: 10:00 (база, не проверено) · Игровое время, с: 585.025 (игра, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "day-night",
+       "label": "Смена дня и ночи",
+       "value": "10:00",
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      },
+      {
+       "key": "clock",
+       "label": "Игровое время, с",
+       "value": 585.025,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      }
+     ],
+     "ttlMs": 15000,
+     "cooldownMs": 0,
+     "zone": "timing",
+     "icon": null,
+     "seq": 31,
+     "createdWallMs": 1791912232233,
+     "expiresWallMs": 1791912247233,
+     "clock": 585.025,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "timing.day-night"
+   ]
+  }
+ },
+ {
+  "t": 1791912234735,
+  "tick": {
+   "wallMs": 1791912234735,
+   "shown": [
+    {
+     "id": "economy.gold",
+     "ruleId": "economy.gold",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.8,
+     "short": "Золото 99999: купите Power Treads",
+     "detail": {
+      "normal": "99999 золота лежит без дела. Следующий предмет по сборке профи патча — Power Treads (1400).",
+      "detailed": "99999 золота лежит без дела. Следующий предмет по сборке профи патча — Power Treads (1400). · Золото: 99999 (игра, 0 с) · Следующий предмет (профи патча): Power Treads (статистика патча, не проверено) · Цена: 1400 (база, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "gold",
+       "label": "Золото",
+       "value": 99999,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      },
+      {
+       "key": "next-item",
+       "label": "Следующий предмет (профи патча)",
+       "value": "Power Treads",
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      },
+      {
+       "key": "item-cost",
+       "label": "Цена",
+       "value": 1400,
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 90000,
+     "zone": "timing",
+     "icon": "item:power_treads",
+     "seq": 32,
+     "createdWallMs": 1791912234735,
+     "expiresWallMs": 1791912244735,
+     "clock": 587.527,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "economy.gold",
+    "timing.day-night"
+   ]
   }
  },
  {
@@ -5031,6 +7837,74 @@
   }
  },
  {
+  "t": 1791912244956,
+  "tick": {
+   "wallMs": 1791912244956,
+   "shown": [],
+   "expired": [
+    {
+     "id": "economy.gold",
+     "ruleId": "economy.gold",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.8,
+     "short": "Золото 99999: купите Power Treads",
+     "detail": {
+      "normal": "99999 золота лежит без дела. Следующий предмет по сборке профи патча — Power Treads (1400).",
+      "detailed": "99999 золота лежит без дела. Следующий предмет по сборке профи патча — Power Treads (1400). · Золото: 99999 (игра, 0 с) · Следующий предмет (профи патча): Power Treads (статистика патча, не проверено) · Цена: 1400 (база, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "gold",
+       "label": "Золото",
+       "value": 99999,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      },
+      {
+       "key": "next-item",
+       "label": "Следующий предмет (профи патча)",
+       "value": "Power Treads",
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      },
+      {
+       "key": "item-cost",
+       "label": "Цена",
+       "value": 1400,
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 90000,
+     "zone": "timing",
+     "icon": "item:power_treads",
+     "seq": 32,
+     "createdWallMs": 1791912234735,
+     "expiresWallMs": 1791912244735,
+     "clock": 587.527,
+     "textSource": "template"
+    }
+   ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "timing.day-night"
+   ]
+  }
+ },
+ {
   "t": 1791912247455,
   "tick": {
    "wallMs": 1791912247455,
@@ -5089,10 +7963,103 @@
      "cooldownMs": 0,
      "zone": "decision",
      "icon": null,
-     "seq": 9,
+     "seq": 33,
      "createdWallMs": 1791912247455,
      "expiresWallMs": 1791912257455,
      "clock": 600.2470000000001,
+     "textSource": "template"
+    }
+   ],
+   "expired": [
+    {
+     "id": "timing.day-night",
+     "ruleId": "timing.day-night",
+     "category": "timing",
+     "priority": "info",
+     "confidence": 0.8,
+     "short": "Скоро наступит день",
+     "detail": {
+      "normal": "Скоро наступит день (10:00).",
+      "detailed": "Скоро наступит день (10:00). · Смена дня и ночи: 10:00 (база, не проверено) · Игровое время, с: 585.025 (игра, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "day-night",
+       "label": "Смена дня и ночи",
+       "value": "10:00",
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      },
+      {
+       "key": "clock",
+       "label": "Игровое время, с",
+       "value": 585.025,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      }
+     ],
+     "ttlMs": 15000,
+     "cooldownMs": 0,
+     "zone": "timing",
+     "icon": null,
+     "seq": 31,
+     "createdWallMs": 1791912232233,
+     "expiresWallMs": 1791912247233,
+     "clock": 585.025,
+     "textSource": "template"
+    }
+   ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "laning.bench"
+   ]
+  }
+ },
+ {
+  "t": 1791912254983,
+  "tick": {
+   "wallMs": 1791912254983,
+   "shown": [
+    {
+     "id": "economy.idle",
+     "ruleId": "economy.idle",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.75,
+     "short": "Простой 468 с — идите фармить",
+     "detail": {
+      "normal": "Вы 468 с на одном месте без приказов. Каждая минута простоя — потерянное золото.",
+      "detailed": "Вы 468 с на одном месте без приказов. Каждая минута простоя — потерянное золото. · Без движения, с: 468 (вывод, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "idle",
+       "label": "Без движения, с",
+       "value": 468,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.75,
+       "verified": true
+      }
+     ],
+     "ttlMs": 8000,
+     "cooldownMs": 60000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 34,
+     "createdWallMs": 1791912254983,
+     "expiresWallMs": 1791912262983,
+     "clock": 607.775,
      "textSource": "template"
     }
    ],
@@ -5103,8 +8070,6 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "economy.skill",
-    "economy.gold",
     "economy.idle",
     "laning.bench"
    ]
@@ -5170,7 +8135,7 @@
      "cooldownMs": 0,
      "zone": "decision",
      "icon": null,
-     "seq": 9,
+     "seq": 33,
      "createdWallMs": 1791912247455,
      "expiresWallMs": 1791912257455,
      "clock": 600.2470000000001,
@@ -5183,10 +8148,172 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "economy.skill",
-    "economy.gold",
     "economy.idle"
    ]
+  }
+ },
+ {
+  "t": 1791912263018,
+  "tick": {
+   "wallMs": 1791912263018,
+   "shown": [],
+   "expired": [
+    {
+     "id": "economy.idle",
+     "ruleId": "economy.idle",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.75,
+     "short": "Простой 468 с — идите фармить",
+     "detail": {
+      "normal": "Вы 468 с на одном месте без приказов. Каждая минута простоя — потерянное золото.",
+      "detailed": "Вы 468 с на одном месте без приказов. Каждая минута простоя — потерянное золото. · Без движения, с: 468 (вывод, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "idle",
+       "label": "Без движения, с",
+       "value": 468,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.75,
+       "verified": true
+      }
+     ],
+     "ttlMs": 8000,
+     "cooldownMs": 60000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 34,
+     "createdWallMs": 1791912254983,
+     "expiresWallMs": 1791912262983,
+     "clock": 607.775,
+     "textSource": "template"
+    }
+   ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": []
+  }
+ },
+ {
+  "t": 1791912275045,
+  "tick": {
+   "wallMs": 1791912275045,
+   "shown": [
+    {
+     "id": "economy.skill",
+     "ruleId": "economy.skill",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.6,
+     "short": "Очко навыка: Mana Break",
+     "detail": {
+      "normal": "Неиспользованных очков: 2. На 3 уровне профи патча чаще берут Mana Break.",
+      "detailed": "Неиспользованных очков: 2. На 3 уровне профи патча чаще берут Mana Break. · Свободных очков: 2 (вывод, 0 с) · Навык 3 уровня (профи патча): Mana Break (статистика патча, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "unspent",
+       "label": "Свободных очков",
+       "value": 2,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.6,
+       "verified": true
+      },
+      {
+       "key": "skill",
+       "label": "Навык 3 уровня (профи патча)",
+       "value": "Mana Break",
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 45000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 35,
+     "createdWallMs": 1791912275045,
+     "expiresWallMs": 1791912285045,
+     "clock": 627.837,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "economy.skill"
+   ]
+  }
+ },
+ {
+  "t": 1791912285215,
+  "tick": {
+   "wallMs": 1791912285215,
+   "shown": [],
+   "expired": [
+    {
+     "id": "economy.skill",
+     "ruleId": "economy.skill",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.6,
+     "short": "Очко навыка: Mana Break",
+     "detail": {
+      "normal": "Неиспользованных очков: 2. На 3 уровне профи патча чаще берут Mana Break.",
+      "detailed": "Неиспользованных очков: 2. На 3 уровне профи патча чаще берут Mana Break. · Свободных очков: 2 (вывод, 0 с) · Навык 3 уровня (профи патча): Mana Break (статистика патча, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "unspent",
+       "label": "Свободных очков",
+       "value": 2,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.6,
+       "verified": true
+      },
+      {
+       "key": "skill",
+       "label": "Навык 3 уровня (профи патча)",
+       "value": "Mana Break",
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 45000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 35,
+     "createdWallMs": 1791912275045,
+     "expiresWallMs": 1791912285045,
+     "clock": 627.837,
+     "textSource": "template"
+    }
+   ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": []
   }
  },
  {
@@ -5612,6 +8739,360 @@
   }
  },
  {
+  "t": 1791912323156,
+  "tick": {
+   "wallMs": 1791912323156,
+   "shown": [
+    {
+     "id": "economy.idle",
+     "ruleId": "economy.idle",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.75,
+     "short": "Простой 536 с — идите фармить",
+     "detail": {
+      "normal": "Вы 536 с на одном месте без приказов. Каждая минута простоя — потерянное золото.",
+      "detailed": "Вы 536 с на одном месте без приказов. Каждая минута простоя — потерянное золото. · Без движения, с: 536 (вывод, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "idle",
+       "label": "Без движения, с",
+       "value": 536,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.75,
+       "verified": true
+      }
+     ],
+     "ttlMs": 8000,
+     "cooldownMs": 60000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 36,
+     "createdWallMs": 1791912323156,
+     "expiresWallMs": 1791912331156,
+     "clock": 675.948,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "economy.idle"
+   ]
+  }
+ },
+ {
+  "t": 1791912331218,
+  "tick": {
+   "wallMs": 1791912331218,
+   "shown": [],
+   "expired": [
+    {
+     "id": "economy.idle",
+     "ruleId": "economy.idle",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.75,
+     "short": "Простой 536 с — идите фармить",
+     "detail": {
+      "normal": "Вы 536 с на одном месте без приказов. Каждая минута простоя — потерянное золото.",
+      "detailed": "Вы 536 с на одном месте без приказов. Каждая минута простоя — потерянное золото. · Без движения, с: 536 (вывод, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "idle",
+       "label": "Без движения, с",
+       "value": 536,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.75,
+       "verified": true
+      }
+     ],
+     "ttlMs": 8000,
+     "cooldownMs": 60000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 36,
+     "createdWallMs": 1791912323156,
+     "expiresWallMs": 1791912331156,
+     "clock": 675.948,
+     "textSource": "template"
+    }
+   ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": []
+  }
+ },
+ {
+  "t": 1791912343347,
+  "tick": {
+   "wallMs": 1791912343347,
+   "shown": [
+    {
+     "id": "economy.gold",
+     "ruleId": "economy.gold",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.8,
+     "short": "Золото 99999: купите Battle Fury",
+     "detail": {
+      "normal": "99999 золота лежит без дела. Следующий предмет по сборке профи патча — Battle Fury (3900).",
+      "detailed": "99999 золота лежит без дела. Следующий предмет по сборке профи патча — Battle Fury (3900). · Золото: 99999 (игра, 0 с) · Следующий предмет (профи патча): Battle Fury (статистика патча, не проверено) · Цена: 3900 (база, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "gold",
+       "label": "Золото",
+       "value": 99999,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      },
+      {
+       "key": "next-item",
+       "label": "Следующий предмет (профи патча)",
+       "value": "Battle Fury",
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      },
+      {
+       "key": "item-cost",
+       "label": "Цена",
+       "value": 3900,
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 90000,
+     "zone": "timing",
+     "icon": "item:bfury",
+     "seq": 37,
+     "createdWallMs": 1791912343347,
+     "expiresWallMs": 1791912353347,
+     "clock": 696.139,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "economy.gold"
+   ]
+  }
+ },
+ {
+  "t": 1791912352345,
+  "tick": {
+   "wallMs": 1791912352345,
+   "shown": [
+    {
+     "id": "timing.rune-bounty",
+     "ruleId": "timing.rune-bounty",
+     "category": "timing",
+     "priority": "info",
+     "confidence": 0.8,
+     "short": "Руна богатства через 15 с",
+     "detail": {
+      "normal": "Руна богатства через 15 с (12:00).",
+      "detailed": "Руна богатства через 15 с (12:00). · Руна богатства: 12:00 (база, не проверено) · Игровое время, с: 705.137 (игра, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "rune-bounty",
+       "label": "Руна богатства",
+       "value": "12:00",
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      },
+      {
+       "key": "clock",
+       "label": "Игровое время, с",
+       "value": 705.137,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      }
+     ],
+     "ttlMs": 15000,
+     "cooldownMs": 0,
+     "zone": "timing",
+     "icon": null,
+     "seq": 38,
+     "createdWallMs": 1791912352345,
+     "expiresWallMs": 1791912367345,
+     "clock": 705.137,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "economy.gold",
+    "timing.rune-bounty"
+   ]
+  }
+ },
+ {
+  "t": 1791912353479,
+  "tick": {
+   "wallMs": 1791912353479,
+   "shown": [],
+   "expired": [
+    {
+     "id": "economy.gold",
+     "ruleId": "economy.gold",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.8,
+     "short": "Золото 99999: купите Battle Fury",
+     "detail": {
+      "normal": "99999 золота лежит без дела. Следующий предмет по сборке профи патча — Battle Fury (3900).",
+      "detailed": "99999 золота лежит без дела. Следующий предмет по сборке профи патча — Battle Fury (3900). · Золото: 99999 (игра, 0 с) · Следующий предмет (профи патча): Battle Fury (статистика патча, не проверено) · Цена: 3900 (база, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "gold",
+       "label": "Золото",
+       "value": 99999,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      },
+      {
+       "key": "next-item",
+       "label": "Следующий предмет (профи патча)",
+       "value": "Battle Fury",
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      },
+      {
+       "key": "item-cost",
+       "label": "Цена",
+       "value": 3900,
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 90000,
+     "zone": "timing",
+     "icon": "item:bfury",
+     "seq": 37,
+     "createdWallMs": 1791912343347,
+     "expiresWallMs": 1791912353347,
+     "clock": 696.139,
+     "textSource": "template"
+    }
+   ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "timing.rune-bounty"
+   ]
+  }
+ },
+ {
+  "t": 1791912357474,
+  "tick": {
+   "wallMs": 1791912357474,
+   "shown": [
+    {
+     "id": "timing.rune-power",
+     "ruleId": "timing.rune-power",
+     "category": "timing",
+     "priority": "info",
+     "confidence": 0.8,
+     "short": "Руна силы через 15 с",
+     "detail": {
+      "normal": "Руна силы через 15 с (12:00).",
+      "detailed": "Руна силы через 15 с (12:00). · Руна силы: 12:00 (база, не проверено) · Игровое время, с: 705.137 (игра, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "rune-power",
+       "label": "Руна силы",
+       "value": "12:00",
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      },
+      {
+       "key": "clock",
+       "label": "Игровое время, с",
+       "value": 705.137,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      }
+     ],
+     "ttlMs": 15000,
+     "cooldownMs": 0,
+     "zone": "timing",
+     "icon": null,
+     "seq": 39,
+     "createdWallMs": 1791912357474,
+     "expiresWallMs": 1791912372474,
+     "clock": 710.254,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "timing.rune-bounty",
+    "timing.rune-power"
+   ]
+  }
+ },
+ {
   "t": 1791912361475,
   "aiContext": {
    "schema": "dota-coach.ai-context",
@@ -6031,6 +9512,339 @@
      }
     ]
    }
+  }
+ },
+ {
+  "t": 1791912363461,
+  "tick": {
+   "wallMs": 1791912363461,
+   "shown": [
+    {
+     "id": "economy.skill",
+     "ruleId": "economy.skill",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.6,
+     "short": "Очко навыка: Mana Break",
+     "detail": {
+      "normal": "Неиспользованных очков: 2. На 3 уровне профи патча чаще берут Mana Break.",
+      "detailed": "Неиспользованных очков: 2. На 3 уровне профи патча чаще берут Mana Break. · Свободных очков: 2 (вывод, 0 с) · Навык 3 уровня (профи патча): Mana Break (статистика патча, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "unspent",
+       "label": "Свободных очков",
+       "value": 2,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.6,
+       "verified": true
+      },
+      {
+       "key": "skill",
+       "label": "Навык 3 уровня (профи патча)",
+       "value": "Mana Break",
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 45000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 40,
+     "createdWallMs": 1791912363461,
+     "expiresWallMs": 1791912373461,
+     "clock": 716.241,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "economy.skill",
+    "timing.rune-power"
+   ]
+  }
+ },
+ {
+  "t": 1791912372641,
+  "tick": {
+   "wallMs": 1791912372641,
+   "shown": [],
+   "expired": [
+    {
+     "id": "timing.rune-power",
+     "ruleId": "timing.rune-power",
+     "category": "timing",
+     "priority": "info",
+     "confidence": 0.8,
+     "short": "Руна силы через 15 с",
+     "detail": {
+      "normal": "Руна силы через 15 с (12:00).",
+      "detailed": "Руна силы через 15 с (12:00). · Руна силы: 12:00 (база, не проверено) · Игровое время, с: 705.137 (игра, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "rune-power",
+       "label": "Руна силы",
+       "value": "12:00",
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      },
+      {
+       "key": "clock",
+       "label": "Игровое время, с",
+       "value": 705.137,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      }
+     ],
+     "ttlMs": 15000,
+     "cooldownMs": 0,
+     "zone": "timing",
+     "icon": null,
+     "seq": 39,
+     "createdWallMs": 1791912357474,
+     "expiresWallMs": 1791912372474,
+     "clock": 710.254,
+     "textSource": "template"
+    }
+   ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "economy.skill"
+   ]
+  }
+ },
+ {
+  "t": 1791912373730,
+  "tick": {
+   "wallMs": 1791912373730,
+   "shown": [],
+   "expired": [
+    {
+     "id": "economy.skill",
+     "ruleId": "economy.skill",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.6,
+     "short": "Очко навыка: Mana Break",
+     "detail": {
+      "normal": "Неиспользованных очков: 2. На 3 уровне профи патча чаще берут Mana Break.",
+      "detailed": "Неиспользованных очков: 2. На 3 уровне профи патча чаще берут Mana Break. · Свободных очков: 2 (вывод, 0 с) · Навык 3 уровня (профи патча): Mana Break (статистика патча, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "unspent",
+       "label": "Свободных очков",
+       "value": 2,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.6,
+       "verified": true
+      },
+      {
+       "key": "skill",
+       "label": "Навык 3 уровня (профи патча)",
+       "value": "Mana Break",
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 45000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 40,
+     "createdWallMs": 1791912363461,
+     "expiresWallMs": 1791912373461,
+     "clock": 716.241,
+     "textSource": "template"
+    }
+   ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": []
+  }
+ },
+ {
+  "t": 1791912391481,
+  "tick": {
+   "wallMs": 1791912391481,
+   "shown": [
+    {
+     "id": "economy.idle",
+     "ruleId": "economy.idle",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.75,
+     "short": "Простой 604 с — идите фармить",
+     "detail": {
+      "normal": "Вы 604 с на одном месте без приказов. Каждая минута простоя — потерянное золото.",
+      "detailed": "Вы 604 с на одном месте без приказов. Каждая минута простоя — потерянное золото. · Без движения, с: 604 (вывод, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "idle",
+       "label": "Без движения, с",
+       "value": 604,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.75,
+       "verified": true
+      }
+     ],
+     "ttlMs": 8000,
+     "cooldownMs": 60000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 41,
+     "createdWallMs": 1791912391481,
+     "expiresWallMs": 1791912399481,
+     "clock": 744.261,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "economy.idle"
+   ]
+  }
+ },
+ {
+  "t": 1791912399642,
+  "tick": {
+   "wallMs": 1791912399642,
+   "shown": [],
+   "expired": [
+    {
+     "id": "economy.idle",
+     "ruleId": "economy.idle",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.75,
+     "short": "Простой 604 с — идите фармить",
+     "detail": {
+      "normal": "Вы 604 с на одном месте без приказов. Каждая минута простоя — потерянное золото.",
+      "detailed": "Вы 604 с на одном месте без приказов. Каждая минута простоя — потерянное золото. · Без движения, с: 604 (вывод, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "idle",
+       "label": "Без движения, с",
+       "value": 604,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.75,
+       "verified": true
+      }
+     ],
+     "ttlMs": 8000,
+     "cooldownMs": 60000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 41,
+     "createdWallMs": 1791912391481,
+     "expiresWallMs": 1791912399481,
+     "clock": 744.261,
+     "textSource": "template"
+    }
+   ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": []
+  }
+ },
+ {
+  "t": 1791912418883,
+  "tick": {
+   "wallMs": 1791912418883,
+   "shown": [
+    {
+     "id": "economy.skill",
+     "ruleId": "economy.skill",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.6,
+     "short": "Очко навыка: Mana Break",
+     "detail": {
+      "normal": "Неиспользованных очков: 2. На 3 уровне профи патча чаще берут Mana Break.",
+      "detailed": "Неиспользованных очков: 2. На 3 уровне профи патча чаще берут Mana Break. · Свободных очков: 2 (вывод, 0 с) · Навык 3 уровня (профи патча): Mana Break (статистика патча, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "unspent",
+       "label": "Свободных очков",
+       "value": 2,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.6,
+       "verified": true
+      },
+      {
+       "key": "skill",
+       "label": "Навык 3 уровня (профи патча)",
+       "value": "Mana Break",
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 45000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 42,
+     "createdWallMs": 1791912418883,
+     "expiresWallMs": 1791912428883,
+     "clock": 771.666,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "economy.skill"
+   ]
   }
  },
  {
@@ -6456,6 +10270,400 @@
   }
  },
  {
+  "t": 1791912428964,
+  "tick": {
+   "wallMs": 1791912428964,
+   "shown": [],
+   "expired": [
+    {
+     "id": "economy.skill",
+     "ruleId": "economy.skill",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.6,
+     "short": "Очко навыка: Mana Break",
+     "detail": {
+      "normal": "Неиспользованных очков: 2. На 3 уровне профи патча чаще берут Mana Break.",
+      "detailed": "Неиспользованных очков: 2. На 3 уровне профи патча чаще берут Mana Break. · Свободных очков: 2 (вывод, 0 с) · Навык 3 уровня (профи патча): Mana Break (статистика патча, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "unspent",
+       "label": "Свободных очков",
+       "value": 2,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.6,
+       "verified": true
+      },
+      {
+       "key": "skill",
+       "label": "Навык 3 уровня (профи патча)",
+       "value": "Mana Break",
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 45000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 42,
+     "createdWallMs": 1791912418883,
+     "expiresWallMs": 1791912428883,
+     "clock": 771.666,
+     "textSource": "template"
+    }
+   ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": []
+  }
+ },
+ {
+  "t": 1791912443734,
+  "tick": {
+   "wallMs": 1791912443734,
+   "shown": [
+    {
+     "id": "economy.gold",
+     "ruleId": "economy.gold",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.8,
+     "short": "Золото 99999: купите Battle Fury",
+     "detail": {
+      "normal": "99999 золота лежит без дела. Следующий предмет по сборке профи патча — Battle Fury (3900).",
+      "detailed": "99999 золота лежит без дела. Следующий предмет по сборке профи патча — Battle Fury (3900). · Золото: 99999 (игра, 0 с) · Следующий предмет (профи патча): Battle Fury (статистика патча, не проверено) · Цена: 3900 (база, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "gold",
+       "label": "Золото",
+       "value": 99999,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      },
+      {
+       "key": "next-item",
+       "label": "Следующий предмет (профи патча)",
+       "value": "Battle Fury",
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      },
+      {
+       "key": "item-cost",
+       "label": "Цена",
+       "value": 3900,
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 90000,
+     "zone": "timing",
+     "icon": "item:bfury",
+     "seq": 43,
+     "createdWallMs": 1791912443734,
+     "expiresWallMs": 1791912453734,
+     "clock": 796.517,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "economy.gold"
+   ]
+  }
+ },
+ {
+  "t": 1791912453973,
+  "tick": {
+   "wallMs": 1791912453973,
+   "shown": [],
+   "expired": [
+    {
+     "id": "economy.gold",
+     "ruleId": "economy.gold",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.8,
+     "short": "Золото 99999: купите Battle Fury",
+     "detail": {
+      "normal": "99999 золота лежит без дела. Следующий предмет по сборке профи патча — Battle Fury (3900).",
+      "detailed": "99999 золота лежит без дела. Следующий предмет по сборке профи патча — Battle Fury (3900). · Золото: 99999 (игра, 0 с) · Следующий предмет (профи патча): Battle Fury (статистика патча, не проверено) · Цена: 3900 (база, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "gold",
+       "label": "Золото",
+       "value": 99999,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      },
+      {
+       "key": "next-item",
+       "label": "Следующий предмет (профи патча)",
+       "value": "Battle Fury",
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      },
+      {
+       "key": "item-cost",
+       "label": "Цена",
+       "value": 3900,
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 90000,
+     "zone": "timing",
+     "icon": "item:bfury",
+     "seq": 43,
+     "createdWallMs": 1791912443734,
+     "expiresWallMs": 1791912453734,
+     "clock": 796.517,
+     "textSource": "template"
+    }
+   ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": []
+  }
+ },
+ {
+  "t": 1791912464060,
+  "tick": {
+   "wallMs": 1791912464060,
+   "shown": [
+    {
+     "id": "economy.idle",
+     "ruleId": "economy.idle",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.75,
+     "short": "Простой 677 с — идите фармить",
+     "detail": {
+      "normal": "Вы 677 с на одном месте без приказов. Каждая минута простоя — потерянное золото.",
+      "detailed": "Вы 677 с на одном месте без приказов. Каждая минута простоя — потерянное золото. · Без движения, с: 677 (вывод, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "idle",
+       "label": "Без движения, с",
+       "value": 677,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.75,
+       "verified": true
+      }
+     ],
+     "ttlMs": 8000,
+     "cooldownMs": 60000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 44,
+     "createdWallMs": 1791912464060,
+     "expiresWallMs": 1791912472060,
+     "clock": 816.843,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "economy.idle"
+   ]
+  }
+ },
+ {
+  "t": 1791912472290,
+  "tick": {
+   "wallMs": 1791912472290,
+   "shown": [
+    {
+     "id": "timing.rune-power",
+     "ruleId": "timing.rune-power",
+     "category": "timing",
+     "priority": "info",
+     "confidence": 0.8,
+     "short": "Руна силы через 15 с",
+     "detail": {
+      "normal": "Руна силы через 15 с (14:00).",
+      "detailed": "Руна силы через 15 с (14:00). · Руна силы: 14:00 (база, не проверено) · Игровое время, с: 825.073 (игра, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "rune-power",
+       "label": "Руна силы",
+       "value": "14:00",
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      },
+      {
+       "key": "clock",
+       "label": "Игровое время, с",
+       "value": 825.073,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      }
+     ],
+     "ttlMs": 15000,
+     "cooldownMs": 0,
+     "zone": "timing",
+     "icon": null,
+     "seq": 45,
+     "createdWallMs": 1791912472290,
+     "expiresWallMs": 1791912487290,
+     "clock": 825.073,
+     "textSource": "template"
+    }
+   ],
+   "expired": [
+    {
+     "id": "economy.idle",
+     "ruleId": "economy.idle",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.75,
+     "short": "Простой 677 с — идите фармить",
+     "detail": {
+      "normal": "Вы 677 с на одном месте без приказов. Каждая минута простоя — потерянное золото.",
+      "detailed": "Вы 677 с на одном месте без приказов. Каждая минута простоя — потерянное золото. · Без движения, с: 677 (вывод, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "idle",
+       "label": "Без движения, с",
+       "value": 677,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.75,
+       "verified": true
+      }
+     ],
+     "ttlMs": 8000,
+     "cooldownMs": 60000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 44,
+     "createdWallMs": 1791912464060,
+     "expiresWallMs": 1791912472060,
+     "clock": 816.843,
+     "textSource": "template"
+    }
+   ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "timing.rune-power"
+   ]
+  }
+ },
+ {
+  "t": 1791912477448,
+  "tick": {
+   "wallMs": 1791912477448,
+   "shown": [
+    {
+     "id": "timing.shrine-of-wisdom",
+     "ruleId": "timing.shrine-of-wisdom",
+     "category": "timing",
+     "priority": "info",
+     "confidence": 0.8,
+     "short": "Святилище мудрости через 15 с",
+     "detail": {
+      "normal": "Святилище мудрости через 15 с (14:00).",
+      "detailed": "Святилище мудрости через 15 с (14:00). · Святилище мудрости: 14:00 (база, не проверено) · Игровое время, с: 825.073 (игра, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "shrine-of-wisdom",
+       "label": "Святилище мудрости",
+       "value": "14:00",
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      },
+      {
+       "key": "clock",
+       "label": "Игровое время, с",
+       "value": 825.073,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      }
+     ],
+     "ttlMs": 15000,
+     "cooldownMs": 0,
+     "zone": "timing",
+     "icon": null,
+     "seq": 46,
+     "createdWallMs": 1791912477448,
+     "expiresWallMs": 1791912492448,
+     "clock": 830.231,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "timing.rune-power",
+    "timing.shrine-of-wisdom"
+   ]
+  }
+ },
+ {
   "t": 1791912482019,
   "aiContext": {
    "schema": "dota-coach.ai-context",
@@ -6875,6 +11083,441 @@
      }
     ]
    }
+  }
+ },
+ {
+  "t": 1791912484300,
+  "tick": {
+   "wallMs": 1791912484300,
+   "shown": [
+    {
+     "id": "economy.skill",
+     "ruleId": "economy.skill",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.6,
+     "short": "Очко навыка: Mana Break",
+     "detail": {
+      "normal": "Неиспользованных очков: 2. На 3 уровне профи патча чаще берут Mana Break.",
+      "detailed": "Неиспользованных очков: 2. На 3 уровне профи патча чаще берут Mana Break. · Свободных очков: 2 (вывод, 0 с) · Навык 3 уровня (профи патча): Mana Break (статистика патча, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "unspent",
+       "label": "Свободных очков",
+       "value": 2,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.6,
+       "verified": true
+      },
+      {
+       "key": "skill",
+       "label": "Навык 3 уровня (профи патча)",
+       "value": "Mana Break",
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 45000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 47,
+     "createdWallMs": 1791912484300,
+     "expiresWallMs": 1791912494300,
+     "clock": 837.083,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "economy.skill",
+    "timing.shrine-of-wisdom"
+   ]
+  }
+ },
+ {
+  "t": 1791912492484,
+  "tick": {
+   "wallMs": 1791912492484,
+   "shown": [],
+   "expired": [
+    {
+     "id": "timing.shrine-of-wisdom",
+     "ruleId": "timing.shrine-of-wisdom",
+     "category": "timing",
+     "priority": "info",
+     "confidence": 0.8,
+     "short": "Святилище мудрости через 15 с",
+     "detail": {
+      "normal": "Святилище мудрости через 15 с (14:00).",
+      "detailed": "Святилище мудрости через 15 с (14:00). · Святилище мудрости: 14:00 (база, не проверено) · Игровое время, с: 825.073 (игра, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "shrine-of-wisdom",
+       "label": "Святилище мудрости",
+       "value": "14:00",
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      },
+      {
+       "key": "clock",
+       "label": "Игровое время, с",
+       "value": 825.073,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      }
+     ],
+     "ttlMs": 15000,
+     "cooldownMs": 0,
+     "zone": "timing",
+     "icon": null,
+     "seq": 46,
+     "createdWallMs": 1791912477448,
+     "expiresWallMs": 1791912492448,
+     "clock": 830.231,
+     "textSource": "template"
+    }
+   ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "economy.skill"
+   ]
+  }
+ },
+ {
+  "t": 1791912494536,
+  "tick": {
+   "wallMs": 1791912494536,
+   "shown": [],
+   "expired": [
+    {
+     "id": "economy.skill",
+     "ruleId": "economy.skill",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.6,
+     "short": "Очко навыка: Mana Break",
+     "detail": {
+      "normal": "Неиспользованных очков: 2. На 3 уровне профи патча чаще берут Mana Break.",
+      "detailed": "Неиспользованных очков: 2. На 3 уровне профи патча чаще берут Mana Break. · Свободных очков: 2 (вывод, 0 с) · Навык 3 уровня (профи патча): Mana Break (статистика патча, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "unspent",
+       "label": "Свободных очков",
+       "value": 2,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.6,
+       "verified": true
+      },
+      {
+       "key": "skill",
+       "label": "Навык 3 уровня (профи патча)",
+       "value": "Mana Break",
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 45000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 47,
+     "createdWallMs": 1791912484300,
+     "expiresWallMs": 1791912494300,
+     "clock": 837.083,
+     "textSource": "template"
+    }
+   ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": []
+  }
+ },
+ {
+  "t": 1791912504929,
+  "tick": {
+   "wallMs": 1791912504929,
+   "shown": [
+    {
+     "id": "economy.neutral",
+     "ruleId": "economy.neutral",
+     "category": "economy",
+     "priority": "info",
+     "confidence": 0.8,
+     "short": "Пустой слот нейтрального предмета",
+     "detail": {
+      "normal": "Слот нейтрального предмета пуст — выберите предмет текущего уровня.",
+      "detailed": "Слот нейтрального предмета пуст — выберите предмет текущего уровня. · Нейтральный слот: пусто (игра, 0 с) · Нейтральные предметы с, с: 0 (база)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "neutral",
+       "label": "Нейтральный слот",
+       "value": "пусто",
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      },
+      {
+       "key": "neutral-t1",
+       "label": "Нейтральные предметы с, с",
+       "value": 0,
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": true
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 300000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 48,
+     "createdWallMs": 1791912504929,
+     "expiresWallMs": 1791912514929,
+     "clock": 857.712,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "economy.neutral"
+   ]
+  }
+ },
+ {
+  "t": 1791912515050,
+  "tick": {
+   "wallMs": 1791912515050,
+   "shown": [],
+   "expired": [
+    {
+     "id": "economy.neutral",
+     "ruleId": "economy.neutral",
+     "category": "economy",
+     "priority": "info",
+     "confidence": 0.8,
+     "short": "Пустой слот нейтрального предмета",
+     "detail": {
+      "normal": "Слот нейтрального предмета пуст — выберите предмет текущего уровня.",
+      "detailed": "Слот нейтрального предмета пуст — выберите предмет текущего уровня. · Нейтральный слот: пусто (игра, 0 с) · Нейтральные предметы с, с: 0 (база)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "neutral",
+       "label": "Нейтральный слот",
+       "value": "пусто",
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      },
+      {
+       "key": "neutral-t1",
+       "label": "Нейтральные предметы с, с",
+       "value": 0,
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": true
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 300000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 48,
+     "createdWallMs": 1791912504929,
+     "expiresWallMs": 1791912514929,
+     "clock": 857.712,
+     "textSource": "template"
+    }
+   ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": []
+  }
+ },
+ {
+  "t": 1791912532296,
+  "tick": {
+   "wallMs": 1791912532296,
+   "shown": [
+    {
+     "id": "economy.idle",
+     "ruleId": "economy.idle",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.75,
+     "short": "Простой 745 с — идите фармить",
+     "detail": {
+      "normal": "Вы 745 с на одном месте без приказов. Каждая минута простоя — потерянное золото.",
+      "detailed": "Вы 745 с на одном месте без приказов. Каждая минута простоя — потерянное золото. · Без движения, с: 745 (вывод, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "idle",
+       "label": "Без движения, с",
+       "value": 745,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.75,
+       "verified": true
+      }
+     ],
+     "ttlMs": 8000,
+     "cooldownMs": 60000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 49,
+     "createdWallMs": 1791912532296,
+     "expiresWallMs": 1791912540296,
+     "clock": 885.079,
+     "textSource": "template"
+    },
+    {
+     "id": "timing.day-night",
+     "ruleId": "timing.day-night",
+     "category": "timing",
+     "priority": "info",
+     "confidence": 0.8,
+     "short": "Скоро наступит ночь",
+     "detail": {
+      "normal": "Скоро наступит ночь (15:00).",
+      "detailed": "Скоро наступит ночь (15:00). · Смена дня и ночи: 15:00 (база, не проверено) · Игровое время, с: 885.079 (игра, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "day-night",
+       "label": "Смена дня и ночи",
+       "value": "15:00",
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      },
+      {
+       "key": "clock",
+       "label": "Игровое время, с",
+       "value": 885.079,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      }
+     ],
+     "ttlMs": 15000,
+     "cooldownMs": 0,
+     "zone": "timing",
+     "icon": null,
+     "seq": 50,
+     "createdWallMs": 1791912532296,
+     "expiresWallMs": 1791912547296,
+     "clock": 885.079,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "economy.idle",
+    "timing.day-night"
+   ]
+  }
+ },
+ {
+  "t": 1791912540335,
+  "tick": {
+   "wallMs": 1791912540335,
+   "shown": [],
+   "expired": [
+    {
+     "id": "economy.idle",
+     "ruleId": "economy.idle",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.75,
+     "short": "Простой 745 с — идите фармить",
+     "detail": {
+      "normal": "Вы 745 с на одном месте без приказов. Каждая минута простоя — потерянное золото.",
+      "detailed": "Вы 745 с на одном месте без приказов. Каждая минута простоя — потерянное золото. · Без движения, с: 745 (вывод, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "idle",
+       "label": "Без движения, с",
+       "value": 745,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.75,
+       "verified": true
+      }
+     ],
+     "ttlMs": 8000,
+     "cooldownMs": 60000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 49,
+     "createdWallMs": 1791912532296,
+     "expiresWallMs": 1791912540296,
+     "clock": 885.079,
+     "textSource": "template"
+    }
+   ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "timing.day-night"
+   ]
   }
  },
  {
@@ -7305,50 +11948,23 @@
    "wallMs": 1791912547266,
    "shown": [
     {
-     "id": "laning.bench",
-     "ruleId": "laning.bench",
-     "category": "laning",
+     "id": "timing.neutral-tier:2",
+     "ruleId": "timing.neutral-tier",
+     "category": "timing",
      "priority": "info",
-     "confidence": 0.75,
-     "short": "Добивания 0 к 15:00, у профи ~114",
+     "confidence": 0.8,
+     "short": "Нейтралки 2-го уровня",
      "detail": {
-      "normal": "Добивания: 0 к 15:00, у профи на antimage (позиция 1) обычно ~114. Добивайте крипов: не пропускайте волны между драками.",
-      "detailed": "Добивания: 0 к 15:00, у профи на antimage (позиция 1) обычно ~114. Добивайте крипов: не пропускайте волны между драками. · Добиваний: 0 (игра, 0 с) · Золота заработано (GPM × минуты): 101361 (вывод, 0 с) · Добивания к 15:00 — профи патча, медиана: 114 (статистика патча, не проверено) · Золото к 15:00 — профи патча, медиана: 6718 (статистика патча, не проверено)"
+      "normal": "С 15:00 доступны нейтральные предметы 2-го уровня — обновите свой.",
+      "detailed": "С 15:00 доступны нейтральные предметы 2-го уровня — обновите свой. · Нейтральные 2-го уровня с: 15:00 (база, не проверено)"
      },
      "percent": null,
      "facts": [
       {
-       "key": "lh",
-       "label": "Добиваний",
-       "value": 0,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      },
-      {
-       "key": "gold-earned",
-       "label": "Золота заработано (GPM × минуты)",
-       "value": 101361,
-       "source": "derived",
-       "ageSec": 0,
-       "confidence": 0.8,
-       "verified": true
-      },
-      {
-       "key": "ref-lh",
-       "label": "Добивания к 15:00 — профи патча, медиана",
-       "value": 114,
-       "source": "stats",
-       "ageSec": null,
-       "confidence": 1,
-       "verified": false
-      },
-      {
-       "key": "ref-gold",
-       "label": "Золото к 15:00 — профи патча, медиана",
-       "value": 6718,
-       "source": "stats",
+       "key": "neutral-tier",
+       "label": "Нейтральные 2-го уровня с",
+       "value": "15:00",
+       "source": "kb",
        "ageSec": null,
        "confidence": 1,
        "verified": false
@@ -7356,35 +11972,14 @@
      ],
      "ttlMs": 10000,
      "cooldownMs": 0,
-     "zone": "decision",
+     "zone": "timing",
      "icon": null,
-     "seq": 10,
+     "seq": 51,
      "createdWallMs": 1791912547266,
      "expiresWallMs": 1791912557266,
      "clock": 900.049,
      "textSource": "template"
-    }
-   ],
-   "expired": [],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
-   "visible": [
-    "economy.skill",
-    "economy.gold",
-    "economy.idle",
-    "laning.bench"
-   ]
-  }
- },
- {
-  "t": 1791912557461,
-  "tick": {
-   "wallMs": 1791912557461,
-   "shown": [],
-   "expired": [
+    },
     {
      "id": "laning.bench",
      "ruleId": "laning.bench",
@@ -7439,7 +12034,119 @@
      "cooldownMs": 0,
      "zone": "decision",
      "icon": null,
-     "seq": 10,
+     "seq": 52,
+     "createdWallMs": 1791912547266,
+     "expiresWallMs": 1791912557266,
+     "clock": 900.049,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "timing.neutral-tier:2",
+    "laning.bench"
+   ]
+  }
+ },
+ {
+  "t": 1791912557461,
+  "tick": {
+   "wallMs": 1791912557461,
+   "shown": [],
+   "expired": [
+    {
+     "id": "timing.neutral-tier:2",
+     "ruleId": "timing.neutral-tier",
+     "category": "timing",
+     "priority": "info",
+     "confidence": 0.8,
+     "short": "Нейтралки 2-го уровня",
+     "detail": {
+      "normal": "С 15:00 доступны нейтральные предметы 2-го уровня — обновите свой.",
+      "detailed": "С 15:00 доступны нейтральные предметы 2-го уровня — обновите свой. · Нейтральные 2-го уровня с: 15:00 (база, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "neutral-tier",
+       "label": "Нейтральные 2-го уровня с",
+       "value": "15:00",
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 0,
+     "zone": "timing",
+     "icon": null,
+     "seq": 51,
+     "createdWallMs": 1791912547266,
+     "expiresWallMs": 1791912557266,
+     "clock": 900.049,
+     "textSource": "template"
+    },
+    {
+     "id": "laning.bench",
+     "ruleId": "laning.bench",
+     "category": "laning",
+     "priority": "info",
+     "confidence": 0.75,
+     "short": "Добивания 0 к 15:00, у профи ~114",
+     "detail": {
+      "normal": "Добивания: 0 к 15:00, у профи на antimage (позиция 1) обычно ~114. Добивайте крипов: не пропускайте волны между драками.",
+      "detailed": "Добивания: 0 к 15:00, у профи на antimage (позиция 1) обычно ~114. Добивайте крипов: не пропускайте волны между драками. · Добиваний: 0 (игра, 0 с) · Золота заработано (GPM × минуты): 101361 (вывод, 0 с) · Добивания к 15:00 — профи патча, медиана: 114 (статистика патча, не проверено) · Золото к 15:00 — профи патча, медиана: 6718 (статистика патча, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "lh",
+       "label": "Добиваний",
+       "value": 0,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      },
+      {
+       "key": "gold-earned",
+       "label": "Золота заработано (GPM × минуты)",
+       "value": 101361,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.8,
+       "verified": true
+      },
+      {
+       "key": "ref-lh",
+       "label": "Добивания к 15:00 — профи патча, медиана",
+       "value": 114,
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      },
+      {
+       "key": "ref-gold",
+       "label": "Золото к 15:00 — профи патча, медиана",
+       "value": 6718,
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 0,
+     "zone": "decision",
+     "icon": null,
+     "seq": 52,
      "createdWallMs": 1791912547266,
      "expiresWallMs": 1791912557266,
      "clock": 900.049,
@@ -7451,10 +12158,242 @@
    "deathReview": null,
    "matchReview": null,
    "inFight": false,
+   "visible": []
+  }
+ },
+ {
+  "t": 1791912564993,
+  "tick": {
+   "wallMs": 1791912564993,
+   "shown": [
+    {
+     "id": "economy.gold",
+     "ruleId": "economy.gold",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.8,
+     "short": "Золото 99999: купите Battle Fury",
+     "detail": {
+      "normal": "99999 золота лежит без дела. Следующий предмет по сборке профи патча — Battle Fury (3900).",
+      "detailed": "99999 золота лежит без дела. Следующий предмет по сборке профи патча — Battle Fury (3900). · Золото: 99999 (игра, 0 с) · Следующий предмет (профи патча): Battle Fury (статистика патча, не проверено) · Цена: 3900 (база, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "gold",
+       "label": "Золото",
+       "value": 99999,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      },
+      {
+       "key": "next-item",
+       "label": "Следующий предмет (профи патча)",
+       "value": "Battle Fury",
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      },
+      {
+       "key": "item-cost",
+       "label": "Цена",
+       "value": 3900,
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 90000,
+     "zone": "timing",
+     "icon": "item:bfury",
+     "seq": 53,
+     "createdWallMs": 1791912564993,
+     "expiresWallMs": 1791912574993,
+     "clock": 917.7760000000001,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "economy.gold"
+   ]
+  }
+ },
+ {
+  "t": 1791912575035,
+  "tick": {
+   "wallMs": 1791912575035,
+   "shown": [],
+   "expired": [
+    {
+     "id": "economy.gold",
+     "ruleId": "economy.gold",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.8,
+     "short": "Золото 99999: купите Battle Fury",
+     "detail": {
+      "normal": "99999 золота лежит без дела. Следующий предмет по сборке профи патча — Battle Fury (3900).",
+      "detailed": "99999 золота лежит без дела. Следующий предмет по сборке профи патча — Battle Fury (3900). · Золото: 99999 (игра, 0 с) · Следующий предмет (профи патча): Battle Fury (статистика патча, не проверено) · Цена: 3900 (база, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "gold",
+       "label": "Золото",
+       "value": 99999,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      },
+      {
+       "key": "next-item",
+       "label": "Следующий предмет (профи патча)",
+       "value": "Battle Fury",
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      },
+      {
+       "key": "item-cost",
+       "label": "Цена",
+       "value": 3900,
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 90000,
+     "zone": "timing",
+     "icon": "item:bfury",
+     "seq": 53,
+     "createdWallMs": 1791912564993,
+     "expiresWallMs": 1791912574993,
+     "clock": 917.7760000000001,
+     "textSource": "template"
+    }
+   ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": []
+  }
+ },
+ {
+  "t": 1791912592451,
+  "tick": {
+   "wallMs": 1791912592451,
+   "shown": [
+    {
+     "id": "timing.rune-bounty",
+     "ruleId": "timing.rune-bounty",
+     "category": "timing",
+     "priority": "info",
+     "confidence": 0.8,
+     "short": "Руна богатства через 15 с",
+     "detail": {
+      "normal": "Руна богатства через 15 с (16:00).",
+      "detailed": "Руна богатства через 15 с (16:00). · Руна богатства: 16:00 (база, не проверено) · Игровое время, с: 945.006 (игра, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "rune-bounty",
+       "label": "Руна богатства",
+       "value": "16:00",
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      },
+      {
+       "key": "clock",
+       "label": "Игровое время, с",
+       "value": 945.006,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      }
+     ],
+     "ttlMs": 15000,
+     "cooldownMs": 0,
+     "zone": "timing",
+     "icon": null,
+     "seq": 54,
+     "createdWallMs": 1791912592451,
+     "expiresWallMs": 1791912607451,
+     "clock": 945.234,
+     "textSource": "template"
+    },
+    {
+     "id": "economy.skill",
+     "ruleId": "economy.skill",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.6,
+     "short": "Очко навыка: Mana Break",
+     "detail": {
+      "normal": "Неиспользованных очков: 2. На 3 уровне профи патча чаще берут Mana Break.",
+      "detailed": "Неиспользованных очков: 2. На 3 уровне профи патча чаще берут Mana Break. · Свободных очков: 2 (вывод, 0 с) · Навык 3 уровня (профи патча): Mana Break (статистика патча, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "unspent",
+       "label": "Свободных очков",
+       "value": 2,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.6,
+       "verified": true
+      },
+      {
+       "key": "skill",
+       "label": "Навык 3 уровня (профи патча)",
+       "value": "Mana Break",
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 45000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 55,
+     "createdWallMs": 1791912592451,
+     "expiresWallMs": 1791912602451,
+     "clock": 945.234,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
    "visible": [
     "economy.skill",
-    "economy.gold",
-    "economy.idle"
+    "timing.rune-bounty"
    ]
   }
  },
@@ -7881,6 +12820,336 @@
   }
  },
  {
+  "t": 1791912602467,
+  "tick": {
+   "wallMs": 1791912602467,
+   "shown": [],
+   "expired": [
+    {
+     "id": "economy.skill",
+     "ruleId": "economy.skill",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.6,
+     "short": "Очко навыка: Mana Break",
+     "detail": {
+      "normal": "Неиспользованных очков: 2. На 3 уровне профи патча чаще берут Mana Break.",
+      "detailed": "Неиспользованных очков: 2. На 3 уровне профи патча чаще берут Mana Break. · Свободных очков: 2 (вывод, 0 с) · Навык 3 уровня (профи патча): Mana Break (статистика патча, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "unspent",
+       "label": "Свободных очков",
+       "value": 2,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.6,
+       "verified": true
+      },
+      {
+       "key": "skill",
+       "label": "Навык 3 уровня (профи патча)",
+       "value": "Mana Break",
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 45000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 55,
+     "createdWallMs": 1791912592451,
+     "expiresWallMs": 1791912602451,
+     "clock": 945.234,
+     "textSource": "template"
+    }
+   ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "timing.rune-bounty"
+   ]
+  }
+ },
+ {
+  "t": 1791912607618,
+  "tick": {
+   "wallMs": 1791912607618,
+   "shown": [],
+   "expired": [
+    {
+     "id": "timing.rune-bounty",
+     "ruleId": "timing.rune-bounty",
+     "category": "timing",
+     "priority": "info",
+     "confidence": 0.8,
+     "short": "Руна богатства через 15 с",
+     "detail": {
+      "normal": "Руна богатства через 15 с (16:00).",
+      "detailed": "Руна богатства через 15 с (16:00). · Руна богатства: 16:00 (база, не проверено) · Игровое время, с: 945.006 (игра, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "rune-bounty",
+       "label": "Руна богатства",
+       "value": "16:00",
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      },
+      {
+       "key": "clock",
+       "label": "Игровое время, с",
+       "value": 945.006,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      }
+     ],
+     "ttlMs": 15000,
+     "cooldownMs": 0,
+     "zone": "timing",
+     "icon": null,
+     "seq": 54,
+     "createdWallMs": 1791912592451,
+     "expiresWallMs": 1791912607451,
+     "clock": 945.234,
+     "textSource": "template"
+    }
+   ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": []
+  }
+ },
+ {
+  "t": 1791912612513,
+  "tick": {
+   "wallMs": 1791912612513,
+   "shown": [
+    {
+     "id": "economy.idle",
+     "ruleId": "economy.idle",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.75,
+     "short": "Простой 825 с — идите фармить",
+     "detail": {
+      "normal": "Вы 825 с на одном месте без приказов. Каждая минута простоя — потерянное золото.",
+      "detailed": "Вы 825 с на одном месте без приказов. Каждая минута простоя — потерянное золото. · Без движения, с: 825 (вывод, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "idle",
+       "label": "Без движения, с",
+       "value": 825,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.75,
+       "verified": true
+      }
+     ],
+     "ttlMs": 8000,
+     "cooldownMs": 60000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 56,
+     "createdWallMs": 1791912612513,
+     "expiresWallMs": 1791912620513,
+     "clock": 965.296,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "economy.idle"
+   ]
+  }
+ },
+ {
+  "t": 1791912620541,
+  "tick": {
+   "wallMs": 1791912620541,
+   "shown": [],
+   "expired": [
+    {
+     "id": "economy.idle",
+     "ruleId": "economy.idle",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.75,
+     "short": "Простой 825 с — идите фармить",
+     "detail": {
+      "normal": "Вы 825 с на одном месте без приказов. Каждая минута простоя — потерянное золото.",
+      "detailed": "Вы 825 с на одном месте без приказов. Каждая минута простоя — потерянное золото. · Без движения, с: 825 (вывод, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "idle",
+       "label": "Без движения, с",
+       "value": 825,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.75,
+       "verified": true
+      }
+     ],
+     "ttlMs": 8000,
+     "cooldownMs": 60000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 56,
+     "createdWallMs": 1791912612513,
+     "expiresWallMs": 1791912620513,
+     "clock": 965.296,
+     "textSource": "template"
+    }
+   ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": []
+  }
+ },
+ {
+  "t": 1791912647668,
+  "tick": {
+   "wallMs": 1791912647668,
+   "shown": [
+    {
+     "id": "economy.skill",
+     "ruleId": "economy.skill",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.6,
+     "short": "Очко навыка: Mana Break",
+     "detail": {
+      "normal": "Неиспользованных очков: 2. На 3 уровне профи патча чаще берут Mana Break.",
+      "detailed": "Неиспользованных очков: 2. На 3 уровне профи патча чаще берут Mana Break. · Свободных очков: 2 (вывод, 0 с) · Навык 3 уровня (профи патча): Mana Break (статистика патча, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "unspent",
+       "label": "Свободных очков",
+       "value": 2,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.6,
+       "verified": true
+      },
+      {
+       "key": "skill",
+       "label": "Навык 3 уровня (профи патча)",
+       "value": "Mana Break",
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 45000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 57,
+     "createdWallMs": 1791912647668,
+     "expiresWallMs": 1791912657668,
+     "clock": 1000.451,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "economy.skill"
+   ]
+  }
+ },
+ {
+  "t": 1791912657738,
+  "tick": {
+   "wallMs": 1791912657738,
+   "shown": [],
+   "expired": [
+    {
+     "id": "economy.skill",
+     "ruleId": "economy.skill",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.6,
+     "short": "Очко навыка: Mana Break",
+     "detail": {
+      "normal": "Неиспользованных очков: 2. На 3 уровне профи патча чаще берут Mana Break.",
+      "detailed": "Неиспользованных очков: 2. На 3 уровне профи патча чаще берут Mana Break. · Свободных очков: 2 (вывод, 0 с) · Навык 3 уровня (профи патча): Mana Break (статистика патча, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "unspent",
+       "label": "Свободных очков",
+       "value": 2,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.6,
+       "verified": true
+      },
+      {
+       "key": "skill",
+       "label": "Навык 3 уровня (профи патча)",
+       "value": "Mana Break",
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 45000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 57,
+     "createdWallMs": 1791912647668,
+     "expiresWallMs": 1791912657668,
+     "clock": 1000.451,
+     "textSource": "template"
+    }
+   ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": []
+  }
+ },
+ {
   "t": 1791912662488,
   "aiContext": {
    "schema": "dota-coach.ai-context",
@@ -8300,6 +13569,416 @@
      }
     ]
    }
+  }
+ },
+ {
+  "t": 1791912667914,
+  "tick": {
+   "wallMs": 1791912667914,
+   "shown": [
+    {
+     "id": "economy.gold",
+     "ruleId": "economy.gold",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.8,
+     "short": "Золото 99999: купите Battle Fury",
+     "detail": {
+      "normal": "99999 золота лежит без дела. Следующий предмет по сборке профи патча — Battle Fury (3900).",
+      "detailed": "99999 золота лежит без дела. Следующий предмет по сборке профи патча — Battle Fury (3900). · Золото: 99999 (игра, 0 с) · Следующий предмет (профи патча): Battle Fury (статистика патча, не проверено) · Цена: 3900 (база, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "gold",
+       "label": "Золото",
+       "value": 99999,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      },
+      {
+       "key": "next-item",
+       "label": "Следующий предмет (профи патча)",
+       "value": "Battle Fury",
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      },
+      {
+       "key": "item-cost",
+       "label": "Цена",
+       "value": 3900,
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 90000,
+     "zone": "timing",
+     "icon": "item:bfury",
+     "seq": 58,
+     "createdWallMs": 1791912667914,
+     "expiresWallMs": 1791912677914,
+     "clock": 1020.697,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "economy.gold"
+   ]
+  }
+ },
+ {
+  "t": 1791912678070,
+  "tick": {
+   "wallMs": 1791912678070,
+   "shown": [],
+   "expired": [
+    {
+     "id": "economy.gold",
+     "ruleId": "economy.gold",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.8,
+     "short": "Золото 99999: купите Battle Fury",
+     "detail": {
+      "normal": "99999 золота лежит без дела. Следующий предмет по сборке профи патча — Battle Fury (3900).",
+      "detailed": "99999 золота лежит без дела. Следующий предмет по сборке профи патча — Battle Fury (3900). · Золото: 99999 (игра, 0 с) · Следующий предмет (профи патча): Battle Fury (статистика патча, не проверено) · Цена: 3900 (база, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "gold",
+       "label": "Золото",
+       "value": 99999,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      },
+      {
+       "key": "next-item",
+       "label": "Следующий предмет (профи патча)",
+       "value": "Battle Fury",
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      },
+      {
+       "key": "item-cost",
+       "label": "Цена",
+       "value": 3900,
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 90000,
+     "zone": "timing",
+     "icon": "item:bfury",
+     "seq": 58,
+     "createdWallMs": 1791912667914,
+     "expiresWallMs": 1791912677914,
+     "clock": 1020.697,
+     "textSource": "template"
+    }
+   ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": []
+  }
+ },
+ {
+  "t": 1791912688066,
+  "tick": {
+   "wallMs": 1791912688066,
+   "shown": [
+    {
+     "id": "economy.idle",
+     "ruleId": "economy.idle",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.75,
+     "short": "Простой 901 с — идите фармить",
+     "detail": {
+      "normal": "Вы 901 с на одном месте без приказов. Каждая минута простоя — потерянное золото.",
+      "detailed": "Вы 901 с на одном месте без приказов. Каждая минута простоя — потерянное золото. · Без движения, с: 901 (вывод, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "idle",
+       "label": "Без движения, с",
+       "value": 901,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.75,
+       "verified": true
+      }
+     ],
+     "ttlMs": 8000,
+     "cooldownMs": 60000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 59,
+     "createdWallMs": 1791912688066,
+     "expiresWallMs": 1791912696066,
+     "clock": 1040.849,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "economy.idle"
+   ]
+  }
+ },
+ {
+  "t": 1791912696164,
+  "tick": {
+   "wallMs": 1791912696164,
+   "shown": [],
+   "expired": [
+    {
+     "id": "economy.idle",
+     "ruleId": "economy.idle",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.75,
+     "short": "Простой 901 с — идите фармить",
+     "detail": {
+      "normal": "Вы 901 с на одном месте без приказов. Каждая минута простоя — потерянное золото.",
+      "detailed": "Вы 901 с на одном месте без приказов. Каждая минута простоя — потерянное золото. · Без движения, с: 901 (вывод, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "idle",
+       "label": "Без движения, с",
+       "value": 901,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.75,
+       "verified": true
+      }
+     ],
+     "ttlMs": 8000,
+     "cooldownMs": 60000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 59,
+     "createdWallMs": 1791912688066,
+     "expiresWallMs": 1791912696066,
+     "clock": 1040.849,
+     "textSource": "template"
+    }
+   ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": []
+  }
+ },
+ {
+  "t": 1791912708325,
+  "tick": {
+   "wallMs": 1791912708325,
+   "shown": [
+    {
+     "id": "economy.skill",
+     "ruleId": "economy.skill",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.6,
+     "short": "Очко навыка: Mana Break",
+     "detail": {
+      "normal": "Неиспользованных очков: 2. На 3 уровне профи патча чаще берут Mana Break.",
+      "detailed": "Неиспользованных очков: 2. На 3 уровне профи патча чаще берут Mana Break. · Свободных очков: 2 (вывод, 0 с) · Навык 3 уровня (профи патча): Mana Break (статистика патча, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "unspent",
+       "label": "Свободных очков",
+       "value": 2,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.6,
+       "verified": true
+      },
+      {
+       "key": "skill",
+       "label": "Навык 3 уровня (профи патча)",
+       "value": "Mana Break",
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 45000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 60,
+     "createdWallMs": 1791912708325,
+     "expiresWallMs": 1791912718325,
+     "clock": 1061.108,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "economy.skill"
+   ]
+  }
+ },
+ {
+  "t": 1791912712306,
+  "tick": {
+   "wallMs": 1791912712306,
+   "shown": [
+    {
+     "id": "timing.rune-power",
+     "ruleId": "timing.rune-power",
+     "category": "timing",
+     "priority": "info",
+     "confidence": 0.8,
+     "short": "Руна силы через 15 с",
+     "detail": {
+      "normal": "Руна силы через 15 с (18:00).",
+      "detailed": "Руна силы через 15 с (18:00). · Руна силы: 18:00 (база, не проверено) · Игровое время, с: 1065.089 (игра, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "rune-power",
+       "label": "Руна силы",
+       "value": "18:00",
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      },
+      {
+       "key": "clock",
+       "label": "Игровое время, с",
+       "value": 1065.089,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      }
+     ],
+     "ttlMs": 15000,
+     "cooldownMs": 0,
+     "zone": "timing",
+     "icon": null,
+     "seq": 61,
+     "createdWallMs": 1791912712306,
+     "expiresWallMs": 1791912727306,
+     "clock": 1065.089,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "economy.skill",
+    "timing.rune-power"
+   ]
+  }
+ },
+ {
+  "t": 1791912718357,
+  "tick": {
+   "wallMs": 1791912718357,
+   "shown": [],
+   "expired": [
+    {
+     "id": "economy.skill",
+     "ruleId": "economy.skill",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.6,
+     "short": "Очко навыка: Mana Break",
+     "detail": {
+      "normal": "Неиспользованных очков: 2. На 3 уровне профи патча чаще берут Mana Break.",
+      "detailed": "Неиспользованных очков: 2. На 3 уровне профи патча чаще берут Mana Break. · Свободных очков: 2 (вывод, 0 с) · Навык 3 уровня (профи патча): Mana Break (статистика патча, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "unspent",
+       "label": "Свободных очков",
+       "value": 2,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.6,
+       "verified": true
+      },
+      {
+       "key": "skill",
+       "label": "Навык 3 уровня (профи патча)",
+       "value": "Mana Break",
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 45000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 60,
+     "createdWallMs": 1791912708325,
+     "expiresWallMs": 1791912718325,
+     "clock": 1061.108,
+     "textSource": "template"
+    }
+   ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "timing.rune-power"
+   ]
   }
  },
  {
@@ -8725,6 +14404,229 @@
   }
  },
  {
+  "t": 1791912727565,
+  "tick": {
+   "wallMs": 1791912727565,
+   "shown": [],
+   "expired": [
+    {
+     "id": "timing.rune-power",
+     "ruleId": "timing.rune-power",
+     "category": "timing",
+     "priority": "info",
+     "confidence": 0.8,
+     "short": "Руна силы через 15 с",
+     "detail": {
+      "normal": "Руна силы через 15 с (18:00).",
+      "detailed": "Руна силы через 15 с (18:00). · Руна силы: 18:00 (база, не проверено) · Игровое время, с: 1065.089 (игра, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "rune-power",
+       "label": "Руна силы",
+       "value": "18:00",
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      },
+      {
+       "key": "clock",
+       "label": "Игровое время, с",
+       "value": 1065.089,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      }
+     ],
+     "ttlMs": 15000,
+     "cooldownMs": 0,
+     "zone": "timing",
+     "icon": null,
+     "seq": 61,
+     "createdWallMs": 1791912712306,
+     "expiresWallMs": 1791912727306,
+     "clock": 1065.089,
+     "textSource": "template"
+    }
+   ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": []
+  }
+ },
+ {
+  "t": 1791912756197,
+  "tick": {
+   "wallMs": 1791912756197,
+   "shown": [
+    {
+     "id": "economy.idle",
+     "ruleId": "economy.idle",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.75,
+     "short": "Простой 969 с — идите фармить",
+     "detail": {
+      "normal": "Вы 969 с на одном месте без приказов. Каждая минута простоя — потерянное золото.",
+      "detailed": "Вы 969 с на одном месте без приказов. Каждая минута простоя — потерянное золото. · Без движения, с: 969 (вывод, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "idle",
+       "label": "Без движения, с",
+       "value": 969,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.75,
+       "verified": true
+      }
+     ],
+     "ttlMs": 8000,
+     "cooldownMs": 60000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 62,
+     "createdWallMs": 1791912756197,
+     "expiresWallMs": 1791912764197,
+     "clock": 1108.98,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "economy.idle"
+   ]
+  }
+ },
+ {
+  "t": 1791912764404,
+  "tick": {
+   "wallMs": 1791912764404,
+   "shown": [],
+   "expired": [
+    {
+     "id": "economy.idle",
+     "ruleId": "economy.idle",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.75,
+     "short": "Простой 969 с — идите фармить",
+     "detail": {
+      "normal": "Вы 969 с на одном месте без приказов. Каждая минута простоя — потерянное золото.",
+      "detailed": "Вы 969 с на одном месте без приказов. Каждая минута простоя — потерянное золото. · Без движения, с: 969 (вывод, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "idle",
+       "label": "Без движения, с",
+       "value": 969,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.75,
+       "verified": true
+      }
+     ],
+     "ttlMs": 8000,
+     "cooldownMs": 60000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 62,
+     "createdWallMs": 1791912756197,
+     "expiresWallMs": 1791912764197,
+     "clock": 1108.98,
+     "textSource": "template"
+    }
+   ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": []
+  }
+ },
+ {
+  "t": 1791912776374,
+  "tick": {
+   "wallMs": 1791912776374,
+   "shown": [
+    {
+     "id": "economy.gold",
+     "ruleId": "economy.gold",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.8,
+     "short": "Золото 99999: купите Battle Fury",
+     "detail": {
+      "normal": "99999 золота лежит без дела. Следующий предмет по сборке профи патча — Battle Fury (3900).",
+      "detailed": "99999 золота лежит без дела. Следующий предмет по сборке профи патча — Battle Fury (3900). · Золото: 99999 (игра, 0 с) · Следующий предмет (профи патча): Battle Fury (статистика патча, не проверено) · Цена: 3900 (база, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "gold",
+       "label": "Золото",
+       "value": 99999,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      },
+      {
+       "key": "next-item",
+       "label": "Следующий предмет (профи патча)",
+       "value": "Battle Fury",
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      },
+      {
+       "key": "item-cost",
+       "label": "Цена",
+       "value": 3900,
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 90000,
+     "zone": "timing",
+     "icon": "item:bfury",
+     "seq": 63,
+     "createdWallMs": 1791912776374,
+     "expiresWallMs": 1791912786374,
+     "clock": 1129.157,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "economy.gold"
+   ]
+  }
+ },
+ {
   "t": 1791912783058,
   "aiContext": {
    "schema": "dota-coach.ai-context",
@@ -9147,6 +15049,72 @@
   }
  },
  {
+  "t": 1791912786593,
+  "tick": {
+   "wallMs": 1791912786593,
+   "shown": [],
+   "expired": [
+    {
+     "id": "economy.gold",
+     "ruleId": "economy.gold",
+     "category": "economy",
+     "priority": "advice",
+     "confidence": 0.8,
+     "short": "Золото 99999: купите Battle Fury",
+     "detail": {
+      "normal": "99999 золота лежит без дела. Следующий предмет по сборке профи патча — Battle Fury (3900).",
+      "detailed": "99999 золота лежит без дела. Следующий предмет по сборке профи патча — Battle Fury (3900). · Золото: 99999 (игра, 0 с) · Следующий предмет (профи патча): Battle Fury (статистика патча, не проверено) · Цена: 3900 (база, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "gold",
+       "label": "Золото",
+       "value": 99999,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      },
+      {
+       "key": "next-item",
+       "label": "Следующий предмет (профи патча)",
+       "value": "Battle Fury",
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      },
+      {
+       "key": "item-cost",
+       "label": "Цена",
+       "value": 3900,
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 90000,
+     "zone": "timing",
+     "icon": "item:bfury",
+     "seq": 63,
+     "createdWallMs": 1791912776374,
+     "expiresWallMs": 1791912786374,
+     "clock": 1129.157,
+     "textSource": "template"
+    }
+   ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": []
+  }
+ },
+ {
   "journal": [
    {
     "wallMs": 1791911643966,
@@ -9181,11 +15149,27 @@
     "source": "template"
    },
    {
+    "wallMs": 1791911759691,
+    "clock": 110,
+    "kind": "hint",
+    "id": "economy.idle",
+    "text": "Простой 116 с — идите фармить",
+    "source": "template"
+   },
+   {
     "wallMs": 1791911767944,
     "clock": 120.695,
     "kind": "mistake",
     "id": "m1",
     "text": "Золото 99999 не тратилось больше 2 минут",
+    "source": "template"
+   },
+   {
+    "wallMs": 1791911779794,
+    "clock": 132.553,
+    "kind": "hint",
+    "id": "economy.skill",
+    "text": "Очко навыка: Blink",
     "source": "template"
    },
    {
@@ -9197,6 +15181,14 @@
     "source": "template"
    },
    {
+    "wallMs": 1791911808660,
+    "clock": 161.445,
+    "kind": "hint",
+    "id": "economy.gold",
+    "text": "Золото 99999: купите Wraith Band",
+    "source": "template"
+   },
+   {
     "wallMs": 1791911812249,
     "clock": 165.034,
     "kind": "hint",
@@ -9205,19 +15197,59 @@
     "source": "template"
    },
    {
-    "wallMs": 1791911827458,
-    "clock": 180.243,
+    "wallMs": 1791911828954,
+    "clock": 181.739,
+    "kind": "hint",
+    "id": "economy.idle",
+    "text": "Простой 34 с — идите фармить",
+    "source": "template"
+   },
+   {
+    "wallMs": 1791911849045,
+    "clock": 201.837,
+    "kind": "hint",
+    "id": "economy.skill",
+    "text": "Очко навыка: Mana Break",
+    "source": "template"
+   },
+   {
+    "wallMs": 1791911869260,
+    "clock": 222.052,
     "kind": "hint",
     "id": "economy.neutral",
     "text": "Пустой слот нейтрального предмета",
     "source": "template"
    },
    {
-    "wallMs": 1791911854863,
-    "clock": 207.655,
+    "wallMs": 1791911897293,
+    "clock": 250.085,
     "kind": "hint",
     "id": "economy.idle",
-    "text": "Простой 60 с — идите фармить",
+    "text": "Простой 102 с — идите фармить",
+    "source": "template"
+   },
+   {
+    "wallMs": 1791911917296,
+    "clock": 270.08799999999997,
+    "kind": "hint",
+    "id": "economy.gold",
+    "text": "Золото 99999: купите Wraith Band",
+    "source": "template"
+   },
+   {
+    "wallMs": 1791911932392,
+    "clock": 285.18399999999997,
+    "kind": "hint",
+    "id": "timing.day-night",
+    "text": "Скоро наступит ночь",
+    "source": "template"
+   },
+   {
+    "wallMs": 1791911937510,
+    "clock": 290.302,
+    "kind": "hint",
+    "id": "economy.skill",
+    "text": "Очко навыка: Mana Break",
     "source": "template"
    },
    {
@@ -9229,6 +15261,134 @@
     "source": "template"
    },
    {
+    "wallMs": 1791911965515,
+    "clock": 318.307,
+    "kind": "hint",
+    "id": "economy.idle",
+    "text": "Простой 170 с — идите фармить",
+    "source": "template"
+   },
+   {
+    "wallMs": 1791911992411,
+    "clock": 345.203,
+    "kind": "hint",
+    "id": "timing.lotus",
+    "text": "Лотос через 15 с",
+    "source": "template"
+   },
+   {
+    "wallMs": 1791911992913,
+    "clock": 345.70500000000004,
+    "kind": "hint",
+    "id": "economy.skill",
+    "text": "Очко навыка: Mana Break",
+    "source": "template"
+   },
+   {
+    "wallMs": 1791912017518,
+    "clock": 370.31,
+    "kind": "hint",
+    "id": "economy.gold",
+    "text": "Золото 99999: купите Wraith Band",
+    "source": "template"
+   },
+   {
+    "wallMs": 1791912037748,
+    "clock": 390.53999999999996,
+    "kind": "hint",
+    "id": "economy.idle",
+    "text": "Простой 243 с — идите фармить",
+    "source": "template"
+   },
+   {
+    "wallMs": 1791912052236,
+    "clock": 405.028,
+    "kind": "hint",
+    "id": "timing.shrine-of-wisdom",
+    "text": "Святилище мудрости через 15 с",
+    "source": "template"
+   },
+   {
+    "wallMs": 1791912057993,
+    "clock": 410.78499999999997,
+    "kind": "hint",
+    "id": "economy.skill",
+    "text": "Очко навыка: Mana Break",
+    "source": "template"
+   },
+   {
+    "wallMs": 1791912105956,
+    "clock": 458.748,
+    "kind": "hint",
+    "id": "economy.idle",
+    "text": "Простой 311 с — идите фармить",
+    "source": "template"
+   },
+   {
+    "wallMs": 1791912126097,
+    "clock": 478.889,
+    "kind": "hint",
+    "id": "economy.gold",
+    "text": "Золото 99999: купите Wraith Band",
+    "source": "template"
+   },
+   {
+    "wallMs": 1791912146364,
+    "clock": 499.156,
+    "kind": "hint",
+    "id": "economy.skill",
+    "text": "Очко навыка: Mana Break",
+    "source": "template"
+   },
+   {
+    "wallMs": 1791912172282,
+    "clock": 525.0740000000001,
+    "kind": "hint",
+    "id": "timing.lotus",
+    "text": "Лотос через 15 с",
+    "source": "template"
+   },
+   {
+    "wallMs": 1791912174453,
+    "clock": 527.245,
+    "kind": "hint",
+    "id": "economy.idle",
+    "text": "Простой 379 с — идите фармить",
+    "source": "template"
+   },
+   {
+    "wallMs": 1791912194510,
+    "clock": 547.302,
+    "kind": "hint",
+    "id": "economy.neutral",
+    "text": "Пустой слот нейтрального предмета",
+    "source": "template"
+   },
+   {
+    "wallMs": 1791912214545,
+    "clock": 567.337,
+    "kind": "hint",
+    "id": "economy.skill",
+    "text": "Очко навыка: Mana Break",
+    "source": "template"
+   },
+   {
+    "wallMs": 1791912232233,
+    "clock": 585.025,
+    "kind": "hint",
+    "id": "timing.day-night",
+    "text": "Скоро наступит день",
+    "source": "template"
+   },
+   {
+    "wallMs": 1791912234735,
+    "clock": 587.527,
+    "kind": "hint",
+    "id": "economy.gold",
+    "text": "Золото 99999: купите Power Treads",
+    "source": "template"
+   },
+   {
     "wallMs": 1791912247455,
     "clock": 600.2470000000001,
     "kind": "hint",
@@ -9237,11 +15397,243 @@
     "source": "template"
    },
    {
+    "wallMs": 1791912254983,
+    "clock": 607.775,
+    "kind": "hint",
+    "id": "economy.idle",
+    "text": "Простой 460 с — идите фармить",
+    "source": "template"
+   },
+   {
+    "wallMs": 1791912275045,
+    "clock": 627.837,
+    "kind": "hint",
+    "id": "economy.skill",
+    "text": "Очко навыка: Mana Break",
+    "source": "template"
+   },
+   {
+    "wallMs": 1791912323156,
+    "clock": 675.948,
+    "kind": "hint",
+    "id": "economy.idle",
+    "text": "Простой 528 с — идите фармить",
+    "source": "template"
+   },
+   {
+    "wallMs": 1791912343347,
+    "clock": 696.139,
+    "kind": "hint",
+    "id": "economy.gold",
+    "text": "Золото 99999: купите Power Treads",
+    "source": "template"
+   },
+   {
+    "wallMs": 1791912352345,
+    "clock": 705.137,
+    "kind": "hint",
+    "id": "timing.rune-bounty",
+    "text": "Руна богатства через 15 с",
+    "source": "template"
+   },
+   {
+    "wallMs": 1791912357474,
+    "clock": 710.254,
+    "kind": "hint",
+    "id": "timing.rune-power",
+    "text": "Руна силы через 15 с",
+    "source": "template"
+   },
+   {
+    "wallMs": 1791912363461,
+    "clock": 716.241,
+    "kind": "hint",
+    "id": "economy.skill",
+    "text": "Очко навыка: Mana Break",
+    "source": "template"
+   },
+   {
+    "wallMs": 1791912391481,
+    "clock": 744.261,
+    "kind": "hint",
+    "id": "economy.idle",
+    "text": "Простой 596 с — идите фармить",
+    "source": "template"
+   },
+   {
+    "wallMs": 1791912418883,
+    "clock": 771.666,
+    "kind": "hint",
+    "id": "economy.skill",
+    "text": "Очко навыка: Mana Break",
+    "source": "template"
+   },
+   {
+    "wallMs": 1791912443734,
+    "clock": 796.517,
+    "kind": "hint",
+    "id": "economy.gold",
+    "text": "Золото 99999: купите Battle Fury",
+    "source": "template"
+   },
+   {
+    "wallMs": 1791912464060,
+    "clock": 816.843,
+    "kind": "hint",
+    "id": "economy.idle",
+    "text": "Простой 669 с — идите фармить",
+    "source": "template"
+   },
+   {
+    "wallMs": 1791912472290,
+    "clock": 825.073,
+    "kind": "hint",
+    "id": "timing.rune-power",
+    "text": "Руна силы через 15 с",
+    "source": "template"
+   },
+   {
+    "wallMs": 1791912477448,
+    "clock": 830.231,
+    "kind": "hint",
+    "id": "timing.shrine-of-wisdom",
+    "text": "Святилище мудрости через 15 с",
+    "source": "template"
+   },
+   {
+    "wallMs": 1791912484300,
+    "clock": 837.083,
+    "kind": "hint",
+    "id": "economy.skill",
+    "text": "Очко навыка: Mana Break",
+    "source": "template"
+   },
+   {
+    "wallMs": 1791912504929,
+    "clock": 857.712,
+    "kind": "hint",
+    "id": "economy.neutral",
+    "text": "Пустой слот нейтрального предмета",
+    "source": "template"
+   },
+   {
+    "wallMs": 1791912532296,
+    "clock": 885.079,
+    "kind": "hint",
+    "id": "economy.idle",
+    "text": "Простой 737 с — идите фармить",
+    "source": "template"
+   },
+   {
+    "wallMs": 1791912532296,
+    "clock": 885.079,
+    "kind": "hint",
+    "id": "timing.day-night",
+    "text": "Скоро наступит ночь",
+    "source": "template"
+   },
+   {
+    "wallMs": 1791912547266,
+    "clock": 900.049,
+    "kind": "hint",
+    "id": "timing.neutral-tier:2",
+    "text": "Нейтралки 2-го уровня",
+    "source": "template"
+   },
+   {
     "wallMs": 1791912547266,
     "clock": 900.049,
     "kind": "hint",
     "id": "laning.bench",
     "text": "Добивания 0 к 15:00, у профи ~114",
+    "source": "template"
+   },
+   {
+    "wallMs": 1791912564993,
+    "clock": 917.7760000000001,
+    "kind": "hint",
+    "id": "economy.gold",
+    "text": "Золото 99999: купите Battle Fury",
+    "source": "template"
+   },
+   {
+    "wallMs": 1791912592451,
+    "clock": 945.234,
+    "kind": "hint",
+    "id": "timing.rune-bounty",
+    "text": "Руна богатства через 15 с",
+    "source": "template"
+   },
+   {
+    "wallMs": 1791912592451,
+    "clock": 945.234,
+    "kind": "hint",
+    "id": "economy.skill",
+    "text": "Очко навыка: Mana Break",
+    "source": "template"
+   },
+   {
+    "wallMs": 1791912612513,
+    "clock": 965.296,
+    "kind": "hint",
+    "id": "economy.idle",
+    "text": "Простой 817 с — идите фармить",
+    "source": "template"
+   },
+   {
+    "wallMs": 1791912647668,
+    "clock": 1000.451,
+    "kind": "hint",
+    "id": "economy.skill",
+    "text": "Очко навыка: Mana Break",
+    "source": "template"
+   },
+   {
+    "wallMs": 1791912667914,
+    "clock": 1020.697,
+    "kind": "hint",
+    "id": "economy.gold",
+    "text": "Золото 99999: купите Battle Fury",
+    "source": "template"
+   },
+   {
+    "wallMs": 1791912688066,
+    "clock": 1040.849,
+    "kind": "hint",
+    "id": "economy.idle",
+    "text": "Простой 893 с — идите фармить",
+    "source": "template"
+   },
+   {
+    "wallMs": 1791912708325,
+    "clock": 1061.108,
+    "kind": "hint",
+    "id": "economy.skill",
+    "text": "Очко навыка: Mana Break",
+    "source": "template"
+   },
+   {
+    "wallMs": 1791912712306,
+    "clock": 1065.089,
+    "kind": "hint",
+    "id": "timing.rune-power",
+    "text": "Руна силы через 15 с",
+    "source": "template"
+   },
+   {
+    "wallMs": 1791912756197,
+    "clock": 1108.98,
+    "kind": "hint",
+    "id": "economy.idle",
+    "text": "Простой 961 с — идите фармить",
+    "source": "template"
+   },
+   {
+    "wallMs": 1791912776374,
+    "clock": 1129.157,
+    "kind": "hint",
+    "id": "economy.gold",
+    "text": "Золото 99999: купите Battle Fury",
     "source": "template"
    }
   ],

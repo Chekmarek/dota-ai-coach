@@ -171,7 +171,28 @@ export class CoachEngine {
       this.log({ wallMs: ctx.now, clock: ctx.v.clock.value, kind: 'hint', id: r.hint.id, text: r.hint.short, source: r.hint.textSource });
       return r.hint;
     }
+    // Одноразовое событие (кулдауна нет: «Рошан вернётся…», «Нейтралки 3-го уровня») не теряем, если экран полон или
+    // мешает пауза категории: ждёт свободного места, пока не устарело
+    if (r.status === 'dropped' && d.cooldownMs === 0 && (r.reason === 'full' || r.reason === 'category-gap' || r.reason === 'rate' || r.reason === 'zone-full') && !this.pending.some((p) => p.d.id === d.id)) {
+      this.pending.push({ d, until: ctx.now + d.ttlMs });
+    }
     return r.hint;
+  }
+
+  /** Одноразовые подсказки, ждущие места на экране */
+  private pending: { d: HintDraft; until: number }[] = [];
+
+  private flushPending(ctx: RuleContext, out: Hint[]): void {
+    const waiting = this.pending.filter((p) => p.until > ctx.now);
+    this.pending = [];
+    for (const p of waiting) {
+      const r = this.queue.push(p.d, { now: ctx.now, clock: ctx.v.clock.value, inFight: this.mem.inFight, settings: this.settings });
+      if (r.status === 'shown' && r.hint) {
+        if (p.d.id === 'ai.advice') r.hint.textSource = 'ai';
+        out.push(r.hint);
+        this.log({ wallMs: ctx.now, clock: ctx.v.clock.value, kind: 'hint', id: r.hint.id, text: r.hint.short, source: r.hint.textSource });
+      } else if (r.status === 'dropped' && r.reason !== 'cooldown' && r.reason !== 'disabled' && r.reason !== 'low-confidence') this.pending.push(p);
+    }
   }
 
   tick(state: MatchState, gsi: GsiReading | null, gsiWallMs: number | null): CoachUpdate {
@@ -185,6 +206,7 @@ export class CoachEngine {
       this.mistakes.reset();
       this.deathReviewNow = null;
       this.matchReviewNow = null;
+      this.pending = [];
       this.ai?.cancelAll();
     }
     const g = buildGameContext(v, this.mem, this.look, this.settings.position ?? 'auto');
@@ -214,6 +236,8 @@ export class CoachEngine {
       }
       // Важное прямо сейчас — первым: по важности, при равной — опасность и драка, потом руны/аванпост, потом фарм и предметы
       drafts.sort((a, b) => PRIORITY_RANK[b.priority] - PRIORITY_RANK[a.priority] || CATEGORY_RANK[b.category] - CATEGORY_RANK[a.category] || b.confidence - a.confidence);
+      // ждавшие места одноразовые — до новых: событие старше, а новые правила подтвердят себя и на следующем тике
+      this.flushPending(ctx, shown);
       for (const d of drafts) this.pushDraft(d, ctx, shown);
 
       // 2. Ошибки
@@ -455,6 +479,8 @@ export class CoachEngine {
       zone: 'decision',
     });
     const r = this.queue.push(d, { now: this.now(), clock, inFight: this.mem.inFight, settings: this.settings });
+    // экран полон — совет ждёт места, пока не устарел (как одноразовые подсказки правил)
+    if (r.status === 'dropped' && (r.reason === 'full' || r.reason === 'zone-full' || r.reason === 'rate') && !this.pending.some((p) => p.d.id === d.id)) this.pending.push({ d, until: this.now() + d.ttlMs });
     if (!r.hint) return;
     r.hint.textSource = 'ai';
     if (r.status === 'shown') {

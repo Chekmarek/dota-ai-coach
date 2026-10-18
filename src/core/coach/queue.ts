@@ -13,6 +13,8 @@ export interface QueueConfig {
   inFightAllowed: HintCategory[];
   /** В драке — не чаще одной новой подсказки (и критичной тоже) за столько мс: драку не заваливаем текстом */
   inFightGapMs: number;
+  /** Всего на экране одновременно (арбитр: «максимум 1–2») */
+  maxVisible: number;
 }
 
 // Фильтр качества (этап 5 «понимания игры»): в 5 матчах 18.10 было ~7 подсказок в минуту — лимит 8 почти не работал,
@@ -24,6 +26,7 @@ export const DEFAULT_QUEUE_CONFIG: QueueConfig = {
   maxPerMinute: 5,
   inFightAllowed: ['fight', 'danger'],
   inFightGapMs: 4000,
+  maxVisible: 2,
 };
 
 /** Категории «по ситуации»: правило выдаёт подсказку на каждом снимке, пока ситуация есть */
@@ -31,7 +34,24 @@ export const SITUATIONAL_CATEGORIES: readonly HintCategory[] = ['danger', 'fight
 /** Сколько ждать после последнего подтверждения, прежде чем снять ситуативную подсказку (пропуск снимка — не повод) */
 export const STALE_GRACE_MS = 2500;
 
-export type DropReason = 'disabled' | 'low-confidence' | 'percent-uncertain' | 'cooldown' | 'category-gap' | 'in-fight' | 'rate' | 'zone-full';
+/** Сколько подсказка должна провисеть, прежде чем новая той же важности её сменит (экран полон) */
+export const ROTATE_MS = 4000;
+
+export type DropReason = 'disabled' | 'low-confidence' | 'percent-uncertain' | 'cooldown' | 'category-gap' | 'in-fight' | 'rate' | 'zone-full' | 'conflict' | 'full';
+
+/**
+ * Куда зовёт подсказка: «вперёд» (драться, пушить, к руне, к аванпосту, к команде) или «назад» (отходить, враги
+ * пропали, мало здоровья, опасный лес). null — ни то ни другое (предметы, тайминги, разборы).
+ */
+export function stanceOf(h: Pick<HintDraft, 'ruleId' | 'id' | 'short'>): 'go' | 'back' | null {
+  const r = h.ruleId;
+  if (r === 'fight.disengage' || r === 'danger.low-hp' || r === 'danger.deep' || r === 'danger.smoke' || r === 'danger.missing') return 'back';
+  if (r === 'fight.engage') return /^Не вступать/.test(h.short) ? 'back' : /^Вступать/.test(h.short) ? 'go' : null;
+  if (r === 'ai.advice') return /^Отходить/.test(h.short) ? 'back' : /^(Драться|Пушить)/.test(h.short) ? 'go' : null;
+  if (r === 'macro.push' || r === 'macro.help' || r === 'macro.group' || r === 'macro.outpost' || r === 'fight.ult-ready') return 'go';
+  if (r === 'timing.rune-power' || r === 'timing.rune-bounty' || r === 'timing.rune-water' || r === 'timing.lotus' || r === 'timing.stack') return 'go';
+  return null;
+}
 
 export interface PushResult {
   hint: Hint | null;
@@ -59,7 +79,7 @@ export class HintQueue {
   private seq = 0;
   /** Подтверждения правилом: сколько раз подсказка пришла (показ + повторы) и когда последний раз */
   private confirms = new Map<number, { count: number; lastMs: number }>();
-  readonly dropped: Record<DropReason, number> = { disabled: 0, 'low-confidence': 0, 'percent-uncertain': 0, cooldown: 0, 'category-gap': 0, 'in-fight': 0, rate: 0, 'zone-full': 0 };
+  readonly dropped: Record<DropReason, number> = { disabled: 0, 'low-confidence': 0, 'percent-uncertain': 0, cooldown: 0, 'category-gap': 0, 'in-fight': 0, rate: 0, 'zone-full': 0, conflict: 0, full: 0 };
   shownTotal = 0;
 
   constructor(readonly config: QueueConfig = DEFAULT_QUEUE_CONFIG) {}
@@ -138,7 +158,11 @@ export class HintQueue {
     if (same) {
       // Повтор: обновляем содержимое и продлеваем, номер показа сохраняем; текст ИИ не затираем шаблоном
       const keepDetail = same.textSource === 'ai' ? same.detail : d.detail;
-      Object.assign(same, { ...d, zone, detail: keepDetail, seq: same.seq, createdWallMs: same.createdWallMs, textSource: same.textSource, expiresWallMs: Math.max(same.expiresWallMs, now + d.ttlMs) });
+      // Продлевается только подсказка «по ситуации» (пока опасность есть — она на экране). Совет экономики
+      // («Нет Town Portal Scroll») правило подтверждает каждую секунду — продление держало его на экране бесконечно
+      // и не пускало остальные (арбитр, этап 3)
+      const extend = SITUATIONAL_CATEGORIES.includes(d.category);
+      Object.assign(same, { ...d, zone, detail: keepDetail, seq: same.seq, createdWallMs: same.createdWallMs, textSource: same.textSource, expiresWallMs: extend ? Math.max(same.expiresWallMs, now + d.ttlMs) : same.expiresWallMs });
       this.lastById.set(d.id, now);
       const c = this.confirms.get(same.seq);
       this.confirms.set(same.seq, { count: (c?.count ?? 1) + 1, lastMs: now });
@@ -157,13 +181,44 @@ export class HintQueue {
       if (this.perMinute(now) >= this.config.maxPerMinute) return drop('rate');
     }
 
-    const inZone = this.visibleHints.filter((h) => h.zone === zone);
+    // Противоречия (арбитр, ночная задача, этап 3): пока на экране «назад», «вперёд» не показываем;
+    // пришло «назад» — висящее «вперёд» убираем. Срочное важнее планового
     const evicted: Hint[] = [];
+    const stance = stanceOf(d);
+    if (stance === 'go' && this.visibleHints.some((h) => stanceOf(h) === 'back')) return drop('conflict');
+    if (stance === 'back') {
+      const gone = this.visibleHints.filter((h) => stanceOf(h) === 'go');
+      if (gone.length) {
+        this.visibleHints = this.visibleHints.filter((h) => !gone.includes(h));
+        for (const h of gone) this.confirms.delete(h.seq);
+        evicted.push(...gone);
+      }
+    }
+
+    const inZone = this.visibleHints.filter((h) => h.zone === zone);
     if (inZone.length >= this.config.maxPerZone[zone]) {
       // Вытесняем самую неважную (и самую старую среди равных), если новая важнее — или критичная
       const weakest = [...inZone].sort((a, b) => PRIORITY_RANK[a.priority] - PRIORITY_RANK[b.priority] || a.createdWallMs - b.createdWallMs)[0]!;
       const stronger = PRIORITY_RANK[d.priority] > PRIORITY_RANK[weakest.priority] || (critical && weakest.priority === 'critical') || review;
       if (!stronger) return drop('zone-full');
+      this.visibleHints = this.visibleHints.filter((h) => h !== weakest);
+      this.confirms.delete(weakest.seq);
+      evicted.push(weakest);
+    }
+    // Всего на экране — не больше maxVisible: новая вытесняет самую неважную, только если она важнее
+    if (this.visibleHints.length >= this.config.maxVisible) {
+      // самая слабая: ниже важность → повторяющаяся (придёт снова) раньше одноразовой → старше
+      const oneShot = (h: { cooldownMs: number }) => (h.cooldownMs === 0 ? 1 : 0);
+      const weakest = [...this.visibleHints].sort((a, b) => PRIORITY_RANK[a.priority] - PRIORITY_RANK[b.priority] || oneShot(a) - oneShot(b) || a.createdWallMs - b.createdWallMs)[0]!;
+      // равная по важности сменяет ту, что уже провисела ROTATE_MS: подсказки чередуются, а не теряются
+      // одноразовое событие (без кулдауна: «Рошан убит») при равной важности сразу вытесняет повторяющуюся подсказку —
+      // та придёт снова, а событие — нет
+      const same = PRIORITY_RANK[d.priority] === PRIORITY_RANK[weakest.priority];
+      const stronger = PRIORITY_RANK[d.priority] > PRIORITY_RANK[weakest.priority] || review || (same && now - weakest.createdWallMs >= ROTATE_MS) || (same && d.cooldownMs === 0 && weakest.cooldownMs > 0);
+      if (!stronger) {
+        // вытесненное ради «назад» уже убрано — возвращать его не нужно: «назад» важнее, но места нет
+        return drop('full');
+      }
       this.visibleHints = this.visibleHints.filter((h) => h !== weakest);
       this.confirms.delete(weakest.seq);
       evicted.push(weakest);

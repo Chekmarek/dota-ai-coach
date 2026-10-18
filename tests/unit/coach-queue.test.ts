@@ -41,16 +41,23 @@ describe('HintQueue', () => {
     expect(q.push(d(), ctx(31_000)).status).toBe('shown');
   });
 
-  it('повтор на экране сливается: тот же номер показа, срок продлён', () => {
+  it('повтор на экране сливается: тот же номер показа; ситуативная (опасность) — срок продлён', () => {
     const q = new HintQueue();
-    const a = q.push(d(), ctx(0)).hint!;
-    const b = q.push(d({ short: 'Новый текст' }), ctx(5000));
+    const a = q.push(d({ category: 'danger' }), ctx(0)).hint!;
+    const b = q.push(d({ category: 'danger', short: 'Новый текст' }), ctx(5000));
     expect(b.status).toBe('merged');
     expect(b.hint!.seq).toBe(a.seq);
     expect(b.hint!.short).toBe('Новый текст');
     expect(q.visible()).toHaveLength(1);
     expect(q.tick(9000)).toHaveLength(0);
     expect(q.tick(13_001)).toHaveLength(1);
+  });
+
+  it('совет экономики не продлевается подтверждениями: уходит по своему сроку (не держит экран бесконечно)', () => {
+    const q = new HintQueue();
+    q.push(d(), ctx(0));
+    expect(q.push(d(), ctx(5000)).status).toBe('merged');
+    expect(q.tick(8001)).toHaveLength(1);
   });
 
   it('TTL: подсказка уходит сама', () => {
