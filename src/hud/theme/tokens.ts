@@ -1,6 +1,6 @@
 // Дизайн-токены подсказок поверх игры. ВСЕ визуальные решения — здесь и в файлах тем (themes/*.ts):
 // компоненты и hud.css берут только CSS-переменные --hud-*. Новая тема = новый файл с HudTheme.
-// Стиль — «как часть Dota»: тёмный камень, кованый металл рамки, резные руны, светящийся самоцвет, магия.
+// Стиль — компактное тёмное стекло: тонкая кромка (metal*), подложка (stone*), один акцент (rune), полоса важности.
 // Размеры — в «тысячных u» (u = min(высота, ширина × 9/16), см. src/core/hud/layout.ts): 18 = 1,8 % высоты
 // экрана 16:9, поэтому одинаково смотрится на ноутбуке и на телевизоре.
 
@@ -86,7 +86,7 @@ export interface HudTheme {
     in: string;
     inOut: string;
   };
-  /** Фактура камня (data:image/svg+xml) */
+  /** Фактура подложки (data:image/svg+xml); пусто — без фактуры */
   texture: string;
 }
 
@@ -102,7 +102,7 @@ export function themeVars(t: HudTheme, unitPx: number, scale: number, opacity: n
   vars['--hud-glow-blur'] = s(t.shadow.glowBlur);
   for (const [k, v] of Object.entries(t.duration)) vars[`--hud-d-${k}`] = `${v}ms`;
   for (const [k, v] of Object.entries(t.easing)) vars[`--hud-e-${k}`] = v;
-  vars['--hud-texture'] = `url("${t.texture}")`;
+  vars['--hud-texture'] = t.texture ? `url("${t.texture}")` : 'none';
   vars['--hud-opacity'] = String(opacity);
   return vars;
 }

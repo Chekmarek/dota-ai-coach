@@ -8,6 +8,7 @@ import { PageHeader } from '../components/ui';
 import { isLive, startLive } from '../components/live';
 import { HintsToggles } from '../components/hints';
 import type { PageProps } from './types';
+import { Icon, type IconName } from '../components/icons';
 
 /** Числовое поле настройки: сохраняется при уходе с поля, неверное значение откатывается */
 function NumberSetting(props: { label: string; hint?: string; value: number; min: number; max: number; step: number; testId: string; onSave: (n: number) => void }) {
@@ -35,12 +36,12 @@ function NumberSetting(props: { label: string; hint?: string; value: number; min
   );
 }
 
-function SettingsSection({ icon, title, subtitle, children }: { icon: string; title: string; subtitle?: string; children: ReactNode }) {
+function SettingsSection({ icon, title, subtitle, children }: { icon: IconName; title: string; subtitle?: string; children: ReactNode }) {
   return (
     <section className="card settings-section">
       <header className="settings-head">
         <span className="settings-icon" aria-hidden>
-          {icon}
+          <Icon name={icon} size={16} />
         </span>
         <div>
           <h3>{title}</h3>
@@ -61,7 +62,7 @@ function LiveSettingsCard({ settings, update }: { settings: Settings; update: (p
     if (isLive(status)) startLive({ ...settings, live: { ...l, fps: n } });
   };
   return (
-    <SettingsSection icon="●" title="Живая игра" subtitle="Как коуч смотрит на окно Dota 2 и что показывает поверх игры.">
+    <SettingsSection icon="live" title="Живая игра" subtitle="Как коуч смотрит на окно Dota 2 и что показывает поверх игры.">
       <label className="check">
         <input type="checkbox" checked={l.autoStart} onChange={(e) => void update({ live: { autoStart: e.target.checked } })} data-testid="setting-live-autostart" />
         Включать захват сам при запуске коуча
@@ -102,10 +103,10 @@ export function AppSettings({ onNavigate }: PageProps) {
       <PageHeader title="Настройки" subtitle="Всё сохраняется сразу." />
       {error && <p className="error">{error}</p>}
       <LiveSettingsCard settings={settings} update={update} />
-      <SettingsSection icon="💬" title="Live-подсказки" subtitle="Советы коуча во время матча — в отдельном окне, не поверх игры. Решаете вы.">
+      <SettingsSection icon="chat" title="Live-подсказки" subtitle="Советы коуча во время матча — в отдельном окне, не поверх игры. Решаете вы.">
         <HintsToggles settings={settings} update={update} />
       </SettingsSection>
-      <SettingsSection icon="◆" title="Данные из игры (GSI)" subtitle="Dota присылает коучу данные о вашем герое на этот компьютер (127.0.0.1). Подключение — на странице «Живая игра».">
+      <SettingsSection icon="plug" title="Данные из игры (GSI)" subtitle="Dota присылает коучу данные о вашем герое на этот компьютер (127.0.0.1). Подключение — на странице «Живая игра».">
         <NumberSetting
           label="Порт приёмника"
           hint="Если порт занят другой программой — укажите другой (1024–65535). Файл в папке Dota обновится сам"
@@ -121,7 +122,7 @@ export function AppSettings({ onNavigate }: PageProps) {
           Записывать сессии (без ников и steamid; последние 20 дней, не больше 500 МБ — в папке данных, gsi-sessions)
         </label>
       </SettingsSection>
-      <SettingsSection icon="▶" title="Разбор записей" subtitle="Для папки с кадрами и видеофайлов. Применяется при следующем запуске записи.">
+      <SettingsSection icon="replay" title="Разбор записей" subtitle="Для папки с кадрами и видеофайлов. Применяется при следующем запуске записи.">
         <NumberSetting label="Кадров в секунду из записи" hint="Сколько кадров в секунду брать из видео или папки" value={c.targetFps} min={0.2} max={30} step={0.1} testId="setting-targetFps" onSave={(n) => void update({ capture: { targetFps: n } })} />
         <NumberSetting label="Частота превью записи, к/с" hint="Как часто обновлять картинку на странице «Разбор записи»" value={c.previewFps} min={0.2} max={10} step={0.1} testId="setting-previewFps" onSave={(n) => void update({ capture: { previewFps: n } })} />
         <label className="check">
@@ -129,12 +130,12 @@ export function AppSettings({ onNavigate }: PageProps) {
           Повторять запись по кругу
         </label>
       </SettingsSection>
-      <SettingsSection icon="⚡" title="Производительность" subtitle="Общее для живой игры и записей. Если коуч грузит компьютер — уменьшите эти значения.">
+      <SettingsSection icon="gauge" title="Производительность" subtitle="Общее для живой игры и записей. Если коуч грузит компьютер — уменьшите эти значения.">
         <NumberSetting label="Лимит обработки, кадров/с" hint="Сколько кадров в секунду коуч разбирает. Лишние отбрасываются" value={c.processingFpsCap} min={0.2} max={30} step={0.1} testId="setting-processingFpsCap" onSave={(n) => void update({ capture: { processingFpsCap: n } })} />
         <NumberSetting label="Максимальная ширина кадра, px" hint="Большие кадры уменьшаются до этой ширины перед разбором (распознавание HUD настроено на 1920)" value={c.maxWidth} min={320} max={3840} step={1} testId="setting-maxWidth" onSave={(n) => void update({ capture: { maxWidth: n } })} />
       </SettingsSection>
       {info?.dev && (
-        <SettingsSection icon="🛠" title="Для разработчика: набор кадров" subtitle="Видно только при DOTACOACH_DEV=1. Кадры живого захвата + GSI наблюдателя — для проверки зрения (docs/VISION_DATASET.md).">
+        <SettingsSection icon="wrench" title="Для разработчика: набор кадров" subtitle="Видно только при DOTACOACH_DEV=1. Кадры живого захвата + GSI наблюдателя — для проверки зрения (docs/VISION_DATASET.md).">
           <label className="check">
             <input type="checkbox" checked={settings.dev.datasetRecord} onChange={(e) => void update({ dev: { datasetRecord: e.target.checked } })} data-testid="setting-dev-dataset" />
             Сохранять кадры в папку данных, vision-dataset (≈ 3–4 МБ на кадр 1920×1080; кадры могут содержать ники — не публиковать)
@@ -142,7 +143,7 @@ export function AppSettings({ onNavigate }: PageProps) {
           <NumberSetting label="Каждый N-й кадр" hint="При захвате 10 к/с и N = 10 — один кадр в секунду" value={settings.dev.datasetEveryN} min={1} max={600} step={1} testId="setting-dev-every-n" onSave={(n) => void update({ dev: { datasetEveryN: Math.round(n) } })} />
         </SettingsSection>
       )}
-      <SettingsSection icon="ℹ" title="О программе">
+      <SettingsSection icon="info" title="О программе">
         {info && (
           <>
             <dl className="kv">

@@ -1,4 +1,4 @@
-// «Предпросмотр подсказок» (этап 3): все виды подсказок на снимке игры (или схеме HUD) с переключателями темы,
+// «Подсказки в игре» (этап 3): все виды подсказок на снимке игры (или схеме HUD) с переключателями темы,
 // экрана, подробности и анимаций; «Режим расстановки» — перетаскивание зон, сброс к стандартной.
 // Рисуют те же компоненты, что и окно поверх игры (src/hud), поэтому редизайн = правка токенов + проверка здесь.
 import { useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react';
@@ -18,14 +18,21 @@ import { SCREENS, applyOverrides, moveZone, resolveLayout, type ZoneOverrides, t
 
 type Background = 'schematic' | 'live' | 'file';
 type Detail = 'min' | 'normal' | 'detailed';
-const DETAIL_RU: Record<Detail, string> = { min: 'Минимум', normal: 'Обычный', detailed: 'Подробно' };
+const DETAIL_RU: Record<Detail, string> = { min: 'Только действие', normal: 'Коротко: действие и причина', detailed: 'Подробно: с факторами %' };
+const ZONE_ORDER: HudZoneId[] = ['alert', 'decision', 'timing', 'review'];
+const ZONE_RU: Record<HudZoneId, string> = { alert: 'Опасность — сверху по центру', decision: 'Решения с % — справа', timing: 'Тайминги — слева', review: 'Разбор смерти и матча — в центре' };
+const ZONE_HINT: Record<HudZoneId, string> = {
+  alert: 'Пропавшие враги, смок, мало здоровья',
+  decision: 'Вступать ли в драку, фарм или пуш — с шансом',
+  timing: 'Руны, стаки, предметы — одной строкой',
+  review: 'Только пока герой мёртв и после матча',
+};
 
 export function HudPreview() {
   const { settings, update, error } = useSettings();
   const { status, preview } = useEngine();
   const [scene, setScene] = useState<SampleScene>('alive');
   const [screenId, setScreenId] = useState('16x9');
-  const [detail, setDetail] = useState<Detail>('normal');
   const [bg, setBg] = useState<Background>('schematic');
   const [fileUrl, setFileUrl] = useState<string | null>(null);
   const [editing, setEditing] = useState(false);
@@ -40,9 +47,11 @@ export function HudPreview() {
 
   const screen = SCREENS.find((s) => s.id === screenId) ?? SCREENS[0]!;
   const h = settings?.hud;
+  // Подробность — настоящая настройка подсказок: что видно здесь, то и будет в матче
+  const detail: Detail = settings?.hints.detail ?? 'normal';
   const zones = draft ?? h?.zones ?? null;
   const options: HudOptions = useMemo(
-    () => (h ? { theme: h.theme, reduceMotion: h.reduceMotion, opacity: h.opacity, scale: h.scale, zones } : { ...DEFAULT_HUD_OPTIONS, zones }),
+    () => (h ? { theme: h.theme, reduceMotion: h.reduceMotion, opacity: h.opacity, scale: h.scale, zones, hiddenZones: h.hiddenZones } : { ...DEFAULT_HUD_OPTIONS, zones }),
     [h, zones],
   );
   const resolved = useMemo(() => resolveLayout(applyOverrides(DEFAULT_LAYOUT, zones), screen.width, screen.height), [zones, screen]);
@@ -138,111 +147,135 @@ export function HudPreview() {
 
   return (
     <>
-      <PageHeader title="Предпросмотр подсказок" subtitle="Так подсказки выглядят поверх игры. Те же карточки, что и в матче: смените тему, экран или подробность и посмотрите сразу." />
+      <PageHeader title="Подсказки в игре" subtitle="Что коуч показывает поверх Доты и как. Изменения сохраняются сразу и видны на схеме ниже — это те же плашки, что в матче." />
       {exclusive && (
         <p className="warn" data-testid="hud-exclusive">
           Dota запущена в режиме «Полноэкранный»: Windows не даёт рисовать поверх такой игры. Включите в Dota «Полноэкранный в окне» (Настройки → Видео → Режим экрана).
         </p>
       )}
-      <Card title="Вид">
-        <div className="form hudp-controls">
-          <label className="check">
-            <input type="checkbox" checked={h.enabled} onChange={(e) => void update({ hud: { enabled: e.target.checked } })} data-testid="hud-enabled" />
-            Показывать подсказки поверх игры
-          </label>
-          <label>
-            Тема
-            <select value={h.theme} onChange={(e) => void update({ hud: { theme: e.target.value as HudThemeId } })} data-testid="hud-theme">
-              {HUD_THEME_IDS.map((id) => (
-                <option key={id} value={id}>
-                  {THEMES[id].nameRu} — {THEMES[id].noteRu.toLowerCase()}
+      <Card title="Подсказки поверх игры">
+        <div className="hudp-groups">
+          <fieldset className="hudp-group">
+            <legend>Что показывать</legend>
+            <label className="check">
+              <input type="checkbox" checked={h.enabled} onChange={(e) => void update({ hud: { enabled: e.target.checked } })} data-testid="hud-enabled" />
+              Подсказки поверх игры
+            </label>
+            {ZONE_ORDER.map((z) => (
+              <label key={z} className="check" title={ZONE_HINT[z]}>
+                <input
+                  type="checkbox"
+                  checked={!h.hiddenZones.includes(z)}
+                  disabled={!h.enabled}
+                  onChange={(e) => void update({ hud: { hiddenZones: e.target.checked ? h.hiddenZones.filter((x) => x !== z) : [...h.hiddenZones, z] } })}
+                  data-testid={`hud-show-${z}`}
+                />
+                {ZONE_RU[z]}
+              </label>
+            ))}
+            <label>
+              Сколько текста
+              <select value={detail} onChange={(e) => void update({ hints: { detail: e.target.value as Detail } })} data-testid="hud-detail">
+                {(Object.keys(DETAIL_RU) as Detail[]).map((d) => (
+                  <option key={d} value={d}>
+                    {DETAIL_RU[d]}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </fieldset>
+
+          <fieldset className="hudp-group">
+            <legend>Как выглядят</legend>
+            <label>
+              Цвет акцента
+              <select value={h.theme} onChange={(e) => void update({ hud: { theme: e.target.value as HudThemeId } })} data-testid="hud-theme">
+                {HUD_THEME_IDS.map((id) => (
+                  <option key={id} value={id}>
+                    {THEMES[id].nameRu}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label>
+              Размер: {Math.round(h.scale * 100)}%
+              <input type="range" min={0.8} max={1.4} step={0.05} value={h.scale} onChange={(e) => void update({ hud: { scale: Number(e.target.value) } })} />
+            </label>
+            <label>
+              Непрозрачность: {Math.round(h.opacity * 100)}%
+              <input type="range" min={0.4} max={1} step={0.05} value={h.opacity} onChange={(e) => void update({ hud: { opacity: Number(e.target.value) } })} />
+            </label>
+            <label className="check">
+              <input type="checkbox" checked={h.reduceMotion} onChange={(e) => void update({ hud: { reduceMotion: e.target.checked } })} />
+              Уменьшить анимации
+            </label>
+          </fieldset>
+
+          <fieldset className="hudp-group">
+            <legend>Где посмотреть</legend>
+            <label>
+              Сцена
+              <select value={scene} onChange={(e) => setScene(e.target.value as SampleScene)}>
+                {SAMPLE_SCENES.map((x) => (
+                  <option key={x.id} value={x.id}>
+                    {x.nameRu}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label>
+              Экран
+              <select value={screenId} onChange={(e) => setScreenId(e.target.value)} data-testid="hud-screen">
+                {SCREENS.map((x) => (
+                  <option key={x.id} value={x.id}>
+                    {x.nameRu}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label>
+              Фон
+              <select value={bg} onChange={(e) => setBg(e.target.value as Background)}>
+                <option value="schematic">Схема HUD Dota</option>
+                <option value="live" disabled={!preview}>
+                  Последний кадр игры{preview ? '' : ' (нет кадра)'}
                 </option>
-              ))}
-            </select>
-          </label>
-          <label>
-            Сцена
-            <select value={scene} onChange={(e) => setScene(e.target.value as SampleScene)}>
-              {SAMPLE_SCENES.map((s) => (
-                <option key={s.id} value={s.id}>
-                  {s.nameRu}
+                <option value="file" disabled={!fileUrl}>
+                  Свой снимок{fileUrl ? '' : ' (выберите файл)'}
                 </option>
-              ))}
-            </select>
-          </label>
-          <label>
-            Экран
-            <select value={screenId} onChange={(e) => setScreenId(e.target.value)} data-testid="hud-screen">
-              {SCREENS.map((s) => (
-                <option key={s.id} value={s.id}>
-                  {s.nameRu}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label>
-            Подробность
-            <select value={detail} onChange={(e) => setDetail(e.target.value as Detail)} data-testid="hud-detail">
-              {(Object.keys(DETAIL_RU) as Detail[]).map((d) => (
-                <option key={d} value={d}>
-                  {DETAIL_RU[d]}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label>
-            Фон
-            <select value={bg} onChange={(e) => setBg(e.target.value as Background)}>
-              <option value="schematic">Схема HUD Dota</option>
-              <option value="live" disabled={!preview}>
-                Последний кадр игры{preview ? '' : ' (нет кадра)'}
-              </option>
-              <option value="file" disabled={!fileUrl}>
-                Свой снимок{fileUrl ? '' : ' (выберите файл)'}
-              </option>
-            </select>
-          </label>
-          <label>
-            Свой снимок игры
-            <input
-              type="file"
-              accept="image/png,image/jpeg"
-              onChange={(e) => {
-                const f = e.target.files?.[0];
-                if (!f) return;
-                setFileUrl(URL.createObjectURL(f));
-                setBg('file');
-              }}
-            />
-          </label>
-          <label>
-            Прозрачность: {Math.round(h.opacity * 100)}%
-            <input type="range" min={0.4} max={1} step={0.05} value={h.opacity} onChange={(e) => void update({ hud: { opacity: Number(e.target.value) } })} />
-          </label>
-          <label>
-            Размер: {Math.round(h.scale * 100)}%
-            <input type="range" min={0.8} max={1.4} step={0.05} value={h.scale} onChange={(e) => void update({ hud: { scale: Number(e.target.value) } })} />
-          </label>
-          <label className="check">
-            <input type="checkbox" checked={h.reduceMotion} onChange={(e) => void update({ hud: { reduceMotion: e.target.checked } })} />
-            Уменьшить анимации
-          </label>
+              </select>
+            </label>
+            <label>
+              Свой снимок игры
+              <input
+                type="file"
+                accept="image/png,image/jpeg"
+                onChange={(e) => {
+                  const f = e.target.files?.[0];
+                  if (!f) return;
+                  setFileUrl(URL.createObjectURL(f));
+                  setBg('file');
+                }}
+              />
+            </label>
+          </fieldset>
         </div>
         <div className="row">
-          <button onClick={replay}>Проиграть появление</button>
           <button onClick={() => void window.dotacoach.showHudDemo(scene)} title="Примеры появятся поверх окна игры на 12 секунд" data-testid="hud-demo">
             Показать поверх игры
           </button>
+          <button onClick={replay}>Проиграть появление</button>
           <button className={editing ? 'primary' : ''} onClick={() => setEditing(!editing)} data-testid="hud-edit">
-            {editing ? 'Готово' : 'Режим расстановки'}
+            {editing ? 'Готово' : 'Передвинуть зоны'}
           </button>
           <button onClick={() => void update({ hud: { zones: null } })} disabled={!h.zones}>
-            Сбросить расстановку
+            Вернуть стандартную раскладку
           </button>
         </div>
         {editing && <p className="muted small">Перетащите зону мышью. Красная рамка — зона заходит на HUD игры: так её не сохранить.</p>}
         {note && <p className="warn small">{note}</p>}
         {error && <p className="error small">{error}</p>}
+        <p className="muted small">На схеме ниже — примеры подсказок, а не данные вашего матча.</p>
       </Card>
 
       <div className="hudp-wrap" ref={wrapRef} style={{ height: screen.height * stageScale }}>

@@ -880,184 +880,9 @@
   }
  },
  {
-  "t": 44,
+  "t": 42,
   "tick": {
-   "wallMs": 5044000,
-   "shown": [],
-   "expired": [
-    {
-     "id": "fight.target:axe",
-     "ruleId": "fight.target",
-     "category": "fight",
-     "priority": "advice",
-     "confidence": 0.8,
-     "short": "Фокус: Axe, 50% здоровья",
-     "detail": {
-      "normal": "Бейте Axe: у него меньше всех здоровья (50%).",
-      "detailed": "Бейте Axe: у него меньше всех здоровья (50%). · Цель: axe (экран, 0 с) · Здоровье цели, %: 50 (экран, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "target",
-       "label": "Цель",
-       "value": "axe",
-       "source": "screen",
-       "ageSec": 0,
-       "confidence": 0.95,
-       "verified": true
-      },
-      {
-       "key": "target-hp",
-       "label": "Здоровье цели, %",
-       "value": 50,
-       "source": "screen",
-       "ageSec": 0,
-       "confidence": 0.8,
-       "verified": true
-      }
-     ],
-     "ttlMs": 5000,
-     "cooldownMs": 8000,
-     "zone": "decision",
-     "icon": "hero:axe",
-     "seq": 2,
-     "createdWallMs": 5003000,
-     "expiresWallMs": 5044000,
-     "clock": 303,
-     "textSource": "template"
-    }
-   ],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
-   "visible": [
-    "fight.engage",
-    "danger.smoke",
-    "economy.tp"
-   ]
-  }
- },
- {
-  "t": 45,
-  "tick": {
-   "wallMs": 5045000,
-   "shown": [
-    {
-     "id": "laning.buy-regen",
-     "ruleId": "laning.buy-regen",
-     "category": "laning",
-     "priority": "advice",
-     "confidence": 0.8,
-     "short": "Купите фласку — курьером",
-     "detail": {
-      "normal": "Здоровья 25%, регенерации нет. Фласка стоит 100, у вас 600.",
-      "detailed": "Здоровья 25%, регенерации нет. Фласка стоит 100, у вас 600. · Здоровье, %: 25 (игра, 0 с) · Цена фласки: 100 (база, не проверено) · Золото: 600 (игра, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "hp",
-       "label": "Здоровье, %",
-       "value": 25,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      },
-      {
-       "key": "flask-cost",
-       "label": "Цена фласки",
-       "value": 100,
-       "source": "kb",
-       "ageSec": null,
-       "confidence": 1,
-       "verified": false
-      },
-      {
-       "key": "gold",
-       "label": "Золото",
-       "value": 600,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      }
-     ],
-     "ttlMs": 8000,
-     "cooldownMs": 90000,
-     "zone": "decision",
-     "icon": "item:flask",
-     "seq": 7,
-     "createdWallMs": 5045000,
-     "expiresWallMs": 5087000,
-     "clock": 345,
-     "textSource": "template"
-    },
-    {
-     "id": "timing.rune-power",
-     "ruleId": "timing.rune-power",
-     "category": "timing",
-     "priority": "info",
-     "confidence": 0.8,
-     "short": "Руна силы через 15 с",
-     "detail": {
-      "normal": "Руна силы через 15 с (6:00).",
-      "detailed": "Руна силы через 15 с (6:00). · Руна силы: 6:00 (база, не проверено) · Игровое время, с: 345 (игра, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "rune-power",
-       "label": "Руна силы",
-       "value": "6:00",
-       "source": "kb",
-       "ageSec": null,
-       "confidence": 1,
-       "verified": false
-      },
-      {
-       "key": "clock",
-       "label": "Игровое время, с",
-       "value": 345,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      }
-     ],
-     "ttlMs": 15000,
-     "cooldownMs": 0,
-     "zone": "timing",
-     "icon": null,
-     "seq": 8,
-     "createdWallMs": 5045000,
-     "expiresWallMs": 5060000,
-     "clock": 345,
-     "textSource": "template"
-    }
-   ],
-   "expired": [],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
-   "visible": [
-    "fight.engage",
-    "danger.smoke",
-    "economy.tp",
-    "laning.buy-regen",
-    "timing.rune-power"
-   ]
-  }
- },
- {
-  "t": 47,
-  "tick": {
-   "wallMs": 5047000,
+   "wallMs": 5042000,
    "shown": [],
    "expired": [
     {
@@ -1197,6 +1022,48 @@
      "expiresWallMs": 5047000,
      "clock": 300,
      "textSource": "template"
+    },
+    {
+     "id": "fight.target:axe",
+     "ruleId": "fight.target",
+     "category": "fight",
+     "priority": "advice",
+     "confidence": 0.8,
+     "short": "Фокус: Axe, 50% здоровья",
+     "detail": {
+      "normal": "Бейте Axe: у него меньше всех здоровья (50%).",
+      "detailed": "Бейте Axe: у него меньше всех здоровья (50%). · Цель: axe (экран, 0 с) · Здоровье цели, %: 50 (экран, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "target",
+       "label": "Цель",
+       "value": "axe",
+       "source": "screen",
+       "ageSec": 0,
+       "confidence": 0.95,
+       "verified": true
+      },
+      {
+       "key": "target-hp",
+       "label": "Здоровье цели, %",
+       "value": 50,
+       "source": "screen",
+       "ageSec": 0,
+       "confidence": 0.8,
+       "verified": true
+      }
+     ],
+     "ttlMs": 5000,
+     "cooldownMs": 8000,
+     "zone": "decision",
+     "icon": "hero:axe",
+     "seq": 2,
+     "createdWallMs": 5003000,
+     "expiresWallMs": 5044000,
+     "clock": 303,
+     "textSource": "template"
     }
    ],
    "changed": [],
@@ -1206,8 +1073,182 @@
    "inFight": false,
    "visible": [
     "danger.smoke",
+    "economy.tp"
+   ]
+  }
+ },
+ {
+  "t": 43,
+  "tick": {
+   "wallMs": 5043000,
+   "shown": [
+    {
+     "id": "laning.buy-regen",
+     "ruleId": "laning.buy-regen",
+     "category": "laning",
+     "priority": "advice",
+     "confidence": 0.8,
+     "short": "Купите фласку — курьером",
+     "detail": {
+      "normal": "Здоровья 25%, регенерации нет. Фласка стоит 100, у вас 600.",
+      "detailed": "Здоровья 25%, регенерации нет. Фласка стоит 100, у вас 600. · Здоровье, %: 25 (игра, 0 с) · Цена фласки: 100 (база, не проверено) · Золото: 600 (игра, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "hp",
+       "label": "Здоровье, %",
+       "value": 25,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      },
+      {
+       "key": "flask-cost",
+       "label": "Цена фласки",
+       "value": 100,
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      },
+      {
+       "key": "gold",
+       "label": "Золото",
+       "value": 600,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      }
+     ],
+     "ttlMs": 8000,
+     "cooldownMs": 90000,
+     "zone": "decision",
+     "icon": "item:flask",
+     "seq": 7,
+     "createdWallMs": 5043000,
+     "expiresWallMs": 5087000,
+     "clock": 343,
+     "textSource": "template"
+    },
+    {
+     "id": "fight.action:farm",
+     "ruleId": "fight.action",
+     "category": "fight",
+     "priority": "info",
+     "confidence": 0.9,
+     "short": "Фармить: 50%",
+     "detail": {
+      "normal": "Фармить: 50% — ранняя игра.",
+      "detailed": "Фармить: 50%. Остальное: драться 4%, пушить 14%, отходить 32%. Почему: ранняя игра."
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "action",
+       "label": "Рекомендация",
+       "value": "farm",
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.9,
+       "verified": true
+      },
+      {
+       "key": "action-pct",
+       "label": "Доля, %",
+       "value": 50,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.9,
+       "verified": true
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 20000,
+     "zone": "decision",
+     "icon": null,
+     "seq": 8,
+     "createdWallMs": 5043000,
+     "expiresWallMs": 5053000,
+     "clock": 343,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "danger.smoke",
     "economy.tp",
     "laning.buy-regen",
+    "fight.action:farm"
+   ]
+  }
+ },
+ {
+  "t": 45,
+  "tick": {
+   "wallMs": 5045000,
+   "shown": [
+    {
+     "id": "timing.rune-power",
+     "ruleId": "timing.rune-power",
+     "category": "timing",
+     "priority": "info",
+     "confidence": 0.8,
+     "short": "Руна силы через 15 с",
+     "detail": {
+      "normal": "Руна силы через 15 с (6:00).",
+      "detailed": "Руна силы через 15 с (6:00). · Руна силы: 6:00 (база, не проверено) · Игровое время, с: 345 (игра, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "rune-power",
+       "label": "Руна силы",
+       "value": "6:00",
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      },
+      {
+       "key": "clock",
+       "label": "Игровое время, с",
+       "value": 345,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      }
+     ],
+     "ttlMs": 15000,
+     "cooldownMs": 0,
+     "zone": "timing",
+     "icon": null,
+     "seq": 9,
+     "createdWallMs": 5045000,
+     "expiresWallMs": 5060000,
+     "clock": 345,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "danger.smoke",
+    "economy.tp",
+    "laning.buy-regen",
+    "fight.action:farm",
     "timing.rune-power"
    ]
   }
@@ -1260,6 +1301,7 @@
    "visible": [
     "economy.tp",
     "laning.buy-regen",
+    "fight.action:farm",
     "timing.rune-power"
    ]
   }
@@ -1314,7 +1356,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 9,
+     "seq": 10,
      "createdWallMs": 5051000,
      "expiresWallMs": 5077000,
      "clock": 351,
@@ -1322,6 +1364,69 @@
     }
    ],
    "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "economy.tp",
+    "laning.buy-regen",
+    "danger.missing",
+    "fight.action:farm",
+    "timing.rune-power"
+   ]
+  }
+ },
+ {
+  "t": 53,
+  "tick": {
+   "wallMs": 5053000,
+   "shown": [],
+   "expired": [
+    {
+     "id": "fight.action:farm",
+     "ruleId": "fight.action",
+     "category": "fight",
+     "priority": "info",
+     "confidence": 0.9,
+     "short": "Фармить: 50%",
+     "detail": {
+      "normal": "Фармить: 50% — ранняя игра.",
+      "detailed": "Фармить: 50%. Остальное: драться 4%, пушить 14%, отходить 32%. Почему: ранняя игра."
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "action",
+       "label": "Рекомендация",
+       "value": "farm",
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.9,
+       "verified": true
+      },
+      {
+       "key": "action-pct",
+       "label": "Доля, %",
+       "value": 50,
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.9,
+       "verified": true
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 20000,
+     "zone": "decision",
+     "icon": null,
+     "seq": 8,
+     "createdWallMs": 5043000,
+     "expiresWallMs": 5053000,
+     "clock": 343,
+     "textSource": "template"
+    }
+   ],
    "changed": [],
    "mistakes": [],
    "deathReview": null,
@@ -1385,7 +1490,7 @@
      "cooldownMs": 240000,
      "zone": "timing",
      "icon": "item:dust",
-     "seq": 10,
+     "seq": 11,
      "createdWallMs": 5060000,
      "expiresWallMs": 6809000,
      "clock": 360,
@@ -1429,7 +1534,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 8,
+     "seq": 9,
      "createdWallMs": 5045000,
      "expiresWallMs": 5060000,
      "clock": 345,
@@ -1915,7 +2020,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 11,
+     "seq": 12,
      "createdWallMs": 5070000,
      "expiresWallMs": 5084000,
      "clock": 370,
@@ -1968,7 +2073,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 12,
+     "seq": 13,
      "createdWallMs": 5076000,
      "expiresWallMs": 5084000,
      "clock": 376,
@@ -2030,7 +2135,7 @@
      "cooldownMs": 300000,
      "zone": "timing",
      "icon": null,
-     "seq": 13,
+     "seq": 14,
      "createdWallMs": 5080000,
      "expiresWallMs": 5209000,
      "clock": 380,
@@ -2053,62 +2158,9 @@
   }
  },
  {
-  "t": 84,
+  "t": 82,
   "tick": {
-   "wallMs": 5084000,
-   "shown": [],
-   "expired": [
-    {
-     "id": "danger.building:tower1_mid",
-     "ruleId": "danger.building",
-     "category": "danger",
-     "priority": "critical",
-     "confidence": 0.9,
-     "short": "Бьют башню T1 на средней линии",
-     "detail": {
-      "normal": "Башню T1 на средней линии под атакой: 16% здоровья. Защитите или ТП.",
-      "detailed": "Башню T1 на средней линии под атакой: 16% здоровья. Защитите или ТП. · Здоровье здания, %: 16 (игра, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "building-hp",
-       "label": "Здоровье здания, %",
-       "value": 16,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      }
-     ],
-     "ttlMs": 8000,
-     "cooldownMs": 45000,
-     "zone": "alert",
-     "icon": null,
-     "seq": 12,
-     "createdWallMs": 5076000,
-     "expiresWallMs": 5084000,
-     "clock": 376,
-     "textSource": "template"
-    }
-   ],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
-   "visible": [
-    "economy.tp",
-    "laning.buy-regen",
-    "danger.invis:riki",
-    "economy.neutral"
-   ]
-  }
- },
- {
-  "t": 87,
-  "tick": {
-   "wallMs": 5087000,
+   "wallMs": 5082000,
    "shown": [],
    "expired": [
     {
@@ -2157,9 +2209,62 @@
      "zone": "decision",
      "icon": "item:flask",
      "seq": 7,
-     "createdWallMs": 5045000,
+     "createdWallMs": 5043000,
      "expiresWallMs": 5087000,
-     "clock": 345,
+     "clock": 343,
+     "textSource": "template"
+    }
+   ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "danger.building:tower1_mid",
+    "economy.tp",
+    "danger.invis:riki",
+    "economy.neutral"
+   ]
+  }
+ },
+ {
+  "t": 84,
+  "tick": {
+   "wallMs": 5084000,
+   "shown": [],
+   "expired": [
+    {
+     "id": "danger.building:tower1_mid",
+     "ruleId": "danger.building",
+     "category": "danger",
+     "priority": "critical",
+     "confidence": 0.9,
+     "short": "Бьют башню T1 на средней линии",
+     "detail": {
+      "normal": "Башню T1 на средней линии под атакой: 16% здоровья. Защитите или ТП.",
+      "detailed": "Башню T1 на средней линии под атакой: 16% здоровья. Защитите или ТП. · Здоровье здания, %: 16 (игра, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "building-hp",
+       "label": "Здоровье здания, %",
+       "value": 16,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      }
+     ],
+     "ttlMs": 8000,
+     "cooldownMs": 45000,
+     "zone": "alert",
+     "icon": null,
+     "seq": 13,
+     "createdWallMs": 5076000,
+     "expiresWallMs": 5084000,
+     "clock": 376,
      "textSource": "template"
     }
    ],
@@ -2297,7 +2402,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 14,
+     "seq": 15,
      "createdWallMs": 5105000,
      "expiresWallMs": 5120000,
      "clock": 405,
@@ -2359,7 +2464,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 14,
+     "seq": 15,
      "createdWallMs": 5105000,
      "expiresWallMs": 5120000,
      "clock": 405,
@@ -2921,7 +3026,7 @@
      "cooldownMs": 15000,
      "zone": "decision",
      "icon": null,
-     "seq": 15,
+     "seq": 16,
      "createdWallMs": 5160000,
      "expiresWallMs": 5207000,
      "clock": 460,
@@ -2982,7 +3087,7 @@
      "cooldownMs": 8000,
      "zone": "decision",
      "icon": "hero:axe",
-     "seq": 16,
+     "seq": 17,
      "createdWallMs": 5163000,
      "expiresWallMs": 5204000,
      "clock": 463,
@@ -3035,7 +3140,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 17,
+     "seq": 18,
      "createdWallMs": 5176000,
      "expiresWallMs": 5184000,
      "clock": 476,
@@ -3497,7 +3602,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 17,
+     "seq": 18,
      "createdWallMs": 5176000,
      "expiresWallMs": 5184000,
      "clock": 476,
@@ -3576,7 +3681,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 18,
+     "seq": 19,
      "createdWallMs": 5200000,
      "expiresWallMs": 5208000,
      "clock": 500,
@@ -3609,7 +3714,7 @@
      "cooldownMs": 60000,
      "zone": "alert",
      "icon": null,
-     "seq": 19,
+     "seq": 20,
      "createdWallMs": 5200000,
      "expiresWallMs": 5210000,
      "clock": 500,
@@ -3651,7 +3756,7 @@
      "cooldownMs": 120000,
      "zone": "timing",
      "icon": "item:tpscroll",
-     "seq": 20,
+     "seq": 21,
      "createdWallMs": 5200000,
      "expiresWallMs": 5249000,
      "clock": 500,
@@ -3675,166 +3780,9 @@
   }
  },
  {
-  "t": 204,
+  "t": 202,
   "tick": {
-   "wallMs": 5204000,
-   "shown": [],
-   "expired": [
-    {
-     "id": "fight.target:axe",
-     "ruleId": "fight.target",
-     "category": "fight",
-     "priority": "advice",
-     "confidence": 0.8,
-     "short": "Фокус: Axe, 50% здоровья",
-     "detail": {
-      "normal": "Бейте Axe: у него меньше всех здоровья (50%).",
-      "detailed": "Бейте Axe: у него меньше всех здоровья (50%). · Цель: axe (экран, 0 с) · Здоровье цели, %: 50 (экран, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "target",
-       "label": "Цель",
-       "value": "axe",
-       "source": "screen",
-       "ageSec": 0,
-       "confidence": 0.95,
-       "verified": true
-      },
-      {
-       "key": "target-hp",
-       "label": "Здоровье цели, %",
-       "value": 50,
-       "source": "screen",
-       "ageSec": 0,
-       "confidence": 0.8,
-       "verified": true
-      }
-     ],
-     "ttlMs": 5000,
-     "cooldownMs": 8000,
-     "zone": "decision",
-     "icon": "hero:axe",
-     "seq": 16,
-     "createdWallMs": 5163000,
-     "expiresWallMs": 5204000,
-     "clock": 463,
-     "textSource": "template"
-    }
-   ],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
-   "visible": [
-    "fight.engage",
-    "danger.smoke",
-    "danger.invis:riki",
-    "economy.tp",
-    "economy.neutral"
-   ]
-  }
- },
- {
-  "t": 205,
-  "tick": {
-   "wallMs": 5205000,
-   "shown": [
-    {
-     "id": "laning.buy-regen",
-     "ruleId": "laning.buy-regen",
-     "category": "laning",
-     "priority": "advice",
-     "confidence": 0.8,
-     "short": "Купите фласку — курьером",
-     "detail": {
-      "normal": "Здоровья 25%, регенерации нет. Фласка стоит 100, у вас 600.",
-      "detailed": "Здоровья 25%, регенерации нет. Фласка стоит 100, у вас 600. · Здоровье, %: 25 (игра, 0 с) · Цена фласки: 100 (база, не проверено) · Золото: 600 (игра, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "hp",
-       "label": "Здоровье, %",
-       "value": 25,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      },
-      {
-       "key": "flask-cost",
-       "label": "Цена фласки",
-       "value": 100,
-       "source": "kb",
-       "ageSec": null,
-       "confidence": 1,
-       "verified": false
-      },
-      {
-       "key": "gold",
-       "label": "Золото",
-       "value": 600,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      }
-     ],
-     "ttlMs": 8000,
-     "cooldownMs": 90000,
-     "zone": "decision",
-     "icon": "item:flask",
-     "seq": 21,
-     "createdWallMs": 5205000,
-     "expiresWallMs": 5247000,
-     "clock": 505,
-     "textSource": "template"
-    }
-   ],
-   "expired": [],
-   "changed": [],
-   "mistakes": [
-    {
-     "type": "missed-rune",
-     "clock": 480,
-     "severity": 1,
-     "text": "Руна силы в 8:00 без внимания",
-     "instead": "За 10 с до появления руны идите к реке — или попросите саппорта.",
-     "facts": [
-      {
-       "key": "rune",
-       "label": "Руна силы",
-       "value": "8:00",
-       "source": "kb",
-       "ageSec": null,
-       "confidence": 0.8,
-       "verified": false
-      }
-     ],
-     "id": "m2",
-     "wallMs": 5205000
-    }
-   ],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
-   "visible": [
-    "fight.engage",
-    "danger.smoke",
-    "danger.invis:riki",
-    "economy.tp",
-    "laning.buy-regen",
-    "economy.neutral"
-   ]
-  }
- },
- {
-  "t": 207,
-  "tick": {
-   "wallMs": 5207000,
+   "wallMs": 5202000,
    "shown": [],
    "expired": [
     {
@@ -3969,15 +3917,169 @@
      "cooldownMs": 15000,
      "zone": "decision",
      "icon": null,
-     "seq": 15,
+     "seq": 16,
      "createdWallMs": 5160000,
      "expiresWallMs": 5207000,
      "clock": 460,
+     "textSource": "template"
+    },
+    {
+     "id": "fight.target:axe",
+     "ruleId": "fight.target",
+     "category": "fight",
+     "priority": "advice",
+     "confidence": 0.8,
+     "short": "Фокус: Axe, 50% здоровья",
+     "detail": {
+      "normal": "Бейте Axe: у него меньше всех здоровья (50%).",
+      "detailed": "Бейте Axe: у него меньше всех здоровья (50%). · Цель: axe (экран, 0 с) · Здоровье цели, %: 50 (экран, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "target",
+       "label": "Цель",
+       "value": "axe",
+       "source": "screen",
+       "ageSec": 0,
+       "confidence": 0.95,
+       "verified": true
+      },
+      {
+       "key": "target-hp",
+       "label": "Здоровье цели, %",
+       "value": 50,
+       "source": "screen",
+       "ageSec": 0,
+       "confidence": 0.8,
+       "verified": true
+      }
+     ],
+     "ttlMs": 5000,
+     "cooldownMs": 8000,
+     "zone": "decision",
+     "icon": "hero:axe",
+     "seq": 17,
+     "createdWallMs": 5163000,
+     "expiresWallMs": 5204000,
+     "clock": 463,
      "textSource": "template"
     }
    ],
    "changed": [],
    "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "danger.smoke",
+    "danger.invis:riki",
+    "economy.tp",
+    "economy.neutral"
+   ]
+  }
+ },
+ {
+  "t": 203,
+  "tick": {
+   "wallMs": 5203000,
+   "shown": [
+    {
+     "id": "laning.buy-regen",
+     "ruleId": "laning.buy-regen",
+     "category": "laning",
+     "priority": "advice",
+     "confidence": 0.8,
+     "short": "Купите фласку — курьером",
+     "detail": {
+      "normal": "Здоровья 25%, регенерации нет. Фласка стоит 100, у вас 600.",
+      "detailed": "Здоровья 25%, регенерации нет. Фласка стоит 100, у вас 600. · Здоровье, %: 25 (игра, 0 с) · Цена фласки: 100 (база, не проверено) · Золото: 600 (игра, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "hp",
+       "label": "Здоровье, %",
+       "value": 25,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      },
+      {
+       "key": "flask-cost",
+       "label": "Цена фласки",
+       "value": 100,
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      },
+      {
+       "key": "gold",
+       "label": "Золото",
+       "value": 600,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      }
+     ],
+     "ttlMs": 8000,
+     "cooldownMs": 90000,
+     "zone": "decision",
+     "icon": "item:flask",
+     "seq": 22,
+     "createdWallMs": 5203000,
+     "expiresWallMs": 5247000,
+     "clock": 503,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "danger.smoke",
+    "danger.invis:riki",
+    "economy.tp",
+    "laning.buy-regen",
+    "economy.neutral"
+   ]
+  }
+ },
+ {
+  "t": 205,
+  "tick": {
+   "wallMs": 5205000,
+   "shown": [],
+   "expired": [],
+   "changed": [],
+   "mistakes": [
+    {
+     "type": "missed-rune",
+     "clock": 480,
+     "severity": 1,
+     "text": "Руна силы в 8:00 без внимания",
+     "instead": "За 10 с до появления руны идите к реке — или попросите саппорта.",
+     "facts": [
+      {
+       "key": "rune",
+       "label": "Руна силы",
+       "value": "8:00",
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 0.8,
+       "verified": false
+      }
+     ],
+     "id": "m2",
+     "wallMs": 5205000
+    }
+   ],
    "deathReview": null,
    "matchReview": null,
    "inFight": false,
@@ -4032,7 +4134,7 @@
      "cooldownMs": 300000,
      "zone": "timing",
      "icon": null,
-     "seq": 13,
+     "seq": 14,
      "createdWallMs": 5080000,
      "expiresWallMs": 5209000,
      "clock": 380,
@@ -4085,7 +4187,7 @@
      "cooldownMs": 60000,
      "zone": "alert",
      "icon": null,
-     "seq": 19,
+     "seq": 20,
      "createdWallMs": 5200000,
      "expiresWallMs": 5210000,
      "clock": 500,
@@ -4154,7 +4256,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 22,
+     "seq": 23,
      "createdWallMs": 5211000,
      "expiresWallMs": 5237000,
      "clock": 511,
@@ -4207,7 +4309,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 23,
+     "seq": 24,
      "createdWallMs": 5225000,
      "expiresWallMs": 5233000,
      "clock": 525,
@@ -4288,7 +4390,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 24,
+     "seq": 25,
      "createdWallMs": 5230000,
      "expiresWallMs": 5247000,
      "clock": 530,
@@ -4343,7 +4445,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 23,
+     "seq": 24,
      "createdWallMs": 5225000,
      "expiresWallMs": 5233000,
      "clock": 525,
@@ -4771,9 +4873,9 @@
   }
  },
  {
-  "t": 247,
+  "t": 242,
   "tick": {
-   "wallMs": 5247000,
+   "wallMs": 5242000,
    "shown": [],
    "expired": [
     {
@@ -4830,7 +4932,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 24,
+     "seq": 25,
      "createdWallMs": 5230000,
      "expiresWallMs": 5247000,
      "clock": 530,
@@ -4881,10 +4983,10 @@
      "cooldownMs": 90000,
      "zone": "decision",
      "icon": "item:flask",
-     "seq": 21,
-     "createdWallMs": 5205000,
+     "seq": 22,
+     "createdWallMs": 5203000,
      "expiresWallMs": 5247000,
-     "clock": 505,
+     "clock": 503,
      "textSource": "template"
     }
    ],
@@ -4941,7 +5043,7 @@
      "cooldownMs": 120000,
      "zone": "timing",
      "icon": "item:tpscroll",
-     "seq": 20,
+     "seq": 21,
      "createdWallMs": 5200000,
      "expiresWallMs": 5249000,
      "clock": 500,
@@ -4990,7 +5092,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 25,
+     "seq": 26,
      "createdWallMs": 5256000,
      "expiresWallMs": 5264000,
      "clock": 556,
@@ -5042,7 +5144,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 25,
+     "seq": 26,
      "createdWallMs": 5256000,
      "expiresWallMs": 5264000,
      "clock": 556,
@@ -5100,7 +5202,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 26,
+     "seq": 27,
      "createdWallMs": 5285000,
      "expiresWallMs": 5300000,
      "clock": 585,
@@ -5161,7 +5263,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 26,
+     "seq": 27,
      "createdWallMs": 5285000,
      "expiresWallMs": 5300000,
      "clock": 585,
@@ -5722,7 +5824,7 @@
      "cooldownMs": 15000,
      "zone": "decision",
      "icon": null,
-     "seq": 27,
+     "seq": 28,
      "createdWallMs": 5320000,
      "expiresWallMs": 5367000,
      "clock": 620,
@@ -5782,7 +5884,7 @@
      "cooldownMs": 8000,
      "zone": "decision",
      "icon": "hero:axe",
-     "seq": 28,
+     "seq": 29,
      "createdWallMs": 5323000,
      "expiresWallMs": 5364000,
      "clock": 623,
@@ -5900,7 +6002,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 29,
+     "seq": 30,
      "createdWallMs": 5360000,
      "expiresWallMs": 5368000,
      "clock": 660,
@@ -5933,7 +6035,7 @@
      "cooldownMs": 60000,
      "zone": "alert",
      "icon": null,
-     "seq": 30,
+     "seq": 31,
      "createdWallMs": 5360000,
      "expiresWallMs": 5370000,
      "clock": 660,
@@ -5975,7 +6077,7 @@
      "cooldownMs": 120000,
      "zone": "timing",
      "icon": "item:tpscroll",
-     "seq": 31,
+     "seq": 32,
      "createdWallMs": 5360000,
      "expiresWallMs": 5409000,
      "clock": 660,
@@ -6405,143 +6507,9 @@
   }
  },
  {
-  "t": 364,
+  "t": 362,
   "tick": {
-   "wallMs": 5364000,
-   "shown": [],
-   "expired": [
-    {
-     "id": "fight.target:axe",
-     "ruleId": "fight.target",
-     "category": "fight",
-     "priority": "advice",
-     "confidence": 0.8,
-     "short": "Фокус: Axe, 50% здоровья",
-     "detail": {
-      "normal": "Бейте Axe: у него меньше всех здоровья (50%).",
-      "detailed": "Бейте Axe: у него меньше всех здоровья (50%). · Цель: axe (экран, 0 с) · Здоровье цели, %: 50 (экран, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "target",
-       "label": "Цель",
-       "value": "axe",
-       "source": "screen",
-       "ageSec": 0,
-       "confidence": 0.95,
-       "verified": true
-      },
-      {
-       "key": "target-hp",
-       "label": "Здоровье цели, %",
-       "value": 50,
-       "source": "screen",
-       "ageSec": 0,
-       "confidence": 0.8,
-       "verified": true
-      }
-     ],
-     "ttlMs": 5000,
-     "cooldownMs": 8000,
-     "zone": "decision",
-     "icon": "hero:axe",
-     "seq": 28,
-     "createdWallMs": 5323000,
-     "expiresWallMs": 5364000,
-     "clock": 623,
-     "textSource": "template"
-    }
-   ],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
-   "visible": [
-    "fight.engage",
-    "danger.smoke",
-    "danger.invis:riki",
-    "economy.tp"
-   ]
-  }
- },
- {
-  "t": 365,
-  "tick": {
-   "wallMs": 5365000,
-   "shown": [
-    {
-     "id": "laning.buy-regen",
-     "ruleId": "laning.buy-regen",
-     "category": "laning",
-     "priority": "advice",
-     "confidence": 0.8,
-     "short": "Купите фласку — курьером",
-     "detail": {
-      "normal": "Здоровья 25%, регенерации нет. Фласка стоит 100, у вас 600.",
-      "detailed": "Здоровья 25%, регенерации нет. Фласка стоит 100, у вас 600. · Здоровье, %: 25 (игра, 0 с) · Цена фласки: 100 (база, не проверено) · Золото: 600 (игра, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "hp",
-       "label": "Здоровье, %",
-       "value": 25,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      },
-      {
-       "key": "flask-cost",
-       "label": "Цена фласки",
-       "value": 100,
-       "source": "kb",
-       "ageSec": null,
-       "confidence": 1,
-       "verified": false
-      },
-      {
-       "key": "gold",
-       "label": "Золото",
-       "value": 600,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      }
-     ],
-     "ttlMs": 8000,
-     "cooldownMs": 90000,
-     "zone": "decision",
-     "icon": "item:flask",
-     "seq": 32,
-     "createdWallMs": 5365000,
-     "expiresWallMs": 5407000,
-     "clock": 665,
-     "textSource": "template"
-    }
-   ],
-   "expired": [],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
-   "visible": [
-    "fight.engage",
-    "danger.smoke",
-    "danger.invis:riki",
-    "economy.tp",
-    "laning.buy-regen"
-   ]
-  }
- },
- {
-  "t": 367,
-  "tick": {
-   "wallMs": 5367000,
+   "wallMs": 5362000,
    "shown": [],
    "expired": [
     {
@@ -6676,13 +6644,125 @@
      "cooldownMs": 15000,
      "zone": "decision",
      "icon": null,
-     "seq": 27,
+     "seq": 28,
      "createdWallMs": 5320000,
      "expiresWallMs": 5367000,
      "clock": 620,
      "textSource": "template"
+    },
+    {
+     "id": "fight.target:axe",
+     "ruleId": "fight.target",
+     "category": "fight",
+     "priority": "advice",
+     "confidence": 0.8,
+     "short": "Фокус: Axe, 50% здоровья",
+     "detail": {
+      "normal": "Бейте Axe: у него меньше всех здоровья (50%).",
+      "detailed": "Бейте Axe: у него меньше всех здоровья (50%). · Цель: axe (экран, 0 с) · Здоровье цели, %: 50 (экран, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "target",
+       "label": "Цель",
+       "value": "axe",
+       "source": "screen",
+       "ageSec": 0,
+       "confidence": 0.95,
+       "verified": true
+      },
+      {
+       "key": "target-hp",
+       "label": "Здоровье цели, %",
+       "value": 50,
+       "source": "screen",
+       "ageSec": 0,
+       "confidence": 0.8,
+       "verified": true
+      }
+     ],
+     "ttlMs": 5000,
+     "cooldownMs": 8000,
+     "zone": "decision",
+     "icon": "hero:axe",
+     "seq": 29,
+     "createdWallMs": 5323000,
+     "expiresWallMs": 5364000,
+     "clock": 623,
+     "textSource": "template"
     }
    ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "danger.smoke",
+    "danger.invis:riki",
+    "economy.tp"
+   ]
+  }
+ },
+ {
+  "t": 363,
+  "tick": {
+   "wallMs": 5363000,
+   "shown": [
+    {
+     "id": "laning.buy-regen",
+     "ruleId": "laning.buy-regen",
+     "category": "laning",
+     "priority": "advice",
+     "confidence": 0.8,
+     "short": "Купите фласку — курьером",
+     "detail": {
+      "normal": "Здоровья 25%, регенерации нет. Фласка стоит 100, у вас 600.",
+      "detailed": "Здоровья 25%, регенерации нет. Фласка стоит 100, у вас 600. · Здоровье, %: 25 (игра, 0 с) · Цена фласки: 100 (база, не проверено) · Золото: 600 (игра, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "hp",
+       "label": "Здоровье, %",
+       "value": 25,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      },
+      {
+       "key": "flask-cost",
+       "label": "Цена фласки",
+       "value": 100,
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      },
+      {
+       "key": "gold",
+       "label": "Золото",
+       "value": 600,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      }
+     ],
+     "ttlMs": 8000,
+     "cooldownMs": 90000,
+     "zone": "decision",
+     "icon": "item:flask",
+     "seq": 33,
+     "createdWallMs": 5363000,
+     "expiresWallMs": 5407000,
+     "clock": 663,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
    "changed": [],
    "mistakes": [],
    "deathReview": null,
@@ -6729,7 +6809,7 @@
      "cooldownMs": 60000,
      "zone": "alert",
      "icon": null,
-     "seq": 30,
+     "seq": 31,
      "createdWallMs": 5360000,
      "expiresWallMs": 5370000,
      "clock": 660,
@@ -6798,7 +6878,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 33,
+     "seq": 34,
      "createdWallMs": 5371000,
      "expiresWallMs": 5397000,
      "clock": 671,
@@ -6878,7 +6958,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 34,
+     "seq": 35,
      "createdWallMs": 5390000,
      "expiresWallMs": 5407000,
      "clock": 690,
@@ -6900,72 +6980,9 @@
   }
  },
  {
-  "t": 405,
+  "t": 402,
   "tick": {
-   "wallMs": 5405000,
-   "shown": [
-    {
-     "id": "timing.rune-bounty",
-     "ruleId": "timing.rune-bounty",
-     "category": "timing",
-     "priority": "info",
-     "confidence": 0.8,
-     "short": "Руна богатства через 15 с",
-     "detail": {
-      "normal": "Руна богатства через 15 с (12:00).",
-      "detailed": "Руна богатства через 15 с (12:00). · Руна богатства: 12:00 (база, не проверено) · Игровое время, с: 705 (игра, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "rune-bounty",
-       "label": "Руна богатства",
-       "value": "12:00",
-       "source": "kb",
-       "ageSec": null,
-       "confidence": 1,
-       "verified": false
-      },
-      {
-       "key": "clock",
-       "label": "Игровое время, с",
-       "value": 705,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      }
-     ],
-     "ttlMs": 15000,
-     "cooldownMs": 0,
-     "zone": "timing",
-     "icon": null,
-     "seq": 35,
-     "createdWallMs": 5405000,
-     "expiresWallMs": 5420000,
-     "clock": 705,
-     "textSource": "template"
-    }
-   ],
-   "expired": [],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
-   "visible": [
-    "danger.low-hp",
-    "danger.invis:riki",
-    "economy.tp",
-    "laning.buy-regen",
-    "timing.rune-bounty"
-   ]
-  }
- },
- {
-  "t": 407,
-  "tick": {
-   "wallMs": 5407000,
+   "wallMs": 5402000,
    "shown": [],
    "expired": [
     {
@@ -7022,7 +7039,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 34,
+     "seq": 35,
      "createdWallMs": 5390000,
      "expiresWallMs": 5407000,
      "clock": 690,
@@ -7073,13 +7090,73 @@
      "cooldownMs": 90000,
      "zone": "decision",
      "icon": "item:flask",
-     "seq": 32,
-     "createdWallMs": 5365000,
+     "seq": 33,
+     "createdWallMs": 5363000,
      "expiresWallMs": 5407000,
-     "clock": 665,
+     "clock": 663,
      "textSource": "template"
     }
    ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "danger.invis:riki",
+    "economy.tp"
+   ]
+  }
+ },
+ {
+  "t": 405,
+  "tick": {
+   "wallMs": 5405000,
+   "shown": [
+    {
+     "id": "timing.rune-bounty",
+     "ruleId": "timing.rune-bounty",
+     "category": "timing",
+     "priority": "info",
+     "confidence": 0.8,
+     "short": "Руна богатства через 15 с",
+     "detail": {
+      "normal": "Руна богатства через 15 с (12:00).",
+      "detailed": "Руна богатства через 15 с (12:00). · Руна богатства: 12:00 (база, не проверено) · Игровое время, с: 705 (игра, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "rune-bounty",
+       "label": "Руна богатства",
+       "value": "12:00",
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      },
+      {
+       "key": "clock",
+       "label": "Игровое время, с",
+       "value": 705,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      }
+     ],
+     "ttlMs": 15000,
+     "cooldownMs": 0,
+     "zone": "timing",
+     "icon": null,
+     "seq": 36,
+     "createdWallMs": 5405000,
+     "expiresWallMs": 5420000,
+     "clock": 705,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
    "changed": [],
    "mistakes": [],
    "deathReview": null,
@@ -7134,7 +7211,7 @@
      "cooldownMs": 120000,
      "zone": "timing",
      "icon": "item:tpscroll",
-     "seq": 31,
+     "seq": 32,
      "createdWallMs": 5360000,
      "expiresWallMs": 5409000,
      "clock": 660,
@@ -7184,7 +7261,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 36,
+     "seq": 37,
      "createdWallMs": 5416000,
      "expiresWallMs": 5424000,
      "clock": 716,
@@ -7246,7 +7323,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 35,
+     "seq": 36,
      "createdWallMs": 5405000,
      "expiresWallMs": 5420000,
      "clock": 705,
@@ -7704,7 +7781,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 36,
+     "seq": 37,
      "createdWallMs": 5416000,
      "expiresWallMs": 5424000,
      "clock": 716,
@@ -7753,7 +7830,7 @@
      "cooldownMs": 60000,
      "zone": "timing",
      "icon": null,
-     "seq": 37,
+     "seq": 38,
      "createdWallMs": 5445000,
      "expiresWallMs": 5455000,
      "clock": 745,
@@ -7826,7 +7903,7 @@
      "cooldownMs": 60000,
      "zone": "timing",
      "icon": null,
-     "seq": 37,
+     "seq": 38,
      "createdWallMs": 5445000,
      "expiresWallMs": 5455000,
      "clock": 745,
@@ -7980,7 +8057,7 @@
      "cooldownMs": 15000,
      "zone": "decision",
      "icon": null,
-     "seq": 38,
+     "seq": 39,
      "createdWallMs": 5480000,
      "expiresWallMs": 5527000,
      "clock": 780,
@@ -8447,7 +8524,7 @@
      "cooldownMs": 8000,
      "zone": "decision",
      "icon": "hero:axe",
-     "seq": 39,
+     "seq": 40,
      "createdWallMs": 5483000,
      "expiresWallMs": 5524000,
      "clock": 783,
@@ -8499,7 +8576,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 40,
+     "seq": 41,
      "createdWallMs": 5496000,
      "expiresWallMs": 5504000,
      "clock": 796,
@@ -8553,7 +8630,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 40,
+     "seq": 41,
      "createdWallMs": 5496000,
      "expiresWallMs": 5504000,
      "clock": 796,
@@ -8631,7 +8708,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 41,
+     "seq": 42,
      "createdWallMs": 5520000,
      "expiresWallMs": 5528000,
      "clock": 820,
@@ -8664,7 +8741,7 @@
      "cooldownMs": 60000,
      "zone": "alert",
      "icon": null,
-     "seq": 42,
+     "seq": 43,
      "createdWallMs": 5520000,
      "expiresWallMs": 5530000,
      "clock": 820,
@@ -8706,7 +8783,7 @@
      "cooldownMs": 120000,
      "zone": "timing",
      "icon": "item:tpscroll",
-     "seq": 43,
+     "seq": 44,
      "createdWallMs": 5520000,
      "expiresWallMs": 5569000,
      "clock": 820,
@@ -8729,186 +8806,9 @@
   }
  },
  {
-  "t": 524,
+  "t": 522,
   "tick": {
-   "wallMs": 5524000,
-   "shown": [],
-   "expired": [
-    {
-     "id": "fight.target:axe",
-     "ruleId": "fight.target",
-     "category": "fight",
-     "priority": "advice",
-     "confidence": 0.8,
-     "short": "Фокус: Axe, 50% здоровья",
-     "detail": {
-      "normal": "Бейте Axe: у него меньше всех здоровья (50%).",
-      "detailed": "Бейте Axe: у него меньше всех здоровья (50%). · Цель: axe (экран, 0 с) · Здоровье цели, %: 50 (экран, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "target",
-       "label": "Цель",
-       "value": "axe",
-       "source": "screen",
-       "ageSec": 0,
-       "confidence": 0.95,
-       "verified": true
-      },
-      {
-       "key": "target-hp",
-       "label": "Здоровье цели, %",
-       "value": 50,
-       "source": "screen",
-       "ageSec": 0,
-       "confidence": 0.8,
-       "verified": true
-      }
-     ],
-     "ttlMs": 5000,
-     "cooldownMs": 8000,
-     "zone": "decision",
-     "icon": "hero:axe",
-     "seq": 39,
-     "createdWallMs": 5483000,
-     "expiresWallMs": 5524000,
-     "clock": 783,
-     "textSource": "template"
-    }
-   ],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
-   "visible": [
-    "fight.engage",
-    "danger.smoke",
-    "danger.invis:riki",
-    "economy.tp"
-   ]
-  }
- },
- {
-  "t": 525,
-  "tick": {
-   "wallMs": 5525000,
-   "shown": [
-    {
-     "id": "laning.buy-regen",
-     "ruleId": "laning.buy-regen",
-     "category": "laning",
-     "priority": "advice",
-     "confidence": 0.8,
-     "short": "Купите фласку — курьером",
-     "detail": {
-      "normal": "Здоровья 25%, регенерации нет. Фласка стоит 100, у вас 600.",
-      "detailed": "Здоровья 25%, регенерации нет. Фласка стоит 100, у вас 600. · Здоровье, %: 25 (игра, 0 с) · Цена фласки: 100 (база, не проверено) · Золото: 600 (игра, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "hp",
-       "label": "Здоровье, %",
-       "value": 25,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      },
-      {
-       "key": "flask-cost",
-       "label": "Цена фласки",
-       "value": 100,
-       "source": "kb",
-       "ageSec": null,
-       "confidence": 1,
-       "verified": false
-      },
-      {
-       "key": "gold",
-       "label": "Золото",
-       "value": 600,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      }
-     ],
-     "ttlMs": 8000,
-     "cooldownMs": 90000,
-     "zone": "decision",
-     "icon": "item:flask",
-     "seq": 44,
-     "createdWallMs": 5525000,
-     "expiresWallMs": 5567000,
-     "clock": 825,
-     "textSource": "template"
-    },
-    {
-     "id": "timing.rune-power",
-     "ruleId": "timing.rune-power",
-     "category": "timing",
-     "priority": "info",
-     "confidence": 0.8,
-     "short": "Руна силы через 15 с",
-     "detail": {
-      "normal": "Руна силы через 15 с (14:00).",
-      "detailed": "Руна силы через 15 с (14:00). · Руна силы: 14:00 (база, не проверено) · Игровое время, с: 825 (игра, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "rune-power",
-       "label": "Руна силы",
-       "value": "14:00",
-       "source": "kb",
-       "ageSec": null,
-       "confidence": 1,
-       "verified": false
-      },
-      {
-       "key": "clock",
-       "label": "Игровое время, с",
-       "value": 825,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      }
-     ],
-     "ttlMs": 15000,
-     "cooldownMs": 0,
-     "zone": "timing",
-     "icon": null,
-     "seq": 45,
-     "createdWallMs": 5525000,
-     "expiresWallMs": 5540000,
-     "clock": 825,
-     "textSource": "template"
-    }
-   ],
-   "expired": [],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
-   "visible": [
-    "fight.engage",
-    "danger.smoke",
-    "danger.invis:riki",
-    "economy.tp",
-    "laning.buy-regen",
-    "timing.rune-power"
-   ]
-  }
- },
- {
-  "t": 527,
-  "tick": {
-   "wallMs": 5527000,
+   "wallMs": 5522000,
    "shown": [],
    "expired": [
     {
@@ -9043,13 +8943,187 @@
      "cooldownMs": 15000,
      "zone": "decision",
      "icon": null,
-     "seq": 38,
+     "seq": 39,
      "createdWallMs": 5480000,
      "expiresWallMs": 5527000,
      "clock": 780,
      "textSource": "template"
+    },
+    {
+     "id": "fight.target:axe",
+     "ruleId": "fight.target",
+     "category": "fight",
+     "priority": "advice",
+     "confidence": 0.8,
+     "short": "Фокус: Axe, 50% здоровья",
+     "detail": {
+      "normal": "Бейте Axe: у него меньше всех здоровья (50%).",
+      "detailed": "Бейте Axe: у него меньше всех здоровья (50%). · Цель: axe (экран, 0 с) · Здоровье цели, %: 50 (экран, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "target",
+       "label": "Цель",
+       "value": "axe",
+       "source": "screen",
+       "ageSec": 0,
+       "confidence": 0.95,
+       "verified": true
+      },
+      {
+       "key": "target-hp",
+       "label": "Здоровье цели, %",
+       "value": 50,
+       "source": "screen",
+       "ageSec": 0,
+       "confidence": 0.8,
+       "verified": true
+      }
+     ],
+     "ttlMs": 5000,
+     "cooldownMs": 8000,
+     "zone": "decision",
+     "icon": "hero:axe",
+     "seq": 40,
+     "createdWallMs": 5483000,
+     "expiresWallMs": 5524000,
+     "clock": 783,
+     "textSource": "template"
     }
    ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "danger.smoke",
+    "danger.invis:riki",
+    "economy.tp"
+   ]
+  }
+ },
+ {
+  "t": 523,
+  "tick": {
+   "wallMs": 5523000,
+   "shown": [
+    {
+     "id": "laning.buy-regen",
+     "ruleId": "laning.buy-regen",
+     "category": "laning",
+     "priority": "advice",
+     "confidence": 0.8,
+     "short": "Купите фласку — курьером",
+     "detail": {
+      "normal": "Здоровья 25%, регенерации нет. Фласка стоит 100, у вас 600.",
+      "detailed": "Здоровья 25%, регенерации нет. Фласка стоит 100, у вас 600. · Здоровье, %: 25 (игра, 0 с) · Цена фласки: 100 (база, не проверено) · Золото: 600 (игра, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "hp",
+       "label": "Здоровье, %",
+       "value": 25,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      },
+      {
+       "key": "flask-cost",
+       "label": "Цена фласки",
+       "value": 100,
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      },
+      {
+       "key": "gold",
+       "label": "Золото",
+       "value": 600,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      }
+     ],
+     "ttlMs": 8000,
+     "cooldownMs": 90000,
+     "zone": "decision",
+     "icon": "item:flask",
+     "seq": 45,
+     "createdWallMs": 5523000,
+     "expiresWallMs": 5567000,
+     "clock": 823,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "danger.smoke",
+    "danger.invis:riki",
+    "economy.tp",
+    "laning.buy-regen"
+   ]
+  }
+ },
+ {
+  "t": 525,
+  "tick": {
+   "wallMs": 5525000,
+   "shown": [
+    {
+     "id": "timing.rune-power",
+     "ruleId": "timing.rune-power",
+     "category": "timing",
+     "priority": "info",
+     "confidence": 0.8,
+     "short": "Руна силы через 15 с",
+     "detail": {
+      "normal": "Руна силы через 15 с (14:00).",
+      "detailed": "Руна силы через 15 с (14:00). · Руна силы: 14:00 (база, не проверено) · Игровое время, с: 825 (игра, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "rune-power",
+       "label": "Руна силы",
+       "value": "14:00",
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      },
+      {
+       "key": "clock",
+       "label": "Игровое время, с",
+       "value": 825,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      }
+     ],
+     "ttlMs": 15000,
+     "cooldownMs": 0,
+     "zone": "timing",
+     "icon": null,
+     "seq": 46,
+     "createdWallMs": 5525000,
+     "expiresWallMs": 5540000,
+     "clock": 825,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
    "changed": [],
    "mistakes": [],
    "deathReview": null,
@@ -9097,7 +9171,7 @@
      "cooldownMs": 60000,
      "zone": "alert",
      "icon": null,
-     "seq": 42,
+     "seq": 43,
      "createdWallMs": 5520000,
      "expiresWallMs": 5530000,
      "clock": 820,
@@ -9167,7 +9241,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 46,
+     "seq": 47,
      "createdWallMs": 5531000,
      "expiresWallMs": 5557000,
      "clock": 831,
@@ -9231,7 +9305,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 45,
+     "seq": 46,
      "createdWallMs": 5525000,
      "expiresWallMs": 5540000,
      "clock": 825,
@@ -9717,7 +9791,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 47,
+     "seq": 48,
      "createdWallMs": 5550000,
      "expiresWallMs": 5564000,
      "clock": 850,
@@ -9770,7 +9844,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 48,
+     "seq": 49,
      "createdWallMs": 5556000,
      "expiresWallMs": 5564000,
      "clock": 856,
@@ -9832,7 +9906,7 @@
      "cooldownMs": 300000,
      "zone": "timing",
      "icon": null,
-     "seq": 49,
+     "seq": 50,
      "createdWallMs": 5560000,
      "expiresWallMs": 5689000,
      "clock": 860,
@@ -9855,102 +9929,9 @@
   }
  },
  {
-  "t": 564,
+  "t": 562,
   "tick": {
-   "wallMs": 5564000,
-   "shown": [],
-   "expired": [
-    {
-     "id": "danger.building:tower1_mid",
-     "ruleId": "danger.building",
-     "category": "danger",
-     "priority": "critical",
-     "confidence": 0.9,
-     "short": "Бьют башню T1 на средней линии",
-     "detail": {
-      "normal": "Башню T1 на средней линии под атакой: 16% здоровья. Защитите или ТП.",
-      "detailed": "Башню T1 на средней линии под атакой: 16% здоровья. Защитите или ТП. · Здоровье здания, %: 16 (игра, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "building-hp",
-       "label": "Здоровье здания, %",
-       "value": 16,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      }
-     ],
-     "ttlMs": 8000,
-     "cooldownMs": 45000,
-     "zone": "alert",
-     "icon": null,
-     "seq": 48,
-     "createdWallMs": 5556000,
-     "expiresWallMs": 5564000,
-     "clock": 856,
-     "textSource": "template"
-    }
-   ],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
-   "visible": [
-    "danger.invis:riki",
-    "economy.tp",
-    "laning.buy-regen",
-    "economy.neutral"
-   ]
-  }
- },
- {
-  "t": 565,
-  "tick": {
-   "wallMs": 5565000,
-   "shown": [],
-   "expired": [],
-   "changed": [],
-   "mistakes": [
-    {
-     "type": "missed-rune",
-     "clock": 840,
-     "severity": 1,
-     "text": "Руна силы в 14:00 без внимания",
-     "instead": "За 10 с до появления руны идите к реке — или попросите саппорта.",
-     "facts": [
-      {
-       "key": "rune",
-       "label": "Руна силы",
-       "value": "14:00",
-       "source": "kb",
-       "ageSec": null,
-       "confidence": 0.8,
-       "verified": false
-      }
-     ],
-     "id": "m5",
-     "wallMs": 5565000
-    }
-   ],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
-   "visible": [
-    "danger.invis:riki",
-    "economy.tp",
-    "laning.buy-regen",
-    "economy.neutral"
-   ]
-  }
- },
- {
-  "t": 567,
-  "tick": {
-   "wallMs": 5567000,
+   "wallMs": 5562000,
    "shown": [],
    "expired": [
     {
@@ -9998,15 +9979,107 @@
      "cooldownMs": 90000,
      "zone": "decision",
      "icon": "item:flask",
-     "seq": 44,
-     "createdWallMs": 5525000,
+     "seq": 45,
+     "createdWallMs": 5523000,
      "expiresWallMs": 5567000,
-     "clock": 825,
+     "clock": 823,
      "textSource": "template"
     }
    ],
    "changed": [],
    "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "danger.building:tower1_mid",
+    "danger.invis:riki",
+    "economy.tp",
+    "economy.neutral"
+   ]
+  }
+ },
+ {
+  "t": 564,
+  "tick": {
+   "wallMs": 5564000,
+   "shown": [],
+   "expired": [
+    {
+     "id": "danger.building:tower1_mid",
+     "ruleId": "danger.building",
+     "category": "danger",
+     "priority": "critical",
+     "confidence": 0.9,
+     "short": "Бьют башню T1 на средней линии",
+     "detail": {
+      "normal": "Башню T1 на средней линии под атакой: 16% здоровья. Защитите или ТП.",
+      "detailed": "Башню T1 на средней линии под атакой: 16% здоровья. Защитите или ТП. · Здоровье здания, %: 16 (игра, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "building-hp",
+       "label": "Здоровье здания, %",
+       "value": 16,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      }
+     ],
+     "ttlMs": 8000,
+     "cooldownMs": 45000,
+     "zone": "alert",
+     "icon": null,
+     "seq": 49,
+     "createdWallMs": 5556000,
+     "expiresWallMs": 5564000,
+     "clock": 856,
+     "textSource": "template"
+    }
+   ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "danger.invis:riki",
+    "economy.tp",
+    "economy.neutral"
+   ]
+  }
+ },
+ {
+  "t": 565,
+  "tick": {
+   "wallMs": 5565000,
+   "shown": [],
+   "expired": [],
+   "changed": [],
+   "mistakes": [
+    {
+     "type": "missed-rune",
+     "clock": 840,
+     "severity": 1,
+     "text": "Руна силы в 14:00 без внимания",
+     "instead": "За 10 с до появления руны идите к реке — или попросите саппорта.",
+     "facts": [
+      {
+       "key": "rune",
+       "label": "Руна силы",
+       "value": "14:00",
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 0.8,
+       "verified": false
+      }
+     ],
+     "id": "m5",
+     "wallMs": 5565000
+    }
+   ],
    "deathReview": null,
    "matchReview": null,
    "inFight": false,
@@ -10059,7 +10132,7 @@
      "cooldownMs": 120000,
      "zone": "timing",
      "icon": "item:tpscroll",
-     "seq": 43,
+     "seq": 44,
      "createdWallMs": 5520000,
      "expiresWallMs": 5569000,
      "clock": 820,
@@ -10118,7 +10191,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 50,
+     "seq": 51,
      "createdWallMs": 5585000,
      "expiresWallMs": 5600000,
      "clock": 885,
@@ -10180,7 +10253,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 50,
+     "seq": 51,
      "createdWallMs": 5585000,
      "expiresWallMs": 5600000,
      "clock": 885,
@@ -10742,7 +10815,7 @@
      "cooldownMs": 15000,
      "zone": "decision",
      "icon": null,
-     "seq": 51,
+     "seq": 52,
      "createdWallMs": 5640000,
      "expiresWallMs": 5687000,
      "clock": 940,
@@ -10803,7 +10876,7 @@
      "cooldownMs": 8000,
      "zone": "decision",
      "icon": "hero:axe",
-     "seq": 52,
+     "seq": 53,
      "createdWallMs": 5643000,
      "expiresWallMs": 5684000,
      "clock": 943,
@@ -10856,7 +10929,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 53,
+     "seq": 54,
      "createdWallMs": 5656000,
      "expiresWallMs": 5664000,
      "clock": 956,
@@ -11318,7 +11391,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 53,
+     "seq": 54,
      "createdWallMs": 5656000,
      "expiresWallMs": 5664000,
      "clock": 956,
@@ -11397,7 +11470,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 54,
+     "seq": 55,
      "createdWallMs": 5680000,
      "expiresWallMs": 5688000,
      "clock": 980,
@@ -11430,7 +11503,7 @@
      "cooldownMs": 60000,
      "zone": "alert",
      "icon": null,
-     "seq": 55,
+     "seq": 56,
      "createdWallMs": 5680000,
      "expiresWallMs": 5690000,
      "clock": 980,
@@ -11472,7 +11545,7 @@
      "cooldownMs": 120000,
      "zone": "timing",
      "icon": "item:tpscroll",
-     "seq": 56,
+     "seq": 57,
      "createdWallMs": 5680000,
      "expiresWallMs": 5729000,
      "clock": 980,
@@ -11496,166 +11569,9 @@
   }
  },
  {
-  "t": 684,
+  "t": 682,
   "tick": {
-   "wallMs": 5684000,
-   "shown": [],
-   "expired": [
-    {
-     "id": "fight.target:axe",
-     "ruleId": "fight.target",
-     "category": "fight",
-     "priority": "advice",
-     "confidence": 0.8,
-     "short": "Фокус: Axe, 50% здоровья",
-     "detail": {
-      "normal": "Бейте Axe: у него меньше всех здоровья (50%).",
-      "detailed": "Бейте Axe: у него меньше всех здоровья (50%). · Цель: axe (экран, 0 с) · Здоровье цели, %: 50 (экран, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "target",
-       "label": "Цель",
-       "value": "axe",
-       "source": "screen",
-       "ageSec": 0,
-       "confidence": 0.95,
-       "verified": true
-      },
-      {
-       "key": "target-hp",
-       "label": "Здоровье цели, %",
-       "value": 50,
-       "source": "screen",
-       "ageSec": 0,
-       "confidence": 0.8,
-       "verified": true
-      }
-     ],
-     "ttlMs": 5000,
-     "cooldownMs": 8000,
-     "zone": "decision",
-     "icon": "hero:axe",
-     "seq": 52,
-     "createdWallMs": 5643000,
-     "expiresWallMs": 5684000,
-     "clock": 943,
-     "textSource": "template"
-    }
-   ],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
-   "visible": [
-    "fight.engage",
-    "danger.smoke",
-    "danger.invis:riki",
-    "economy.tp",
-    "economy.neutral"
-   ]
-  }
- },
- {
-  "t": 685,
-  "tick": {
-   "wallMs": 5685000,
-   "shown": [
-    {
-     "id": "laning.buy-regen",
-     "ruleId": "laning.buy-regen",
-     "category": "laning",
-     "priority": "advice",
-     "confidence": 0.8,
-     "short": "Купите фласку — курьером",
-     "detail": {
-      "normal": "Здоровья 25%, регенерации нет. Фласка стоит 100, у вас 600.",
-      "detailed": "Здоровья 25%, регенерации нет. Фласка стоит 100, у вас 600. · Здоровье, %: 25 (игра, 0 с) · Цена фласки: 100 (база, не проверено) · Золото: 600 (игра, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "hp",
-       "label": "Здоровье, %",
-       "value": 25,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      },
-      {
-       "key": "flask-cost",
-       "label": "Цена фласки",
-       "value": 100,
-       "source": "kb",
-       "ageSec": null,
-       "confidence": 1,
-       "verified": false
-      },
-      {
-       "key": "gold",
-       "label": "Золото",
-       "value": 600,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      }
-     ],
-     "ttlMs": 8000,
-     "cooldownMs": 90000,
-     "zone": "decision",
-     "icon": "item:flask",
-     "seq": 57,
-     "createdWallMs": 5685000,
-     "expiresWallMs": 5727000,
-     "clock": 985,
-     "textSource": "template"
-    }
-   ],
-   "expired": [],
-   "changed": [],
-   "mistakes": [
-    {
-     "type": "missed-rune",
-     "clock": 960,
-     "severity": 1,
-     "text": "Руна силы в 16:00 без внимания",
-     "instead": "За 10 с до появления руны идите к реке — или попросите саппорта.",
-     "facts": [
-      {
-       "key": "rune",
-       "label": "Руна силы",
-       "value": "16:00",
-       "source": "kb",
-       "ageSec": null,
-       "confidence": 0.8,
-       "verified": false
-      }
-     ],
-     "id": "m6",
-     "wallMs": 5685000
-    }
-   ],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
-   "visible": [
-    "fight.engage",
-    "danger.smoke",
-    "danger.invis:riki",
-    "economy.tp",
-    "laning.buy-regen",
-    "economy.neutral"
-   ]
-  }
- },
- {
-  "t": 687,
-  "tick": {
-   "wallMs": 5687000,
+   "wallMs": 5682000,
    "shown": [],
    "expired": [
     {
@@ -11790,15 +11706,169 @@
      "cooldownMs": 15000,
      "zone": "decision",
      "icon": null,
-     "seq": 51,
+     "seq": 52,
      "createdWallMs": 5640000,
      "expiresWallMs": 5687000,
      "clock": 940,
+     "textSource": "template"
+    },
+    {
+     "id": "fight.target:axe",
+     "ruleId": "fight.target",
+     "category": "fight",
+     "priority": "advice",
+     "confidence": 0.8,
+     "short": "Фокус: Axe, 50% здоровья",
+     "detail": {
+      "normal": "Бейте Axe: у него меньше всех здоровья (50%).",
+      "detailed": "Бейте Axe: у него меньше всех здоровья (50%). · Цель: axe (экран, 0 с) · Здоровье цели, %: 50 (экран, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "target",
+       "label": "Цель",
+       "value": "axe",
+       "source": "screen",
+       "ageSec": 0,
+       "confidence": 0.95,
+       "verified": true
+      },
+      {
+       "key": "target-hp",
+       "label": "Здоровье цели, %",
+       "value": 50,
+       "source": "screen",
+       "ageSec": 0,
+       "confidence": 0.8,
+       "verified": true
+      }
+     ],
+     "ttlMs": 5000,
+     "cooldownMs": 8000,
+     "zone": "decision",
+     "icon": "hero:axe",
+     "seq": 53,
+     "createdWallMs": 5643000,
+     "expiresWallMs": 5684000,
+     "clock": 943,
      "textSource": "template"
     }
    ],
    "changed": [],
    "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "danger.smoke",
+    "danger.invis:riki",
+    "economy.tp",
+    "economy.neutral"
+   ]
+  }
+ },
+ {
+  "t": 683,
+  "tick": {
+   "wallMs": 5683000,
+   "shown": [
+    {
+     "id": "laning.buy-regen",
+     "ruleId": "laning.buy-regen",
+     "category": "laning",
+     "priority": "advice",
+     "confidence": 0.8,
+     "short": "Купите фласку — курьером",
+     "detail": {
+      "normal": "Здоровья 25%, регенерации нет. Фласка стоит 100, у вас 600.",
+      "detailed": "Здоровья 25%, регенерации нет. Фласка стоит 100, у вас 600. · Здоровье, %: 25 (игра, 0 с) · Цена фласки: 100 (база, не проверено) · Золото: 600 (игра, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "hp",
+       "label": "Здоровье, %",
+       "value": 25,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      },
+      {
+       "key": "flask-cost",
+       "label": "Цена фласки",
+       "value": 100,
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      },
+      {
+       "key": "gold",
+       "label": "Золото",
+       "value": 600,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      }
+     ],
+     "ttlMs": 8000,
+     "cooldownMs": 90000,
+     "zone": "decision",
+     "icon": "item:flask",
+     "seq": 58,
+     "createdWallMs": 5683000,
+     "expiresWallMs": 5727000,
+     "clock": 983,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "danger.smoke",
+    "danger.invis:riki",
+    "economy.tp",
+    "laning.buy-regen",
+    "economy.neutral"
+   ]
+  }
+ },
+ {
+  "t": 685,
+  "tick": {
+   "wallMs": 5685000,
+   "shown": [],
+   "expired": [],
+   "changed": [],
+   "mistakes": [
+    {
+     "type": "missed-rune",
+     "clock": 960,
+     "severity": 1,
+     "text": "Руна силы в 16:00 без внимания",
+     "instead": "За 10 с до появления руны идите к реке — или попросите саппорта.",
+     "facts": [
+      {
+       "key": "rune",
+       "label": "Руна силы",
+       "value": "16:00",
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 0.8,
+       "verified": false
+      }
+     ],
+     "id": "m6",
+     "wallMs": 5685000
+    }
+   ],
    "deathReview": null,
    "matchReview": null,
    "inFight": false,
@@ -11853,7 +11923,7 @@
      "cooldownMs": 300000,
      "zone": "timing",
      "icon": null,
-     "seq": 49,
+     "seq": 50,
      "createdWallMs": 5560000,
      "expiresWallMs": 5689000,
      "clock": 860,
@@ -11906,7 +11976,7 @@
      "cooldownMs": 60000,
      "zone": "alert",
      "icon": null,
-     "seq": 55,
+     "seq": 56,
      "createdWallMs": 5680000,
      "expiresWallMs": 5690000,
      "clock": 980,
@@ -11975,7 +12045,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 58,
+     "seq": 59,
      "createdWallMs": 5691000,
      "expiresWallMs": 5717000,
      "clock": 991,
@@ -12055,7 +12125,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 59,
+     "seq": 60,
      "createdWallMs": 5710000,
      "expiresWallMs": 5727000,
      "clock": 1010,
@@ -12484,9 +12554,9 @@
   }
  },
  {
-  "t": 727,
+  "t": 722,
   "tick": {
-   "wallMs": 5727000,
+   "wallMs": 5722000,
    "shown": [],
    "expired": [
     {
@@ -12543,7 +12613,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 59,
+     "seq": 60,
      "createdWallMs": 5710000,
      "expiresWallMs": 5727000,
      "clock": 1010,
@@ -12594,10 +12664,10 @@
      "cooldownMs": 90000,
      "zone": "decision",
      "icon": "item:flask",
-     "seq": 57,
-     "createdWallMs": 5685000,
+     "seq": 58,
+     "createdWallMs": 5683000,
      "expiresWallMs": 5727000,
-     "clock": 985,
+     "clock": 983,
      "textSource": "template"
     }
    ],
@@ -12654,7 +12724,7 @@
      "cooldownMs": 120000,
      "zone": "timing",
      "icon": "item:tpscroll",
-     "seq": 56,
+     "seq": 57,
      "createdWallMs": 5680000,
      "expiresWallMs": 5729000,
      "clock": 980,
@@ -12703,7 +12773,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 60,
+     "seq": 61,
      "createdWallMs": 5736000,
      "expiresWallMs": 5744000,
      "clock": 1036,
@@ -12755,7 +12825,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 60,
+     "seq": 61,
      "createdWallMs": 5736000,
      "expiresWallMs": 5744000,
      "clock": 1036,
@@ -12813,7 +12883,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 61,
+     "seq": 62,
      "createdWallMs": 5765000,
      "expiresWallMs": 5780000,
      "clock": 1065,
@@ -12873,7 +12943,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": "item:blink",
-     "seq": 62,
+     "seq": 63,
      "createdWallMs": 5777000,
      "expiresWallMs": 5787000,
      "clock": 1077,
@@ -12935,7 +13005,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 61,
+     "seq": 62,
      "createdWallMs": 5765000,
      "expiresWallMs": 5780000,
      "clock": 1065,
@@ -13402,7 +13472,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": "item:blink",
-     "seq": 62,
+     "seq": 63,
      "createdWallMs": 5777000,
      "expiresWallMs": 5787000,
      "clock": 1077,
@@ -13556,7 +13626,7 @@
      "cooldownMs": 15000,
      "zone": "decision",
      "icon": null,
-     "seq": 63,
+     "seq": 64,
      "createdWallMs": 5800000,
      "expiresWallMs": 5847000,
      "clock": 1100,
@@ -13616,7 +13686,7 @@
      "cooldownMs": 8000,
      "zone": "decision",
      "icon": "hero:axe",
-     "seq": 64,
+     "seq": 65,
      "createdWallMs": 5803000,
      "expiresWallMs": 5844000,
      "clock": 1103,
@@ -13734,7 +13804,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 65,
+     "seq": 66,
      "createdWallMs": 5840000,
      "expiresWallMs": 5848000,
      "clock": 1140,
@@ -13767,7 +13837,7 @@
      "cooldownMs": 60000,
      "zone": "alert",
      "icon": null,
-     "seq": 66,
+     "seq": 67,
      "createdWallMs": 5840000,
      "expiresWallMs": 5850000,
      "clock": 1140,
@@ -13809,7 +13879,7 @@
      "cooldownMs": 120000,
      "zone": "timing",
      "icon": "item:tpscroll",
-     "seq": 67,
+     "seq": 68,
      "createdWallMs": 5840000,
      "expiresWallMs": 5889000,
      "clock": 1140,
@@ -14239,143 +14309,9 @@
   }
  },
  {
-  "t": 844,
+  "t": 842,
   "tick": {
-   "wallMs": 5844000,
-   "shown": [],
-   "expired": [
-    {
-     "id": "fight.target:axe",
-     "ruleId": "fight.target",
-     "category": "fight",
-     "priority": "advice",
-     "confidence": 0.8,
-     "short": "Фокус: Axe, 50% здоровья",
-     "detail": {
-      "normal": "Бейте Axe: у него меньше всех здоровья (50%).",
-      "detailed": "Бейте Axe: у него меньше всех здоровья (50%). · Цель: axe (экран, 0 с) · Здоровье цели, %: 50 (экран, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "target",
-       "label": "Цель",
-       "value": "axe",
-       "source": "screen",
-       "ageSec": 0,
-       "confidence": 0.95,
-       "verified": true
-      },
-      {
-       "key": "target-hp",
-       "label": "Здоровье цели, %",
-       "value": 50,
-       "source": "screen",
-       "ageSec": 0,
-       "confidence": 0.8,
-       "verified": true
-      }
-     ],
-     "ttlMs": 5000,
-     "cooldownMs": 8000,
-     "zone": "decision",
-     "icon": "hero:axe",
-     "seq": 64,
-     "createdWallMs": 5803000,
-     "expiresWallMs": 5844000,
-     "clock": 1103,
-     "textSource": "template"
-    }
-   ],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
-   "visible": [
-    "fight.engage",
-    "danger.smoke",
-    "danger.invis:riki",
-    "economy.tp"
-   ]
-  }
- },
- {
-  "t": 845,
-  "tick": {
-   "wallMs": 5845000,
-   "shown": [
-    {
-     "id": "laning.buy-regen",
-     "ruleId": "laning.buy-regen",
-     "category": "laning",
-     "priority": "advice",
-     "confidence": 0.8,
-     "short": "Купите фласку — курьером",
-     "detail": {
-      "normal": "Здоровья 25%, регенерации нет. Фласка стоит 100, у вас 600.",
-      "detailed": "Здоровья 25%, регенерации нет. Фласка стоит 100, у вас 600. · Здоровье, %: 25 (игра, 0 с) · Цена фласки: 100 (база, не проверено) · Золото: 600 (игра, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "hp",
-       "label": "Здоровье, %",
-       "value": 25,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      },
-      {
-       "key": "flask-cost",
-       "label": "Цена фласки",
-       "value": 100,
-       "source": "kb",
-       "ageSec": null,
-       "confidence": 1,
-       "verified": false
-      },
-      {
-       "key": "gold",
-       "label": "Золото",
-       "value": 600,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      }
-     ],
-     "ttlMs": 8000,
-     "cooldownMs": 90000,
-     "zone": "decision",
-     "icon": "item:flask",
-     "seq": 68,
-     "createdWallMs": 5845000,
-     "expiresWallMs": 5887000,
-     "clock": 1145,
-     "textSource": "template"
-    }
-   ],
-   "expired": [],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
-   "visible": [
-    "fight.engage",
-    "danger.smoke",
-    "danger.invis:riki",
-    "economy.tp",
-    "laning.buy-regen"
-   ]
-  }
- },
- {
-  "t": 847,
-  "tick": {
-   "wallMs": 5847000,
+   "wallMs": 5842000,
    "shown": [],
    "expired": [
     {
@@ -14510,13 +14446,125 @@
      "cooldownMs": 15000,
      "zone": "decision",
      "icon": null,
-     "seq": 63,
+     "seq": 64,
      "createdWallMs": 5800000,
      "expiresWallMs": 5847000,
      "clock": 1100,
      "textSource": "template"
+    },
+    {
+     "id": "fight.target:axe",
+     "ruleId": "fight.target",
+     "category": "fight",
+     "priority": "advice",
+     "confidence": 0.8,
+     "short": "Фокус: Axe, 50% здоровья",
+     "detail": {
+      "normal": "Бейте Axe: у него меньше всех здоровья (50%).",
+      "detailed": "Бейте Axe: у него меньше всех здоровья (50%). · Цель: axe (экран, 0 с) · Здоровье цели, %: 50 (экран, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "target",
+       "label": "Цель",
+       "value": "axe",
+       "source": "screen",
+       "ageSec": 0,
+       "confidence": 0.95,
+       "verified": true
+      },
+      {
+       "key": "target-hp",
+       "label": "Здоровье цели, %",
+       "value": 50,
+       "source": "screen",
+       "ageSec": 0,
+       "confidence": 0.8,
+       "verified": true
+      }
+     ],
+     "ttlMs": 5000,
+     "cooldownMs": 8000,
+     "zone": "decision",
+     "icon": "hero:axe",
+     "seq": 65,
+     "createdWallMs": 5803000,
+     "expiresWallMs": 5844000,
+     "clock": 1103,
+     "textSource": "template"
     }
    ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "danger.smoke",
+    "danger.invis:riki",
+    "economy.tp"
+   ]
+  }
+ },
+ {
+  "t": 843,
+  "tick": {
+   "wallMs": 5843000,
+   "shown": [
+    {
+     "id": "laning.buy-regen",
+     "ruleId": "laning.buy-regen",
+     "category": "laning",
+     "priority": "advice",
+     "confidence": 0.8,
+     "short": "Купите фласку — курьером",
+     "detail": {
+      "normal": "Здоровья 25%, регенерации нет. Фласка стоит 100, у вас 600.",
+      "detailed": "Здоровья 25%, регенерации нет. Фласка стоит 100, у вас 600. · Здоровье, %: 25 (игра, 0 с) · Цена фласки: 100 (база, не проверено) · Золото: 600 (игра, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "hp",
+       "label": "Здоровье, %",
+       "value": 25,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      },
+      {
+       "key": "flask-cost",
+       "label": "Цена фласки",
+       "value": 100,
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      },
+      {
+       "key": "gold",
+       "label": "Золото",
+       "value": 600,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      }
+     ],
+     "ttlMs": 8000,
+     "cooldownMs": 90000,
+     "zone": "decision",
+     "icon": "item:flask",
+     "seq": 69,
+     "createdWallMs": 5843000,
+     "expiresWallMs": 5887000,
+     "clock": 1143,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
    "changed": [],
    "mistakes": [],
    "deathReview": null,
@@ -14563,7 +14611,7 @@
      "cooldownMs": 60000,
      "zone": "alert",
      "icon": null,
-     "seq": 66,
+     "seq": 67,
      "createdWallMs": 5840000,
      "expiresWallMs": 5850000,
      "clock": 1140,
@@ -14632,7 +14680,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 69,
+     "seq": 70,
      "createdWallMs": 5851000,
      "expiresWallMs": 5877000,
      "clock": 1151,
@@ -14712,7 +14760,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 70,
+     "seq": 71,
      "createdWallMs": 5870000,
      "expiresWallMs": 5887000,
      "clock": 1170,
@@ -14754,7 +14802,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 71,
+     "seq": 72,
      "createdWallMs": 5870000,
      "expiresWallMs": 5885000,
      "clock": 1170,
@@ -14777,112 +14825,9 @@
   }
  },
  {
-  "t": 883,
+  "t": 882,
   "tick": {
-   "wallMs": 5883000,
-   "shown": [],
-   "expired": [],
-   "changed": [],
-   "mistakes": [
-    {
-     "type": "late-item",
-     "severity": 1,
-     "text": "Battle Fury нет к 19 мин (профи — к 14)",
-     "instead": "Меньше бесцельных перемещений, больше лагерей между волнами.",
-     "facts": [
-      {
-       "key": "median",
-       "label": "Battle Fury: обычно к минуте",
-       "value": 13.7,
-       "source": "stats",
-       "ageSec": null,
-       "confidence": 0.8,
-       "verified": false
-      }
-     ],
-     "id": "m8",
-     "wallMs": 5883000,
-     "clock": 1183
-    }
-   ],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
-   "visible": [
-    "danger.low-hp",
-    "danger.invis:riki",
-    "economy.tp",
-    "laning.buy-regen",
-    "timing.tormentor"
-   ]
-  }
- },
- {
-  "t": 885,
-  "tick": {
-   "wallMs": 5885000,
-   "shown": [],
-   "expired": [
-    {
-     "id": "timing.tormentor",
-     "ruleId": "timing.tormentor",
-     "category": "timing",
-     "priority": "info",
-     "confidence": 0.8,
-     "short": "Мучитель через 30 с",
-     "detail": {
-      "normal": "Мучитель через 30 с (20:00).",
-      "detailed": "Мучитель через 30 с (20:00). · Мучитель: 20:00 (база, не проверено) · Игровое время, с: 1170 (игра, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "tormentor",
-       "label": "Мучитель",
-       "value": "20:00",
-       "source": "kb",
-       "ageSec": null,
-       "confidence": 1,
-       "verified": false
-      },
-      {
-       "key": "clock",
-       "label": "Игровое время, с",
-       "value": 1170,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      }
-     ],
-     "ttlMs": 15000,
-     "cooldownMs": 0,
-     "zone": "timing",
-     "icon": null,
-     "seq": 71,
-     "createdWallMs": 5870000,
-     "expiresWallMs": 5885000,
-     "clock": 1170,
-     "textSource": "template"
-    }
-   ],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
-   "visible": [
-    "danger.low-hp",
-    "danger.invis:riki",
-    "economy.tp",
-    "laning.buy-regen"
-   ]
-  }
- },
- {
-  "t": 887,
-  "tick": {
-   "wallMs": 5887000,
+   "wallMs": 5882000,
    "shown": [],
    "expired": [
     {
@@ -14939,7 +14884,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 70,
+     "seq": 71,
      "createdWallMs": 5870000,
      "expiresWallMs": 5887000,
      "clock": 1170,
@@ -14990,10 +14935,110 @@
      "cooldownMs": 90000,
      "zone": "decision",
      "icon": "item:flask",
-     "seq": 68,
-     "createdWallMs": 5845000,
+     "seq": 69,
+     "createdWallMs": 5843000,
      "expiresWallMs": 5887000,
-     "clock": 1145,
+     "clock": 1143,
+     "textSource": "template"
+    }
+   ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "danger.invis:riki",
+    "economy.tp",
+    "timing.tormentor"
+   ]
+  }
+ },
+ {
+  "t": 883,
+  "tick": {
+   "wallMs": 5883000,
+   "shown": [],
+   "expired": [],
+   "changed": [],
+   "mistakes": [
+    {
+     "type": "late-item",
+     "severity": 1,
+     "text": "Battle Fury нет к 19 мин (профи — к 14)",
+     "instead": "Меньше бесцельных перемещений, больше лагерей между волнами.",
+     "facts": [
+      {
+       "key": "median",
+       "label": "Battle Fury: обычно к минуте",
+       "value": 13.7,
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 0.8,
+       "verified": false
+      }
+     ],
+     "id": "m8",
+     "wallMs": 5883000,
+     "clock": 1183
+    }
+   ],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "danger.invis:riki",
+    "economy.tp",
+    "timing.tormentor"
+   ]
+  }
+ },
+ {
+  "t": 885,
+  "tick": {
+   "wallMs": 5885000,
+   "shown": [],
+   "expired": [
+    {
+     "id": "timing.tormentor",
+     "ruleId": "timing.tormentor",
+     "category": "timing",
+     "priority": "info",
+     "confidence": 0.8,
+     "short": "Мучитель через 30 с",
+     "detail": {
+      "normal": "Мучитель через 30 с (20:00).",
+      "detailed": "Мучитель через 30 с (20:00). · Мучитель: 20:00 (база, не проверено) · Игровое время, с: 1170 (игра, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "tormentor",
+       "label": "Мучитель",
+       "value": "20:00",
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      },
+      {
+       "key": "clock",
+       "label": "Игровое время, с",
+       "value": 1170,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      }
+     ],
+     "ttlMs": 15000,
+     "cooldownMs": 0,
+     "zone": "timing",
+     "icon": null,
+     "seq": 72,
+     "createdWallMs": 5870000,
+     "expiresWallMs": 5885000,
+     "clock": 1170,
      "textSource": "template"
     }
    ],
@@ -15050,7 +15095,7 @@
      "cooldownMs": 120000,
      "zone": "timing",
      "icon": "item:tpscroll",
-     "seq": 67,
+     "seq": 68,
      "createdWallMs": 5840000,
      "expiresWallMs": 5889000,
      "clock": 1140,
@@ -15099,7 +15144,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 72,
+     "seq": 73,
      "createdWallMs": 5896000,
      "expiresWallMs": 5904000,
      "clock": 1196,
@@ -15558,7 +15603,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 72,
+     "seq": 73,
      "createdWallMs": 5896000,
      "expiresWallMs": 5904000,
      "clock": 1196,
@@ -15607,7 +15652,7 @@
      "cooldownMs": 60000,
      "zone": "timing",
      "icon": null,
-     "seq": 73,
+     "seq": 74,
      "createdWallMs": 5925000,
      "expiresWallMs": 5935000,
      "clock": 1225,
@@ -15680,7 +15725,7 @@
      "cooldownMs": 60000,
      "zone": "timing",
      "icon": null,
-     "seq": 73,
+     "seq": 74,
      "createdWallMs": 5925000,
      "expiresWallMs": 5935000,
      "clock": 1225,
@@ -15738,7 +15783,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 74,
+     "seq": 75,
      "createdWallMs": 5945000,
      "expiresWallMs": 5960000,
      "clock": 1245,
@@ -15894,7 +15939,7 @@
      "cooldownMs": 15000,
      "zone": "decision",
      "icon": null,
-     "seq": 75,
+     "seq": 76,
      "createdWallMs": 5960000,
      "expiresWallMs": 6007000,
      "clock": 1260,
@@ -15938,7 +15983,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 74,
+     "seq": 75,
      "createdWallMs": 5945000,
      "expiresWallMs": 5960000,
      "clock": 1245,
@@ -16404,7 +16449,7 @@
      "cooldownMs": 8000,
      "zone": "decision",
      "icon": "hero:axe",
-     "seq": 76,
+     "seq": 77,
      "createdWallMs": 5963000,
      "expiresWallMs": 6004000,
      "clock": 1263,
@@ -16456,7 +16501,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 77,
+     "seq": 78,
      "createdWallMs": 5976000,
      "expiresWallMs": 5984000,
      "clock": 1276,
@@ -16510,7 +16555,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 77,
+     "seq": 78,
      "createdWallMs": 5976000,
      "expiresWallMs": 5984000,
      "clock": 1276,
@@ -16588,7 +16633,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 78,
+     "seq": 79,
      "createdWallMs": 6000000,
      "expiresWallMs": 6008000,
      "clock": 1300,
@@ -16621,7 +16666,7 @@
      "cooldownMs": 60000,
      "zone": "alert",
      "icon": null,
-     "seq": 79,
+     "seq": 80,
      "createdWallMs": 6000000,
      "expiresWallMs": 6010000,
      "clock": 1300,
@@ -16663,7 +16708,7 @@
      "cooldownMs": 120000,
      "zone": "timing",
      "icon": "item:tpscroll",
-     "seq": 80,
+     "seq": 81,
      "createdWallMs": 6000000,
      "expiresWallMs": 6049000,
      "clock": 1300,
@@ -16686,134 +16731,9 @@
   }
  },
  {
-  "t": 1004,
+  "t": 1002,
   "tick": {
-   "wallMs": 6004000,
-   "shown": [],
-   "expired": [
-    {
-     "id": "fight.target:axe",
-     "ruleId": "fight.target",
-     "category": "fight",
-     "priority": "advice",
-     "confidence": 0.8,
-     "short": "Фокус: Axe, 50% здоровья",
-     "detail": {
-      "normal": "Бейте Axe: у него меньше всех здоровья (50%).",
-      "detailed": "Бейте Axe: у него меньше всех здоровья (50%). · Цель: axe (экран, 0 с) · Здоровье цели, %: 50 (экран, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "target",
-       "label": "Цель",
-       "value": "axe",
-       "source": "screen",
-       "ageSec": 0,
-       "confidence": 0.95,
-       "verified": true
-      },
-      {
-       "key": "target-hp",
-       "label": "Здоровье цели, %",
-       "value": 50,
-       "source": "screen",
-       "ageSec": 0,
-       "confidence": 0.8,
-       "verified": true
-      }
-     ],
-     "ttlMs": 5000,
-     "cooldownMs": 8000,
-     "zone": "decision",
-     "icon": "hero:axe",
-     "seq": 76,
-     "createdWallMs": 5963000,
-     "expiresWallMs": 6004000,
-     "clock": 1263,
-     "textSource": "template"
-    }
-   ],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
-   "visible": [
-    "fight.engage",
-    "danger.smoke",
-    "danger.invis:riki",
-    "economy.tp"
-   ]
-  }
- },
- {
-  "t": 1005,
-  "tick": {
-   "wallMs": 6005000,
-   "shown": [
-    {
-     "id": "timing.rune-power",
-     "ruleId": "timing.rune-power",
-     "category": "timing",
-     "priority": "info",
-     "confidence": 0.8,
-     "short": "Руна силы через 15 с",
-     "detail": {
-      "normal": "Руна силы через 15 с (22:00).",
-      "detailed": "Руна силы через 15 с (22:00). · Руна силы: 22:00 (база, не проверено) · Игровое время, с: 1305 (игра, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "rune-power",
-       "label": "Руна силы",
-       "value": "22:00",
-       "source": "kb",
-       "ageSec": null,
-       "confidence": 1,
-       "verified": false
-      },
-      {
-       "key": "clock",
-       "label": "Игровое время, с",
-       "value": 1305,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      }
-     ],
-     "ttlMs": 15000,
-     "cooldownMs": 0,
-     "zone": "timing",
-     "icon": null,
-     "seq": 81,
-     "createdWallMs": 6005000,
-     "expiresWallMs": 6020000,
-     "clock": 1305,
-     "textSource": "template"
-    }
-   ],
-   "expired": [],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
-   "visible": [
-    "fight.engage",
-    "danger.smoke",
-    "danger.invis:riki",
-    "economy.tp",
-    "timing.rune-power"
-   ]
-  }
- },
- {
-  "t": 1007,
-  "tick": {
-   "wallMs": 6007000,
+   "wallMs": 6002000,
    "shown": [],
    "expired": [
     {
@@ -16948,13 +16868,116 @@
      "cooldownMs": 15000,
      "zone": "decision",
      "icon": null,
-     "seq": 75,
+     "seq": 76,
      "createdWallMs": 5960000,
      "expiresWallMs": 6007000,
      "clock": 1260,
      "textSource": "template"
+    },
+    {
+     "id": "fight.target:axe",
+     "ruleId": "fight.target",
+     "category": "fight",
+     "priority": "advice",
+     "confidence": 0.8,
+     "short": "Фокус: Axe, 50% здоровья",
+     "detail": {
+      "normal": "Бейте Axe: у него меньше всех здоровья (50%).",
+      "detailed": "Бейте Axe: у него меньше всех здоровья (50%). · Цель: axe (экран, 0 с) · Здоровье цели, %: 50 (экран, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "target",
+       "label": "Цель",
+       "value": "axe",
+       "source": "screen",
+       "ageSec": 0,
+       "confidence": 0.95,
+       "verified": true
+      },
+      {
+       "key": "target-hp",
+       "label": "Здоровье цели, %",
+       "value": 50,
+       "source": "screen",
+       "ageSec": 0,
+       "confidence": 0.8,
+       "verified": true
+      }
+     ],
+     "ttlMs": 5000,
+     "cooldownMs": 8000,
+     "zone": "decision",
+     "icon": "hero:axe",
+     "seq": 77,
+     "createdWallMs": 5963000,
+     "expiresWallMs": 6004000,
+     "clock": 1263,
+     "textSource": "template"
     }
    ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "danger.smoke",
+    "danger.invis:riki",
+    "economy.tp"
+   ]
+  }
+ },
+ {
+  "t": 1005,
+  "tick": {
+   "wallMs": 6005000,
+   "shown": [
+    {
+     "id": "timing.rune-power",
+     "ruleId": "timing.rune-power",
+     "category": "timing",
+     "priority": "info",
+     "confidence": 0.8,
+     "short": "Руна силы через 15 с",
+     "detail": {
+      "normal": "Руна силы через 15 с (22:00).",
+      "detailed": "Руна силы через 15 с (22:00). · Руна силы: 22:00 (база, не проверено) · Игровое время, с: 1305 (игра, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "rune-power",
+       "label": "Руна силы",
+       "value": "22:00",
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      },
+      {
+       "key": "clock",
+       "label": "Игровое время, с",
+       "value": 1305,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      }
+     ],
+     "ttlMs": 15000,
+     "cooldownMs": 0,
+     "zone": "timing",
+     "icon": null,
+     "seq": 82,
+     "createdWallMs": 6005000,
+     "expiresWallMs": 6020000,
+     "clock": 1305,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
    "changed": [],
    "mistakes": [],
    "deathReview": null,
@@ -17001,7 +17024,7 @@
      "cooldownMs": 60000,
      "zone": "alert",
      "icon": null,
-     "seq": 79,
+     "seq": 80,
      "createdWallMs": 6000000,
      "expiresWallMs": 6010000,
      "clock": 1300,
@@ -17070,7 +17093,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 82,
+     "seq": 83,
      "createdWallMs": 6011000,
      "expiresWallMs": 6037000,
      "clock": 1311,
@@ -17133,7 +17156,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 81,
+     "seq": 82,
      "createdWallMs": 6005000,
      "expiresWallMs": 6020000,
      "clock": 1305,
@@ -17618,7 +17641,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 83,
+     "seq": 84,
      "createdWallMs": 6030000,
      "expiresWallMs": 6044000,
      "clock": 1330,
@@ -17670,7 +17693,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 84,
+     "seq": 85,
      "createdWallMs": 6036000,
      "expiresWallMs": 6044000,
      "clock": 1336,
@@ -17731,7 +17754,7 @@
      "cooldownMs": 300000,
      "zone": "timing",
      "icon": null,
-     "seq": 85,
+     "seq": 86,
      "createdWallMs": 6040000,
      "expiresWallMs": 6169000,
      "clock": 1340,
@@ -17785,7 +17808,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 84,
+     "seq": 85,
      "createdWallMs": 6036000,
      "expiresWallMs": 6044000,
      "clock": 1336,
@@ -17846,7 +17869,7 @@
      "cooldownMs": 120000,
      "zone": "timing",
      "icon": "item:tpscroll",
-     "seq": 80,
+     "seq": 81,
      "createdWallMs": 6000000,
      "expiresWallMs": 6049000,
      "clock": 1300,
@@ -18408,7 +18431,7 @@
      "cooldownMs": 15000,
      "zone": "decision",
      "icon": null,
-     "seq": 86,
+     "seq": 87,
      "createdWallMs": 6120000,
      "expiresWallMs": 6167000,
      "clock": 1420,
@@ -18469,7 +18492,7 @@
      "cooldownMs": 8000,
      "zone": "decision",
      "icon": "hero:axe",
-     "seq": 87,
+     "seq": 88,
      "createdWallMs": 6123000,
      "expiresWallMs": 6164000,
      "clock": 1423,
@@ -18522,7 +18545,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 88,
+     "seq": 89,
      "createdWallMs": 6136000,
      "expiresWallMs": 6144000,
      "clock": 1436,
@@ -18984,7 +19007,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 88,
+     "seq": 89,
      "createdWallMs": 6136000,
      "expiresWallMs": 6144000,
      "clock": 1436,
@@ -19063,7 +19086,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 89,
+     "seq": 90,
      "createdWallMs": 6160000,
      "expiresWallMs": 6168000,
      "clock": 1460,
@@ -19096,7 +19119,7 @@
      "cooldownMs": 60000,
      "zone": "alert",
      "icon": null,
-     "seq": 90,
+     "seq": 91,
      "createdWallMs": 6160000,
      "expiresWallMs": 6170000,
      "clock": 1460,
@@ -19138,7 +19161,7 @@
      "cooldownMs": 120000,
      "zone": "timing",
      "icon": "item:tpscroll",
-     "seq": 91,
+     "seq": 92,
      "createdWallMs": 6160000,
      "expiresWallMs": 6209000,
      "clock": 1460,
@@ -19162,72 +19185,9 @@
   }
  },
  {
-  "t": 1164,
+  "t": 1162,
   "tick": {
-   "wallMs": 6164000,
-   "shown": [],
-   "expired": [
-    {
-     "id": "fight.target:axe",
-     "ruleId": "fight.target",
-     "category": "fight",
-     "priority": "advice",
-     "confidence": 0.8,
-     "short": "Фокус: Axe, 50% здоровья",
-     "detail": {
-      "normal": "Бейте Axe: у него меньше всех здоровья (50%).",
-      "detailed": "Бейте Axe: у него меньше всех здоровья (50%). · Цель: axe (экран, 0 с) · Здоровье цели, %: 50 (экран, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "target",
-       "label": "Цель",
-       "value": "axe",
-       "source": "screen",
-       "ageSec": 0,
-       "confidence": 0.95,
-       "verified": true
-      },
-      {
-       "key": "target-hp",
-       "label": "Здоровье цели, %",
-       "value": 50,
-       "source": "screen",
-       "ageSec": 0,
-       "confidence": 0.8,
-       "verified": true
-      }
-     ],
-     "ttlMs": 5000,
-     "cooldownMs": 8000,
-     "zone": "decision",
-     "icon": "hero:axe",
-     "seq": 87,
-     "createdWallMs": 6123000,
-     "expiresWallMs": 6164000,
-     "clock": 1423,
-     "textSource": "template"
-    }
-   ],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
-   "visible": [
-    "fight.engage",
-    "danger.smoke",
-    "danger.invis:riki",
-    "economy.tp",
-    "economy.neutral"
-   ]
-  }
- },
- {
-  "t": 1167,
-  "tick": {
-   "wallMs": 6167000,
+   "wallMs": 6162000,
    "shown": [],
    "expired": [
     {
@@ -19362,10 +19322,52 @@
      "cooldownMs": 15000,
      "zone": "decision",
      "icon": null,
-     "seq": 86,
+     "seq": 87,
      "createdWallMs": 6120000,
      "expiresWallMs": 6167000,
      "clock": 1420,
+     "textSource": "template"
+    },
+    {
+     "id": "fight.target:axe",
+     "ruleId": "fight.target",
+     "category": "fight",
+     "priority": "advice",
+     "confidence": 0.8,
+     "short": "Фокус: Axe, 50% здоровья",
+     "detail": {
+      "normal": "Бейте Axe: у него меньше всех здоровья (50%).",
+      "detailed": "Бейте Axe: у него меньше всех здоровья (50%). · Цель: axe (экран, 0 с) · Здоровье цели, %: 50 (экран, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "target",
+       "label": "Цель",
+       "value": "axe",
+       "source": "screen",
+       "ageSec": 0,
+       "confidence": 0.95,
+       "verified": true
+      },
+      {
+       "key": "target-hp",
+       "label": "Здоровье цели, %",
+       "value": 50,
+       "source": "screen",
+       "ageSec": 0,
+       "confidence": 0.8,
+       "verified": true
+      }
+     ],
+     "ttlMs": 5000,
+     "cooldownMs": 8000,
+     "zone": "decision",
+     "icon": "hero:axe",
+     "seq": 88,
+     "createdWallMs": 6123000,
+     "expiresWallMs": 6164000,
+     "clock": 1423,
      "textSource": "template"
     }
    ],
@@ -19424,7 +19426,7 @@
      "cooldownMs": 300000,
      "zone": "timing",
      "icon": null,
-     "seq": 85,
+     "seq": 86,
      "createdWallMs": 6040000,
      "expiresWallMs": 6169000,
      "clock": 1340,
@@ -19476,7 +19478,7 @@
      "cooldownMs": 60000,
      "zone": "alert",
      "icon": null,
-     "seq": 90,
+     "seq": 91,
      "createdWallMs": 6160000,
      "expiresWallMs": 6170000,
      "clock": 1460,
@@ -19544,7 +19546,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 92,
+     "seq": 93,
      "createdWallMs": 6171000,
      "expiresWallMs": 6197000,
      "clock": 1471,
@@ -19605,7 +19607,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 93,
+     "seq": 94,
      "createdWallMs": 6185000,
      "expiresWallMs": 6200000,
      "clock": 1485,
@@ -19685,7 +19687,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 94,
+     "seq": 95,
      "createdWallMs": 6190000,
      "expiresWallMs": 6207000,
      "clock": 1490,
@@ -19748,7 +19750,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 93,
+     "seq": 94,
      "createdWallMs": 6185000,
      "expiresWallMs": 6200000,
      "clock": 1485,
@@ -20175,9 +20177,9 @@
   }
  },
  {
-  "t": 1207,
+  "t": 1202,
   "tick": {
-   "wallMs": 6207000,
+   "wallMs": 6202000,
    "shown": [],
    "expired": [
     {
@@ -20234,7 +20236,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 94,
+     "seq": 95,
      "createdWallMs": 6190000,
      "expiresWallMs": 6207000,
      "clock": 1490,
@@ -20294,7 +20296,7 @@
      "cooldownMs": 120000,
      "zone": "timing",
      "icon": "item:tpscroll",
-     "seq": 91,
+     "seq": 92,
      "createdWallMs": 6160000,
      "expiresWallMs": 6209000,
      "clock": 1460,
@@ -20343,7 +20345,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 95,
+     "seq": 96,
      "createdWallMs": 6216000,
      "expiresWallMs": 6224000,
      "clock": 1516,
@@ -20395,7 +20397,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 95,
+     "seq": 96,
      "createdWallMs": 6216000,
      "expiresWallMs": 6224000,
      "clock": 1516,
@@ -20453,7 +20455,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 96,
+     "seq": 97,
      "createdWallMs": 6245000,
      "expiresWallMs": 6260000,
      "clock": 1545,
@@ -20514,7 +20516,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 96,
+     "seq": 97,
      "createdWallMs": 6245000,
      "expiresWallMs": 6260000,
      "clock": 1545,
@@ -20979,7 +20981,7 @@
      "cooldownMs": 8000,
      "zone": "decision",
      "icon": "hero:axe",
-     "seq": 97,
+     "seq": 98,
      "createdWallMs": 6280000,
      "expiresWallMs": 6324000,
      "clock": 1580,
@@ -21135,7 +21137,7 @@
      "cooldownMs": 15000,
      "zone": "decision",
      "icon": null,
-     "seq": 98,
+     "seq": 99,
      "createdWallMs": 6283000,
      "expiresWallMs": 6327000,
      "clock": 1583,
@@ -21214,7 +21216,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 99,
+     "seq": 100,
      "createdWallMs": 6320000,
      "expiresWallMs": 6328000,
      "clock": 1620,
@@ -21247,7 +21249,7 @@
      "cooldownMs": 60000,
      "zone": "alert",
      "icon": null,
-     "seq": 100,
+     "seq": 101,
      "createdWallMs": 6320000,
      "expiresWallMs": 6330000,
      "clock": 1620,
@@ -21289,7 +21291,7 @@
      "cooldownMs": 120000,
      "zone": "timing",
      "icon": "item:tpscroll",
-     "seq": 101,
+     "seq": 102,
      "createdWallMs": 6320000,
      "expiresWallMs": 6369000,
      "clock": 1620,
@@ -21719,9 +21721,9 @@
   }
  },
  {
-  "t": 1324,
+  "t": 1322,
   "tick": {
-   "wallMs": 6324000,
+   "wallMs": 6322000,
    "shown": [],
    "expired": [
     {
@@ -21760,32 +21762,12 @@
      "cooldownMs": 8000,
      "zone": "decision",
      "icon": "hero:axe",
-     "seq": 97,
+     "seq": 98,
      "createdWallMs": 6280000,
      "expiresWallMs": 6324000,
      "clock": 1580,
      "textSource": "template"
-    }
-   ],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
-   "visible": [
-    "danger.smoke",
-    "danger.invis:riki",
-    "fight.engage",
-    "economy.tp"
-   ]
-  }
- },
- {
-  "t": 1327,
-  "tick": {
-   "wallMs": 6327000,
-   "shown": [],
-   "expired": [
+    },
     {
      "id": "fight.engage",
      "ruleId": "fight.engage",
@@ -21918,7 +21900,7 @@
      "cooldownMs": 15000,
      "zone": "decision",
      "icon": null,
-     "seq": 98,
+     "seq": 99,
      "createdWallMs": 6283000,
      "expiresWallMs": 6327000,
      "clock": 1583,
@@ -21970,7 +21952,7 @@
      "cooldownMs": 60000,
      "zone": "alert",
      "icon": null,
-     "seq": 100,
+     "seq": 101,
      "createdWallMs": 6320000,
      "expiresWallMs": 6330000,
      "clock": 1620,
@@ -22038,7 +22020,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 102,
+     "seq": 103,
      "createdWallMs": 6331000,
      "expiresWallMs": 6357000,
      "clock": 1631,
@@ -22117,7 +22099,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 103,
+     "seq": 104,
      "createdWallMs": 6350000,
      "expiresWallMs": 6367000,
      "clock": 1650,
@@ -22138,71 +22120,9 @@
   }
  },
  {
-  "t": 1365,
+  "t": 1362,
   "tick": {
-   "wallMs": 6365000,
-   "shown": [
-    {
-     "id": "timing.rune-bounty",
-     "ruleId": "timing.rune-bounty",
-     "category": "timing",
-     "priority": "info",
-     "confidence": 0.8,
-     "short": "Руна богатства через 15 с",
-     "detail": {
-      "normal": "Руна богатства через 15 с (28:00).",
-      "detailed": "Руна богатства через 15 с (28:00). · Руна богатства: 28:00 (база, не проверено) · Игровое время, с: 1665 (игра, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "rune-bounty",
-       "label": "Руна богатства",
-       "value": "28:00",
-       "source": "kb",
-       "ageSec": null,
-       "confidence": 1,
-       "verified": false
-      },
-      {
-       "key": "clock",
-       "label": "Игровое время, с",
-       "value": 1665,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      }
-     ],
-     "ttlMs": 15000,
-     "cooldownMs": 0,
-     "zone": "timing",
-     "icon": null,
-     "seq": 104,
-     "createdWallMs": 6365000,
-     "expiresWallMs": 6380000,
-     "clock": 1665,
-     "textSource": "template"
-    }
-   ],
-   "expired": [],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
-   "visible": [
-    "danger.low-hp",
-    "danger.invis:riki",
-    "economy.tp",
-    "timing.rune-bounty"
-   ]
-  }
- },
- {
-  "t": 1367,
-  "tick": {
-   "wallMs": 6367000,
+   "wallMs": 6362000,
    "shown": [],
    "expired": [
     {
@@ -22259,13 +22179,73 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 103,
+     "seq": 104,
      "createdWallMs": 6350000,
      "expiresWallMs": 6367000,
      "clock": 1650,
      "textSource": "template"
     }
    ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "danger.invis:riki",
+    "economy.tp"
+   ]
+  }
+ },
+ {
+  "t": 1365,
+  "tick": {
+   "wallMs": 6365000,
+   "shown": [
+    {
+     "id": "timing.rune-bounty",
+     "ruleId": "timing.rune-bounty",
+     "category": "timing",
+     "priority": "info",
+     "confidence": 0.8,
+     "short": "Руна богатства через 15 с",
+     "detail": {
+      "normal": "Руна богатства через 15 с (28:00).",
+      "detailed": "Руна богатства через 15 с (28:00). · Руна богатства: 28:00 (база, не проверено) · Игровое время, с: 1665 (игра, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "rune-bounty",
+       "label": "Руна богатства",
+       "value": "28:00",
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      },
+      {
+       "key": "clock",
+       "label": "Игровое время, с",
+       "value": 1665,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      }
+     ],
+     "ttlMs": 15000,
+     "cooldownMs": 0,
+     "zone": "timing",
+     "icon": null,
+     "seq": 105,
+     "createdWallMs": 6365000,
+     "expiresWallMs": 6380000,
+     "clock": 1665,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
    "changed": [],
    "mistakes": [],
    "deathReview": null,
@@ -22320,7 +22300,7 @@
      "cooldownMs": 120000,
      "zone": "timing",
      "icon": "item:tpscroll",
-     "seq": 101,
+     "seq": 102,
      "createdWallMs": 6320000,
      "expiresWallMs": 6369000,
      "clock": 1620,
@@ -22370,7 +22350,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 105,
+     "seq": 106,
      "createdWallMs": 6376000,
      "expiresWallMs": 6384000,
      "clock": 1676,
@@ -22432,7 +22412,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 104,
+     "seq": 105,
      "createdWallMs": 6365000,
      "expiresWallMs": 6380000,
      "clock": 1665,
@@ -22890,7 +22870,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 105,
+     "seq": 106,
      "createdWallMs": 6376000,
      "expiresWallMs": 6384000,
      "clock": 1676,
@@ -22948,7 +22928,7 @@
      "cooldownMs": 8000,
      "zone": "decision",
      "icon": "hero:axe",
-     "seq": 106,
+     "seq": 107,
      "createdWallMs": 6440000,
      "expiresWallMs": 6484000,
      "clock": 1740,
@@ -23511,7 +23491,7 @@
      "cooldownMs": 15000,
      "zone": "decision",
      "icon": null,
-     "seq": 107,
+     "seq": 108,
      "createdWallMs": 6443000,
      "expiresWallMs": 6487000,
      "clock": 1743,
@@ -23563,7 +23543,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 108,
+     "seq": 109,
      "createdWallMs": 6456000,
      "expiresWallMs": 6464000,
      "clock": 1756,
@@ -23617,7 +23597,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 108,
+     "seq": 109,
      "createdWallMs": 6456000,
      "expiresWallMs": 6464000,
      "clock": 1756,
@@ -23695,7 +23675,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 109,
+     "seq": 110,
      "createdWallMs": 6480000,
      "expiresWallMs": 6488000,
      "clock": 1780,
@@ -23728,7 +23708,7 @@
      "cooldownMs": 60000,
      "zone": "alert",
      "icon": null,
-     "seq": 110,
+     "seq": 111,
      "createdWallMs": 6480000,
      "expiresWallMs": 6490000,
      "clock": 1780,
@@ -23770,7 +23750,7 @@
      "cooldownMs": 120000,
      "zone": "timing",
      "icon": "item:tpscroll",
-     "seq": 111,
+     "seq": 112,
      "createdWallMs": 6480000,
      "expiresWallMs": 6529000,
      "clock": 1780,
@@ -23793,9 +23773,9 @@
   }
  },
  {
-  "t": 1484,
+  "t": 1482,
   "tick": {
-   "wallMs": 6484000,
+   "wallMs": 6482000,
    "shown": [],
    "expired": [
     {
@@ -23834,95 +23814,12 @@
      "cooldownMs": 8000,
      "zone": "decision",
      "icon": "hero:axe",
-     "seq": 106,
+     "seq": 107,
      "createdWallMs": 6440000,
      "expiresWallMs": 6484000,
      "clock": 1740,
      "textSource": "template"
-    }
-   ],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
-   "visible": [
-    "danger.smoke",
-    "danger.invis:riki",
-    "fight.engage",
-    "economy.tp"
-   ]
-  }
- },
- {
-  "t": 1485,
-  "tick": {
-   "wallMs": 6485000,
-   "shown": [
-    {
-     "id": "timing.rune-power",
-     "ruleId": "timing.rune-power",
-     "category": "timing",
-     "priority": "info",
-     "confidence": 0.8,
-     "short": "Руна силы через 15 с",
-     "detail": {
-      "normal": "Руна силы через 15 с (30:00).",
-      "detailed": "Руна силы через 15 с (30:00). · Руна силы: 30:00 (база, не проверено) · Игровое время, с: 1785 (игра, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "rune-power",
-       "label": "Руна силы",
-       "value": "30:00",
-       "source": "kb",
-       "ageSec": null,
-       "confidence": 1,
-       "verified": false
-      },
-      {
-       "key": "clock",
-       "label": "Игровое время, с",
-       "value": 1785,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      }
-     ],
-     "ttlMs": 15000,
-     "cooldownMs": 0,
-     "zone": "timing",
-     "icon": null,
-     "seq": 112,
-     "createdWallMs": 6485000,
-     "expiresWallMs": 6500000,
-     "clock": 1785,
-     "textSource": "template"
-    }
-   ],
-   "expired": [],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
-   "visible": [
-    "danger.smoke",
-    "danger.invis:riki",
-    "fight.engage",
-    "economy.tp",
-    "timing.rune-power"
-   ]
-  }
- },
- {
-  "t": 1487,
-  "tick": {
-   "wallMs": 6487000,
-   "shown": [],
-   "expired": [
+    },
     {
      "id": "fight.engage",
      "ruleId": "fight.engage",
@@ -24055,13 +23952,74 @@
      "cooldownMs": 15000,
      "zone": "decision",
      "icon": null,
-     "seq": 107,
+     "seq": 108,
      "createdWallMs": 6443000,
      "expiresWallMs": 6487000,
      "clock": 1743,
      "textSource": "template"
     }
    ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "danger.smoke",
+    "danger.invis:riki",
+    "economy.tp"
+   ]
+  }
+ },
+ {
+  "t": 1485,
+  "tick": {
+   "wallMs": 6485000,
+   "shown": [
+    {
+     "id": "timing.rune-power",
+     "ruleId": "timing.rune-power",
+     "category": "timing",
+     "priority": "info",
+     "confidence": 0.8,
+     "short": "Руна силы через 15 с",
+     "detail": {
+      "normal": "Руна силы через 15 с (30:00).",
+      "detailed": "Руна силы через 15 с (30:00). · Руна силы: 30:00 (база, не проверено) · Игровое время, с: 1785 (игра, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "rune-power",
+       "label": "Руна силы",
+       "value": "30:00",
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      },
+      {
+       "key": "clock",
+       "label": "Игровое время, с",
+       "value": 1785,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      }
+     ],
+     "ttlMs": 15000,
+     "cooldownMs": 0,
+     "zone": "timing",
+     "icon": null,
+     "seq": 113,
+     "createdWallMs": 6485000,
+     "expiresWallMs": 6500000,
+     "clock": 1785,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
    "changed": [],
    "mistakes": [],
    "deathReview": null,
@@ -24108,7 +24066,7 @@
      "cooldownMs": 60000,
      "zone": "alert",
      "icon": null,
-     "seq": 110,
+     "seq": 111,
      "createdWallMs": 6480000,
      "expiresWallMs": 6490000,
      "clock": 1780,
@@ -24177,7 +24135,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 113,
+     "seq": 114,
      "createdWallMs": 6491000,
      "expiresWallMs": 6517000,
      "clock": 1791,
@@ -24240,7 +24198,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 112,
+     "seq": 113,
      "createdWallMs": 6485000,
      "expiresWallMs": 6500000,
      "clock": 1785,
@@ -24725,7 +24683,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 114,
+     "seq": 115,
      "createdWallMs": 6510000,
      "expiresWallMs": 6524000,
      "clock": 1810,
@@ -24777,7 +24735,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 115,
+     "seq": 116,
      "createdWallMs": 6516000,
      "expiresWallMs": 6524000,
      "clock": 1816,
@@ -24838,7 +24796,7 @@
      "cooldownMs": 300000,
      "zone": "timing",
      "icon": null,
-     "seq": 116,
+     "seq": 117,
      "createdWallMs": 6520000,
      "expiresWallMs": 6649000,
      "clock": 1820,
@@ -24892,7 +24850,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 115,
+     "seq": 116,
      "createdWallMs": 6516000,
      "expiresWallMs": 6524000,
      "clock": 1816,
@@ -24953,7 +24911,7 @@
      "cooldownMs": 120000,
      "zone": "timing",
      "icon": "item:tpscroll",
-     "seq": 111,
+     "seq": 112,
      "createdWallMs": 6480000,
      "expiresWallMs": 6529000,
      "clock": 1780,
@@ -25419,7 +25377,7 @@
      "cooldownMs": 8000,
      "zone": "decision",
      "icon": "hero:axe",
-     "seq": 117,
+     "seq": 118,
      "createdWallMs": 6600000,
      "expiresWallMs": 6644000,
      "clock": 1900,
@@ -25576,7 +25534,7 @@
      "cooldownMs": 15000,
      "zone": "decision",
      "icon": null,
-     "seq": 118,
+     "seq": 119,
      "createdWallMs": 6603000,
      "expiresWallMs": 6647000,
      "clock": 1903,
@@ -25629,7 +25587,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 119,
+     "seq": 120,
      "createdWallMs": 6616000,
      "expiresWallMs": 6624000,
      "clock": 1916,
@@ -26091,7 +26049,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 119,
+     "seq": 120,
      "createdWallMs": 6616000,
      "expiresWallMs": 6624000,
      "clock": 1916,
@@ -26170,7 +26128,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 120,
+     "seq": 121,
      "createdWallMs": 6640000,
      "expiresWallMs": 6648000,
      "clock": 1940,
@@ -26203,7 +26161,7 @@
      "cooldownMs": 60000,
      "zone": "alert",
      "icon": null,
-     "seq": 121,
+     "seq": 122,
      "createdWallMs": 6640000,
      "expiresWallMs": 6650000,
      "clock": 1940,
@@ -26245,7 +26203,7 @@
      "cooldownMs": 120000,
      "zone": "timing",
      "icon": "item:tpscroll",
-     "seq": 122,
+     "seq": 123,
      "createdWallMs": 6640000,
      "expiresWallMs": 6689000,
      "clock": 1940,
@@ -26269,9 +26227,9 @@
   }
  },
  {
-  "t": 1644,
+  "t": 1642,
   "tick": {
-   "wallMs": 6644000,
+   "wallMs": 6642000,
    "shown": [],
    "expired": [
     {
@@ -26310,33 +26268,12 @@
      "cooldownMs": 8000,
      "zone": "decision",
      "icon": "hero:axe",
-     "seq": 117,
+     "seq": 118,
      "createdWallMs": 6600000,
      "expiresWallMs": 6644000,
      "clock": 1900,
      "textSource": "template"
-    }
-   ],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
-   "visible": [
-    "danger.smoke",
-    "danger.invis:riki",
-    "fight.engage",
-    "economy.tp",
-    "economy.neutral"
-   ]
-  }
- },
- {
-  "t": 1647,
-  "tick": {
-   "wallMs": 6647000,
-   "shown": [],
-   "expired": [
+    },
     {
      "id": "fight.engage",
      "ruleId": "fight.engage",
@@ -26469,7 +26406,7 @@
      "cooldownMs": 15000,
      "zone": "decision",
      "icon": null,
-     "seq": 118,
+     "seq": 119,
      "createdWallMs": 6603000,
      "expiresWallMs": 6647000,
      "clock": 1903,
@@ -26531,7 +26468,7 @@
      "cooldownMs": 300000,
      "zone": "timing",
      "icon": null,
-     "seq": 116,
+     "seq": 117,
      "createdWallMs": 6520000,
      "expiresWallMs": 6649000,
      "clock": 1820,
@@ -26583,7 +26520,7 @@
      "cooldownMs": 60000,
      "zone": "alert",
      "icon": null,
-     "seq": 121,
+     "seq": 122,
      "createdWallMs": 6640000,
      "expiresWallMs": 6650000,
      "clock": 1940,
@@ -26651,7 +26588,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 123,
+     "seq": 124,
      "createdWallMs": 6651000,
      "expiresWallMs": 6677000,
      "clock": 1951,
@@ -26730,7 +26667,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 124,
+     "seq": 125,
      "createdWallMs": 6670000,
      "expiresWallMs": 6687000,
      "clock": 1970,
@@ -27158,9 +27095,9 @@
   }
  },
  {
-  "t": 1687,
+  "t": 1682,
   "tick": {
-   "wallMs": 6687000,
+   "wallMs": 6682000,
    "shown": [],
    "expired": [
     {
@@ -27217,7 +27154,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 124,
+     "seq": 125,
      "createdWallMs": 6670000,
      "expiresWallMs": 6687000,
      "clock": 1970,
@@ -27277,7 +27214,7 @@
      "cooldownMs": 120000,
      "zone": "timing",
      "icon": "item:tpscroll",
-     "seq": 122,
+     "seq": 123,
      "createdWallMs": 6640000,
      "expiresWallMs": 6689000,
      "clock": 1940,
@@ -27326,7 +27263,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 125,
+     "seq": 126,
      "createdWallMs": 6696000,
      "expiresWallMs": 6704000,
      "clock": 1996,
@@ -27378,7 +27315,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 125,
+     "seq": 126,
      "createdWallMs": 6696000,
      "expiresWallMs": 6704000,
      "clock": 1996,
@@ -27436,7 +27373,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 126,
+     "seq": 127,
      "createdWallMs": 6725000,
      "expiresWallMs": 6740000,
      "clock": 2025,
@@ -27497,7 +27434,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 126,
+     "seq": 127,
      "createdWallMs": 6725000,
      "expiresWallMs": 6740000,
      "clock": 2025,
@@ -27962,7 +27899,7 @@
      "cooldownMs": 8000,
      "zone": "decision",
      "icon": "hero:axe",
-     "seq": 127,
+     "seq": 128,
      "createdWallMs": 6760000,
      "expiresWallMs": 6804000,
      "clock": 2060,
@@ -28118,7 +28055,7 @@
      "cooldownMs": 15000,
      "zone": "decision",
      "icon": null,
-     "seq": 128,
+     "seq": 129,
      "createdWallMs": 6763000,
      "expiresWallMs": 6807000,
      "clock": 2063,
@@ -28189,11 +28126,19 @@
     "source": "template"
    },
    {
-    "wallMs": 5045000,
-    "clock": 345,
+    "wallMs": 5043000,
+    "clock": 343,
     "kind": "hint",
     "id": "laning.buy-regen",
     "text": "Купите фласку — курьером",
+    "source": "template"
+   },
+   {
+    "wallMs": 5043000,
+    "clock": 343,
+    "kind": "hint",
+    "id": "fight.action:farm",
+    "text": "Фармить: 50%",
     "source": "template"
    },
    {
@@ -28309,8 +28254,8 @@
     "source": "template"
    },
    {
-    "wallMs": 5205000,
-    "clock": 505,
+    "wallMs": 5203000,
+    "clock": 503,
     "kind": "hint",
     "id": "laning.buy-regen",
     "text": "Купите фласку — курьером",
@@ -28413,8 +28358,8 @@
     "source": "template"
    },
    {
-    "wallMs": 5365000,
-    "clock": 665,
+    "wallMs": 5363000,
+    "clock": 663,
     "kind": "hint",
     "id": "laning.buy-regen",
     "text": "Купите фласку — курьером",
@@ -28517,8 +28462,8 @@
     "source": "template"
    },
    {
-    "wallMs": 5525000,
-    "clock": 825,
+    "wallMs": 5523000,
+    "clock": 823,
     "kind": "hint",
     "id": "laning.buy-regen",
     "text": "Купите фласку — курьером",
@@ -28629,8 +28574,8 @@
     "source": "template"
    },
    {
-    "wallMs": 5685000,
-    "clock": 985,
+    "wallMs": 5683000,
+    "clock": 983,
     "kind": "hint",
     "id": "laning.buy-regen",
     "text": "Купите фласку — курьером",
@@ -28733,8 +28678,8 @@
     "source": "template"
    },
    {
-    "wallMs": 5845000,
-    "clock": 1145,
+    "wallMs": 5843000,
+    "clock": 1143,
     "kind": "hint",
     "id": "laning.buy-regen",
     "text": "Купите фласку — курьером",

@@ -1,6 +1,6 @@
 // Переключатели live-подсказок (решение владельца 2026-10-13, docs/POLICY.md) и настройки подсказок этапа 4:
 // подробность, категории, ИИ во время матча, лента в окне коуча. Одни и те же — в «Настройках» и на «Живой игре»;
-// сохраняются сразу в settings.hints. Вид подсказок поверх игры — на странице «Предпросмотр подсказок».
+// сохраняются сразу в settings.hints. Вид подсказок поверх игры — на странице «Подсказки в игре».
 import { useEffect, useState } from 'react';
 import type { HintCategories, HintDetail, Settings, SettingsPatch } from '@shared/schemas/settings';
 import type { CoachStateMessage } from '@shared/ipc';
@@ -12,7 +12,7 @@ import { modeBannerText, resolveGameMode } from '@core/gsi/mode.ts';
 
 const MODE_RU: Record<GameModeOverride, string> = { auto: 'Определять по данным игры', turbo: 'Турбо', normal: 'Обычный режим (All Pick, рейтинг)' };
 
-const DETAIL_RU: Record<HintDetail, string> = { min: 'Минимум — только короткая фраза', normal: 'Обычный — фраза и пояснение', detailed: 'Подробно — с фактами и факторами %' };
+const DETAIL_RU: Record<HintDetail, string> = { min: 'Только действие — одна фраза', normal: 'Коротко — действие и причина', detailed: 'Подробно — с фактами и факторами %' };
 const CATEGORY_RU: Record<keyof HintCategories, string> = {
   danger: 'Опасность (пропавшие враги, смок, мало здоровья)',
   fight: 'Драки и решения (вступать, 1×1, фокус)',
@@ -93,7 +93,7 @@ export function HintsToggles({ settings, update, testIdPrefix = 'setting-hints' 
       </label>
       <label className="check">
         <input type="checkbox" checked={settings.hud.enabled} disabled={!h.enabled} onChange={(e) => void update({ hud: { enabled: e.target.checked } })} data-testid={`${testIdPrefix}-hud`} />
-        Показывать подсказки поверх игры (вид — «Предпросмотр подсказок»)
+        Показывать подсказки поверх игры (вид — раздел «Подсказки в игре»)
       </label>
     </>
   );
@@ -106,7 +106,7 @@ export function useCoachState(): CoachStateMessage {
   return state;
 }
 
-const SEV_RU = { critical: 'Важно', advice: 'Совет', info: 'Инфо' } as const;
+const SEV_RU = { critical: 'Срочно', advice: 'Совет', info: 'Инфо' } as const;
 
 /** Лента подсказок в окне коуча (страница «Живая игра») */
 export function HintsFeed() {
@@ -127,12 +127,12 @@ export function HintsFeed() {
         <ul className="hints-list">
           {hints.map((h) => (
             <li key={h.seq} className={`hint-item hint-${h.priority}`} data-testid="hint-item">
-              <b>
-                {SEV_RU[h.priority]}
-                {h.source === 'ai' ? ' · ИИ' : ''}:
-              </b>{' '}
-              {h.review ? h.review.heading : h.title}
-              {h.percent && <span className="hint-pct"> · {h.percent.value}%</span>}
+              <div className="hint-head">
+                <span className={`hint-sev sev-${h.priority}`}>{SEV_RU[h.priority]}</span>
+                {h.source === 'ai' && <span className="hint-src">ИИ</span>}
+                <b className="hint-title">{h.review ? h.review.heading : h.title}</b>
+                {h.percent && <span className="hint-pct">{h.percent.value}%</span>}
+              </div>
               {h.text && <div className="muted small">{h.text}</div>}
               {h.review && (
                 <div className="small">

@@ -1,5 +1,6 @@
-// Раскладка подсказок поверх игры: на любом экране зоны не заходят на HUD Dota и не выходят за край.
+// Раскладка подсказок поверх игры: на любом экране зоны не заходят на HUD Dota и не выходят за край; текст плашки.
 import { describe, expect, it } from 'vitest';
+import { reasonText } from '../../src/core/hud/text.ts';
 import layoutJson from '../../src/data/hud-overlay-layout.json';
 import { SCREENS, areaRect, applyOverrides, layoutSchema, moveZone, resolveLayout, hudUnit } from '../../src/core/hud/layout.ts';
 
@@ -46,5 +47,17 @@ describe('раскладка подсказок', () => {
     const l2 = applyOverrides(layout, { timing: { x: 0.01, y: 0.85 } });
     const z = resolveLayout(l2, 1920, 1080).zones.find((x) => x.zone.id === 'timing')!;
     expect(z.conflicts.length).toBeGreaterThan(0);
+  });
+});
+
+describe('текст плашки', () => {
+  it('причина без повтора заголовка; другой текст не трогаем', () => {
+    expect(reasonText('Не вступать: шанс 31%', 'Не вступать: шанс 31%. 3 врага рядом.')).toBe('3 врага рядом.');
+    expect(reasonText('Руна силы через 15 с', 'Руна силы через 15 с — займите реку')).toBe('займите реку');
+    expect(reasonText('Фармить лес', 'Заберите лагеря своего леса')).toBe('Заберите лагеря своего леса');
+    // только целое совпадение: «Фарм» не отрезает начало слова «Фармить»
+    expect(reasonText('Фарм', 'Фармить лес')).toBe('Фармить лес');
+    // текст — это заголовок целиком: причины нет
+    expect(reasonText('Назад к башне', 'Назад к башне.')).toBe('');
   });
 });

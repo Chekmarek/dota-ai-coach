@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { zoneOverridesSchema, type ZoneOverrides } from '../../core/hud/layout.ts';
+import { HUD_ZONE_IDS, zoneOverridesSchema, type HudZoneId, type ZoneOverrides } from '../../core/hud/layout.ts';
 import { HUD_THEME_IDS, type HudThemeId } from '../types/hud.ts';
 import { GAME_MODE_OVERRIDES, type GameModeOverride } from '../../core/gsi/mode.ts';
 
@@ -35,7 +35,7 @@ const DEFAULTS = {
     gameMode: 'auto' as GameModeOverride,
   },
   // Подсказки поверх игры (этап 3): тема, раскладка, анимации, прозрачность, размер
-  hud: { enabled: true, theme: 'runes' as HudThemeId, reduceMotion: false, opacity: 1, scale: 1, zones: null as ZoneOverrides | null },
+  hud: { enabled: true, theme: 'runes' as HudThemeId, reduceMotion: false, opacity: 1, scale: 1, zones: null as ZoneOverrides | null, hiddenZones: [] as HudZoneId[] },
   // Valve Game State Integration: локальный приёмник на 127.0.0.1 (этап 2 GSI)
   gsi: { port: GSI_DEFAULT_PORT, token: '', record: true, dotaDir: null as string | null },
   // Только для разработчика (DOTACOACH_DEV=1): набор кадров для проверки зрения (docs/VISION_DATASET.md)
@@ -166,6 +166,8 @@ const fields = {
     scale: z.number().min(0.8).max(1.4),
     /** Сдвиги зон из «Режима расстановки»; null — стандартная раскладка */
     zones: zoneOverridesSchema.nullable(),
+    /** Скрытые зоны подсказок («Подсказки в игре» → «Что показывать»); [] — показываются все */
+    hiddenZones: z.array(z.enum(HUD_ZONE_IDS)).max(HUD_ZONE_IDS.length),
   },
   gsi: {
     /** Порт приёмника на 127.0.0.1; если занят — показываем это, другой порт сами не выбираем */

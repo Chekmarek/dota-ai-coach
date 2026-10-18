@@ -84,4 +84,18 @@ describe('настройки после обновления', () => {
     expect(settingsPatchSchema.parse({ hints: { gameMode: 'normal' } }).hints?.gameMode).toBe('normal');
 
   });
+
+  it('файл 0.13.3 (без скрытых зон подсказок) — показываются все зоны; неверное значение не ломает раздел', () => {
+    const r = raw('settings-0.13.2.json') as { hud: Record<string, unknown> };
+    const s = settingsSchema.parse(r);
+    expect(s.hud.hiddenZones).toEqual([]);
+    expectKept(r, s);
+    for (const bad of ['timing', ['map'], [1], null]) {
+      const x = settingsSchema.parse({ ...r, hud: { ...r.hud, hiddenZones: bad } });
+      expect(x.hud.hiddenZones).toEqual([]);
+      expect(x.hud.theme).toBe(s.hud.theme);
+    }
+    expect(settingsSchema.parse({ ...r, hud: { ...r.hud, hiddenZones: ['timing'] } }).hud.hiddenZones).toEqual(['timing']);
+    expect(() => settingsPatchSchema.parse({ hud: { hiddenZones: ['minimap'] } })).toThrow();
+  });
 });

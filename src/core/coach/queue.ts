@@ -1,5 +1,6 @@
 // H. Очередь подсказок против спама: приоритеты, не больше N на зону, кулдауны подсказки и категории, слияние
-// повторов, вытеснение важным, автоудаление по TTL, тишина в драке для неважного, общий лимит в минуту.
+// повторов, вытеснение важным, автоудаление по TTL, тишина в драке для неважного, общий лимит в минуту,
+// снятие устаревших: ситуативная подсказка уходит, когда правило перестало её подтверждать (expireStale).
 import { PRIORITY_RANK, type CoachSettings, type Hint, type HintCategory, type HintDraft, type HintZone, DEFAULT_ZONE } from './types.ts';
 
 export interface QueueConfig {
@@ -18,6 +19,11 @@ export const DEFAULT_QUEUE_CONFIG: QueueConfig = {
   maxPerMinute: 8,
   inFightAllowed: ['fight', 'danger'],
 };
+
+/** Категории «по ситуации»: правило выдаёт подсказку на каждом снимке, пока ситуация есть */
+export const SITUATIONAL_CATEGORIES: readonly HintCategory[] = ['danger', 'fight', 'laning', 'macro'];
+/** Сколько ждать после последнего подтверждения, прежде чем снять ситуативную подсказку (пропуск снимка — не повод) */
+export const STALE_GRACE_MS = 2500;
 
 export type DropReason = 'disabled' | 'low-confidence' | 'percent-uncertain' | 'cooldown' | 'category-gap' | 'in-fight' | 'rate' | 'zone-full';
 
@@ -43,6 +49,8 @@ export class HintQueue {
   private lastByCategory = new Map<HintCategory, number>();
   private shownAt: number[] = [];
   private seq = 0;
+  /** Подтверждения правилом: сколько раз подсказка пришла (показ + повторы) и когда последний раз */
+  private confirms = new Map<number, { count: number; lastMs: number }>();
   readonly dropped: Record<DropReason, number> = { disabled: 0, 'low-confidence': 0, 'percent-uncertain': 0, cooldown: 0, 'category-gap': 0, 'in-fight': 0, rate: 0, 'zone-full': 0 };
   shownTotal = 0;
 
@@ -50,6 +58,7 @@ export class HintQueue {
 
   reset(): void {
     this.visibleHints = [];
+    this.confirms.clear();
     this.lastById.clear();
     this.lastByCategory.clear();
     this.shownAt = [];
@@ -63,13 +72,33 @@ export class HintQueue {
   tick(now: number): Hint[] {
     const gone = this.visibleHints.filter((h) => h.expiresWallMs <= now);
     if (gone.length) this.visibleHints = this.visibleHints.filter((h) => h.expiresWallMs > now);
+    for (const h of gone) this.confirms.delete(h.seq);
     return gone;
   }
 
   dismiss(seq: number): Hint | null {
     const h = this.visibleHints.find((x) => x.seq === seq) ?? null;
     if (h) this.visibleHints = this.visibleHints.filter((x) => x.seq !== seq);
+    this.confirms.delete(seq);
     return h;
+  }
+
+  /**
+   * Снимает ситуативные подсказки, которые правило подтверждало несколько снимков подряд, а теперь перестало
+   * (ситуация изменилась) — не дожидаясь TTL. Разовые подсказки по событию (смок, Рошан, уровень) подтверждаются
+   * один раз и уходят только по сроку.
+   */
+  expireStale(now: number, graceMs = STALE_GRACE_MS): Hint[] {
+    const stale = this.visibleHints.filter((h) => {
+      if (!SITUATIONAL_CATEGORIES.includes(h.category)) return false;
+      const c = this.confirms.get(h.seq);
+      return !!c && c.count >= 2 && now - c.lastMs >= graceMs;
+    });
+    if (stale.length) {
+      this.visibleHints = this.visibleHints.filter((h) => !stale.includes(h));
+      for (const h of stale) this.confirms.delete(h.seq);
+    }
+    return stale;
   }
 
   /** Новый текст подсказки на экране (например, от ИИ) */
@@ -102,6 +131,8 @@ export class HintQueue {
       const keepDetail = same.textSource === 'ai' ? same.detail : d.detail;
       Object.assign(same, { ...d, zone, detail: keepDetail, seq: same.seq, createdWallMs: same.createdWallMs, textSource: same.textSource, expiresWallMs: Math.max(same.expiresWallMs, now + d.ttlMs) });
       this.lastById.set(d.id, now);
+      const c = this.confirms.get(same.seq);
+      this.confirms.set(same.seq, { count: (c?.count ?? 1) + 1, lastMs: now });
       return { hint: same, status: 'merged', evicted: [] };
     }
 
@@ -124,11 +155,13 @@ export class HintQueue {
       const stronger = PRIORITY_RANK[d.priority] > PRIORITY_RANK[weakest.priority] || (critical && weakest.priority === 'critical') || review;
       if (!stronger) return drop('zone-full');
       this.visibleHints = this.visibleHints.filter((h) => h !== weakest);
+      this.confirms.delete(weakest.seq);
       evicted.push(weakest);
     }
 
     const hint: Hint = { ...d, zone, seq: ++this.seq, createdWallMs: now, expiresWallMs: now + d.ttlMs, clock: ctx.clock, textSource: 'template' };
     this.visibleHints.push(hint);
+    this.confirms.set(hint.seq, { count: 1, lastMs: now });
     // Важное — первым в своей зоне
     this.visibleHints.sort((a, b) => PRIORITY_RANK[b.priority] - PRIORITY_RANK[a.priority] || a.createdWallMs - b.createdWallMs);
     this.lastById.set(d.id, now);

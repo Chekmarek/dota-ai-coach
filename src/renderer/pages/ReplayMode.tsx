@@ -9,6 +9,7 @@ import { PreviewImage } from '../components/preview';
 import { AskCoach, MatchSummary } from '../components/ask';
 import { usePageFacts } from '../hooks/useFacts';
 import { afterMatchFromState } from '@core/ai/after-match.ts';
+import { Icon } from '../components/icons';
 
 // Выбранный источник живёт вне компонента, чтобы не теряться при переходе между страницами
 let selected: ReplaySourceSpec | null = null;
@@ -89,7 +90,8 @@ export function ReplayMode() {
         {error && <p className="error">{error}</p>}
         <div className="row gap">
           <button className="primary" onClick={() => void start()} disabled={!source || active} data-testid="replay-start">
-            ▶ Запустить
+            <Icon name="play" size={14} />
+            Запустить
           </button>
           {state === 'paused' ? (
             <button onClick={() => engine.send({ type: 'replay:resume' })}>Продолжить</button>
@@ -99,7 +101,8 @@ export function ReplayMode() {
             </button>
           )}
           <button onClick={() => engine.send({ type: 'replay:stop' })} disabled={!active} data-testid="replay-stop">
-            ■ Стоп
+            <Icon name="stop" size={14} />
+            Стоп
           </button>
           <StatePill state={liveOn ? 'idle' : (status?.state ?? null)} />
         </div>

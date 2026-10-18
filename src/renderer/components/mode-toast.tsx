@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState } from 'react';
 import type { ModeBanner } from '@shared/types/hud';
 import { MODE_BANNER_MS } from '@shared/types/hud';
+import { modeSub } from '../../hud/components/mode';
+import { Icon, type IconName } from './icons';
 
 const subs = new Set<(b: ModeBanner) => void>();
 let localSeq = 1_000_000;
@@ -13,7 +15,7 @@ export function showModeToast(b: Omit<ModeBanner, 'seq'>): void {
   for (const fn of subs) fn(banner);
 }
 
-const ICON: Record<ModeBanner['mode'], string> = { turbo: '⚡', 'all-pick': '⚔', other: '◆', unknown: '?' };
+const ICON: Record<ModeBanner['mode'], IconName> = { turbo: 'bolt', 'all-pick': 'draft', other: 'layers', unknown: 'help' };
 
 export function ModeToast() {
   const [b, setB] = useState<ModeBanner | null>(null);
@@ -45,14 +47,13 @@ export function ModeToast() {
   return (
     <div className={`mode-toast mode-toast-${b.mode}${leaving ? ' leaving' : ''}`} role="status" aria-live="polite" data-testid="mode-toast" data-mode={b.mode}>
       <div className="mode-toast-icon" aria-hidden>
-        {ICON[b.mode]}
+        <Icon name={ICON[b.mode]} size={22} />
       </div>
       <div className="mode-toast-text">
-        <span className="mode-toast-kicker">Режим игры</span>
         <strong className="mode-toast-title" data-testid="mode-toast-title">
           {b.title}
         </strong>
-        <span className="muted small">{b.text}</span>
+        <span className="muted small">{modeSub(b)}</span>
       </div>
       <i className="mode-toast-bar" style={{ animationDuration: `${MODE_BANNER_MS}ms` }} />
     </div>

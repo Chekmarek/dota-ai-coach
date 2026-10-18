@@ -64,6 +64,25 @@ test('предпросмотр: все виды подсказок, темы, э
   }
 });
 
+test('«Что показывать»: скрытая зона пропадает со схемы и сохраняется в настройках; включение возвращает её', async () => {
+  const dataDir = tmp();
+  const { app, ui } = await launch(dataDir);
+  try {
+    await ui.click('[data-testid="nav-hud"]');
+    const stage = ui.locator('[data-testid="hud-stage"]');
+    await expect(stage.locator('.hud-card')).toHaveCount(5);
+    await expect(stage.locator('.hud-zone[data-zone="timing"] .hud-card')).toHaveCount(2);
+    await ui.click('[data-testid="hud-show-timing"]');
+    await expect(stage.locator('.hud-zone[data-zone="timing"]')).toBeHidden();
+    await expect(stage.locator('.hud-card')).toHaveCount(3);
+    await expect.poll(() => JSON.parse(readFileSync(join(dataDir, 'settings.json'), 'utf8')).hud.hiddenZones).toEqual(['timing']);
+    await ui.click('[data-testid="hud-show-timing"]');
+    await expect(stage.locator('.hud-card')).toHaveCount(5);
+  } finally {
+    await app.close();
+  }
+});
+
 test('поверх игры: прозрачное окно без фокуса показывает примеры и прячется', async () => {
   const { app, ui } = await launch(tmp());
   try {
