@@ -8,6 +8,7 @@ import type { HudHint, ModeBanner } from '@shared/types/hud';
 import type { CoachInput } from '@shared/types/coach-input';
 import type { HistoryMatch } from '@shared/types/history';
 import type { KbStats } from '@shared/types/stats';
+import type { StatsRanked } from '@shared/types/stats-ranked';
 import type { KnowledgeBase } from '@shared/types/kb';
 import type { DraftLiveHeroes } from '@shared/types/draft';
 import { liveHeroes } from './draft';
@@ -25,7 +26,7 @@ export const MODE_STABLE_MS = 1500;
 
 export interface CoachDeps {
   settings: { get(): Settings };
-  kb: { get(): KnowledgeBase | { error: string }; stats(): KbStats | null; statsTurbo?(): KbStats | null };
+  kb: { get(): KnowledgeBase | { error: string }; stats(): KbStats | null; statsTurbo?(): KbStats | null; statsRanked?(): StatsRanked | null };
   aiProvider: () => AiProvider | null;
   history: { save(m: HistoryMatch): void };
   /** Подсказки на экране сейчас (пусто — нечего показывать); inMatch — матч идёт по данным игры */
@@ -81,12 +82,13 @@ export class CoachService {
       mechanics: kb.mechanics,
       stats: this.deps.kb.stats(),
       statsTurbo: this.deps.kb.statsTurbo?.() ?? null,
+      statsRanked: this.deps.kb.statsRanked?.() ?? null,
       kbVerified: kb.meta.verification === 'verified',
       turbo: TURBO,
     };
     const ai = new CoachAi({ provider: () => this.deps.aiProvider(), now: this.now });
     this.engine = new CoachEngine({ data, ai, now: this.now, settings: coachSettings(this.deps.settings.get()), onAsync: () => this.publish() });
-    this.deps.log?.('coach: движок подсказок готов', { patch: data.patch, stats: data.stats ? data.stats.heroes.length : 0 });
+    this.deps.log?.('coach: движок подсказок готов', { patch: data.patch, stats: data.stats ? data.stats.heroes.length : 0, ranked: data.statsRanked ? data.statsRanked.heroes.length : 0 });
     return this.engine;
   }
 

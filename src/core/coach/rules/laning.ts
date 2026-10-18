@@ -231,27 +231,36 @@ export const benchRule: Rule = (c) => {
   const min = BENCH_MINUTES.find((m) => clock >= m * 60 && clock < m * 60 + 45);
   if (min === undefined || c.mem.once.has(`bench:${min}`)) return null;
   const g = game(c);
+  // Ориентир: сильные игроки рейтинга (STRATZ, Divine–Immortal, та же позиция) — ближе к вашим играм; нет данных —
+  // профи патча (OpenDota). Похвала — по верхней четверти профи, а без неё — на треть выше среднего сильных игроков
+  const r = c.look.rankedAt(g.hero.key, g.position, min);
   const p = c.look.proAt(g.hero.key, g.position, min);
-  if (!p) return null;
+  const ref = r
+    ? { who: 'у сильных игроков', label: 'сильные игроки рейтинга (Divine–Immortal), среднее', lh: r.lh, gold: r.networth, xp: r.xp, n: r.n, position: r.position, praise: p?.lh75 ?? Math.round(r.lh * 1.3), conf: Math.min(1, r.n / 500) }
+    : p
+      ? { who: 'у профи', label: 'профи патча, медиана', lh: p.lh50, gold: p.gold50, xp: p.xp50, n: p.n, position: p.position, praise: p.lh75, conf: Math.min(1, p.n / 40) }
+      : null;
+  if (!ref) return null;
   c.mem.once.add(`bench:${min}`);
   const lh = c.v.me.lastHits.value;
   const gpm = c.v.me.gpm.value;
   const xpm = c.v.me.xpm.value;
   const gold = gpm === null ? null : Math.round(gpm * (clock / 60));
   const xp = xpm === null ? null : Math.round(xpm * (clock / 60));
-  const who = `у профи на ${g.hero.name ?? 'этом герое'}${p.position !== null ? ` (позиция ${p.position})` : ''}`;
+  const who = `${ref.who} на ${g.hero.name ?? 'этом герое'}${ref.position !== null ? ` (позиция ${ref.position})` : ''}`;
   const core = g.core !== false;
   type Gap = { what: string; mine: number; ref: number; ratio: number };
   const gaps: Gap[] = [];
-  if (core && lh !== null && p.lh50) gaps.push({ what: 'Добивания', mine: lh, ref: p.lh50, ratio: lh / p.lh50 });
-  if (gold !== null && p.gold50) gaps.push({ what: 'Золото', mine: gold, ref: p.gold50, ratio: gold / p.gold50 });
-  if (xp !== null && p.xp50) gaps.push({ what: 'Опыт', mine: xp, ref: p.xp50, ratio: xp / p.xp50 });
+  if (core && lh !== null && ref.lh) gaps.push({ what: 'Добивания', mine: lh, ref: ref.lh, ratio: lh / ref.lh });
+  // у сильных игроков — ценность героя (она чуть меньше заработанного: смерти, расходники) — сравнение мягкое
+  if (gold !== null && ref.gold) gaps.push({ what: 'Золото', mine: gold, ref: ref.gold, ratio: gold / ref.gold });
+  if (xp !== null && ref.xp) gaps.push({ what: 'Опыт', mine: xp, ref: ref.xp, ratio: xp / ref.xp });
   const worst = gaps.filter((x) => x.ratio < BENCH_LOW).sort((a, b) => a.ratio - b.ratio)[0];
   const facts = [
     fact('lh', 'Добиваний', c.v.me.lastHits),
     derivedFact('gold-earned', 'Золота заработано (GPM × минуты)', gold, 0.8),
-    { key: 'pro-lh', label: `Добивания профи к ${min}:00, медиана`, value: p.lh50, source: 'stats' as const, ageSec: null, confidence: Math.min(1, p.n / 40), verified: false },
-    { key: 'pro-gold', label: `Золото профи к ${min}:00, медиана`, value: p.gold50, source: 'stats' as const, ageSec: null, confidence: Math.min(1, p.n / 40), verified: false },
+    { key: 'ref-lh', label: `Добивания к ${min}:00 — ${ref.label}`, value: ref.lh, source: 'stats' as const, ageSec: null, confidence: ref.conf, verified: false },
+    { key: 'ref-gold', label: `Золото к ${min}:00 — ${ref.label}`, value: ref.gold, source: 'stats' as const, ageSec: null, confidence: ref.conf, verified: false },
   ];
   if (worst) {
     const how = worst.what === 'Добивания' ? 'Добивайте крипов: не пропускайте волны между драками.' : worst.what === 'Золото' ? 'Больше фарма: волна, лагерь, снова волна.' : 'Больше опыта: стойте у волн, не пропускайте драки рядом.';
@@ -260,21 +269,21 @@ export const benchRule: Rule = (c) => {
       category: 'laning',
       priority: 'info',
       confidence: 0.75,
-      short: `${worst.what} ${worst.mine} к ${min}:00, у профи ~${worst.ref}`,
+      short: `${worst.what} ${worst.mine} к ${min}:00, ${ref.who} ~${worst.ref}`,
       normal: `${worst.what}: ${worst.mine} к ${min}:00, ${who} обычно ~${worst.ref}. ${how}`,
       facts,
       ttlSec: 10,
       cooldownSec: 0,
     });
   }
-  if (core && lh !== null && p.lh75 && lh >= p.lh75) {
+  if (core && lh !== null && ref.praise && lh >= ref.praise) {
     return draft({
       id: 'laning.bench',
       category: 'laning',
       priority: 'info',
       confidence: 0.75,
       short: `Отличный фарм: ${lh} добиваний к ${min}:00`,
-      normal: `${lh} добиваний к ${min}:00 — больше, чем у трёх четвертей профи на этом герое (~${p.lh75}). Так держать.`,
+      normal: p?.lh75 ? `${lh} добиваний к ${min}:00 — больше, чем у трёх четвертей профи на этом герое (~${p.lh75}). Так держать.` : `${lh} добиваний к ${min}:00 — заметно больше, чем ${who} (~${ref.lh}). Так держать.`,
       facts,
       ttlSec: 8,
       cooldownSec: 0,

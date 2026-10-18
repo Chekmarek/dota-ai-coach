@@ -1,6 +1,9 @@
 // Этап 3 «понимания игры»: сравнение с сильными игроками на этом герое (кривые профи OpenDota по минутам)
 // и предметы из сборки профи с поправкой на врагов. Данные кривых — заданы в тесте (не зависят от импорта).
 import { describe, expect, it } from 'vitest';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { parseStatsRanked } from '../../src/shared/types/stats-ranked.ts';
 import { buildView } from '../../src/core/coach/view.ts';
 import { CoachLookup, type CoachData } from '../../src/core/coach/data.ts';
 import { CoachMemory } from '../../src/core/coach/memory.ts';
@@ -84,6 +87,36 @@ describe('сравнение «у вас / у профи»', () => {
     const look = new CoachLookup(realData());
     const og = look.proAt('ogre_magi', 5, 10);
     expect(og === null || og.position === 5).toBe(true);
+  });
+});
+
+describe('сильные игроки рейтинга (STRATZ, stats-ranked.json)', () => {
+  const ranked = parseStatsRanked(JSON.parse(readFileSync(join(import.meta.dirname, '../../resources/data/kb/7.41f/stats-ranked.json'), 'utf8')), '7.41f');
+  const withRanked = (): CoachData => ({ ...dataWithCurve(), statsRanked: ranked });
+  it('файл читается: все герои, у Anti-Mage позиции 1 — кривая и сборка', () => {
+    expect(ranked?.heroes.length).toBeGreaterThan(120);
+    const look = new CoachLookup(withRanked());
+    const r = look.rankedAt('antimage', 1, 10)!;
+    expect(r.position).toBe(1);
+    expect(r.lh).toBeGreaterThan(25);
+    expect(r.lh).toBeLessThan(80);
+    expect(look.rankedBuild('antimage', 1).map((b) => b.key)).toContain('bfury');
+  });
+  it('своя позиция обязательна: позиция не известна или Турбо — нет ориентира рейтинга', () => {
+    const look = new CoachLookup(withRanked());
+    expect(look.rankedAt('antimage', null, 10)).toBeNull();
+    look.setMode(TURBO);
+    expect(look.rankedAt('antimage', 1, 10)).toBeNull();
+  });
+  it('сравнение — с сильными игроками рейтинга, если есть данные: «Добивания 15 к 10:00, у сильных игроков ~N»', () => {
+    const h = benchRule(ctxOf(withRanked(), { clock: 605, lastHits: 15, gpm: 450, xpm: 500 })) as { short: string; detail: { normal: string } } | null;
+    expect(h?.short).toMatch(/^Добивания 15 к 10:00, у сильных игроков ~\d+$/);
+    expect(h?.detail.normal).toContain('на Anti-Mage (позиция 1)');
+  });
+  it('«Дальше» — по сборке сильных игроков рейтинга на позиции', () => {
+    const n = nextItem(ctxOf(withRanked(), { clock: 500, items: [{ slot: 'inv0', key: 'power_treads' }, { slot: 'inv1', key: 'magic_wand' }], enemies: [{ slot: 5, hero: 'lina' }] }) as never);
+    expect(n?.source).toBe('ranked');
+    expect(n?.key).toBe('bfury');
   });
 });
 

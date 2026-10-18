@@ -22,6 +22,7 @@
     "train:glyphs": "node scripts/train-glyphs.ts",
     "kb:import": "node scripts/import-kb.mjs && node scripts/make-hero-names.mjs",
     "kb:stats": "node scripts/import-stats.mjs",
+    "kb:stratz": "node scripts/import-stratz.mjs",
     "train:names": "node scripts/train-names.ts",
     "dist": "electron-vite build && node scripts/dist.mjs"
   },

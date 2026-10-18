@@ -26,7 +26,7 @@ export interface NextItem {
   cost: number | null;
   medianMin: number;
   share: number;
-  source: 'pro' | 'popular';
+  source: 'pro' | 'popular' | 'ranked';
   /** Взят вперёд против угрозы врагов: что за угроза и у кого */
   vs: { threatRu: string; heroes: string[] } | null;
 }
@@ -45,7 +45,10 @@ export function nextItem(c: RuleContext): NextItem | null {
   // Минуты сборки — из обычных матчей; в Турбо игра идёт примерно вдвое быстрее (золото и опыт ×2)
   const scale = c.look.isTurbo ? 0.5 : 1;
   const passed = (x: { key: string; medianMin: number }) => (c.look.itemCost(x.key) ?? Infinity) < EARLY_ITEM_COST && min > x.medianMin * scale + EARLY_ITEM_LATE_MIN;
-  const left = c.look.buildFor(hero.id, hero.key).filter((x) => !owned.has(x.key) && !passed(x));
+  // Сборка — сильных игроков рейтинга на вашей позиции (STRATZ), если позиция известна и данные есть; иначе — профи
+  const ranked = c.look.rankedBuild(hero.key, game(c).position);
+  const build = ranked.length >= 3 ? ranked : c.look.buildFor(hero.id, hero.key);
+  const left = build.filter((x) => !owned.has(x.key) && !passed(x));
   const out = (b: (typeof left)[number], vs: NextItem['vs']): NextItem => ({ key: b.key, name: c.look.itemName(b.key), cost: c.look.itemCost(b.key), medianMin: b.medianMin, share: b.share, source: b.source, vs });
   const enemies = [...new Set(c.v.enemies.map((e) => e.hero.value).filter((k): k is string => !!k))];
   if (enemies.length) {
@@ -141,7 +144,11 @@ export const nextItemRule: Rule = (c) => {
     // Минута профи — из обычных матчей; в Турбо её не называем
     normal: next.vs
       ? `Следующий предмет: ${next.name} — у врагов ${next.vs.threatRu} (${next.vs.heroes.map((h) => c.look.heroName(h)).join(', ')}); профи на этом герое его тоже собирают.`
-      : next.source === 'pro' && c.look.hasNorms
+      : next.source === 'ranked' && c.look.hasNorms
+        ? `Следующий предмет: ${next.name} — сильные игроки рейтинга на этой позиции берут его к ${Math.round(next.medianMin)} мин.`
+        : next.source === 'ranked'
+          ? `Следующий предмет: ${next.name} — его берут сильные игроки рейтинга на этой позиции.`
+          : next.source === 'pro' && c.look.hasNorms
         ? `Следующий предмет: ${next.name} — профи патча берут его к ${Math.round(next.medianMin)} мин.`
         : `Следующий предмет: ${next.name} — его чаще всего собирают на этом герое.`,
     facts: [kbFact('next-item', 'Следующий предмет (профи патча)', next.name, false, 'stats'), ...(c.look.hasNorms ? [kbFact('median-min', 'Обычно к минуте', next.medianMin, false, 'stats')] : [])],

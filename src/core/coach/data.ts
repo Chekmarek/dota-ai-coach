@@ -3,6 +3,7 @@
 import type { KbHero, KbItem } from '../../shared/types/kb.ts';
 import type { MechanicsEntry } from '../../shared/types/mechanics.ts';
 import type { HeroStats, KbStats } from '../../shared/types/stats.ts';
+import type { RankedHero, StatsRanked } from '../../shared/types/stats-ranked.ts';
 import { modeRule, turboMechanics, type ModeOverrides } from '../knowledge-base/modes.ts';
 import { UNKNOWN_MODE, type GameModeInfo } from '../gsi/mode.ts';
 
@@ -18,6 +19,19 @@ export interface CoachData {
   turbo?: ModeOverrides | null;
   /** Статистика публичных матчей Турбо (stats-turbo.json): матчапы, связки, доля побед; нет — в Турбо их нет */
   statsTurbo?: KbStats | null;
+  /** Как играют сильные игроки в рейтинге (stats-ranked.json, STRATZ Divine–Immortal): кривые и покупки по позициям */
+  statsRanked?: StatsRanked | null;
+}
+
+/** Сильные игроки рейтинга к минуте (средние): добивания, ценность героя, опыт, уровень */
+export interface RankedPoint {
+  lh: number;
+  networth: number;
+  xp: number;
+  level: number;
+  /** Матчей на позиции за неделю */
+  n: number;
+  position: number;
 }
 
 /** Аегис исчезает через (обычная игра), с */
@@ -73,8 +87,8 @@ export interface BuildItem {
   key: string;
   share: number;
   medianMin: number;
-  /** pro — профи патча (точная медиана минуты); popular — популярные предметы (минута примерная) */
-  source: 'pro' | 'popular';
+  /** pro — профи патча (точная медиана минуты); popular — популярные предметы (минута примерная); ranked — сильные игроки рейтинга на этой позиции (STRATZ) */
+  source: 'pro' | 'popular' | 'ranked';
 }
 
 // «Становится невидимым», «оставаясь невидимым», «делает … невидимым», «получает невидимость».
@@ -186,6 +200,44 @@ export class CoachLookup {
     const t = hi === lo ? 0 : (minute - lo) / (hi - lo);
     const v = (i: number) => (a[i] == null || b[i] == null ? null : Math.round(a[i]! + (b[i]! - a[i]!) * t));
     return { lh50: v(0), lh75: v(1), gold50: v(2), gold75: v(3), xp50: v(4), xp75: v(5), n: c.n, position: c === byPos ? position : null };
+  }
+
+  private rankedByKey: Map<string, RankedHero> | null = null;
+  private ranked(heroKey: string | null): RankedHero | null {
+    if (!heroKey || !this.data.statsRanked) return null;
+    this.rankedByKey ??= new Map(this.data.statsRanked.heroes.map((h) => [h.key, h]));
+    return this.rankedByKey.get(heroKey) ?? null;
+  }
+
+  /**
+   * Сильные игроки рейтинга (STRATZ, Divine–Immortal) на этом герое и позиции к минуте — средние значения.
+   * Только обычная игра (это рейтинговые матчи) и только своя позиция: у Ogre Magi центр и пятёрка — разные миры.
+   */
+  rankedAt(heroKey: string | null, position: number | null, minute: number): RankedPoint | null {
+    if (!this.hasNorms || position === null) return null;
+    const c = this.ranked(heroKey)?.curves[String(position)];
+    if (!c) return null;
+    const mins = Object.keys(c.at).map(Number).sort((a, b) => a - b);
+    if (!mins.length || minute < mins[0]! || minute > mins[mins.length - 1]!) return null;
+    const hi = mins.find((m) => m >= minute)!;
+    const lo = [...mins].reverse().find((m) => m <= minute)!;
+    const a = c.at[String(lo)]!;
+    const b = c.at[String(hi)]!;
+    const t = hi === lo ? 0 : (minute - lo) / (hi - lo);
+    const v = (i: number) => a[i]! + (b[i]! - a[i]!) * t;
+    return { lh: Math.round(v(0)), networth: Math.round(v(1)), xp: Math.round(v(2)), level: Math.round(v(3) * 10) / 10, n: c.n, position };
+  }
+
+  /**
+   * Что покупают сильные игроки рейтинга на этом герое и позиции (по медианной минуте); [] — нет данных.
+   * Составные части и дешёвое (< 500) не берём — как и в сборке профи.
+   */
+  rankedBuild(heroKey: string | null, position: number | null): BuildItem[] {
+    if (position === null) return [];
+    const list = this.ranked(heroKey)?.items[String(position)] ?? [];
+    return list
+      .filter((x) => this.itemByKey.has(x.key) && !this.isComponent(x.key) && (this.itemCost(x.key) ?? 0) >= 500 && x.share >= 0.15)
+      .map((x) => ({ key: x.key, share: x.share, medianMin: x.medianMin, source: 'ranked' as const }));
   }
 
   /** Составная часть другого предмета (её саму в сборке не советуем); дорогие (≥ 2000) — исключение: Blink и т. п. */

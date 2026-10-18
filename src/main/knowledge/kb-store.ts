@@ -6,6 +6,7 @@ import { auditItems } from '@core/knowledge-base/audit.ts';
 import { selectKbCopy, type KbCopyOrigin } from '@core/knowledge-base/select.ts';
 import { parseMechanics } from '@shared/types/mechanics';
 import { parseKbStats, type KbStats } from '@shared/types/stats';
+import { parseStatsRanked, type StatsRanked } from '@shared/types/stats-ranked';
 
 interface KbCopy {
   origin: KbCopyOrigin;
@@ -60,6 +61,23 @@ export class KbStore {
     if (this.statsTurboCache === undefined) this.statsTurboCache = this.readStats('stats-turbo.json', 'turbo');
     return this.statsTurboCache;
   }
+
+  /** Как играют сильные игроки в рейтинге (stats-ranked.json, STRATZ); null — нет файла или он для другого патча */
+  statsRanked(): StatsRanked | null {
+    if (this.statsRankedCache !== undefined) return this.statsRankedCache;
+    const kb = this.get();
+    this.statsRankedCache = null;
+    if ('error' in kb || !this.dir) return null;
+    const file = join(this.dir, 'stats-ranked.json');
+    if (!existsSync(file)) return null;
+    try {
+      this.statsRankedCache = parseStatsRanked(JSON.parse(readFileSync(file, 'utf8')), kb.meta.patch);
+    } catch (e) {
+      console.warn(`[kb] stats-ranked.json не читается: ${(e as Error).message}`);
+    }
+    return this.statsRankedCache;
+  }
+  private statsRankedCache: StatsRanked | null | undefined = undefined;
 
   private readStats(name: string, mode: 'normal' | 'turbo'): KbStats | null {
     const kb = this.get();
