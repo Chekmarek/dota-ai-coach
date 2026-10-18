@@ -48,7 +48,8 @@ export function oracleReply(req: MockRequest): string {
   if (!/Факты:\n- /.test(system) || facts.length === 0) return 'Не знаю: в данных коуча этого нет.';
   if (question.includes('разбор')) return facts.slice(0, 10).map((f) => `— ${f}`).join('\n');
   // без общих слов — первая строка: коуч ставит найденное по вопросу в начало
-  if (scored.length === 0) return facts[0]!;
+  // (строка «Режим игры» стоит первой всегда — она не «найденное по вопросу», её пропускаем)
+  if (scored.length === 0) return facts.find((f) => !f.startsWith('Режим игры:')) ?? facts[0]!;
   return scored
     .slice(0, 2)
     .map((x) => x.f)
