@@ -110,6 +110,44 @@ test('матч по данным игры: подсказка движка — �
   }
 });
 
+test('индикатор режима: начало матча Турбо — плашка поверх игры и уведомление в окне коуча; выбор в настройках — уведомление', async () => {
+  const dataDir = tmp();
+  const port = 54132;
+  const token = 'e2e2'.repeat(16);
+  writeFileSync(join(dataDir, 'settings.json'), JSON.stringify({ live: { autoStart: false }, gsi: { port, token, record: false, dotaDir: noDota(dataDir) } }));
+  const { app, ui } = await launch(dataDir);
+  try {
+    await ui.click('[data-testid="nav-live"]');
+    // Синтетическая сессия лайна с режимом Турбо (в настоящей записи Hero Demo поля map.game_mode нет)
+    const base = parseSession(readFileSync(join(ROOT, 'tests/fixtures/gsi/session.jsonl'), 'utf8'));
+    const entries = base.map((e) => ({ ...e, body: { ...e.body, map: { ...(e.body.map as object), game_mode: 'DOTA_GAMEMODE_TURBO' } } }));
+    expect((await replaySession(entries, { url: `http://127.0.0.1:${port}/`, token, speed: 2 })).failed).toBe(0);
+    const toast = ui.locator('[data-testid="mode-toast"]');
+    await expect(toast).toBeVisible({ timeout: 8000 });
+    await expect(toast).toHaveAttribute('data-mode', 'turbo');
+    await expect(ui.locator('[data-testid="mode-toast-title"]')).toHaveText('Турбо');
+    await expect(toast).toContainText('Определён по данным игры');
+    const hud = await hudWindow(app);
+    const banner = hud.locator('.hud-mode');
+    await expect(banner).toBeVisible({ timeout: 5000 });
+    await expect(banner).toHaveAttribute('data-mode', 'turbo');
+    await expect(banner.locator('.hud-mode-title')).toHaveText('Турбо');
+    await hud.waitForTimeout(1500);
+    await hud.screenshot({ path: join(ROOT, 'test-results/hud-mode-turbo.png') });
+    await ui.screenshot({ path: join(ROOT, 'test-results/mode-toast-turbo.png') });
+    // Индикатор уходит сам (5 с), режим в матче не менялся — повторно не показывается
+    await expect(banner).toHaveCount(0, { timeout: 8000 });
+    await expect(toast).toHaveCount(0, { timeout: 3000 });
+    // Выбор режима вручную — сразу уведомление в окне коуча
+    await ui.click('[data-testid="nav-settings"]');
+    await ui.selectOption('[data-testid="setting-hints-game-mode"]', 'normal');
+    await expect(ui.locator('[data-testid="mode-toast-title"]')).toHaveText('Обычный режим');
+    await expect(toast).toContainText('Выбран вручную');
+  } finally {
+    await app.close();
+  }
+});
+
 test('16:9, 21:9 и 4:3, «Подробно»: видимые карточки не заходят на HUD Доты и не выходят из своих зон', async () => {
   const { app, ui } = await launch(tmp());
   try {

@@ -85,3 +85,15 @@ export function gameModeRu(info: GameModeInfo): string {
   if (info.source === 'manual') return info.mode === 'turbo' ? 'Турбо (выбран вручную)' : 'Обычный режим (выбран вручную)';
   return info.mode === 'turbo' ? 'Турбо' : info.mode === 'all-pick' ? 'All Pick' : info.mode === 'other' ? (info.raw === 'hero_demo' ? 'Hero Demo' : 'другой режим') : 'режим неизвестен';
 }
+
+/** Текст индикатора режима: что включено и откуда коуч это взял (чтобы сразу было видно, если режим не тот) */
+export function modeBannerText(info: GameModeInfo): { title: string; text: string } {
+  const how = info.source === 'manual' ? 'Выбран вручную в настройках коуча' : 'Определён по данным игры';
+  if (info.mode === 'turbo') return { title: 'Турбо', text: how };
+  if (info.mode === 'all-pick') return { title: info.source === 'manual' ? 'Обычный режим' : 'All Pick', text: how };
+  if (info.mode === 'other') {
+    if (info.raw === 'hero_demo') return { title: 'Hero Demo', text: 'Пользовательская игра — подсказки как в обычной игре' };
+    return { title: 'Другой режим', text: `${info.raw ?? 'Режим из игры'} — подсказки как в обычной игре` };
+  }
+  return { title: 'Режим не определён', text: 'Подсказки как в обычной игре · режим можно выбрать в настройках' };
+}

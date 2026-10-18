@@ -11,6 +11,7 @@ import { History } from './pages/History';
 import { MatchState } from './pages/MatchState';
 import { KnowledgeBase } from './pages/KnowledgeBase';
 import { UpdateNotice, UpdatesPage, UpdateToast } from './pages/Updates';
+import { ModeToast } from './components/mode-toast';
 import type { PageId, PageProps } from './pages/types';
 import { VoiceSettings } from './pages/VoiceSettings';
 import { AppSettings } from './pages/AppSettings';
@@ -82,6 +83,7 @@ export function App() {
         <Current onNavigate={setPage} />
       </main>
       {page !== 'updates' && <UpdateToast onOpen={() => setPage('updates')} />}
+      <ModeToast />
     </div>
   );
 }

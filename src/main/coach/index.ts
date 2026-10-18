@@ -4,11 +4,11 @@ import { ipcMain, type BrowserWindow, type IpcMainInvokeEvent } from 'electron';
 import { z } from 'zod';
 import { IPC, LIVE_IPC, type CoachStateMessage } from '@shared/ipc';
 import { parseCoachInput } from '@shared/types/coach-input';
-import type { HudHint } from '@shared/types/hud';
+import { MODE_BANNER_MS, type HudHint, type ModeBanner } from '@shared/types/hud';
 import type { AiProvider } from '@core/ai/provider.ts';
 import type { SettingsStore } from '../settings/store';
 import type { KbStore } from '../knowledge/kb-store';
-import { isLiveEngine, liveLog, setHudHints } from '../live/live';
+import { isLiveEngine, liveLog, setHudHints, setHudModeBanner } from '../live/live';
 import { CoachService } from './service';
 import { HistoryStore } from './history';
 import { DraftService } from './draft';
@@ -31,7 +31,19 @@ export function setupCoach(deps: {
   isTrustedSender: (e: IpcMainInvokeEvent) => boolean;
 }): CoachHandle {
   const history = new HistoryStore(deps.dataDir);
-  let lastUi: CoachStateMessage = { hints: [], inMatch: false };
+  let lastUi: CoachStateMessage = { hints: [], inMatch: false, mode: null };
+  let lastHints: { hints: HudHint[]; inMatch: boolean } = { hints: [], inMatch: false };
+  let banner: { b: ModeBanner; at: number } | null = null;
+  /** В интерфейс — подсказки и, пока он «свежий», индикатор режима */
+  const sendUi = () => {
+    const s = deps.settings.get();
+    const mode = banner && Date.now() - banner.at < MODE_BANNER_MS ? banner.b : null;
+    const msg: CoachStateMessage = { hints: s.hints.inApp ? lastHints.hints : [], inMatch: lastHints.inMatch, mode };
+    if (JSON.stringify(msg) === JSON.stringify(lastUi)) return;
+    lastUi = msg;
+    const ui = deps.getUi();
+    if (ui && !ui.isDestroyed()) ui.webContents.send(IPC.coachState, msg);
+  };
   const service = new CoachService({
     settings: deps.settings,
     kb: deps.kb,
@@ -40,12 +52,13 @@ export function setupCoach(deps: {
     log: liveLog,
     onHints: (hints: HudHint[], inMatch: boolean) => {
       setHudHints(hints, inMatch);
-      const s = deps.settings.get();
-      const msg: CoachStateMessage = { hints: s.hints.inApp ? hints : [], inMatch };
-      if (JSON.stringify(msg) === JSON.stringify(lastUi)) return;
-      lastUi = msg;
-      const ui = deps.getUi();
-      if (ui && !ui.isDestroyed()) ui.webContents.send(IPC.coachState, msg);
+      lastHints = { hints, inMatch };
+      sendUi();
+    },
+    onModeBanner: (b: ModeBanner) => {
+      banner = { b, at: Date.now() };
+      setHudModeBanner(b);
+      sendUi();
     },
   });
 

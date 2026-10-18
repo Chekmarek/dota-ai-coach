@@ -58,6 +58,54 @@ export const MOTION = {
     if (reduced) return null;
     return { keyframes: [{ opacity: 0 }, { opacity: 1, offset: 0.35 }, { opacity: 0.6 }], options: { duration: t.duration.enter * 2, easing: 'ease-out' } };
   },
+  /** Индикатор режима: падает сверху с лёгким перелётом */
+  modeEnter(t: HudTheme, reduced: boolean): MotionPreset {
+    if (reduced) return { keyframes: [{ opacity: 0 }, { opacity: 1 }], options: { duration: 160, easing: 'linear', fill: 'both' } };
+    return {
+      keyframes: [
+        { opacity: 0, transform: 'translate3d(0, -48px, 0) scale(0.82)' },
+        { opacity: 1, transform: 'translate3d(0, 4px, 0) scale(1.04)', offset: 0.62 },
+        { opacity: 1, transform: 'translate3d(0, 0, 0) scale(1)' },
+      ],
+      options: { duration: t.duration.enter * 1.9, easing: t.easing.out, fill: 'both' },
+    };
+  },
+  /** Самоцвет режима: поворот и «вспышка» масштаба чуть позже плиты */
+  modeIcon(t: HudTheme, reduced: boolean): MotionPreset | null {
+    if (reduced) return null;
+    return {
+      keyframes: [
+        { transform: 'rotate(-40deg) scale(0.3)', opacity: 0 },
+        { transform: 'rotate(8deg) scale(1.18)', opacity: 1, offset: 0.65 },
+        { transform: 'rotate(0deg) scale(1)', opacity: 1 },
+      ],
+      options: { duration: t.duration.enter * 2.2, delay: t.duration.enter * 0.5, easing: t.easing.out, fill: 'both' },
+    };
+  },
+  /** Турбо: две «вспышки» самоцвета после появления */
+  modeCharge(t: HudTheme, reduced: boolean): MotionPreset | null {
+    if (reduced) return null;
+    return { keyframes: [{ transform: 'scale(1)' }, { transform: 'scale(1.12)' }, { transform: 'scale(1)' }], options: { duration: 420, delay: t.duration.enter * 3, iterations: 2, easing: 'ease-in-out' } };
+  },
+  /** Блик по плите слева направо */
+  modeSweep(t: HudTheme, reduced: boolean): MotionPreset | null {
+    if (reduced) return null;
+    return {
+      keyframes: [{ transform: 'translate3d(-120%, 0, 0)' }, { transform: 'translate3d(320%, 0, 0)' }],
+      options: { duration: 950, delay: t.duration.enter * 1.2, easing: t.easing.inOut, fill: 'both' },
+    };
+  },
+  /** Уход вверх */
+  modeExit(t: HudTheme, reduced: boolean): MotionPreset {
+    if (reduced) return { keyframes: [{ opacity: 1 }, { opacity: 0 }], options: { duration: 120, easing: 'linear', fill: 'both' } };
+    return {
+      keyframes: [
+        { opacity: 1, transform: 'translate3d(0, 0, 0) scale(1)' },
+        { opacity: 0, transform: 'translate3d(0, -28px, 0) scale(0.96)' },
+      ],
+      options: { duration: t.duration.exit * 1.6, easing: t.easing.in, fill: 'both' },
+    };
+  },
   /** Текст обновился (ИИ дописал) — короткое проявление */
   update(t: HudTheme, reduced: boolean): MotionPreset | null {
     if (reduced) return null;

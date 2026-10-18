@@ -57,9 +57,27 @@ export const hudOptionsSchema = z.object({
 });
 export type HudOptions = z.infer<typeof hudOptionsSchema>;
 
+/** Сколько на экране индикатор режима игры — поверх игры и в окне коуча */
+export const MODE_BANNER_MS = 5000;
+
+/** Индикатор режима игры (0.13.3): крупная плашка в начале матча и при смене режима — «включён Турбо» */
+export const modeBannerSchema = z
+  .object({
+    /** Номер показа: новый номер — новая анимация появления */
+    seq: z.number().int().nonnegative(),
+    mode: z.enum(['all-pick', 'turbo', 'other', 'unknown']),
+    source: z.enum(['gsi', 'custom-game', 'manual', 'none']),
+    title: text(40),
+    text: text(160),
+  })
+  .strict();
+export type ModeBanner = z.infer<typeof modeBannerSchema>;
+
 export const hudStateSchema = z.object({
   hints: z.array(hudHintSchema).max(12),
   options: hudOptionsSchema,
+  /** Индикатор режима; null — не показывать (старое состояние без поля — тоже null) */
+  mode: modeBannerSchema.nullable().catch(null).default(null),
 });
 export type HudState = z.infer<typeof hudStateSchema>;
 

@@ -3,11 +3,12 @@
 // анимации — Web Animations API на transform/opacity (видеокарта). Используется оверлеем и предпросмотром.
 import layoutJson from '../data/hud-overlay-layout.json';
 import { applyOverrides, hudUnit, layoutSchema, resolveLayout, type HudLayout, type HudZoneId, type ResolvedZone } from '../core/hud/layout.ts';
-import type { HudHint, HudOptions } from '../shared/types/hud.ts';
+import type { HudHint, HudOptions, ModeBanner } from '../shared/types/hud.ts';
 import { themeById, themeVars, type HudTheme } from './theme/index.ts';
 import { MOTION, type Edge } from './theme/motion.ts';
 import { cardContent, contentKey, renderHint } from './components/cards.ts';
 import { h } from './components/dom.ts';
+import { renderModeBanner } from './components/mode.ts';
 
 export const DEFAULT_LAYOUT: HudLayout = layoutSchema.parse(layoutJson);
 
@@ -28,6 +29,9 @@ export class HudView {
   private width: number;
   private height: number;
   private layout: HudLayout = DEFAULT_LAYOUT;
+  /** Индикатор режима: место (по зоне «Важное») и показанная плашка */
+  private modeSlot: HTMLElement | null = null;
+  private modeEl: { seq: number; el: HTMLElement; leaving: boolean } | null = null;
 
   constructor(host: HTMLElement, width: number, height: number, options: HudOptions) {
     this.root = h('div', 'hud-root');
@@ -74,6 +78,49 @@ export class HudView {
       Object.assign(el.style, { left: `${z.rect.x}px`, top: `${z.rect.y}px`, width: `${z.rect.w}px`, height: `${z.rect.h}px` });
       this.zoneInfo.set(z.zone.id, z);
     }
+    // Индикатор режима — сверху зоны «Важное» (под верхней панелью Dota, вне HUD игры)
+    const alert = this.zoneInfo.get('alert')?.rect;
+    if (!this.modeSlot) {
+      this.modeSlot = h('div', 'hud-mode-slot');
+      this.root.append(this.modeSlot);
+    }
+    if (alert) Object.assign(this.modeSlot.style, { position: 'absolute', left: `${alert.x}px`, top: `${alert.y}px`, width: `${alert.w}px`, display: 'flex', justifyContent: 'center' });
+  }
+
+  /** Показать индикатор режима (новый seq — новая анимация) или убрать его (null) */
+  setMode(banner: ModeBanner | null): void {
+    const reduced = this.reduced;
+    if (banner && this.modeEl && !this.modeEl.leaving && this.modeEl.seq === banner.seq) return;
+    if (this.modeEl && !this.modeEl.leaving) {
+      const old = this.modeEl;
+      old.leaving = true;
+      const anim = this.animate(old.el, MOTION.modeExit(this.theme, reduced));
+      const done = () => {
+        old.el.remove();
+        if (this.modeEl === old) this.modeEl = null;
+      };
+      if (anim) anim.onfinish = done;
+      else done();
+    }
+    if (!banner || !this.modeSlot) return;
+    const el = renderModeBanner(banner);
+    el.style.position = 'relative';
+    this.modeSlot.append(el);
+    this.modeEl = { seq: banner.seq, el, leaving: false };
+    this.animate(el, MOTION.modeEnter(this.theme, reduced));
+    const icon = el.querySelector('.hud-mode-icon');
+    if (icon) {
+      const pop = this.animate(icon, MOTION.modeIcon(this.theme, reduced));
+      if (banner.mode === 'turbo') {
+        const charge = () => this.animate(icon, MOTION.modeCharge(this.theme, reduced));
+        if (pop) pop.onfinish = charge;
+        else charge();
+      }
+    }
+    const sweep = el.querySelector('.hud-mode-sweep');
+    if (sweep) this.animate(sweep, MOTION.modeSweep(this.theme, reduced));
+    const glow = el.querySelector('.hud-glow');
+    if (glow) this.animate(glow, MOTION.flash(this.theme, reduced));
   }
 
   /** Прямоугольники зон в пикселях (для режима расстановки) */
@@ -192,7 +239,7 @@ export class HudView {
     return [...this.mounted.values()].filter((m) => !m.leaving).length;
   }
   get animating(): boolean {
-    return [...this.mounted.values()].some((m) => m.leaving);
+    return [...this.mounted.values()].some((m) => m.leaving) || !!this.modeEl?.leaving;
   }
 
   destroy(): void {

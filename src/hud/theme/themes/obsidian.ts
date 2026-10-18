@@ -30,6 +30,8 @@ export const OBSIDIAN: HudTheme = {
     good: '#8fdc9a',
     bad: '#ff7f7f',
     groove: 'rgba(0, 0, 0, 0.6)',
+    turbo: '#ffbe5c',
+    turboGlow: 'rgba(255, 190, 92, 0.5)',
   },
   font: {
     display: "'HudDisplay', 'Palatino Linotype', 'Book Antiqua', Georgia, serif",

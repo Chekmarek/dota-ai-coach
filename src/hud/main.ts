@@ -7,6 +7,7 @@ import { DEFAULT_HUD_OPTIONS, hudStateSchema, type HudOptions } from '../shared/
 import { DEFAULT_LAYOUT, HudView } from './view.ts';
 import { sampleHints, type SampleScene } from '../shared/hud-samples.ts';
 import { schematic } from './schematic.ts';
+import { modeBannerText } from '../core/gsi/mode.ts';
 
 declare global {
   interface Window {
@@ -23,6 +24,7 @@ window.dotacoachHud?.onState((raw) => {
   options = s.data.options;
   view.configure(innerWidth, innerHeight, options);
   view.update(s.data.hints);
+  view.setMode(s.data.mode);
 });
 
 addEventListener('resize', () => view.configure(innerWidth, innerHeight, options));
@@ -34,5 +36,11 @@ if (demo.has('demo')) {
   options = { ...options, theme, reduceMotion: demo.has('still') };
   if (demo.get('bg') === 'schematic') document.body.prepend(schematic(DEFAULT_LAYOUT, innerWidth, innerHeight));
   view.configure(innerWidth, innerHeight, options);
-  view.update(sampleHints((demo.get('demo') as SampleScene) ?? 'alive', detail));
+  const scene = demo.get('demo') ?? 'alive';
+  // #demo=mode-turbo|mode-all-pick|mode-unknown — индикатор режима (для снимков и проверки без игры)
+  if (scene.startsWith('mode-')) {
+    const mode = scene.slice(5) as 'turbo' | 'all-pick' | 'unknown';
+    const info = { mode, source: demo.has('manual') ? 'manual' : mode === 'unknown' ? 'none' : 'gsi', raw: null } as const;
+    view.setMode({ seq: 1, mode, source: info.source, ...modeBannerText(info) });
+  } else view.update(sampleHints(scene as SampleScene, detail));
 }

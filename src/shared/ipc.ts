@@ -161,6 +161,8 @@ export interface GsiBodyMessage {
 export interface CoachStateMessage {
   hints: import('./types/hud').HudHint[];
   inMatch: boolean;
+  /** Индикатор режима игры (показ в начале матча и при смене режима); null — нечего показывать */
+  mode: import('./types/hud').ModeBanner | null;
 }
 
 export interface DotaCoachApi {

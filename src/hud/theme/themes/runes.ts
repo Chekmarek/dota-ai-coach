@@ -30,6 +30,8 @@ export const RUNES: HudTheme = {
     good: '#8fdc7a',
     bad: '#ff7b5c',
     groove: 'rgba(0, 0, 0, 0.55)',
+    turbo: '#ffb547',
+    turboGlow: 'rgba(255, 181, 71, 0.55)',
   },
   font: {
     display: "'HudDisplay', 'Palatino Linotype', 'Book Antiqua', Georgia, serif",

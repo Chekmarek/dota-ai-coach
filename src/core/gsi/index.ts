@@ -25,6 +25,6 @@ export {
   type VisionAgreementField,
   type VisionAgreementReport,
 } from './vision-agreement.ts';
-export { detectGameMode, resolveGameMode, gameModeRu, asGameModeInfo, UNKNOWN_MODE, GSI_MODE_FRESH_MS, GAME_MODE_OVERRIDES, type GameMode, type GameModeInfo, type GameModeOverride, type GameModeSource } from './mode.ts';
+export { detectGameMode, resolveGameMode, gameModeRu, modeBannerText, asGameModeInfo, UNKNOWN_MODE, GSI_MODE_FRESH_MS, GAME_MODE_OVERRIDES, type GameMode, type GameModeInfo, type GameModeOverride, type GameModeSource } from './mode.ts';
 export { parseSpectatorGsi, type SpectatorReading, type SpectatorHero } from './spectator.ts';
 export { labelFromGsi, type HudFrameLabel } from './labels.ts';

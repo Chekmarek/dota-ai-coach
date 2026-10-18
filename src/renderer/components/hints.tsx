@@ -5,7 +5,10 @@ import { useEffect, useState } from 'react';
 import type { HintCategories, HintDetail, Settings, SettingsPatch } from '@shared/schemas/settings';
 import type { CoachStateMessage } from '@shared/ipc';
 import type { GameModeOverride } from '@core/gsi/mode.ts';
-import { GameModeBadge } from './gsi';
+import { GameModeBadge, currentGameMode } from './gsi';
+import { showModeToast } from './mode-toast';
+import { useGsi } from '../hooks/useGsi';
+import { modeBannerText, resolveGameMode } from '@core/gsi/mode.ts';
 
 const MODE_RU: Record<GameModeOverride, string> = { auto: 'Определять по данным игры', turbo: 'Турбо', normal: 'Обычный режим (All Pick, рейтинг)' };
 
@@ -23,6 +26,14 @@ const CATEGORY_RU: Record<keyof HintCategories, string> = {
 
 export function HintsToggles({ settings, update, testIdPrefix = 'setting-hints' }: { settings: Settings; update: (p: SettingsPatch) => Promise<void>; testIdPrefix?: string }) {
   const h = settings.hints;
+  const gsi = useGsi();
+  /** Выбор режима — сразу уведомление, каким коуч теперь считает режим (с «auto» — что сообщила игра) */
+  const pickMode = async (m: GameModeOverride) => {
+    await update({ hints: { gameMode: m } });
+    const fromGame = currentGameMode(gsi, Date.now());
+    const info = resolveGameMode(fromGame.source === 'manual' ? gsi?.gameModeDetected ?? null : fromGame, m);
+    showModeToast({ mode: info.mode, source: info.source, ...modeBannerText(info) });
+  };
   return (
     <>
       <label className="check">
@@ -41,7 +52,7 @@ export function HintsToggles({ settings, update, testIdPrefix = 'setting-hints' 
       </p>
       <label>
         Режим игры
-        <select value={h.gameMode} onChange={(e) => void update({ hints: { gameMode: e.target.value as GameModeOverride } })} data-testid={`${testIdPrefix}-game-mode`}>
+        <select value={h.gameMode} onChange={(e) => void pickMode(e.target.value as GameModeOverride)} data-testid={`${testIdPrefix}-game-mode`}>
           {(Object.keys(MODE_RU) as GameModeOverride[]).map((m) => (
             <option key={m} value={m}>
               {MODE_RU[m]}
@@ -90,7 +101,7 @@ export function HintsToggles({ settings, update, testIdPrefix = 'setting-hints' 
 
 /** Подсказки, которые сейчас на экране (main → интерфейс) */
 export function useCoachState(): CoachStateMessage {
-  const [state, setState] = useState<CoachStateMessage>({ hints: [], inMatch: false });
+  const [state, setState] = useState<CoachStateMessage>({ hints: [], inMatch: false, mode: null });
   useEffect(() => window.dotacoach.onCoachState(setState), []);
   return state;
 }

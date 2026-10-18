@@ -40,6 +40,9 @@ export interface HudTheme {
     good: string;
     bad: string;
     groove: string;
+    /** Индикатор режима «Турбо»: янтарный огонь (All Pick — цвет рун, неизвестный — info) */
+    turbo: string;
+    turboGlow: string;
   };
   font: {
     display: string;

@@ -7,7 +7,7 @@
 import { BrowserWindow, screen, type WebContents } from 'electron';
 import { join } from 'node:path';
 import { LIVE_IPC } from '@shared/ipc';
-import { DEFAULT_HUD_OPTIONS, hudStateSchema, type HudHint, type HudOptions, type HudState } from '@shared/types/hud';
+import { DEFAULT_HUD_OPTIONS, MODE_BANNER_MS, hudStateSchema, type HudHint, type HudOptions, type HudState, type ModeBanner } from '@shared/types/hud';
 import type { Settings } from '@shared/schemas/settings';
 import { sampleHints, type SampleScene } from '@shared/hud-samples';
 import { WindowRectTracker, hwndFromSourceId, type WindowRect } from './window-rect';
@@ -17,6 +17,7 @@ const ASSERT_MS = 1500;
 /** Сколько ждать после последней подсказки, прежде чем спрятать окно (доигрывает анимация ухода) */
 const HIDE_AFTER_MS = 600;
 export const DEMO_MS = 12_000;
+
 
 export interface HudDeps {
   settings: { get(): Settings };
@@ -48,6 +49,8 @@ export class HudOverlay {
   private inMatch = false;
   private readonly tracker: WindowRectTracker;
   private lastBoundsKey = '';
+  private modeBanner: ModeBanner | null = null;
+  private modeTimer: ReturnType<typeof setTimeout> | null = null;
 
   constructor(private readonly deps: HudDeps) {
     this.tracker = new WindowRectTracker(() => this.refresh(), deps.log);
@@ -77,6 +80,19 @@ export class HudOverlay {
     this.refresh();
   }
 
+  /** Индикатор режима игры на MODE_BANNER_MS: показывается и без подсказок (окно появляется ради него) */
+  setModeBanner(banner: ModeBanner): void {
+    this.modeBanner = banner;
+    if (this.modeTimer) clearTimeout(this.modeTimer);
+    this.modeTimer = setTimeout(() => {
+      this.modeTimer = null;
+      this.modeBanner = null;
+      this.refresh();
+    }, MODE_BANNER_MS);
+    this.modeTimer.unref?.();
+    this.refresh();
+  }
+
   /** Примеры подсказок поверх игры на DEMO_MS (кнопка в «Предпросмотре подсказок») */
   demo(scene: SampleScene): void {
     this.demoHints = sampleHints(scene, 'normal');
@@ -90,7 +106,8 @@ export class HudOverlay {
   }
 
   private state(): HudState {
-    return hudStateSchema.parse({ hints: (this.demoHints ?? this.hints).slice(0, 12), options: hudOptions(this.deps.settings.get()) });
+    const live = this.demoHints === null && (this.seeing || this.inMatch);
+    return hudStateSchema.parse({ hints: (this.demoHints ?? this.hints).slice(0, 12), options: hudOptions(this.deps.settings.get()), mode: live ? this.modeBanner : null });
   }
 
   /** Где рисовать: окно Доты или экран, где оно (или основной) */
@@ -103,11 +120,12 @@ export class HudOverlay {
   refresh(): void {
     const s = this.deps.settings.get();
     const list = this.demoHints ?? (this.seeing || this.inMatch ? this.hints : []);
-    const visible = s.hud.enabled && list.length > 0 && !(this.tracker.rect?.minimized ?? false);
+    const banner = this.demoHints === null && (this.seeing || this.inMatch) && this.modeBanner !== null;
+    const visible = s.hud.enabled && (list.length > 0 || banner) && !(this.tracker.rect?.minimized ?? false);
     if (!visible) {
-      // отправляем пустой список (карточки уходят анимацией), потом прячем окно
+      // отправляем пустой список (карточки и индикатор уходят анимацией), потом прячем окно
       if (this.win && !this.win.isDestroyed() && this.win.isVisible()) {
-        this.win.webContents.send(LIVE_IPC.hudState, { ...this.state(), hints: [] });
+        this.win.webContents.send(LIVE_IPC.hudState, { ...this.state(), hints: [], mode: null });
         this.scheduleHide();
       }
       return;
@@ -206,6 +224,7 @@ export class HudOverlay {
     this.stopAssert();
     this.cancelHide();
     if (this.demoTimer) clearTimeout(this.demoTimer);
+    if (this.modeTimer) clearTimeout(this.modeTimer);
     if (this.win && !this.win.isDestroyed()) this.win.destroy();
     this.win = null;
   }

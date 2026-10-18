@@ -45,6 +45,14 @@ describe('настройки подсказок поверх игры', () => {
     expect(next.hud.zones).toEqual({ timing: { x: 0.02, y: 0.4 } });
     expect(next.hud.theme).toBe('obsidian');
   });
+  it('индикатор режима в состоянии окна: старое состояние без поля — null, мусор — null, верный — проходит', () => {
+    const options = { theme: 'runes', reduceMotion: false, opacity: 1, scale: 1, zones: null } as const;
+    expect(hudStateSchema.parse({ hints: [], options }).mode).toBeNull();
+    expect(hudStateSchema.parse({ hints: [], options, mode: { seq: 1, mode: 'hyper' } }).mode).toBeNull();
+    const ok = { seq: 3, mode: 'turbo', source: 'gsi', title: 'Турбо', text: 'Определён по данным игры' } as const;
+    expect(hudStateSchema.parse({ hints: [], options, mode: ok }).mode).toEqual(ok);
+    expect(hudStateSchema.parse({ hints: [], options, mode: { ...ok, title: 'x'.repeat(41) } }).mode).toBeNull();
+  });
   it('примеры всех сцен проходят схему состояния окна', () => {
     for (const scene of ['alive', 'dead', 'match'] as const)
       for (const d of ['min', 'normal', 'detailed'] as const) expect(hudStateSchema.safeParse({ hints: sampleHints(scene, d), options: { theme: 'runes', reduceMotion: false, opacity: 1, scale: 1, zones: null } }).success).toBe(true);

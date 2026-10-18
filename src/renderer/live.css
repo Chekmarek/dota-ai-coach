@@ -181,3 +181,38 @@ button.link { background: none; border: none; padding: 0; color: var(--accent-2)
 .game-mode-row { margin: -4px 0 12px; }
 .pill.game-mode-turbo { color: var(--warn); border-color: #5a4a1f; }
 .pill.game-mode-unknown { opacity: 0.75; }
+
+/* Индикатор режима игры в окне коуча (0.13.3): падает сверху, полоса показывает, сколько ещё на экране */
+.mode-toast { --mc: var(--accent-2); pointer-events: none; position: fixed; top: 16px; left: 50%; z-index: 60; display: flex; align-items: center; gap: 14px;
+  padding: 12px 22px 14px 14px; min-width: 300px; max-width: 520px; overflow: hidden; transform: translateX(-50%);
+  background: linear-gradient(160deg, #1d1912, #121821); border: 1px solid color-mix(in srgb, var(--mc) 55%, #000); border-radius: 14px;
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.6), 0 0 22px color-mix(in srgb, var(--mc) 25%, transparent);
+  animation: modein 0.55s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.mode-toast-turbo { --mc: #ffb547; }
+.mode-toast-all-pick { --mc: #4ff0dc; }
+.mode-toast-other, .mode-toast-unknown { --mc: var(--muted); }
+.mode-toast.leaving { animation: modeout 0.3s ease-in both; }
+.mode-toast::after { content: ''; position: absolute; inset: 0; background: linear-gradient(100deg, transparent 30%, color-mix(in srgb, var(--mc) 22%, transparent) 50%, transparent 70%);
+  transform: translateX(-100%); animation: modesweep 1s 0.35s ease-in-out both; pointer-events: none; }
+.mode-toast-icon { width: 44px; height: 44px; flex: none; display: grid; place-items: center; font-size: 22px; font-weight: 700; color: #120e08;
+  clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+  background: linear-gradient(160deg, color-mix(in srgb, var(--mc) 85%, #fff), color-mix(in srgb, var(--mc) 70%, #000));
+  animation: modeicon 0.7s 0.15s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.mode-toast-turbo .mode-toast-icon { animation: modeicon 0.7s 0.15s cubic-bezier(0.16, 1, 0.3, 1) both, modecharge 0.42s 0.9s ease-in-out 2; }
+.mode-toast-text { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.mode-toast-kicker { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--mc); }
+.mode-toast-title { font-size: 22px; letter-spacing: 0.05em; text-transform: uppercase; }
+.mode-toast-bar { position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: var(--mc); transform-origin: left; animation: modebar linear both; }
+@keyframes modein { from { opacity: 0; transform: translate(-50%, -26px) scale(0.9); } 60% { opacity: 1; transform: translate(-50%, 3px) scale(1.02); } to { opacity: 1; transform: translate(-50%, 0) scale(1); } }
+@keyframes modeout { to { opacity: 0; transform: translate(-50%, -16px) scale(0.97); } }
+@keyframes modesweep { to { transform: translateX(100%); } }
+@keyframes modeicon { from { opacity: 0; transform: rotate(-40deg) scale(0.3); } 65% { opacity: 1; transform: rotate(8deg) scale(1.15); } to { opacity: 1; transform: none; } }
+@keyframes modecharge { 50% { transform: scale(1.12); } }
+@keyframes modebar { from { transform: scaleX(1); } to { transform: scaleX(0); } }
+@media (prefers-reduced-motion: reduce) {
+  .mode-toast { animation: fadein 0.15s linear both; }
+  .mode-toast.leaving { animation: fadeout 0.12s linear both; }
+  .mode-toast::after, .mode-toast-icon, .mode-toast-turbo .mode-toast-icon { animation: none; }
+}
+@keyframes fadein { from { opacity: 0; } }
+@keyframes fadeout { to { opacity: 0; } }

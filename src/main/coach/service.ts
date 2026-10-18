@@ -4,17 +4,19 @@
 import { CoachAi, CoachEngine, MISTAKE_RU, defaultCoachSettings, toHudHint, type CoachData, type CoachSettings, type CoachUpdate } from '@core/coach/index.ts';
 import type { AiProvider } from '@core/ai/provider.ts';
 import type { Settings } from '@shared/schemas/settings';
-import type { HudHint } from '@shared/types/hud';
+import type { HudHint, ModeBanner } from '@shared/types/hud';
 import type { CoachInput } from '@shared/types/coach-input';
 import type { HistoryMatch } from '@shared/types/history';
 import type { KbStats } from '@shared/types/stats';
 import type { KnowledgeBase } from '@shared/types/kb';
 import type { DraftLiveHeroes } from '@shared/types/draft';
 import { liveHeroes } from './draft';
-import { asGameModeInfo, resolveGameMode, type GameModeInfo } from '@core/gsi/mode.ts';
+import { asGameModeInfo, modeBannerText, resolveGameMode, type GameModeInfo } from '@core/gsi/mode.ts';
 
 /** Как часто сохранять историю идущего матча */
 export const HISTORY_SAVE_MS = 30_000;
+/** Смена режима посреди матча объявляется, если новый режим держится столько (без мигания) */
+export const MODE_STABLE_MS = 1500;
 
 export interface CoachDeps {
   settings: { get(): Settings };
@@ -23,6 +25,8 @@ export interface CoachDeps {
   history: { save(m: HistoryMatch): void };
   /** Подсказки на экране сейчас (пусто — нечего показывать); inMatch — матч идёт по данным игры */
   onHints: (hints: HudHint[], inMatch: boolean) => void;
+  /** Показать индикатор режима игры: начало матча или смена режима (из игры или в настройках) */
+  onModeBanner?: (banner: ModeBanner) => void;
   log?: (...parts: unknown[]) => void;
   now?: () => number;
 }
@@ -46,6 +50,10 @@ export class CoachService {
   private loggedInMatch: boolean | null = null;
   private lastHintLogMs = 0;
   private readonly now: () => number;
+  /** Индикатор режима: для какого матча и какого режима уже показан; кандидат на смену и с какого момента */
+  private modeShown: { matchId: string; sig: string } | null = null;
+  private modePending: { sig: string; since: number } | null = null;
+  private modeSeq = 0;
 
   constructor(private readonly deps: CoachDeps) {
     this.now = deps.now ?? (() => Date.now());
@@ -94,7 +102,9 @@ export class CoachService {
       this.lastHintLogMs = this.now();
       this.deps.log?.('coach подсказки', { shown: u.shown.map((h) => h.id).slice(0, 6), visible: u.visible.length, rulesMs: Math.round(u.rulesMs) });
     }
-    this.trackHistory(u, resolveGameMode(asGameModeInfo(input.state.match.mode), s.hints.gameMode));
+    const mode = resolveGameMode(asGameModeInfo(input.state.match.mode), s.hints.gameMode);
+    this.trackHistory(u, mode);
+    this.announceMode(e, mode);
     this.publish();
     return u;
   }
@@ -133,6 +143,30 @@ export class CoachService {
 
   private emit(hints: HudHint[], inMatch: boolean): void {
     this.deps.onHints(hints, inMatch);
+  }
+
+  // ---------- Индикатор режима ----------
+
+  /** В начале каждого матча — сразу; смена режима посреди матча — когда новый режим продержался MODE_STABLE_MS */
+  private announceMode(e: CoachEngine, mode: GameModeInfo): void {
+    if (!e.inGame || !this.match) return;
+    const sig = `${mode.mode}|${mode.source}|${mode.raw ?? ''}`;
+    const now = this.now();
+    const newMatch = this.modeShown?.matchId !== this.match.id;
+    if (!newMatch) {
+      if (sig === this.modeShown!.sig) {
+        this.modePending = null;
+        return;
+      }
+      if (this.modePending?.sig !== sig) this.modePending = { sig, since: now };
+      if (now - this.modePending.since < MODE_STABLE_MS) return;
+    }
+    this.modeShown = { matchId: this.match.id, sig };
+    this.modePending = null;
+    const t = modeBannerText(mode);
+    const banner: ModeBanner = { seq: ++this.modeSeq, mode: mode.mode, source: mode.source, title: t.title, text: t.text };
+    this.deps.log?.('coach режим игры', { mode: mode.mode, source: mode.source, raw: mode.raw, newMatch });
+    this.deps.onModeBanner?.(banner);
   }
 
   // ---------- История ----------

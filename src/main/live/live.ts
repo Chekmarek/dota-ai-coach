@@ -4,7 +4,7 @@
 // Доступ к игре только на чтение: снимок окна средствами Windows, без чтения памяти
 // и без вмешательства в процесс dota2.exe.
 import { HudOverlay } from './hud-window';
-import type { HudHint } from '@shared/types/hud';
+import type { HudHint, ModeBanner } from '@shared/types/hud';
 import type { SampleScene } from '@shared/hud-samples';
 import { app, BrowserWindow, desktopCapturer, ipcMain, screen, session, webContents, type WebContents } from 'electron';
 import { appendFileSync, renameSync, statSync } from 'node:fs';
@@ -375,6 +375,11 @@ export function showHudDemo(scene: SampleScene): void {
 export function setHudHints(hints: HudHint[], inMatch = false): void {
   hud?.setInMatch(inMatch);
   hud?.setHints(hints);
+}
+
+/** Индикатор режима игры поверх игры (сам уходит через MODE_BANNER_MS) */
+export function setHudModeBanner(banner: ModeBanner): void {
+  hud?.setModeBanner(banner);
 }
 
 /** Движок упал или перезапускается — значок прячем до нового статуса */

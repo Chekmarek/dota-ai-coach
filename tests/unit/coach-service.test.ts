@@ -110,6 +110,45 @@ describe('CoachService', () => {
     expect(junk.history.saved.at(-1)!.gameMode).toEqual({ mode: 'unknown', source: 'none', raw: null });
   });
 
+  it('индикатор режима: в начале матча один раз; смена режима — после 1,5 с без мигания; ручной выбор — новый показ', () => {
+    const turbo = { mode: 'turbo', source: 'gsi', raw: 'DOTA_GAMEMODE_TURBO' } as const;
+    let settings = defaultSettings();
+    const banners: { title: string; mode: string; source: string; seq: number }[] = [];
+    let now = 0;
+    const history = { save() {} };
+    const svc = new CoachService({ settings: { get: () => settings }, kb, aiProvider: () => null, history, onHints: () => {}, onModeBanner: (b) => banners.push(b), now: () => now });
+    const feed = (t: number, i: Partial<SimInput>) => {
+      now = 1_000_000 + t * 500;
+      const s = sim({ wallMs: now, clock: 600 + t, level: 5, ...i });
+      svc.ingest({ state: s.state, gsi: s.gsi, gsiWallMs: now });
+    };
+    for (let t = 0; t < 10; t++) feed(t, { mode: turbo });
+    expect(banners.map((b) => [b.title, b.source])).toEqual([['Турбо', 'gsi']]);
+    // одно чтение «неизвестен» (мигание) — не объявляется
+    feed(10, {});
+    for (let t = 11; t < 14; t++) feed(t, { mode: turbo });
+    expect(banners.length).toBe(1);
+    // ручной выбор «обычный» — держится 1,5 с → новый показ
+    settings = applySettingsPatch(settings, { hints: { gameMode: 'normal' } });
+    for (let t = 14; t < 20; t++) feed(t, { mode: turbo });
+    expect(banners.map((b) => b.title)).toEqual(['Турбо', 'Обычный режим']);
+    expect(banners[1]!.seq).toBeGreaterThan(banners[0]!.seq);
+  });
+
+  it('индикатор режима: без матча (меню) не показывается; неизвестный режим — «Режим не определён»', () => {
+    const banners: string[] = [];
+    let now = 0;
+    const svc = new CoachService({ settings: { get: () => defaultSettings() }, kb, aiProvider: () => null, history: { save() {} }, onHints: () => {}, onModeBanner: (b) => banners.push(b.title), now: () => now });
+    // меню: нет GSI, часов матча на экране нет (до −1:30 — тоже не матч)
+    const s0 = sim({ wallMs: 1, clock: -200, noGsi: true });
+    svc.ingest({ state: s0.state, gsi: s0.gsi, gsiWallMs: null });
+    expect(banners).toEqual([]);
+    now = 1000;
+    const s1 = sim({ wallMs: 1000, clock: 600, level: 5 });
+    svc.ingest({ state: s1.state, gsi: s1.gsi, gsiWallMs: 1000 });
+    expect(banners).toEqual(['Режим не определён']);
+  });
+
   it('вход движка: мусор и чужая форма отклоняются', () => {
     expect(parseCoachInput(null)).toBeNull();
     expect(parseCoachInput({ state: { wallMs: 'x' } })).toBeNull();
