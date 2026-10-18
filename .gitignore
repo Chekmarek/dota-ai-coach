@@ -31,3 +31,6 @@ DotaCoach-*-update/
 
 # Кадры игры с никами игроков (tests/fixtures/hud/labels.json и PNG): только локально, в git не коммитим
 /tests/fixtures/hud/
+
+# Кадры экрана выбора героев (с никами): только локально
+/tests/fixtures/draftscreen/
