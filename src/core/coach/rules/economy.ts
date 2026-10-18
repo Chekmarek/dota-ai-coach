@@ -1,7 +1,7 @@
 // D. Фарм и экономика: GPM/XPM против ориентиров, простой, непотраченное золото и следующий предмет,
 // тайминги предметов, очки навыков, ТП, варды, нейтральный предмет, маршрут фарма.
 import { TP_ITEMS } from '../data.ts';
-import { hasItem, tpReady } from '../memory.ts';
+import { hasItem, nearEnemyCount, tpReady } from '../memory.ts';
 import { actionChoice, nearEnemies } from '../prob.ts';
 import { isOwnBase } from '../geo.ts';
 import { derivedFact, fact, kbFact } from '../view.ts';
@@ -189,9 +189,9 @@ export const tpRule: Rule = (c) => {
     category: 'economy',
     priority: 'advice',
     confidence: 0.85,
-    short: 'Нет ТП — купите свиток',
+    short: 'Нет Town Portal Scroll — купите',
     normal: `У вас нет свитка телепортации (${cost} золота): без него не успеть на помощь и не сбежать.`,
-    facts: [derivedFact('tp', 'Свиток ТП', false, 0.9), kbFact('tp-cost', 'Цена ТП', cost, c.look.data.kbVerified)],
+    facts: [derivedFact('tp', 'Town Portal Scroll', false, 0.9), kbFact('tp-cost', 'Цена Town Portal Scroll', cost, c.look.data.kbVerified)],
     ttlSec: 10,
     cooldownSec: 120,
     icon: 'item:tpscroll',
@@ -216,8 +216,8 @@ export const wardsRule: Rule = (c) => {
     category: 'economy',
     priority: 'info',
     confidence: 0.6,
-    short: 'Нет вардов — купите обзор',
-    normal: 'У вас, саппорта, нет вардов уже 3 минуты: обзор спасает команду от ганков.',
+    short: 'Нет Observer Ward — купите обзор',
+    normal: 'У вас, саппорта, нет Observer Ward уже 3 минуты: обзор спасает команду от ганков.',
     facts: [kbFact('roles', 'Роли героя (база)', roles.join(', '), false), derivedFact('wards', 'Вардов в инвентаре', 0, 0.9)],
     ttlSec: 10,
     cooldownSec: 240,
@@ -245,7 +245,7 @@ export const neutralRule: Rule = (c) => {
 
 export const routeRule: Rule = (c) => {
   const clock = c.v.clock.value;
-  if (!playing(c) || clock === null || clock < 10 * 60 || c.mem.inFight || nearEnemies(c.v).length > 0) return null;
+  if (!playing(c) || clock === null || clock < 10 * 60 || c.mem.inFight || nearEnemyCount(c.v) > 0) return null;
   if (c.v.team && isOwnBase(c.v.me.zone, c.v.team)) return null;
   const missing = c.v.enemies.filter((e) => e.missing === true).length;
   if (missing > 1) return null;

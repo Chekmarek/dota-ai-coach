@@ -195,7 +195,7 @@ describe('GSI: mapGsi', () => {
   it('способности: ключ, уровень, состояние, перезарядка; служебные — не на панели', () => {
     const r = read('laning');
     const by = (k: string) => r.abilities.find((a) => a.key === k)!;
-    expect(by('nevermore_shadowraze1')).toEqual({ index: 0, slot: 0, key: 'nevermore_shadowraze1', level: 3, state: 'cooldown', cooldownSec: 6.4, ultimate: false, passive: false });
+    expect(by('nevermore_shadowraze1')).toEqual({ index: 0, slot: 0, key: 'nevermore_shadowraze1', level: 3, state: 'cooldown', cooldownSec: 6.4, ultimate: false, passive: false, maxCooldownSec: null });
     expect(by('nevermore_shadowraze2').state).toBe('ready');
     expect(by('nevermore_necromastery').state).toBe('ready'); // пассивная
     expect(by('nevermore_dark_lord').state).toBe('unlearned');
@@ -222,7 +222,7 @@ describe('GSI: mapGsi', () => {
     const r = read('laning');
     const slot = (s: string) => r.items!.find((x) => x.slot === s);
     expect(r.items!.slice(0, 9).map((x) => x.slot)).toEqual(['inv1', 'inv2', 'inv3', 'inv4', 'inv5', 'inv6', 'bp1', 'bp2', 'bp3']);
-    expect(slot('inv1')).toEqual({ slot: 'inv1', key: 'bottle', name: 'Bottle', charges: 2, cooldownSec: null });
+    expect(slot('inv1')).toEqual({ slot: 'inv1', key: 'bottle', name: 'Bottle', charges: 2, cooldownSec: null, passive: false, canCast: true });
     expect(slot('inv2')!.name).toBe('Boots of Speed');
     expect(slot('inv3')!.name).toBe('wraith_band'); // справочник не знает — имя = ключ, не выдумываем
     expect(slot('inv5')).toEqual({ slot: 'inv5', key: null, name: null, charges: null, cooldownSec: null });

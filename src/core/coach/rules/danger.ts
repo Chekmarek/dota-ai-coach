@@ -1,7 +1,7 @@
 // B. Незамеченная опасность: пропавшие враги, смок, ганкеры, глубоко в чужом лесу, мало здоровья, здания, Рошан,
 // невидимые герои. Позиции врагов — только с мини-карты (с уверенностью); не видно — правило молчит.
 import { DETECTION_ITEMS } from '../data.ts';
-import { hasItem, hasRegen, tpReady } from '../memory.ts';
+import { hasItem, hasRegen, nearEnemyCount, tpReady } from '../memory.ts';
 import { nearEnemies } from '../prob.ts';
 import { BUILDING_RU, NEAR_UNITS, buildingLane, dist, isEnemyJungle, mapSide } from '../geo.ts';
 import { derivedFact, fact, kbFact, poolPct } from '../view.ts';
@@ -45,7 +45,7 @@ export const smokeRule: Rule = (c) => {
     category: 'danger',
     priority: 'critical',
     confidence: 0.6,
-    short: `Возможен смок: ${n} ${plural(n, 'герой пропал', 'героя пропали', 'героев пропали')}`,
+    short: `Возможен Smoke of Deceit: ${n} ${plural(n, 'герой пропал', 'героя пропали', 'героев пропали')}`,
     normal: `${n} врагов исчезли с мини-карты почти одновременно — похоже на Smoke of Deceit. Будьте рядом с союзниками.`,
     facts: [derivedFact('smoke', 'Пропали одновременно', n, 0.6)],
     ttlSec: 10,
@@ -72,7 +72,7 @@ export const gankerRule: Rule = (c) => {
     category: 'danger',
     priority: 'advice',
     confidence: 0.6,
-    short: `${name} пропал — опасность ганка`,
+    short: `${name} не видно — опасность ганка`,
     normal: `${name} не виден ${Math.round(g.missingForSec ?? 0)} с — он умеет ловить. ${hp !== null && hp < 50 ? 'У вас мало здоровья.' : 'Вы на чужой стороне.'}`,
     facts: [fact('ganker', 'Пропал', g.hero), derivedFact('missing-for', 'Не виден, с', Math.round(g.missingForSec ?? 0), 0.7), kbFact('roles', 'Роли (база)', 'Initiator/Disabler', false)],
     ttlSec: 8,
@@ -107,7 +107,7 @@ export const lowHpRule: Rule = (c) => {
   const regen = hasRegen(c.v);
   const tp = tpReady(c.v);
   const missing = c.v.enemies.filter((e) => e.missing === true).length;
-  const near = nearEnemies(c.v).length;
+  const near = nearEnemyCount(c.v);
   if (regen !== false || tp === true) return null;
   if (missing < 2 && near === 0) return null;
   return draft({
@@ -116,8 +116,8 @@ export const lowHpRule: Rule = (c) => {
     priority: 'critical',
     confidence: Math.min(0.9, c.v.me.hp.confidence),
     short: 'Мало здоровья, нет регена — назад',
-    normal: `Здоровья ${Math.round(hp)}%, нет регенерации${tp === false ? ' и ТП' : ''}, врагов не видно — уходите к базе.`,
-    facts: [fact('hp', 'Здоровье, %', { ...c.v.me.hp, value: Math.round(hp) }), derivedFact('regen', 'Есть реген', false, 0.9), derivedFact('tp', 'ТП готов', tp, 0.9), derivedFact('missing', 'Врагов не видно', missing, 0.75)],
+    normal: `Здоровья ${Math.round(hp)}%, нет регенерации${tp === false ? ' и Town Portal Scroll' : ''}, врагов не видно — уходите к базе.`,
+    facts: [fact('hp', 'Здоровье, %', { ...c.v.me.hp, value: Math.round(hp) }), derivedFact('regen', 'Есть реген', false, 0.9), derivedFact('tp', 'Town Portal Scroll готов', tp, 0.9), derivedFact('missing', 'Врагов не видно', missing, 0.75)],
     ttlSec: 8,
     cooldownSec: 30,
   });
@@ -150,7 +150,7 @@ export const buildingRule: Rule = (c) => {
             priority: pct < 40 ? 'critical' : 'advice',
             confidence: 0.9,
             short: `Бьют ${BUILDING_RU(b.key)}`,
-            normal: `${BUILDING_RU(b.key)[0]!.toUpperCase()}${BUILDING_RU(b.key).slice(1)} под атакой: ${Math.round(pct)}% здоровья. Защитите${c.v.me.alive.value ? ' или ТП' : ''}.`,
+            normal: `${BUILDING_RU(b.key)[0]!.toUpperCase()}${BUILDING_RU(b.key).slice(1)} под атакой: ${Math.round(pct)}% здоровья. Защитите${c.v.me.alive.value ? ' или телепорт' : ''}.`,
             facts: [{ key: 'building-hp', label: 'Здоровье здания, %', value: Math.round(pct), source: 'gsi', ageSec: 0, confidence: 1, verified: true }],
             ttlSec: 8,
             cooldownSec: 45,
@@ -168,7 +168,7 @@ export const roshanRule: Rule = (c) => {
   const clock = c.v.clock.value;
   if (!playing(c) || clock === null || clock < 15 * 60) return null;
   const missing = c.v.enemies.filter((e) => e.missing === true && (e.missingForSec ?? 0) >= 10).length;
-  if (missing < 3 || nearEnemies(c.v).length > 0) return null;
+  if (missing < 3 || nearEnemyCount(c.v) > 0) return null;
   const min = c.look.mechanicValue('roshan-respawn', 'min');
   const dead = c.mem.roshanKilledAt;
   if (dead !== null && (min === null || clock - dead < min)) return null;

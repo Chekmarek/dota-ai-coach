@@ -72,7 +72,7 @@ export interface SimInput {
   paused?: boolean;
   phase?: 'pre-game' | 'in-progress' | 'post-game';
   winTeam?: 'radiant' | 'dire' | null;
-  items?: { slot: string; key: string | null; charges?: number | null; cooldownSec?: number | null }[];
+  items?: { slot: string; key: string | null; charges?: number | null; cooldownSec?: number | null; passive?: boolean | null; canCast?: boolean | null }[];
   abilities?: Partial<GsiAbility>[];
   buybackCost?: number;
   buybackCooldown?: number;
@@ -132,7 +132,7 @@ export function sim(i: SimInput): { state: MatchState; gsi: GsiReading | null } 
   const healthBars = (i.enemies ?? [])
     .filter((p) => p.pos && (p.barLevel != null || p.hpPercent != null))
     .map((p) => ({ team: (p.slot < 5 ? 'radiant' : 'dire') as 'radiant' | 'dire', side: 'enemy' as const, hpPercent: p.hpPercent ?? 100, level: p.barLevel ?? null, slot: p.slot, x: 0, y: 0, confidence: 0.8 }));
-  const items: GsiItemSlot[] = (i.items ?? DEFAULT_ITEMS).map((x) => ({ slot: x.slot, key: x.key, name: x.key, charges: x.charges ?? null, cooldownSec: x.cooldownSec ?? (x.key ? 0 : null) }));
+  const items: GsiItemSlot[] = (i.items ?? DEFAULT_ITEMS).map((x: NonNullable<SimInput['items']>[number]) => ({ slot: x.slot, key: x.key, name: x.key, charges: x.charges ?? null, cooldownSec: x.cooldownSec ?? (x.key ? 0 : null), passive: x.passive ?? null, canCast: x.canCast ?? null }));
   // По умолчанию все очки вложены: уровни способностей в сумме = уровень героя
   const lvl = i.level ?? 8;
   const ult = lvl >= 6 ? 1 : 0;
@@ -151,7 +151,8 @@ export function sim(i: SimInput): { state: MatchState; gsi: GsiReading | null } 
     state: a.state ?? 'ready',
     cooldownSec: a.cooldownSec ?? 0,
     ultimate: a.ultimate ?? false,
-    passive: false,
+    passive: a.passive ?? false,
+    maxCooldownSec: a.maxCooldownSec ?? null,
   }));
   const state: MatchState = {
     wallMs: w,

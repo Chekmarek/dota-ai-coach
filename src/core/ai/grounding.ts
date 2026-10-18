@@ -39,6 +39,20 @@ export function unverifiedNames(answer: string, sources: readonly string[], allo
   return out;
 }
 
+/**
+ * Фразы по-английски (3+ латинских слова подряд), которых нет в фактах и вопросе: ответ должен быть по-русски.
+ * Названия из фактов («Smoke of Deceit», «Black King Bar») не считаются — они пишутся как в клиенте Dota.
+ */
+export function englishPhrases(answer: string, sources: readonly string[]): NumberSpan[] {
+  const known = sources.join(' ').toLowerCase();
+  const out: NumberSpan[] = [];
+  for (const m of answer.matchAll(/\b[A-Za-z][A-Za-z'’]*(?:[ \t-]+[A-Za-z][A-Za-z'’]*){2,}\b/g)) {
+    if (known.includes(m[0].toLowerCase())) continue;
+    out.push({ start: m.index, end: m.index + m[0].length, text: m[0], value: NaN, grounded: false });
+  }
+  return out;
+}
+
 // время «12:05» или «1:02:03»; число с пробелами-разделителями тысяч «2 250»; дробь «2,5» / «7.41»
 const NUM_RE = /\d{1,2}(?::\d{2}){1,2}(?!\d)|\d{1,3}(?:[   ]\d{3})+(?![\d,.]\d)|\d+(?:[.,]\d+)?/g;
 
@@ -76,7 +90,10 @@ export function checkGrounding(answer: string, facts: readonly string[], questio
   // «5 минут» в ответе — это и «300 с» в фактах
   const minutes = (n: { end: number; value: number }) => /^\s*мин/i.test(answer.slice(n.end, n.end + 6)) && known.has(n.value * 60);
   const numbers: NumberSpan[] = extractNumbers(answer).map((n) => ({ start: n.start, end: n.end, text: n.text, value: n.value, grounded: known.has(n.value) || minutes(n) }));
-  const unverified = [...numbers.filter((n) => !n.grounded), ...unverifiedNames(answer, [...facts, question], allowedNames)].sort((a, b) => a.start - b.start);
+  const names = unverifiedNames(answer, [...facts, question], allowedNames);
+  // Английская фраза — тоже непроверенный текст (слова с заглавной в ней уже отмечены как имена)
+  const english = englishPhrases(answer, [...facts, question]).filter((p) => !names.some((n) => n.start >= p.start && n.end <= p.end));
+  const unverified = [...numbers.filter((n) => !n.grounded), ...names, ...english].sort((a, b) => a.start - b.start);
   return { ok: unverified.length === 0, numbers, unverified };
 }
 

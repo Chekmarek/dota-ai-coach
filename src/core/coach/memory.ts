@@ -3,7 +3,7 @@
 import type { MapPoint } from '../match-state/index.ts';
 import type { MapZone } from '../match-state/map-zones.ts';
 import { CLOSE_UNITS, NEAR_UNITS, dist, mapSide } from './geo.ts';
-import { TP_ITEMS, REGEN_ITEMS } from './data.ts';
+import { TP_ITEMS, REGEN_ITEMS, type CoachLookup } from './data.ts';
 import { poolPct, type CoachView, type ViewPlayer } from './view.ts';
 
 /** Сколько секунд истории держим (по одной записи в секунду) */
@@ -48,6 +48,8 @@ export interface DeathRecord {
   enemiesMissing: number;
   ultReady: boolean | null;
   keyItemsReady: string[];
+  /** Активные предметы и способности, готовые в последний миг перед смертью (по GSI); [] — нет или не известно */
+  readyActives?: ReadyActive[];
   tpReady: boolean | null;
   hadRegen: boolean | null;
   buybackReady: boolean | null;
@@ -79,13 +81,59 @@ export function enemyNear(p: ViewPlayer, me: MapPoint | null): boolean {
   return false;
 }
 
+/**
+ * Сколько врагов рядом: больше из двух — значки на мини-карте ближе NEAR_UNITS или вражеские полоски здоровья на
+ * экране, когда камера у своего героя (два героя рядом на мини-карте сливаются в один значок).
+ */
+export function nearEnemyCount(v: CoachView): number {
+  const map = v.enemies.filter((e) => enemyNear(e, v.me.pos.value)).length;
+  const bars = v.screen?.meOnScreen ? v.screen.enemyBars.length : 0;
+  return Math.max(map, bars);
+}
+
+/** Вражеские полоски на экране рядом с героем (камера у героя); [] — не видно или камера в другом месте */
+export function nearEnemyBars(v: CoachView): { hpPercent: number; level: number | null }[] {
+  return v.screen?.meOnScreen ? v.screen.enemyBars : [];
+}
+
 export function ultReady(v: CoachView): boolean | null {
   const ult = v.me.abilities.find((a) => a.ultimate);
-  if (!ult || ult.level === null) return null;
+  // Пассивную ульту (Warpath у Bristleback) нажать нельзя — «готова, но не применена» к ней не относится
+  if (!ult || ult.level === null || ult.passive === true) return null;
   if (ult.level === 0) return false;
   if (ult.state === 'ready') return true;
   if (ult.state === 'cooldown' || ult.state === 'no-mana') return false;
   return ult.cooldownSec === null ? null : ult.cooldownSec === 0;
+}
+
+export interface ReadyActive {
+  kind: 'item' | 'ability';
+  key: string;
+}
+
+/** Нажимаются не в драке (ботинки-переключатель, варды, ТП — у ТП своя проверка) — в «не использовал» не попадают */
+const NOT_FIGHT_ACTIVES = new Set(['power_treads', 'tpscroll', 'travel_boots', 'travel_boots_2', 'ward_observer', 'ward_sentry', 'ward_dispenser', 'smoke_of_deceit', 'dust', 'tome_of_knowledge', 'courier']);
+/** Короткие способности (перезарядка меньше) жмутся постоянно — их «готовность» в момент смерти ничего не значит */
+const LONG_COOLDOWN_SEC = 15;
+
+/**
+ * Готовые, но не нажатые: предмет в инвентаре (или нейтральный) без перезарядки, который игра разрешает нажать
+ * (can_cast — значит хватает маны и нет немоты); способность — не пассивная, изучена, готова, ульта или с долгой
+ * перезарядкой. Только по GSI: с экрана готовность не узнать — тогда список пуст.
+ */
+export function readyActives(v: CoachView): ReadyActive[] {
+  const items = v.me.items
+    .filter((i) => /^inv\d$|^neutral$/.test(i.slot) && i.passive !== true && i.canCast === true && i.cooldownSec === 0 && i.charges !== 0 && !NOT_FIGHT_ACTIVES.has(i.key))
+    .map((i): ReadyActive => ({ kind: 'item', key: i.key }));
+  const abilities = v.me.abilities
+    .filter((a) => a.key !== null && a.passive === false && (a.level ?? 0) > 0 && a.state === 'ready' && (a.ultimate || (a.maxCooldownSec ?? 0) >= LONG_COOLDOWN_SEC))
+    .map((a): ReadyActive => ({ kind: 'ability', key: a.key! }));
+  return [...items, ...abilities];
+}
+
+/** Названия готовых, но не нажатых предметов и способностей (как в клиенте Dota) */
+export function readyActiveNames(look: Pick<CoachLookup, 'itemName' | 'abilityByKey'>, d: Pick<DeathRecord, 'readyActives'>): string[] {
+  return [...new Set((d.readyActives ?? []).map((a) => (a.kind === 'item' ? look.itemName(a.key) : (look.abilityByKey.get(a.key)?.name ?? a.key))))];
 }
 
 export function readyItems(v: CoachView, keys: readonly string[]): string[] {
@@ -161,7 +209,7 @@ export class CoachMemory {
     const p = this.prev;
     const me = v.me.pos.value;
 
-    const enemiesNear = v.enemies.filter((e) => enemyNear(e, me)).length;
+    const enemiesNear = nearEnemyCount(v);
     const alliesNear = me ? v.allies.filter((a) => a.alive.value !== false && a.pos.value && (a.pos.ageSec ?? 99) <= 2 && dist(a.pos.value, me) <= NEAR_UNITS).length : 0;
 
     // Смерть / возрождение
@@ -188,6 +236,7 @@ export class CoachMemory {
         enemiesMissing: p ? p.enemies.filter((e) => e.missing === true).length : 0,
         ultReady: ultReady(p),
         keyItemsReady: readyItems(p, ['black_king_bar', 'blink', 'refresher', 'aeon_disk', 'manta', 'satanic', 'sphere', 'ghost', 'glimmer_cape', 'force_staff']),
+        readyActives: readyActives(p),
         tpReady: tpReady(p),
         hadRegen: hasRegen(p),
         buybackReady: cost !== null && bbCd !== null && gold !== null ? bbCd === 0 && gold >= cost : null,

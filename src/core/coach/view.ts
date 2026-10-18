@@ -37,6 +37,10 @@ export interface ViewItem {
   key: string;
   charges: number | null;
   cooldownSec: number | null;
+  /** Пассивный предмет; null/нет — не известно (экран) */
+  passive?: boolean | null;
+  /** Можно нажать сейчас (GSI can_cast); null/нет — не известно */
+  canCast?: boolean | null;
 }
 
 export interface ViewAbility {
@@ -46,6 +50,10 @@ export interface ViewAbility {
   /** ready | cooldown | no-mana | unlearned */
   state: string | null;
   cooldownSec: number | null;
+  /** Пассивная (нажать нельзя); null/нет — не известно */
+  passive?: boolean | null;
+  /** Полная перезарядка, с; null/нет — не известно */
+  maxCooldownSec?: number | null;
 }
 
 export interface ViewPlayer {
@@ -111,9 +119,17 @@ export interface CoachView {
   };
   allies: ViewPlayer[];
   enemies: ViewPlayer[];
+  /**
+   * Полоски здоровья на экране (последний кадр). Вражеские считаются «рядом», только если на том же кадре видна
+   * своя полоска (камера у героя): так видно 2 врага, даже когда на мини-карте их значки слились в один.
+   */
+  screen: { meOnScreen: boolean; enemyBars: { hpPercent: number; level: number | null }[] };
   buildings: GsiBuilding[] | null;
   events: GsiEvent[] | null;
 }
+
+/** Ниже этой уверенности полоска врага не считается (тени, крипы, обрезанные края) */
+export const ENEMY_BAR_MIN_CONFIDENCE = 0.5;
 
 const hpPct = (p: Pool | null): number | null => (p && p.max > 0 ? (p.current / p.max) * 100 : null);
 export const poolPct = hpPct;
@@ -172,7 +188,7 @@ export function buildView(s: MatchState, gsi: GsiReading | null, gsiWallMs: numb
   if (g?.items) {
     itemsKnown = true;
     emptySlots = g.items.filter((i) => !i.key).map((i) => i.slot);
-    items = g.items.filter((i) => i.key).map((i) => ({ slot: i.slot, key: i.key!, charges: i.charges, cooldownSec: i.cooldownSec }));
+    items = g.items.filter((i) => i.key).map((i) => ({ slot: i.slot, key: i.key!, charges: i.charges, cooldownSec: i.cooldownSec, passive: i.passive ?? null, canCast: i.canCast ?? null }));
   } else {
     const all = [...s.hero.items, ...(s.hero.extraItems ?? [])];
     itemsKnown = all.some((i) => i.value !== null);
@@ -182,7 +198,7 @@ export function buildView(s: MatchState, gsi: GsiReading | null, gsiWallMs: numb
   const abilities: ViewAbility[] = g
     ? g.abilities
         .filter((a) => a.slot !== null)
-        .map((a) => ({ key: a.key, level: a.level, ultimate: a.ultimate === true, state: a.state, cooldownSec: a.cooldownSec }))
+        .map((a) => ({ key: a.key, level: a.level, ultimate: a.ultimate === true, state: a.state, cooldownSec: a.cooldownSec, passive: a.passive, maxCooldownSec: a.maxCooldownSec ?? null }))
     : s.hero.abilities.map((a) => ({
         key: a.key,
         level: a.level.value,
@@ -242,6 +258,10 @@ export function buildView(s: MatchState, gsi: GsiReading | null, gsiWallMs: numb
     },
     allies: s.allies.filter((p) => g?.slot === null || g?.slot === undefined || p.slot !== g.slot).map((p) => player(p, s)),
     enemies: s.enemies.map((p) => player(p, s)),
+    screen: {
+      meOnScreen: g?.slot !== null && g?.slot !== undefined && s.healthBars.some((b) => b.slot === g.slot),
+      enemyBars: s.healthBars.filter((b) => b.side === 'enemy' && b.confidence >= ENEMY_BAR_MIN_CONFIDENCE).map((b) => ({ hpPercent: b.hpPercent, level: b.level })),
+    },
     buildings: x?.buildings ?? null,
     events: x?.events ?? null,
   };

@@ -30,6 +30,8 @@ export interface GsiAbility {
   cooldownSec: number | null;
   ultimate: boolean | null;
   passive: boolean | null;
+  /** Полная перезарядка, с (max_cooldown); null — GSI не сообщил */
+  maxCooldownSec?: number | null;
 }
 
 export interface GsiItemSlot {
@@ -41,6 +43,10 @@ export interface GsiItemSlot {
   name: string | null;
   charges: number | null;
   cooldownSec: number | null;
+  /** Пассивный предмет (нажать нельзя); null — GSI не сообщил */
+  passive?: boolean | null;
+  /** Можно нажать сейчас; null — GSI не сообщил (пассивный предмет или пустая ячейка) */
+  canCast?: boolean | null;
 }
 
 export interface GsiReading {
@@ -222,6 +228,7 @@ function mapAbilities(raw: GsiBody['abilities'], hero: GsiBody['hero']): GsiAbil
       cooldownSec: n(a.cooldown),
       ultimate: b(a.ultimate),
       passive: b(a.passive),
+      maxCooldownSec: n(a.max_cooldown),
     };
   });
 }
@@ -241,7 +248,7 @@ function mapItem(slot: string, it: GsiItemRaw, itemName?: ItemNameLookup): GsiIt
   const raw = it.name!;
   if (raw === 'empty' || raw === '') return { slot, key: null, name: null, charges: null, cooldownSec: null };
   const key = raw.startsWith(ITEM_PREFIX) ? raw.slice(ITEM_PREFIX.length) : raw;
-  return { slot, key, name: itemName?.(key) ?? key, charges: n(it.charges), cooldownSec: n(it.cooldown) };
+  return { slot, key, name: itemName?.(key) ?? key, charges: n(it.charges), cooldownSec: n(it.cooldown), passive: b(it.passive), canCast: b(it.can_cast) };
 }
 
 /**

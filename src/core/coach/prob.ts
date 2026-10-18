@@ -4,7 +4,7 @@
 import type { CoachView, ViewPlayer } from './view.ts';
 import { poolPct } from './view.ts';
 import type { CoachMemory } from './memory.ts';
-import { enemyNear, readyItems, tpReady, ultReady, hasRegen } from './memory.ts';
+import { enemyNear, nearEnemyBars, nearEnemyCount, readyItems, tpReady, ultReady, hasRegen } from './memory.ts';
 import type { CoachLookup } from './data.ts';
 import { KEY_ITEMS } from './data.ts';
 import { NEAR_UNITS, dist, mapSide } from './geo.ts';
@@ -108,13 +108,21 @@ function heroFactors(v: CoachView): FactorInput[] {
 export function engagePercent(v: CoachView, mem: CoachMemory, lookup: CoachLookup, minConfidence: number): PercentEstimate {
   const me = v.me.pos.value;
   const near = nearEnemies(v);
-  const readable = minimapReadable(v) && me !== null;
+  // Врагов рядом: мини-карта или полоски на экране (два героя на мини-карте сливаются в один значок)
+  const count = nearEnemyCount(v);
+  const screenBars = nearEnemyBars(v);
+  const readable = (minimapReadable(v) && me !== null) || screenBars.length > 0;
   const alliesNear = me ? v.allies.filter((a) => a.alive.value !== false && fresh(a) && dist(a.pos.value!, me) <= NEAR_UNITS).length : 0;
   const missing = v.enemies.filter((e) => e.missing === true).length;
-  const bars = near.filter((e) => e.barLevel !== null || e.hpPercent.value !== null);
   const lvl = v.me.level.value;
-  const lvlDiffs = near.filter((e) => e.barLevel !== null && lvl !== null).map((e) => lvl! - e.barLevel!);
-  const enemyHp = near.map((e) => e.hpPercent.value).filter((x): x is number => x !== null);
+  // Уровень и здоровье врагов: с привязанных к героям полосок, иначе — со всех вражеских полосок рядом на экране
+  const linkedLvl = near.filter((e) => e.barLevel !== null).map((e) => e.barLevel!);
+  const enemyLvls = linkedLvl.length ? linkedLvl : screenBars.map((b) => b.level).filter((x): x is number => x !== null);
+  const lvlDiffs = lvl === null ? [] : enemyLvls.map((l) => lvl - l);
+  const linkedHp = near.map((e) => e.hpPercent.value).filter((x): x is number => x !== null);
+  const enemyHp = linkedHp.length ? linkedHp : screenBars.map((b) => b.hpPercent);
+  const myHp = poolPct(v.me.hp.value);
+  const enemyHpAvg = enemyHp.length ? enemyHp.reduce((a, b) => a + b, 0) / enemyHp.length : null;
   const myKey = v.me.hero.value?.key ?? null;
   const mu = myKey ? near.map((e) => (e.hero.value ? lookup.matchup(myKey, e.hero.value) : null)).filter((m): m is NonNullable<typeof m> => m !== null && m.games >= 200) : [];
   const clock = v.clock.value;
@@ -125,20 +133,24 @@ export function engagePercent(v: CoachView, mem: CoachMemory, lookup: CoachLooku
   const aegisOurs = mem.aegisOurs === true && mem.aegisAt !== null && clock !== null && clock - mem.aegisAt < aegisSec;
   const side = me && v.team ? mapSide(me, v.team) : null;
 
+  // Здоровье: если здоровье врагов известно — сравнение «вы против врагов», иначе только своё (как раньше)
+  const hero = heroFactors(v).map((f) =>
+    f.id === 'hp' && myHp !== null && enemyHpAvg !== null ? { ...f, label: 'Здоровье: вы против врагов', value: clamp((myHp - enemyHpAvg) / 50, -1, 1), weight: 1.4 } : f,
+  );
   const inputs: FactorInput[] = [
-    ...heroFactors(v),
+    ...hero,
     {
       id: 'numbers',
       label: 'Союзники и враги рядом',
       // Перевес в числе решает сильнее всего: 1×5 почти всегда проигрыш
-      value: readable ? Math.tanh((alliesNear + 1 - near.length) / 1.5) : null,
+      value: readable ? Math.tanh((alliesNear + 1 - count) / 1.5) : null,
       weight: 3,
       confidence: 0.8,
       importance: 3,
     },
     { id: 'missing', label: 'Враги не на карте', value: readable ? -missing / 5 : null, weight: 0.8, confidence: 0.75, importance: 2 },
-    { id: 'level', label: 'Разница уровней', value: lvlDiffs.length ? clamp(lvlDiffs.reduce((a, b) => a + b, 0) / lvlDiffs.length / 4, -1, 1) : null, weight: 0.8, confidence: 0.7, importance: 2 },
-    { id: 'enemy-hp', label: 'Здоровье врагов', value: enemyHp.length ? (50 - enemyHp.reduce((a, b) => a + b, 0) / enemyHp.length) / 50 : null, weight: 0.9, confidence: 0.7, importance: bars.length ? 2 : 2 },
+    // Уровень — это и запас здоровья, и урон: 3 уровня разницы почти решают драку один на один
+    { id: 'level', label: 'Разница уровней', value: lvlDiffs.length ? clamp(lvlDiffs.reduce((a, b) => a + b, 0) / lvlDiffs.length / 4, -1, 1) : null, weight: 1.5, confidence: 0.8, importance: 2 },
     { id: 'position', label: 'Сторона карты', value: side === null ? null : side === 'own' ? 0.5 : side === 'enemy' ? -0.5 : 0, weight: 0.6, confidence: 0.7, importance: 1 },
     { id: 'buyback', label: 'Выкуп', value: clock === null || clock < 25 * 60 ? (bbReady === null ? null : 0) : bbReady === null ? null : bbReady ? 0.5 : -0.3, weight: 0.4, confidence: 1, importance: 0.5 },
     { id: 'aegis', label: 'Аегис', value: v.events === null ? null : aegisOurs ? 1 : 0, weight: 0.8, confidence: 1, importance: 0.5 },
@@ -153,7 +165,11 @@ export function engagePercent(v: CoachView, mem: CoachMemory, lookup: CoachLooku
     // Ценность героев врагов (предметы) с экрана не видна — честно неизвестно
     { id: 'networth', label: 'Ценность героев', value: null, weight: 0.8, confidence: 0, importance: 2 },
   ];
-  return estimate(0.5, inputs, minConfidence);
+  const e = estimate(0.5, inputs, minConfidence);
+  // Враги рядом, а ни их здоровья, ни уровня не видно: процент собран из одних своих факторов — не показываем
+  // (так в 0.13.x выходило «шанс 80%» против героя, у которого больше здоровья и уровень)
+  if (count > 0 && enemyHpAvg === null && lvlDiffs.length === 0) return { ...e, showable: false };
+  return e;
 }
 
 /** 1×1 против конкретного врага прямо сейчас */
@@ -190,7 +206,7 @@ export function actionChoice(v: CoachView, mem: CoachMemory, lookup: CoachLookup
   const missing = v.enemies.filter((e) => e.missing === true).length;
   const enemiesDead = v.enemies.filter((e) => e.alive.value === false).length;
   const alliesDead = v.allies.filter((e) => e.alive.value === false).length;
-  const near = nearEnemies(v).length;
+  const near = nearEnemyCount(v);
   const side = v.me.pos.value && v.team ? mapSide(v.me.pos.value, v.team) : null;
   const engage = near > 0 ? engagePercent(v, mem, lookup, minConfidence) : null;
   const clock = v.clock.value ?? 0;

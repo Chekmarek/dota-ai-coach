@@ -6,7 +6,7 @@ import { laneRole } from './rules/laning.ts';
 import { mmss, type RuleContext } from './rules/context.ts';
 import { derivedFact } from './view.ts';
 import type { FactRef } from './types.ts';
-import type { DeathRecord } from './memory.ts';
+import { readyActiveNames, type DeathRecord } from './memory.ts';
 
 export type MistakeType =
   | 'died-unused'
@@ -26,7 +26,7 @@ export const MISTAKE_RU: Record<MistakeType, string> = {
   'joined-losing-fight': 'Вступили в проигрышную драку',
   overextended: 'Зашли далеко без обзора',
   'fog-night': 'Один в тумане ночью',
-  'no-tp': 'Нет ТП, когда он был нужен',
+  'no-tp': 'Нет Town Portal Scroll, когда он был нужен',
   'missed-fight': 'Команда дралась без вас',
   idle: 'Простой',
   'unspent-gold': 'Золото долго не тратилось',
@@ -55,11 +55,11 @@ export interface Mistake {
 }
 
 const GOAL_RU: Record<MistakeType, string> = {
-  'died-unused': 'Нажимать ульту, BKB и ТП до того, как здоровье упадёт ниже половины',
+  'died-unused': 'Нажимать ульту, Black King Bar и Town Portal Scroll до того, как здоровье упадёт ниже половины',
   'joined-losing-fight': 'Вступать в драку, только когда шанс выше 50% или ульта готова',
   overextended: 'Без обзора не заходить на половину врага, если 2+ врага пропали',
-  'fog-night': 'Ночью ходить по чужому лесу только с союзником или вардом',
-  'no-tp': 'Всегда носить свиток ТП',
+  'fog-night': 'Ночью ходить по чужому лесу только с союзником или с Observer Ward',
+  'no-tp': 'Всегда носить Town Portal Scroll',
   'missed-fight': 'Смотреть на мини-карту и приходить на драки команды',
   idle: 'Не стоять без дела: волна, лагерь, стак',
   'unspent-gold': 'Тратить золото сразу, как хватает на предмет',
@@ -124,7 +124,7 @@ export class MistakeDetector {
       }
     }
     if (this.allyFightMs !== null && c.ev.allyDied.length > 0 && c.now - this.allyFightMs <= 15_000) {
-      out.push(this.add(c, { type: 'missed-fight', severity: 2, text: `Команда дралась без вас (${this.allyFightZone}), союзник погиб`, instead: 'Когда у союзника 2+ врага, идите к нему или используйте ТП.', facts: [derivedFact('ally-fight', 'Драка союзников', this.allyFightZone, 0.6)] }));
+      out.push(this.add(c, { type: 'missed-fight', severity: 2, text: `Команда дралась без вас (${this.allyFightZone}), союзник погиб`, instead: 'Когда у союзника 2+ врага, идите к нему или телепортируйтесь (Town Portal Scroll).', facts: [derivedFact('ally-fight', 'Драка союзников', this.allyFightZone, 0.6)] }));
       this.allyFightMs = null;
     }
 
@@ -176,10 +176,13 @@ export class MistakeDetector {
 
   private onDeath(c: RuleContext, d: DeathRecord, index: number): Mistake[] {
     const out: Mistake[] = [];
-    const unused = [d.ultReady ? 'ульта' : null, ...d.keyItemsReady.map((k) => c.look.itemName(k)), d.tpReady ? 'ТП' : null].filter((x): x is string => x !== null);
+    // По GSI — всё готовое и не нажатое (Blade Mail и т. п.); «ульта» отдельно — только если GSI не сказал, какая она
+    const actives = readyActiveNames(c.look, d);
+    const ultInActives = (d.readyActives ?? []).some((a) => a.kind === 'ability');
+    const unused = [...new Set([...actives, d.ultReady && !ultInActives ? 'ульта' : null, ...d.keyItemsReady.map((k) => c.look.itemName(k)), d.tpReady ? 'Town Portal Scroll' : null].filter((x): x is string => x !== null))];
     const facts = [derivedFact('enemies-near', 'Врагов рядом при смерти', d.enemiesNear, 0.75), derivedFact('drop', 'Здоровье упало за, с', d.dropSec === null ? null : Math.round(d.dropSec), 0.7)];
     if (unused.length && (d.dropSec ?? 0) >= 2) {
-      out.push(this.add(c, { type: 'died-unused', severity: 3, deathIndex: index, text: `Умерли, не применив: ${unused.join(', ')}`, instead: 'Применяйте ульту и защитные предметы в начале драки, ТП — чтобы уйти.', facts }));
+      out.push(this.add(c, { type: 'died-unused', severity: 3, deathIndex: index, text: `Умерли, не применив: ${unused.join(', ')}`, instead: 'Применяйте ульту и защитные предметы в начале драки, Town Portal Scroll — чтобы уйти.', facts }));
     }
     if (d.engageAtEntry !== null && d.engageAtEntry <= 40) {
       out.push(this.add(c, { type: 'joined-losing-fight', severity: 3, deathIndex: index, text: `Вступили в драку с шансом ${d.engageAtEntry}%`, instead: 'Подождите союзников или ульту — или не вступайте.', facts: [...facts, derivedFact('engage', 'Шанс при входе, %', d.engageAtEntry, 0.6)] }));
@@ -188,10 +191,10 @@ export class MistakeDetector {
       out.push(this.add(c, { type: 'overextended', severity: 2, deathIndex: index, text: `Умерли на стороне врага, ${d.enemiesMissing} врагов не было видно`, instead: 'Без обзора держитесь своей половины карты.', facts: [...facts, derivedFact('missing', 'Врагов не видно', d.enemiesMissing, 0.75)] }));
     }
     if (d.night === true && d.alliesNear === 0 && d.side !== 'own') {
-      out.push(this.add(c, { type: 'fog-night', severity: 2, deathIndex: index, text: 'Умерли ночью в одиночку в тумане', instead: 'Ночью обзор меньше — ходите с союзником или ставьте вард.', facts }));
+      out.push(this.add(c, { type: 'fog-night', severity: 2, deathIndex: index, text: 'Умерли ночью в одиночку в тумане', instead: 'Ночью обзор меньше — ходите с союзником или ставьте Observer Ward.', facts }));
     }
     if (d.tpReady === false && d.side === 'enemy') {
-      out.push(this.add(c, { type: 'no-tp', severity: 2, deathIndex: index, text: 'Умерли без свитка ТП на стороне врага', instead: 'Носите ТП: им можно сбежать или прийти на помощь.', facts }));
+      out.push(this.add(c, { type: 'no-tp', severity: 2, deathIndex: index, text: 'Умерли без Town Portal Scroll на стороне врага', instead: 'Носите Town Portal Scroll: им можно сбежать или прийти на помощь.', facts }));
     }
     return out;
   }

@@ -2,7 +2,7 @@
 // ИИ, если успевает, пишет короткий текст поверх (числа проверяются). Чистое ядро.
 import { MAP_ZONE_RU } from '../match-state/map-zones.ts';
 import { goalFor, MISTAKE_RU, type Mistake, type MistakeType } from './mistakes.ts';
-import type { CoachMemory, DeathRecord } from './memory.ts';
+import { readyActiveNames, type CoachMemory, type DeathRecord } from './memory.ts';
 import type { CoachLookup } from './data.ts';
 import type { CoachView } from './view.ts';
 import { mmss } from './rules/context.ts';
@@ -49,6 +49,10 @@ export interface MatchReview {
 
 export function deathReview(c: RuleContext, d: DeathRecord, index: number, mistakes: readonly Mistake[]): DeathReview {
   const why: string[] = [];
+  // Первым — то, что было готово и не нажато: это игрок может исправить сам
+  const unusedActives = readyActiveNames(c.look, d);
+  if (unusedActives.length === 1) why.push(`${unusedActives[0]} был готов, но не использован`);
+  else if (unusedActives.length > 1) why.push(`Были готовы, но не использованы: ${unusedActives.join(', ')}`);
   if (d.enemiesNear >= 2) why.push(`Вас поймали ${d.enemiesNear} врага`);
   else if (d.enemiesNear === 1) why.push('Вас убил один враг');
   if (d.hpBefore !== null && d.dropSec !== null && d.dropSec <= 3 && d.hpBefore >= 50) why.push(`Здоровье упало с ${Math.round(d.hpBefore)}% за ${Math.max(1, Math.round(d.dropSec))} с — сильный урон разом`);
@@ -64,7 +68,7 @@ export function deathReview(c: RuleContext, d: DeathRecord, index: number, mista
   const respawn = d.respawnSec;
   let buyback: DeathReview['buyback'];
   if (d.buybackCost === null || d.gold === null) buyback = { advice: 'unknown', text: 'Данных о выкупе нет.' };
-  else if (d.gold < d.buybackCost) buyback = { advice: 'cannot', text: `На выкуп не хватает ${d.buybackCost - d.gold} золота.` };
+  else if (d.gold < d.buybackCost) buyback = { advice: 'cannot', text: `Выкуп стоит ${d.buybackCost}, у вас ${d.gold} — не хватает ${d.buybackCost - d.gold}.` };
   else if (d.buybackReady === false) buyback = { advice: 'cannot', text: 'Выкуп на перезарядке.' };
   else if (respawn !== null && respawn <= 20) buyback = { advice: 'save', text: `Не выкупайтесь: возрождение через ${respawn} с.` };
   else {

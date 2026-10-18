@@ -1,18 +1,18 @@
 // A. Драки и решения: вступать ли, 1×1, драка/фарм/пуш/отход, цель, окно ульты, отход из проигранной драки, выкуп.
 import { ACTION_RU, actionChoice, engagePercent, factorsText, matchupPercent, nearEnemies } from '../prob.ts';
-import { ultReady } from '../memory.ts';
+import { nearEnemyCount, ultReady } from '../memory.ts';
 import { derivedFact, fact, kbFact, poolPct } from '../view.ts';
 import { draft, playing, plural, type Rule } from './context.ts';
 import type { HintDraft } from '../types.ts';
 
 export const engageRule: Rule = (c) => {
   if (!playing(c)) return null;
-  const near = nearEnemies(c.v);
-  if (near.length === 0) return null;
+  // Врагов рядом — по мини-карте и полоскам на экране (на мини-карте двое рядом сливаются в один значок)
+  const n = nearEnemyCount(c.v);
+  if (n === 0) return null;
   const e = engagePercent(c.v, c.mem, c.look, c.settings.minPercentConfidence);
   if (c.mem.inFight && c.mem.engageAtEntry === null) c.mem.engageAtEntry = e.value;
   if (!e.showable) return null;
-  const n = near.length;
   const enemies = `${n} ${plural(n, 'враг', 'врага', 'врагов')} рядом`;
   const go = e.value >= 60;
   const no = e.value <= 40;
@@ -190,7 +190,7 @@ export const disengageRule: Rule = (c) => {
   const me = c.v.me.pos.value;
   const s = c.mem.last(4, c.now);
   const before = s.length ? s[0]!.enemiesNear : 0;
-  const now = nearEnemies(c.v).length;
+  const now = nearEnemyCount(c.v);
   // Подкрепление — только если драка уже шла (враги были рядом и раньше)
   const reinforce = before >= 1 && now - before >= 2;
   const allyLost = c.ev.allyDied.length > 0 && me !== null;
@@ -217,13 +217,14 @@ export const buybackRule: Rule = (c) => {
   const gold = c.v.me.gold.value;
   if (clock === null || clock < 25 * 60 || cost === null || gold === null) return null;
   const facts = [fact('gold', 'Золото', c.v.me.gold), fact('buyback', 'Цена выкупа', c.v.me.buybackCost)];
-  if (gold < cost && (c.mem.inFight || nearEnemies(c.v).length > 0)) {
+  if (gold < cost && (c.mem.inFight || nearEnemyCount(c.v) > 0)) {
     return draft({
       id: 'fight.no-buyback',
       category: 'fight',
       priority: 'advice',
       confidence: 0.9,
-      short: `Нет выкупа: не хватает ${cost - gold}`,
+      // Сама цена выкупа и золото — как в игре; одна недостача («не хватает 4291») читалась как цена выкупа
+      short: `Выкуп ${cost}, у вас ${gold}`,
       normal: `Выкуп стоит ${cost}, у вас ${gold}: смерть сейчас дорогая — осторожнее.`,
       facts,
       ttlSec: 8,

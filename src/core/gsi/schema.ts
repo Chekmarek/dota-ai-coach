@@ -118,6 +118,7 @@ export const gsiAbilitySchema = z.looseObject({
   passive: bool,
   ability_active: bool,
   cooldown: num,
+  max_cooldown: num,
   ultimate: bool,
 });
 
@@ -126,6 +127,9 @@ export const gsiItemSchema = z.looseObject({
   name: str,
   charges: int,
   cooldown: num,
+  /** Есть только у предметов с нажатием; у пассивных (Heart, Assault Cuirass) — passive: true */
+  can_cast: bool,
+  passive: bool,
 });
 
 /**
