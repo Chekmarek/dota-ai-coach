@@ -71,7 +71,9 @@ export function deathReview(c: RuleContext, d: DeathRecord, index: number, mista
     const clock = c.v.clock.value ?? 0;
     const attackedAt = c.mem.marks.get('bld-attack@');
     const baseUnderAttack = attackedAt !== undefined && c.now - attackedAt <= 20_000;
-    if (clock >= 30 * 60 && baseUnderAttack) buyback = { advice: 'buy', text: `Выкупитесь (${d.buybackCost}): бьют ваши здания.` };
+    // Порог 30 минут — для обычной игры; в Турбо (матч ~25 мин) правило не проверено
+    if (c.look.isTurbo) buyback = { advice: 'unknown', text: 'В Турбо совет по выкупу не проверен.' };
+    else if (clock >= 30 * 60 && baseUnderAttack) buyback = { advice: 'buy', text: `Выкупитесь (${d.buybackCost}): бьют ваши здания.` };
     else buyback = { advice: 'save', text: `Сохраните ${d.buybackCost} золота: выкуп сейчас не решает.` };
   }
 
@@ -104,15 +106,20 @@ export function matchReview(v: CoachView, mem: CoachMemory, look: CoachLookup, m
   // Добивания к 10:00 — из истории (ближайшая запись к 600 с)
   const at10 = mem.samples.filter((s) => s.clock !== null && s.clock >= 595 && s.clock <= 640 && s.lastHits !== null)[0]?.lastHits ?? null;
   const role = laneRole(c);
-  const lhRef = role && role !== 4 ? (st?.pro?.lhAt10[String(role)]?.median ?? null) : null;
+  // Нормы (добивания профи, медианы GPM/XPM, минуты предметов) — из обычных матчей: в Турбо без ориентира и оценки
+  const norms = look.hasNorms;
+  const noNorm = 'норм для Турбо нет';
+  const lhRef = norms && role && role !== 4 ? (st?.pro?.lhAt10[String(role)]?.median ?? null) : null;
+  const gpmRef = norms ? (st?.bench?.gpm?.p50 ?? null) : null;
+  const xpmRef = norms ? (st?.bench?.xpm?.p50 ?? null) : null;
   const deaths = v.me.deaths.value ?? mem.deaths.length;
   const stats: StatLine[] = [
-    { label: 'Добивания к 10:00', value: at10, ref: lhRef, refLabel: 'профи патча', verdict: verdict(at10, lhRef === null ? null : lhRef * 0.7) },
-    { label: 'GPM', value: v.me.gpm.value, ref: st?.bench?.gpm?.p50 ?? null, refLabel: 'медиана патча', verdict: verdict(v.me.gpm.value, st?.bench?.gpm?.p50 ?? null) },
-    { label: 'XPM', value: v.me.xpm.value, ref: st?.bench?.xpm?.p50 ?? null, refLabel: 'медиана патча', verdict: verdict(v.me.xpm.value, st?.bench?.xpm?.p50 ?? null) },
+    { label: 'Добивания к 10:00', value: at10, ref: lhRef, refLabel: norms ? 'профи патча' : noNorm, verdict: verdict(at10, lhRef === null ? null : lhRef * 0.7) },
+    { label: 'GPM', value: v.me.gpm.value, ref: gpmRef, refLabel: norms ? 'медиана патча' : noNorm, verdict: verdict(v.me.gpm.value, gpmRef) },
+    { label: 'XPM', value: v.me.xpm.value, ref: xpmRef, refLabel: norms ? 'медиана патча' : noNorm, verdict: verdict(v.me.xpm.value, xpmRef) },
     { label: 'Смерти', value: deaths, ref: null, refLabel: null, verdict: deaths <= 4 ? 'good' : deaths <= 8 ? 'ok' : 'bad' },
   ];
-  const build = hero ? look.buildFor(hero.id, hero.key).filter((b) => b.source === 'pro' && b.share >= 0.4 && (look.itemCost(b.key) ?? 0) >= 1500).slice(0, 3) : [];
+  const build = hero && norms ? look.buildFor(hero.id, hero.key).filter((b) => b.source === 'pro' && b.share >= 0.4 && (look.itemCost(b.key) ?? 0) >= 1500).slice(0, 3) : [];
   for (const b of build) {
     const t = mem.items.get(b.key);
     stats.push({ label: `${look.itemName(b.key)}, мин`, value: t === undefined ? null : Math.round(t / 6) / 10, ref: b.medianMin, refLabel: 'профи патча', verdict: t === undefined ? 'bad' : verdict(t / 60, b.medianMin, false) });

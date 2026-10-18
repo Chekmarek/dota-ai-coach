@@ -9,7 +9,13 @@ import type { AgreementField, AgreementReport } from '@core/gsi/agreement.ts';
 import type { VisionAgreementField } from '@core/gsi/vision-agreement.ts';
 import { useEngine } from '../hooks/useEngine';
 import { Card, PageHeader } from '../components/ui';
-import { GameModeBadge } from '../components/gsi';
+import { GameModeBadge, currentGameMode } from '../components/gsi';
+import { useGsi } from '../hooks/useGsi';
+import { parseModeOverrides, turboMechanics } from '@core/knowledge-base/modes.ts';
+import turboJson from '../../data/modes/turbo.json';
+
+/** Справочник Турбо для «Ближайших событий» (тот же, что у движка подсказок) */
+const TURBO = parseModeOverrides(turboJson);
 import { UpcomingEventsCard } from '../components/mechanics';
 import { useKnowledgeBase } from '../hooks/useKnowledgeBase';
 import { PlayersCard } from '../components/players';
@@ -161,8 +167,10 @@ export function MatchState() {
 function MatchView({ s, now }: { s: MatchSnapshot; now: number }) {
   const m = s.match;
   const { kb } = useKnowledgeBase();
-  // «Ближайшие события» — только когда игровые часы известны
+  // «Ближайшие события» — только когда игровые часы известны; в Турбо — по справочнику Турбо
   const clockKnown = m.clock.value !== null && m.clock.tag !== 'unknown';
+  const turbo = currentGameMode(useGsi(), now).mode === 'turbo';
+  const mechanics = useMemo(() => (kb && turbo ? turboMechanics(kb.mechanics, TURBO, kb.meta.patch) : (kb?.mechanics ?? [])), [kb, turbo]);
   const h = s.hero;
   const events = s.events.slice(-EVENTS_SHOWN).reverse();
   // Ячейки только из GSI: телепорт и нейтральные — всегда, тайник — только занятые ячейки (шесть пустых — шум)
@@ -192,7 +200,7 @@ function MatchView({ s, now }: { s: MatchSnapshot; now: number }) {
         </p>
       </Card>
 
-      {clockKnown && kb && kb.mechanics.length > 0 && <UpcomingEventsCard clockSec={m.clock.value as number} entries={kb.mechanics} />}
+      {clockKnown && kb && mechanics.length > 0 && <UpcomingEventsCard clockSec={m.clock.value as number} entries={mechanics} />}
 
       <Card title="Мой герой">
         {!h.locked && (

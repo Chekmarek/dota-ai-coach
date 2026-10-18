@@ -120,7 +120,9 @@ export function engagePercent(v: CoachView, mem: CoachMemory, lookup: CoachLooku
   const clock = v.clock.value;
   const bbCost = v.me.buybackCost.value;
   const bbReady = bbCost !== null && v.me.buybackCooldown.value !== null && v.me.gold.value !== null ? v.me.buybackCooldown.value === 0 && v.me.gold.value >= bbCost : null;
-  const aegisOurs = mem.aegisOurs === true && mem.aegisAt !== null && clock !== null && clock - mem.aegisAt < 300;
+  // Срок аегиса — по режиму (Турбо — 4 мин); не проверен — аегис в оценке не учитываем
+  const aegisSec = lookup.aegisSec() ?? 0;
+  const aegisOurs = mem.aegisOurs === true && mem.aegisAt !== null && clock !== null && clock - mem.aegisAt < aegisSec;
   const side = me && v.team ? mapSide(me, v.team) : null;
 
   const inputs: FactorInput[] = [

@@ -12,6 +12,11 @@ import type { KnowledgeBase } from '@shared/types/kb';
 import type { DraftLiveHeroes } from '@shared/types/draft';
 import { liveHeroes } from './draft';
 import { asGameModeInfo, modeBannerText, resolveGameMode, type GameModeInfo } from '@core/gsi/mode.ts';
+import { parseModeOverrides } from '@core/knowledge-base/modes.ts';
+import turboJson from '../../data/modes/turbo.json';
+
+/** Справочник Турбо (вшит в сборку); неверная форма — null, тогда в Турбо вся механика «не проверено» */
+const TURBO = parseModeOverrides(turboJson);
 
 /** Как часто сохранять историю идущего матча */
 export const HISTORY_SAVE_MS = 30_000;
@@ -33,7 +38,7 @@ export interface CoachDeps {
 
 export function coachSettings(s: Settings): CoachSettings {
   const d = defaultCoachSettings();
-  return { ...d, detail: s.hints.detail, categories: { ...s.hints.categories }, aiLive: s.hints.ai };
+  return { ...d, detail: s.hints.detail, categories: { ...s.hints.categories }, aiLive: s.hints.ai, gameMode: s.hints.gameMode };
 }
 
 const safeId = (s: string) => s.replace(/[^0-9A-Za-z_-]/g, '-').slice(0, 80);
@@ -74,6 +79,7 @@ export class CoachService {
       mechanics: kb.mechanics,
       stats: this.deps.kb.stats(),
       kbVerified: kb.meta.verification === 'verified',
+      turbo: TURBO,
     };
     const ai = new CoachAi({ provider: () => this.deps.aiProvider(), now: this.now });
     this.engine = new CoachEngine({ data, ai, now: this.now, settings: coachSettings(this.deps.settings.get()), onAsync: () => this.publish() });

@@ -35,7 +35,8 @@ export const csRule: Rule = (c) => {
   const lh = c.v.me.lastHits.value;
   if (!playing(c) || clock === null || lh === null || clock < 5 * 60 || clock > 12 * 60) return null;
   const role = laneRole(c);
-  if (role === null || role === 4) return null;
+  // Добивания профи — из обычных матчей; в Турбо норм нет
+  if (role === null || role === 4 || !c.look.hasNorms) return null;
   const st = c.look.statsFor(c.v.me.hero.value?.id, c.v.me.hero.value?.key);
   const ref = st?.pro?.lhAt10[String(role)];
   if (!ref || ref.n < 5) return null;

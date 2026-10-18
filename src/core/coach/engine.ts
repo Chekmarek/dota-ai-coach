@@ -33,6 +33,7 @@ import {
   type Advice,
 } from './ai.ts';
 import { PRIORITY_RANK, defaultCoachSettings, type CoachSettings, type Hint, type HintDraft } from './types.ts';
+import { asGameModeInfo, resolveGameMode } from '../gsi/mode.ts';
 
 export const ALL_RULES: Rule[] = [...DANGER_RULES, ...FIGHT_RULES, ...MACRO_RULES, ...TIMING_RULES, ...LANING_RULES, ...ECONOMY_RULES, ...DRAFT_RULES];
 /**
@@ -163,6 +164,8 @@ export class CoachEngine {
 
   tick(state: MatchState, gsi: GsiReading | null, gsiWallMs: number | null): CoachUpdate {
     const t0 = this.now();
+    // Режим игры: из снимка матча (GSI) с ручным выбором пользователя — от него механика и нормы правил
+    this.look.setMode(resolveGameMode(asGameModeInfo(state.match.mode), this.settings.gameMode));
     const v = buildView(state, gsi, gsiWallMs);
     const ev = this.mem.ingest(v, GOLD_HIGH);
     if (ev.matchReset) {

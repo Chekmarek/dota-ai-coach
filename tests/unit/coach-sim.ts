@@ -8,6 +8,7 @@ import { UNKNOWN_MODE, type GameModeInfo } from '../../src/core/gsi/mode.ts';
 import type { CoachData } from '../../src/core/coach/data.ts';
 import { parseKbStats } from '../../src/shared/types/stats.ts';
 import { parseMechanics } from '../../src/shared/types/mechanics.ts';
+import { parseModeOverrides } from '../../src/core/knowledge-base/modes.ts';
 
 const KB = join(import.meta.dirname, '../../resources/data/kb/7.41f');
 const json = (f: string) => JSON.parse(readFileSync(join(KB, f), 'utf8'));
@@ -24,6 +25,7 @@ export function realData(): CoachData {
     mechanics: mech.file?.entries ?? [],
     stats: parseKbStats(json('stats.json'), '7.41f'),
     kbVerified: false,
+    turbo: parseModeOverrides(JSON.parse(readFileSync(join(import.meta.dirname, '../../src/data/modes/turbo.json'), 'utf8'))),
   };
   return cached;
 }

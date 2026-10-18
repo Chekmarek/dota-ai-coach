@@ -129,7 +129,8 @@ export class MistakeDetector {
     }
 
     // Добивания к 10:00
-    if (clock !== null && clock >= 600 && !c.mem.once.has('mistake:cs10')) {
+    // (нормы профи — из обычных матчей: в Турбо эту и следующую ошибку не считаем)
+    if (clock !== null && clock >= 600 && !c.mem.once.has('mistake:cs10') && c.look.hasNorms) {
       c.mem.once.add('mistake:cs10');
       const role = laneRole(c);
       const st = c.look.statsFor(c.v.me.hero.value?.id, c.v.me.hero.value?.key);
@@ -142,7 +143,7 @@ export class MistakeDetector {
 
     // Поздний ключевой предмет
     const hero = c.v.me.hero.value;
-    if (clock !== null && hero && c.v.me.itemsKnown) {
+    if (clock !== null && hero && c.v.me.itemsKnown && c.look.hasNorms) {
       const owned = new Set([...c.mem.items.keys(), ...c.v.me.items.map((i) => i.key)]);
       for (const b of c.look.buildFor(hero.id, hero.key).filter((x) => x.source === 'pro' && x.share >= 0.4 && (c.look.itemCost(x.key) ?? 0) >= 1500)) {
         if (owned.has(b.key) || clock / 60 <= b.medianMin + 6 || c.mem.once.has(`mistake:late:${b.key}`)) continue;

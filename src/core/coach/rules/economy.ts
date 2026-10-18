@@ -23,7 +23,8 @@ export function nextItem(c: RuleContext): { key: string; name: string; cost: num
 
 export const gpmRule: Rule = (c) => {
   const clock = c.v.clock.value;
-  if (!playing(c) || clock === null || clock < 10 * 60) return null;
+  // Медиана GPM — из обычных матчей: в Турбо её нет (золото идёт вдвое быстрее)
+  if (!playing(c) || clock === null || clock < 10 * 60 || !c.look.hasNorms) return null;
   const st = c.look.statsFor(c.v.me.hero.value?.id, c.v.me.hero.value?.key);
   const gpm = c.v.me.gpm.value;
   const ref = st?.bench?.gpm?.p50;
@@ -94,8 +95,12 @@ export const nextItemRule: Rule = (c) => {
     priority: 'info',
     confidence: 0.7,
     short: `Дальше: ${next.name}`,
-    normal: next.source === 'pro' ? `Следующий предмет: ${next.name} — профи патча берут его к ${Math.round(next.medianMin)} мин.` : `Следующий предмет: ${next.name} — его чаще всего собирают на этом герое.`,
-    facts: [kbFact('next-item', 'Следующий предмет (профи патча)', next.name, false, 'stats'), kbFact('median-min', 'Обычно к минуте', next.medianMin, false, 'stats')],
+    // Минута профи — из обычных матчей; в Турбо её не называем
+    normal:
+      next.source === 'pro' && c.look.hasNorms
+        ? `Следующий предмет: ${next.name} — профи патча берут его к ${Math.round(next.medianMin)} мин.`
+        : `Следующий предмет: ${next.name} — его чаще всего собирают на этом герое.`,
+    facts: [kbFact('next-item', 'Следующий предмет (профи патча)', next.name, false, 'stats'), ...(c.look.hasNorms ? [kbFact('median-min', 'Обычно к минуте', next.medianMin, false, 'stats')] : [])],
     ttlSec: 10,
     cooldownSec: 0,
     icon: `item:${next.key}`,
@@ -105,7 +110,8 @@ export const nextItemRule: Rule = (c) => {
 export const itemTimingRule: Rule = (c) => {
   const clock = c.v.clock.value;
   const hero = c.v.me.hero.value;
-  if (!playing(c) || clock === null || !hero || !c.v.me.itemsKnown) return null;
+  // «Запаздывает» — по минутам профи обычных матчей; в Турбо норм нет
+  if (!playing(c) || clock === null || !hero || !c.v.me.itemsKnown || !c.look.hasNorms) return null;
   const owned = new Set([...c.mem.items.keys(), ...c.v.me.items.map((i) => i.key)]);
   // только профи патча: у запасной сборки минута примерная — «запаздывает» по ней не скажешь
   const core = c.look.buildFor(hero.id, hero.key).filter((b) => b.source === 'pro' && b.share >= 0.4 && (c.look.itemCost(b.key) ?? 0) >= 1500);

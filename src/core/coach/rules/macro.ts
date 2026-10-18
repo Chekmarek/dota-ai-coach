@@ -117,7 +117,7 @@ export const roshanKilledRule: Rule = (c) => {
 export const timersRule: Rule = (c) => {
   const clock = c.v.clock.value;
   if (!c.v.inGame || clock === null || clock < -30) return null;
-  const evs = upcomingEvents(c.look.data.mechanics, clock, { roshanDeathAt: c.mem.roshanKilledAt, tormentorDeathAt: c.mem.tormentorKilledAt });
+  const evs = upcomingEvents(c.look.mechanics, clock, { roshanDeathAt: c.mem.roshanKilledAt, tormentorDeathAt: c.mem.tormentorKilledAt });
   const out: HintDraft[] = [];
   for (const e of evs) {
     if (e.status !== 'ok' || e.inSec === null || e.at === null) continue;

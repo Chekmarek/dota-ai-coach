@@ -3,6 +3,8 @@
 import type { KbHero, KbItem } from '../../shared/types/kb.ts';
 import type { MechanicsEntry } from '../../shared/types/mechanics.ts';
 import type { HeroStats, KbStats } from '../../shared/types/stats.ts';
+import { modeRule, turboMechanics, type ModeOverrides } from '../knowledge-base/modes.ts';
+import { UNKNOWN_MODE, type GameModeInfo } from '../gsi/mode.ts';
 
 export interface CoachData {
   patch: string | null;
@@ -12,7 +14,12 @@ export interface CoachData {
   stats: KbStats | null;
   /** База знаний сверена вручную? (сейчас — imported-unverified) */
   kbVerified: boolean;
+  /** Справочник Турбо (src/data/modes/turbo.json); нет — в Турбо вся механика «не проверено» */
+  turbo?: ModeOverrides | null;
 }
+
+/** Аегис исчезает через (обычная игра), с */
+const AEGIS_SEC = 300;
 
 /** Реген и восстановление: ключ предмета → что восстанавливает */
 export const REGEN_ITEMS: Record<string, 'hp' | 'mana' | 'both'> = {
@@ -62,6 +69,10 @@ export class CoachLookup {
   readonly invisHeroes = new Set<string>();
   readonly abilityByKey = new Map<string, { hero: KbHero; name: string; innate: boolean }>();
 
+  /** Режим игры для правил (с ручным выбором пользователя); меняет механику и нормы */
+  private gameMode: GameModeInfo = { ...UNKNOWN_MODE };
+  private turboMech: MechanicsEntry[] | null = null;
+
   constructor(readonly data: CoachData) {
     for (const h of data.heroes) {
       this.heroByKey.set(h.key, h);
@@ -85,8 +96,35 @@ export class CoachLookup {
   itemCost(key: string): number | null {
     return this.itemByKey.get(key)?.cost ?? null;
   }
+  /** Режим игры сейчас; неизвестен и не Турбо — правила обычной игры */
+  setMode(mode: GameModeInfo): void {
+    this.gameMode = mode;
+  }
+  get mode(): GameModeInfo {
+    return this.gameMode;
+  }
+  get isTurbo(): boolean {
+    return this.gameMode.mode === 'turbo';
+  }
+  /** Механика карты для режима: в Турбо — со значениями справочника, непроверенное — «missing» */
+  get mechanics(): readonly MechanicsEntry[] {
+    if (!this.isTurbo) return this.data.mechanics;
+    this.turboMech ??= turboMechanics(this.data.mechanics, this.data.turbo ?? null, this.data.patch);
+    return this.turboMech;
+  }
+  /**
+   * Нормы из статистики патча (медианы GPM/XPM, добивания и минуты предметов профи) — только для обычной игры:
+   * статистики Турбо нет, а умножать нормы «на глаз» нельзя.
+   */
+  get hasNorms(): boolean {
+    return !this.isTurbo;
+  }
+  /** Через сколько секунд исчезает аегис; null — в этом режиме не проверено */
+  aegisSec(): number | null {
+    return this.isTurbo ? modeRule(this.data.turbo ?? null, 'aegisSec') : AEGIS_SEC;
+  }
   mechanic(id: string): MechanicsEntry | null {
-    return this.data.mechanics.find((m) => m.id === id) ?? null;
+    return this.mechanics.find((m) => m.id === id) ?? null;
   }
   /** Значение механики (число); null — нет записи или значение не число */
   mechanicValue(id: string, key: string): number | null {

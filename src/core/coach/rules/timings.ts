@@ -6,16 +6,13 @@ import { fact, kbFact } from '../view.ts';
 import { draft, mmss, playing, type Rule, type RuleContext } from './context.ts';
 import type { HintDraft } from '../types.ts';
 
-/** Аегис действует 5 минут (тот же срок использует оценка драки в prob.ts) */
-const AEGIS_SEC = 300;
-
 const isSupport = (c: RuleContext): boolean => myRole(c) === 'support';
 
 /** Саппорту: окно стака через несколько секунд — пора к лагерю (с 3-й по 20-ю минуту, не в драке) */
 export const stackRule: Rule = (c) => {
   const clock = c.v.clock.value;
   if (!playing(c) || clock === null || clock < 3 * 60 || clock > 20 * 60 || c.mem.inFight || !isSupport(c)) return null;
-  const e = upcomingEvents(c.look.data.mechanics, clock).find((x) => x.id === 'stack-window');
+  const e = upcomingEvents(c.look.mechanics, clock).find((x) => x.id === 'stack-window');
   if (!e || e.status !== 'ok' || e.inSec === null || e.at === null || e.inSec > 12 || e.inSec < 5) return null;
   const sec = Math.round(((e.at % 60) + 60) % 60);
   return draft({
@@ -89,8 +86,10 @@ export const neutralTierRule: Rule = (c) => {
 export const aegisRule: Rule = (c) => {
   const clock = c.v.clock.value;
   const at = c.mem.aegisAt;
-  if (!c.v.inGame || clock === null || at === null || c.mem.aegisOurs !== true) return null;
-  const left = at + AEGIS_SEC - clock;
+  // Срок аегиса — по режиму (обычно 5 мин, Турбо — 4); не проверен — молчим
+  const aegis = c.look.aegisSec();
+  if (!c.v.inGame || clock === null || at === null || c.mem.aegisOurs !== true || aegis === null) return null;
+  const left = at + aegis - clock;
   if (left > 30 || left < 5 || c.mem.once.has(`aegis-end@${at}`)) return null;
   c.mem.once.add(`aegis-end@${at}`);
   return draft({
@@ -99,7 +98,7 @@ export const aegisRule: Rule = (c) => {
     priority: 'advice',
     confidence: 0.85,
     short: `Аегис пропадёт через ${Math.round(left)} с`,
-    normal: `Аегис взят в ${mmss(at)} и пропадёт в ${mmss(at + AEGIS_SEC)}. Используйте его: давите сейчас.`,
+    normal: `Аегис взят в ${mmss(at)} и пропадёт в ${mmss(at + aegis)}. Используйте его: давите сейчас.`,
     facts: [{ key: 'aegis', label: 'Аегис взят в', value: mmss(at), source: 'gsi', ageSec: null, confidence: 1, verified: true }],
     ttlSec: 10,
     cooldownSec: 0,
