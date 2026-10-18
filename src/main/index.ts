@@ -8,7 +8,7 @@ import { KbStore } from './knowledge/kb-store';
 import { registerIpc } from './ipc/register';
 import { EngineLink } from './lifecycle/engine-link';
 import { handleMediaProtocol, registerMediaScheme } from './media/media-protocol';
-import { liveSeesDota, onLiveSettingsChanged, setupLive, showHudDemo } from './live/live';
+import { liveLog, liveSeesDota, onLiveSettingsChanged, setupLive, showHudDemo } from './live/live';
 import { setupAi } from './ai';
 import { setupCoach, type CoachHandle } from './coach';
 import { gsiPhase } from '@core/gsi/map.ts';
@@ -22,6 +22,12 @@ const { dataDir, distribution } = resolveDataDir();
 app.setPath('userData', dataDir);
 app.setAppUserModelId('app.dotacoach.desktop');
 registerMediaScheme();
+
+// Необработанные ошибки main — в live.log (раньше пропадали бесследно). Отказ промиса только записываем;
+// исключение — через Monitor: поведение Electron при падении не меняется, но причина остаётся в журнале
+const errLine = (e: unknown) => (e instanceof Error ? `${e.name}: ${e.message}\n${e.stack ?? ''}` : String(e)).slice(0, 2000);
+process.on('unhandledRejection', (reason) => liveLog('main: необработанный отказ промиса', errLine(reason)));
+process.on('uncaughtExceptionMonitor', (err) => liveLog('main: необработанное исключение', errLine(err)));
 
 /** Репозиторий GitHub с релизами коуча — поле "updateRepo" в package.json */
 function readUpdateRepo(): string | null {
