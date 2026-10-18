@@ -95,6 +95,12 @@
    "url": "https://www.esports.net/news/dota/turbo-mode-just-got-faster-in-new-dota-2-update/",
    "revision": null,
    "license": null
+  },
+  "record-2026-10-18": {
+   "name": "Запись GSI настоящего матча Турбо 2026-10-18 (player.gold_from_income: 902 к 5:00, 1802 к 10:00, 2730 к 15:00, 3676 к 20:00, 4624 к 25:00)",
+   "url": "https://github.com/Chekmarek/dota-ai-coach/blob/sources/docs/TURBO_GAME_TEST.md",
+   "revision": null,
+   "license": null
   }
  },
  "entries": [
@@ -682,10 +688,19 @@
   },
   {
    "id": "gold-passive",
-   "status": "unknown",
-   "basis": "conflict",
-   "sources": [],
-   "noteRu": "Источники расходятся: старые гайды — «пассивное золото ×2», Liquipedia — удвоение убрано с 7.23 (возможно, ошибка)"
+   "status": "changed",
+   "basis": "derived",
+   "sources": [
+    "record-2026-10-18"
+   ],
+   "noteRu": "Пассивное золото в Турбо удвоено: по записи матча 180 в минуту до 12:00 и ~189 после (обычно 90 и 94,8). Значения после 30:00 — то же удвоение, записью не проверены",
+   "values": {
+    "at0": 180,
+    "at12": 189.6,
+    "at30": 199.6,
+    "at45": 211,
+    "at62": 225.6
+   }
   },
   {
    "id": "gold-hero-kill",

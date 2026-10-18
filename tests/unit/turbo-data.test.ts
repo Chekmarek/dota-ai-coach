@@ -74,8 +74,14 @@ describe('механика Турбо после наложения', () => {
     expect(get(applied, 'building-bounty', 'meleeRax')).toBe((get(normal, 'building-bounty', 'meleeRax') as number) * 2);
     expect(get(applied, 'gold-hero-kill', 'formula')).toBe(get(normal, 'gold-hero-kill', 'formula'));
   });
-  it('нет единого мнения — null: пассивное золото, время возрождения', () => {
-    for (const id of ['gold-passive', 'respawn-time']) expect(applied.find((e) => e.id === id)!.values.every((v) => v.value === null), id).toBe(true);
+  it('нет единого мнения — null: время возрождения', () => {
+    expect(applied.find((e) => e.id === 'respawn-time')!.values.every((v) => v.value === null)).toBe(true);
+  });
+  it('пассивное золото ×2 — по записи настоящего матча Турбо (2026-10-18)', () => {
+    for (const key of ['at0', 'at12', 'at30', 'at45', 'at62']) expect(get(applied, 'gold-passive', key), key).toBeCloseTo((get(normal, 'gold-passive', key) as number) * 2, 5);
+    // В записи: 902 к 5:00, 1802 к 10:00, 3676 к 20:00 — 180/мин до 12:00 и ~189 после
+    expect((1802 - 902) / 5).toBe(get(applied, 'gold-passive', 'at0'));
+    expect(Math.abs((3676 - 2730) / 5 - (get(applied, 'gold-passive', 'at12') as number))).toBeLessThan(1);
   });
   it('таймеры Турбо: Рошан, Мучитель 10:00, лотос 1:30, Святилище 3:30; Рошан — без времени смерти неизвестен', () => {
     const t = upcomingEvents(applied, 60);
