@@ -282,7 +282,9 @@ export class CoachEngine {
       }
     }
 
-    const expired = this.queue.tick(v.wallMs);
+    // Устаревшие: правило перестало подтверждать ситуативную подсказку (только пока идёт игра — на паузе правила молчат)
+    const stale = v.inGame && !v.paused ? this.queue.expireStale(v.wallMs) : [];
+    const expired = [...stale, ...this.queue.tick(v.wallMs)];
     return {
       wallMs: v.wallMs,
       visible: this.queue.visible(),

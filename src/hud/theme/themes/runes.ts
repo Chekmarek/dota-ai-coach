@@ -38,7 +38,7 @@ export const RUNES: HudTheme = {
     display: "'Segoe UI Variable Display', 'Segoe UI', system-ui, sans-serif",
     body: "'Segoe UI Variable Text', 'Segoe UI', 'Noto Sans', system-ui, sans-serif",
   },
-  size: { title: 13.5, text: 12, small: 10.5, percent: 12.5, icon: 14, gem: 15, pad: 7.5, gap: 6, bevel: 5, frame: 1, corner: 0, bar: 3, medallion: 36, cardWidth: 240 },
+  size: { title: 13.5, text: 12, small: 10.5, percent: 19, icon: 14, gem: 15, pad: 7.5, gap: 6, bevel: 5, frame: 1, corner: 0, bar: 3, medallion: 36, cardWidth: 240 },
   shadow: { card: '0 4px 14px rgba(0, 0, 0, 0.55)', glowBlur: 10 },
   duration: { enter: 260, exit: 180, reflow: 220, update: 200, pulse: 1400 },
   easing: { out: 'cubic-bezier(0.16, 1, 0.3, 1)', in: 'cubic-bezier(0.55, 0, 1, 0.45)', inOut: 'cubic-bezier(0.65, 0, 0.35, 1)' },

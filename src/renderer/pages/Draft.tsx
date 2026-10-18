@@ -4,6 +4,7 @@ import type { KbHero } from '@shared/types/kb';
 import { Card, PageHeader } from '../components/ui';
 import { GameModeBadge } from '../components/gsi';
 import { useKnowledgeBase } from '../hooks/useKnowledgeBase';
+import { Icon } from '../components/icons';
 
 type Side = 'allies' | 'enemies' | 'bans';
 const SIDE_LIMIT: Record<Side, number> = { allies: 4, enemies: 5, bans: 30 };
@@ -105,8 +106,9 @@ export function Draft() {
               </div>
               <div className="draft-chips">
                 {req[side].map((k) => (
-                  <button key={k} className="draft-chip" onClick={() => remove(side, k)} title="Убрать">
-                    {name(k)} ✕
+                  <button key={k} className="draft-chip" onClick={() => remove(side, k)} title="Убрать" aria-label={`Убрать ${name(k)}`}>
+                    {name(k)}
+                    <Icon name="close" size={12} />
                   </button>
                 ))}
               </div>
@@ -118,7 +120,8 @@ export function Draft() {
           <span className="muted">Мой герой:</span>
           {req.me ? (
             <button className="draft-chip draft-me" onClick={() => setReq((r) => ({ ...r, me: null }))} data-testid="draft-me">
-              {name(req.me)} ✕
+              {name(req.me)}
+              <Icon name="close" size={12} />
             </button>
           ) : (
             <HeroPicker heroes={heroes} taken={taken} onPick={(k) => setReq((r) => ({ ...r, me: k }))} testId="draft-add-me" placeholder="ещё не выбран" />

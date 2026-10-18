@@ -21,7 +21,13 @@ export type IconName =
   | 'wrench'
   | 'info'
   | 'play'
-  | 'stop';
+  | 'stop'
+  | 'close'
+  | 'check'
+  | 'alert'
+  | 'bolt'
+  | 'help'
+  | 'hourglass';
 
 const PATHS: Record<IconName, ReactNode> = {
   dashboard: (
@@ -115,6 +121,22 @@ const PATHS: Record<IconName, ReactNode> = {
   ),
   play: <path d="M7 4.5v15l12-7.5Z" fill="currentColor" />,
   stop: <rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor" />,
+  close: <path d="M6 6l12 12M18 6 6 18" />,
+  check: <path d="m4.5 12.5 5 5 10-11" />,
+  alert: (
+    <>
+      <path d="M12 3.5 21.5 20h-19Z" />
+      <path d="M12 10v4.5M12 17.4v.1" />
+    </>
+  ),
+  bolt: <path d="M13.5 2.5 5 13.5h6l-1 8 8.5-11h-6Z" />,
+  help: (
+    <>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M9.4 9.3a2.7 2.7 0 0 1 5.2.9c0 1.8-2.6 2.3-2.6 4.1M12 17.4v.1" />
+    </>
+  ),
+  hourglass: <path d="M6.5 3.5h11M6.5 20.5h11M7.5 3.5c0 5 9 5 9 8.5s-9 3.5-9 8.5M16.5 3.5c0 5-9 5-9 8.5s9 3.5 9 8.5" />,
 };
 
 export function Icon({ name, size = 18, className }: { name: IconName; size?: number; className?: string }) {

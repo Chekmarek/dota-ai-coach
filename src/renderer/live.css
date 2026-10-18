@@ -11,7 +11,7 @@
 /* Обновления */
 .nav-dot { margin-left: auto; width: 8px; height: 8px; border-radius: 50%; background: #ff3b30; box-shadow: 0 0 0 0 rgba(255, 59, 48, 0.6); animation: navdot 2.2s ease-out infinite; }
 @keyframes navdot { 0% { box-shadow: 0 0 0 0 rgba(255, 59, 48, 0.55); } 70% { box-shadow: 0 0 0 7px rgba(255, 59, 48, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 59, 48, 0); } }
-.update-notice { background: var(--accent-soft); border-color: rgba(62, 230, 210, 0.4); color: var(--accent); font-weight: 600; font-size: 12px; padding: 6px 10px; text-align: left; }
+.update-notice { display: inline-flex; align-items: center; gap: 6px; background: var(--accent-soft); border-color: rgba(62, 230, 210, 0.4); color: var(--accent); font-weight: 600; font-size: 12px; padding: 6px 10px; text-align: left; }
 .update-notice:hover:not(:disabled) { background: rgba(62, 230, 210, 0.2); border-color: var(--accent); }
 
 .update-banner { display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; padding: 12px 16px; border-radius: var(--radius);
@@ -41,14 +41,14 @@
 .release-notes ul { margin: 0 0 6px; padding-left: 20px; }
 .release-notes li { margin: 2px 0; }
 .release-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px; }
-.release-list > li { padding-left: 14px; border-left: 3px solid var(--line); }
-.release-list > li.current { border-left-color: var(--ok); }
+.release-list > li { padding: 12px 14px; border: 1px solid var(--line); border-radius: 10px; }
+.release-list > li.current { border-color: rgba(76, 201, 107, 0.35); }
 .release-head { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
 .release-list .release-notes { color: var(--muted); font-size: 13px; }
 
 .update-toast { position: fixed; right: 20px; bottom: 20px; z-index: 50; display: flex; align-items: center; gap: 12px; padding: 12px 12px 12px 14px; max-width: 420px;
   background: var(--panel-2); border: 1px solid rgba(62, 230, 210, 0.35); border-radius: 12px; box-shadow: 0 12px 32px rgba(0, 0, 0, 0.55);
-  animation: toastin 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.2) both; }
+  animation: toastin 0.35s cubic-bezier(0.16, 1, 0.3, 1) both; }
 .update-toast.leaving { animation: toastout 0.22s ease-in both; }
 @keyframes toastin { from { opacity: 0; transform: translateY(14px) scale(0.97); } to { opacity: 1; transform: none; } }
 @keyframes toastout { to { opacity: 0; transform: translateY(10px); } }
@@ -151,7 +151,12 @@ button.link { background: none; border: none; padding: 0; color: var(--accent-2)
 .pl-map-base-dire { fill: rgba(220, 70, 60, 0.25); }
 
 /* «Предпросмотр подсказок» (этап 3): сцена в размере настоящего экрана, уменьшенная под ширину страницы */
-.hudp-controls { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 10px 16px; }
+.hudp-groups { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px; }
+.hudp-group { margin: 0; min-width: 0; display: flex; flex-direction: column; gap: 10px; padding: 12px 14px 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--panel-2); }
+.hudp-group legend { padding: 0 6px; margin-left: -6px; font-size: 12px; font-weight: 600; color: var(--muted); }
+.hudp-group label { display: flex; flex-direction: column; gap: 6px; }
+.hudp-group label.check { flex-direction: row; align-items: center; gap: 10px; cursor: pointer; }
+.hudp-group select, .hudp-group input[type='file'] { width: 100%; min-width: 0; }
 .hudp-wrap { position: relative; width: 100%; margin-top: 12px; overflow: hidden; border: 1px solid var(--line); border-radius: 10px; }
 .hudp-stage { position: absolute; left: 0; top: 0; transform-origin: 0 0; overflow: hidden; }
 .hudp-bg, .hudp-host { position: absolute; inset: 0; }
@@ -166,10 +171,15 @@ button.link { background: none; border: none; padding: 0; color: var(--accent-2)
 .hints-cats legend { padding: 0 4px; }
 .hints-feed .row { display: flex; gap: 10px; align-items: center; }
 .hints-list { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 6px; }
-.hint-item { padding: 6px 10px; border-left: 3px solid var(--line-strong); border-radius: 0 6px 6px 0; background: rgba(255, 255, 255, 0.03); }
-.hint-item.hint-critical { border-left-color: var(--err); }
-.hint-item.hint-advice { border-left-color: var(--accent); }
-.hint-pct { color: var(--accent); }
+.hint-item { padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel-2); }
+.hint-item.hint-critical { border-color: rgba(255, 97, 89, 0.4); background: rgba(255, 97, 89, 0.06); }
+.hint-head { display: flex; align-items: baseline; gap: 8px; min-width: 0; }
+.hint-title { min-width: 0; }
+.hint-sev { flex: none; padding: 1px 7px; border-radius: 4px; font-size: 11px; font-weight: 700; color: var(--muted); background: var(--panel-3); }
+.hint-sev.sev-critical { color: #fff; background: var(--err); }
+.hint-sev.sev-advice { color: var(--accent); background: var(--accent-soft); }
+.hint-src { flex: none; font-size: 11px; font-weight: 600; color: var(--accent); }
+.hint-pct { margin-left: auto; flex: none; font-weight: 700; color: var(--accent); font-variant-numeric: tabular-nums; }
 .history-layout { display: grid; grid-template-columns: minmax(220px, 300px) 1fr; gap: 16px; }
 .history-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
 .history-list button { width: 100%; text-align: left; }
@@ -200,8 +210,7 @@ button.link { background: none; border: none; padding: 0; color: var(--accent-2)
   animation: modeicon 0.7s 0.15s cubic-bezier(0.16, 1, 0.3, 1) both; }
 .mode-toast-turbo .mode-toast-icon { animation: modeicon 0.7s 0.15s cubic-bezier(0.16, 1, 0.3, 1) both, modecharge 0.42s 0.9s ease-in-out 2; }
 .mode-toast-text { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
-.mode-toast-kicker { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--mc); }
-.mode-toast-title { font-size: 22px; letter-spacing: 0.05em; text-transform: uppercase; }
+.mode-toast-title { font-size: 20px; font-weight: 700; color: var(--mc); }
 .mode-toast-bar { position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: var(--mc); transform-origin: left; animation: modebar linear both; }
 @keyframes modein { from { opacity: 0; transform: translate(-50%, -26px) scale(0.9); } 60% { opacity: 1; transform: translate(-50%, 3px) scale(1.02); } to { opacity: 1; transform: translate(-50%, 0) scale(1); } }
 @keyframes modeout { to { opacity: 0; transform: translate(-50%, -16px) scale(0.97); } }

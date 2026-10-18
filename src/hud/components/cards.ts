@@ -1,9 +1,11 @@
 // Компоненты подсказок: HintCard, AlertBanner, DecisionCard (с %), ReviewPanel. Без React — обычный DOM:
-// один и тот же код рисует оверлей поверх игры и страницу «Предпросмотр подсказок».
+// один и тот же код рисует оверлей поверх игры и страницу «Подсказки в игре».
 // Вид — только классы hud-* и CSS-переменные темы (hud.css, theme/), никаких цветов и размеров здесь.
+// Иерархия плашки: действие (заголовок) → причина (≤ 2 строк) → число → подробности (только «Подробно»).
 import type { HudHint } from '../../shared/types/hud.ts';
 import { h } from './dom.ts';
 import { aiMark, emblem, severityIcon } from './icons.ts';
+import { reasonText } from '../../core/hud/text.ts';
 
 export type CardKind = 'card' | 'alert' | 'decision' | 'review';
 
@@ -16,32 +18,44 @@ export function kindOf(hint: HudHint): CardKind {
 }
 
 function head(hint: HudHint, title = hint.title): HTMLElement[] {
-  return [h('div', 'hud-head', emblem(), h('span', 'hud-title', title), hint.source === 'ai' ? aiMark() : null, severityIcon(hint.priority))];
+  return [
+    h(
+      'div',
+      'hud-head',
+      emblem(),
+      h('span', 'hud-title', title),
+      hint.source === 'ai' ? aiMark() : null,
+      // Срочность не только цветом: другой значок и слово
+      hint.priority === 'critical' ? h('span', 'hud-tag', 'Срочно') : null,
+      severityIcon(hint.priority),
+    ),
+  ];
 }
 
 /** Сколько факторов процента показывать: самые сильные, чтобы карточка оставалась маленькой */
 const MAX_FACTORS = 3;
 
-/** Полоска «сколько ещё будет на экране» — CSS-анимация transform (видеокарта) */
+/** Полоса «сколько ещё будет на экране»: длительность — из --ttl корня, продлённый показ сдвигает её назад */
 function ttlBar(hint: HudHint): HTMLElement | null {
   if (hint.ttlMs <= 0 || hint.zone === 'review') return null;
-  const i = h('i', null);
-  i.style.animationDuration = `${hint.ttlMs}ms`;
-  return h('div', 'hud-ttl', i);
+  return h('div', 'hud-ttl', h('i', null));
 }
 
-/** Процент — кольцо (заполнено на value %), уверенность — тонкая полоса, ниже — самые сильные факторы */
+/** Процент — крупное число (главное), подпись, уверенность оценки — тонкой полосой; факторы — в «Подробно» */
 function percentBlock(p: NonNullable<HudHint['percent']>): HTMLElement {
-  const medal = h('div', 'hud-medal', h('span', 'hud-pct-num', `${Math.round(p.value)}%`));
-  medal.style.setProperty('--p', String(Math.max(0, Math.min(100, p.value))));
   const fill = h('i', null);
   fill.style.transform = `scaleX(${Math.max(0, Math.min(1, p.confidence))})`;
   const top = [...p.factors].sort((a, b) => Math.abs(b.effect) - Math.abs(a.effect)).slice(0, MAX_FACTORS);
   const factors = top.length
     ? h('ul', 'hud-factors', ...top.map((f) => h('li', f.effect >= 0 ? 'hud-f-plus' : 'hud-f-minus', h('span', null, f.label), h('b', null, `${f.effect > 0 ? '+' : ''}${Math.round(f.effect)}`))))
     : null;
-  const side = h('div', 'hud-pct-side', h('span', 'hud-pct-label', p.label), h('span', 'hud-conf', `уверенность ${Math.round(p.confidence * 100)}%`), h('div', 'hud-bar', fill));
-  return h('div', 'hud-pctbox', h('div', 'hud-pct', medal, side), factors);
+  const side = h(
+    'div',
+    'hud-pct-side',
+    h('span', 'hud-pct-label', p.label),
+    h('div', 'hud-conf-row', h('div', 'hud-bar', fill), h('span', 'hud-conf', `уверенность ${Math.round(p.confidence * 100)}%`)),
+  );
+  return h('div', 'hud-pctbox', h('div', 'hud-pct', h('b', 'hud-pct-num', `${Math.round(p.value)}%`), side), factors);
 }
 
 function reviewBody(r: NonNullable<HudHint['review']>): HTMLElement[] {
@@ -69,7 +83,8 @@ export function cardContent(hint: HudHint): Element[] {
     body.append(...head(hint, hint.review.heading || hint.title), ...reviewBody(hint.review));
   } else {
     body.append(...head(hint));
-    if (hint.text) body.append(h('div', 'hud-text', hint.text));
+    const reason = hint.text ? reasonText(hint.title, hint.text) : '';
+    if (reason) body.append(h('div', 'hud-text', reason));
     if (kind === 'decision' && hint.percent) body.append(percentBlock(hint.percent));
     const ttl = ttlBar(hint);
     if (ttl) body.append(ttl);
@@ -77,11 +92,24 @@ export function cardContent(hint: HudHint): Element[] {
   return [h('div', 'hud-glow', null), h('div', 'hud-frame', body)];
 }
 
+/**
+ * Срок показа — в CSS-переменную корня: от неё тают полоса срока и «устаревание» (последние 30 % — плашка блекнет).
+ * Повтор правила продлевает срок → переменная растёт → плашка снова яркая. Без таймеров в JS.
+ */
+export function applyTtl(el: HTMLElement, hint: HudHint): void {
+  const live = hint.ttlMs > 0 && hint.zone !== 'review';
+  el.classList.toggle('hud-ages', live);
+  if (live) el.style.setProperty('--ttl', `${hint.ttlMs}ms`);
+  else el.style.removeProperty('--ttl');
+}
+
 /** Корень карточки: вид зависит от важности и типа */
 export function renderHint(hint: HudHint): HTMLElement {
   const root = h('div', `hud-card hud-k-${kindOf(hint)} hud-p-${hint.priority} hud-cat-${hint.category}`);
   root.dataset['seq'] = String(hint.seq);
+  root.dataset['priority'] = hint.priority;
   root.append(...cardContent(hint));
+  applyTtl(root, hint);
   return root;
 }
 

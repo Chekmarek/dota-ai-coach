@@ -102,4 +102,34 @@ describe('HintQueue', () => {
     q.push(d(), ctx(2000));
     expect(q.visible()[0]!.detail.normal).toBe('Текст ИИ');
   });
+
+  it('устаревшая: ситуативная подсказка уходит, когда правило перестало её подтверждать, не дожидаясь TTL', () => {
+    const q = new HintQueue();
+    const danger = d({ id: 'enemies-missing', category: 'danger', priority: 'critical', ttlMs: 10_000 });
+    q.push(danger, ctx(0));
+    q.push(danger, ctx(500)); // правило подтвердило на следующем снимке
+    expect(q.expireStale(2000)).toEqual([]); // пропуск пары снимков — ещё не повод
+    const gone = q.expireStale(3000);
+    expect(gone.map((h) => h.id)).toEqual(['enemies-missing']);
+    expect(q.visible()).toEqual([]);
+  });
+
+  it('устаревшая: пока правило подтверждает — подсказка остаётся; разовая по событию и тайминг — только по сроку', () => {
+    const q = new HintQueue();
+    const fight = d({ id: 'fight', category: 'fight', ttlMs: 10_000 });
+    q.push(fight, ctx(0));
+    for (let t = 500; t <= 6000; t += 500) q.push(fight, ctx(t));
+    expect(q.expireStale(7000)).toEqual([]);
+    // смок: одно событие — один показ
+    const smoke = d({ id: 'smoke', category: 'danger', priority: 'critical', ttlMs: 8000 });
+    q.push(smoke, ctx(7000));
+    expect(q.expireStale(12_000).map((h) => h.id)).toEqual(['fight']);
+    expect(q.visible().map((h) => h.id)).toEqual(['smoke']);
+    // тайминг (не ситуативная категория) подтверждался и замолчал — всё равно живёт до срока
+    const q2 = new HintQueue();
+    const rune = d({ id: 'rune', category: 'timing', ttlMs: 15_000 });
+    q2.push(rune, ctx(0));
+    q2.push(rune, ctx(500));
+    expect(q2.expireStale(10_000)).toEqual([]);
+  });
 });

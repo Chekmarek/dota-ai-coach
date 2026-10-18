@@ -30,7 +30,7 @@ describe('положение окна Доты', () => {
 describe('настройки подсказок поверх игры', () => {
   it('старый settings.json без раздела hud читается, hud — по умолчанию', () => {
     const s = settingsSchema.parse({ live: { autoStart: false } });
-    expect(s.hud).toEqual({ enabled: true, theme: 'runes', reduceMotion: false, opacity: 1, scale: 1, zones: null });
+    expect(s.hud).toEqual({ enabled: true, theme: 'runes', reduceMotion: false, opacity: 1, scale: 1, zones: null, hiddenZones: [] });
   });
   it('испорченные значения откатываются по одному', () => {
     const s = settingsSchema.parse({ hud: { theme: 'neon', opacity: 7, zones: { decision: { x: 'a' } }, scale: 1.2 } });

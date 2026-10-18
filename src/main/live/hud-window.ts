@@ -29,7 +29,7 @@ export interface HudDeps {
 
 export function hudOptions(s: Settings): HudOptions {
   const h = s.hud;
-  return { ...DEFAULT_HUD_OPTIONS, theme: h.theme, reduceMotion: h.reduceMotion, opacity: h.opacity, scale: h.scale, zones: h.zones };
+  return { ...DEFAULT_HUD_OPTIONS, theme: h.theme, reduceMotion: h.reduceMotion, opacity: h.opacity, scale: h.scale, zones: h.zones, hiddenZones: h.hiddenZones };
 }
 
 /** Прямоугольник окна (физические пиксели) → координаты Electron (DIP) */

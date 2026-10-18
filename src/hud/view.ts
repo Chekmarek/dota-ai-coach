@@ -6,7 +6,7 @@ import { applyOverrides, hudUnit, layoutSchema, resolveLayout, type HudLayout, t
 import type { HudHint, HudOptions, ModeBanner } from '../shared/types/hud.ts';
 import { themeById, themeVars, type HudTheme } from './theme/index.ts';
 import { MOTION, type Edge } from './theme/motion.ts';
-import { cardContent, contentKey, renderHint } from './components/cards.ts';
+import { applyTtl, cardContent, contentKey, renderHint } from './components/cards.ts';
 import { h } from './components/dom.ts';
 import { renderModeBanner } from './components/mode.ts';
 
@@ -74,6 +74,7 @@ export class HudView {
         this.root.append(el);
         this.zoneEls.set(z.zone.id, el);
       }
+      el.hidden = this.options.hiddenZones.includes(z.zone.id);
       el.className = `hud-zone hud-stack-${z.zone.stack} hud-align-${z.zone.ax === 'right' ? 'right' : z.zone.ax === 'center' ? 'center' : 'left'}${z.zone.compact ? ' hud-compact' : ''}`;
       Object.assign(el.style, { left: `${z.rect.x}px`, top: `${z.rect.y}px`, width: `${z.rect.w}px`, height: `${z.rect.h}px` });
       this.zoneInfo.set(z.zone.id, z);
@@ -138,8 +139,10 @@ export class HudView {
   }
 
   /** Показать ровно эти подсказки (порядок внутри зоны — как в списке) */
-  update(hints: readonly HudHint[]): void {
+  update(all: readonly HudHint[]): void {
     const reduced = this.reduced;
+    // Скрытые пользователем зоны не рисуем вовсе (подсказки в них уходят, как устаревшие)
+    const hints = all.filter((x) => !this.options.hiddenZones.includes(x.zone));
     const want = new Map(hints.map((x) => [x.seq, x]));
     // FLIP: запомнить, где стояли карточки
     const before = new Map<number, DOMRect>();
@@ -182,6 +185,7 @@ export class HudView {
         if (hint.priority === 'critical' && m.hint.priority !== 'critical') this.pulse(m.el, reduced);
       }
       m.hint = hint;
+      applyTtl(m.el, hint);
       if (m.el.parentElement !== zoneEl) zoneEl.append(m.el);
     }
 

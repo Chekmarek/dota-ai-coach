@@ -54,6 +54,8 @@ export const hudOptionsSchema = z.object({
   /** Размер карточек 0.8…1.4 */
   scale: z.number().min(0.8).max(1.4),
   zones: zoneOverridesSchema.nullable(),
+  /** Зоны, которые пользователь скрыл (старое состояние без поля — ничего не скрыто) */
+  hiddenZones: z.array(z.enum(HUD_ZONE_IDS)).max(HUD_ZONE_IDS.length).catch([]).default([]),
 });
 export type HudOptions = z.infer<typeof hudOptionsSchema>;
 
@@ -81,4 +83,4 @@ export const hudStateSchema = z.object({
 });
 export type HudState = z.infer<typeof hudStateSchema>;
 
-export const DEFAULT_HUD_OPTIONS: HudOptions = { theme: 'runes', reduceMotion: false, opacity: 1, scale: 1, zones: null };
+export const DEFAULT_HUD_OPTIONS: HudOptions = { theme: 'runes', reduceMotion: false, opacity: 1, scale: 1, zones: null, hiddenZones: [] };

@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useUpdate } from '../hooks/useUpdate';
 import { Card, PageHeader } from '../components/ui';
+import { Icon } from '../components/icons';
 
 function fmtDate(iso: string | null): string {
   if (!iso) return '';
@@ -80,7 +81,7 @@ export function UpdatesPage() {
       <section className={`card update-hero ${available ? 'is-new' : u.status === 'error' ? 'is-error' : 'is-ok'}`} data-testid="update-hero">
         <div className="update-hero-main">
           <div className="update-hero-icon" aria-hidden>
-            {available ? '⬆' : u.status === 'error' ? '!' : u.status === 'checking' ? '…' : '✓'}
+            <Icon name={available ? 'download' : u.status === 'error' ? 'alert' : u.status === 'checking' ? 'hourglass' : 'check'} size={22} />
           </div>
           <div className="update-hero-text">
             <div className="update-hero-title" data-testid="update-status">
@@ -199,7 +200,7 @@ export function UpdateToast({ onOpen }: { onOpen: () => void }) {
   return (
     <div className={`update-toast${leaving ? ' leaving' : ''}`} role="status" data-testid="update-toast">
       <div className="update-toast-icon" aria-hidden>
-        ⬆
+        <Icon name="download" size={18} />
       </div>
       <div className="update-toast-text">
         <b>Доступно обновление</b>
@@ -209,7 +210,7 @@ export function UpdateToast({ onOpen }: { onOpen: () => void }) {
         Посмотреть
       </button>
       <button className="update-toast-close" onClick={() => close(false)} aria-label="Закрыть">
-        ×
+        <Icon name="close" size={16} />
       </button>
     </div>
   );
@@ -220,7 +221,8 @@ export function UpdateNotice({ onOpen }: { onOpen: () => void }) {
   if (!u || u.status !== 'available') return null;
   return (
     <button className="update-notice" onClick={onOpen} data-testid="update-notice">
-      ⬆ Обновление {u.latest?.version}
+      <Icon name="download" size={14} />
+      Обновление {u.latest?.version}
     </button>
   );
 }

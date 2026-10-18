@@ -27,6 +27,11 @@ export function modeIcon(mode: ModeBanner['mode']): SVGSVGElement {
   ]);
 }
 
+/** Подпись: для Турбо/All Pick — «Режим игры. Определён по данным игры»; у остальных текст уже про режим */
+export function modeSub(b: Pick<ModeBanner, 'mode' | 'text'>): string {
+  return b.mode === 'turbo' || b.mode === 'all-pick' ? `Режим игры. ${b.text}` : b.text;
+}
+
 export function renderModeBanner(b: ModeBanner): HTMLElement {
   const root = h('div', `hud-mode hud-mode-${b.mode}`);
   root.dataset['seq'] = String(b.seq);
@@ -36,7 +41,7 @@ export function renderModeBanner(b: ModeBanner): HTMLElement {
     'div',
     'hud-body hud-mode-body',
     modeIcon(b.mode),
-    h('div', 'hud-mode-txt', h('span', 'hud-mode-kicker', 'Режим игры'), h('span', 'hud-title hud-mode-title', b.title), h('span', 'hud-mode-sub', b.text)),
+    h('div', 'hud-mode-txt', h('span', 'hud-title hud-mode-title', b.title), h('span', 'hud-mode-sub', modeSub(b))),
     h('i', 'hud-mode-sweep', null),
   );
   root.append(h('div', 'hud-glow hud-mode-glow', null), h('div', 'hud-frame', body));
