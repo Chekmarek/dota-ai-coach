@@ -66,7 +66,7 @@ export const modeBannerSchema = z
     /** Номер показа: новый номер — новая анимация появления */
     seq: z.number().int().nonnegative(),
     mode: z.enum(['all-pick', 'turbo', 'other', 'unknown']),
-    source: z.enum(['gsi', 'custom-game', 'manual', 'none']),
+    source: z.enum(['gsi', 'clock', 'custom-game', 'manual', 'none']),
     title: text(40),
     text: text(160),
   })

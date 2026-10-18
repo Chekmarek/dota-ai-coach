@@ -11,7 +11,7 @@ import { GsiServer } from './server';
 import { GSI_LAUNCH_OPTION, cfgPath, cfgStatus, installCfg, locateDota, refreshCfg, removeCfg, steamPathFromRegistry, type DotaLocation } from './setup';
 import { SessionRecorder } from './recorder';
 import { SerialRestarter } from './restart';
-import { detectGameMode, resolveGameMode, GSI_MODE_FRESH_MS, type GameModeInfo } from '@core/gsi/mode.ts';
+import { GameModeTracker, resolveGameMode, GSI_MODE_FRESH_MS, type GameModeInfo } from '@core/gsi/mode.ts';
 
 /** Состояние в интерфейс — не чаще раза в секунду (плюс сразу при изменениях) */
 const PUSH_MS = 1000;
@@ -49,6 +49,8 @@ class GsiService {
   private detected: { info: GameModeInfo; at: number } | null = null;
   /** Для live.log: какие ключи map уже записаны (есть ли в игре map.game_mode — проверяется на настоящих матчах) */
   private loggedMapKeys = '';
+  /** Режим по потоку тел: map.game_mode, пользовательская игра, часы в начале подготовки */
+  private readonly modeTracker = new GameModeTracker();
 
   constructor(private readonly deps: Deps) {
     this.recorder = new SessionRecorder(join(deps.dataDir, 'gsi-sessions'), liveLog);
@@ -112,13 +114,14 @@ class GsiService {
   }
 
   private trackMode(body: Record<string, unknown>, wallMs: number): void {
-    const info = detectGameMode(body);
-    if (!info) return;
-    const map = body.map as Record<string, unknown>;
+    const info = this.modeTracker.feed(body, wallMs);
+    const map = body.map;
+    if (!info || typeof map !== 'object' || map === null) return;
     const keys = Object.keys(map).sort().join(',');
+    const m = map as Record<string, unknown>;
     if (keys !== this.loggedMapKeys) {
       this.loggedMapKeys = keys;
-      liveLog('gsi ключи map', { keys, gameMode: map.game_mode === undefined ? 'нет' : String(map.game_mode).slice(0, 60) });
+      liveLog('gsi ключи map', { keys, gameMode: m.game_mode === undefined ? 'нет' : String(m.game_mode).slice(0, 60) });
     }
     const prev = this.detected?.info;
     if (!prev || prev.mode !== info.mode || prev.raw !== info.raw) liveLog('gsi режим игры', info);

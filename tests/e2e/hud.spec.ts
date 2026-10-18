@@ -148,6 +148,37 @@ test('индикатор режима: начало матча Турбо — п
   }
 });
 
+test('индикатор режима по часам: настоящая запись лобби (подготовка с −1:30) → «Обычный режим», та же с −1:00 → «Турбо»', async () => {
+  const dataDir = tmp();
+  const port = 54133;
+  const token = 'e2e3'.repeat(16);
+  writeFileSync(join(dataDir, 'settings.json'), JSON.stringify({ live: { autoStart: false }, gsi: { port, token, record: false, dotaDir: noDota(dataDir) } }));
+  const { app, ui } = await launch(dataDir);
+  try {
+    await ui.click('[data-testid="nav-live"]');
+    const lobby = parseSession(readFileSync(join(ROOT, 'tests/fixtures/gsi/recorded/lobby-normal.jsonl'), 'utf8'));
+    expect((await replaySession(lobby, { url: `http://127.0.0.1:${port}/`, token, speed: 20 })).failed).toBe(0);
+    await expect(ui.locator('[data-testid="live-game-mode"]')).toHaveText('Обычный режим', { timeout: 8000 });
+    const banner = (await hudWindow(app)).locator('.hud-mode');
+    await expect(banner).toHaveAttribute('data-mode', 'all-pick', { timeout: 8000 });
+    await expect(banner).toContainText('подготовка с −1:30');
+    // Следующий матч: та же запись, подготовка сдвинута на −1:00 (синтетика: записи настоящего Турбо пока нет)
+    const t0 = lobby[lobby.length - 1]!.t + 60_000;
+    const turbo = lobby.flatMap((e) => {
+      const m = e.body.map as Record<string, unknown> | undefined;
+      const moved = { ...e, t: e.t - lobby[0]!.t + t0 };
+      if (!m || m.game_state !== 'DOTA_GAMERULES_STATE_PRE_GAME') return [moved];
+      const c = (m.clock_time as number) + 29;
+      return c > 0 ? [] : [{ ...moved, body: { ...e.body, map: { ...m, clock_time: c } } }];
+    });
+    expect((await replaySession(turbo, { url: `http://127.0.0.1:${port}/`, token, speed: 20 })).failed).toBe(0);
+    await expect(ui.locator('[data-testid="live-game-mode"]')).toHaveText('Турбо', { timeout: 8000 });
+    await expect(banner).toHaveAttribute('data-mode', 'turbo', { timeout: 8000 });
+  } finally {
+    await app.close();
+  }
+});
+
 test('16:9, 21:9 и 4:3, «Подробно»: видимые карточки не заходят на HUD Доты и не выходят из своих зон', async () => {
   const { app, ui } = await launch(tmp());
   try {

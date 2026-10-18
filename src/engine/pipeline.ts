@@ -8,7 +8,7 @@ import { VideoFileSource } from './capture/video-file-source';
 import { LiveScreenSource } from './capture/live-screen-source';
 import { VisionStage } from './vision';
 import { GSI_LIVE_MS, MatchStateModel } from '@core/match-state/index.ts';
-import { AgreementTracker, VisionAgreementTracker, parseSpectatorGsi } from '@core/gsi/index.ts';
+import { AgreementTracker, GameModeTracker, VisionAgreementTracker, parseSpectatorGsi } from '@core/gsi/index.ts';
 import type { GsiBodyMessage } from '@shared/ipc';
 import { readGsi } from './gsi';
 import type { GsiReading } from '@core/gsi/index.ts';
@@ -66,6 +66,8 @@ export class Pipeline {
   private lastCoachAt = 0;
   /** Сверка зрения с GSI (только кадры живого захвата — это тот же матч) */
   private readonly agreement = new AgreementTracker();
+  /** Режим игры по потоку GSI: Турбо, обычный, против ботов (часы в начале подготовки) */
+  private readonly modeTracker = new GameModeTracker();
   /** Точность зрения о союзниках и врагах — только когда Dota присылает GSI наблюдателя (все 10 героев) */
   private readonly visionAgreement = new VisionAgreementTracker();
   private spectatorMatchId: string | null = null;
@@ -102,7 +104,10 @@ export class Pipeline {
   /** Тело GSI из main (приёмник на 127.0.0.1). Время — часы движка, как у кадров */
   ingestGsi(msg: GsiBodyMessage): void {
     const now = Date.now();
-    const reading = readGsi(msg.body);
+    // Режим игры — по всему потоку тел (часы в начале подготовки видны и в телах без своего героя)
+    const mode = this.modeTracker.feed(msg.body, now);
+    const raw = readGsi(msg.body);
+    const reading = raw ? { ...raw, gameMode: mode } : null;
     // Меню или наблюдение — матча своего героя нет; heartbeat всё равно значит, что GSI работает
     this.lastGsiAt = now;
     // Наблюдатель: своего героя нет (reading будет null), сверка зрения — по всем 10 героям; новый матч — с нуля
