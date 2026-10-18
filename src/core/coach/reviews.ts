@@ -156,14 +156,16 @@ export function deathReview(c: RuleContext, d: DeathRecord, index: number, mista
   else if (d.buybackReady === false) buyback = { advice: 'cannot', text: 'Выкуп на перезарядке.' };
   else if (respawn !== null && respawn <= 20) buyback = { advice: 'save', text: `Не выкупайтесь: возрождение через ${respawn} с.` };
   else {
-    const clock = c.v.clock.value ?? 0;
-    const attackedAt = c.mem.marks.get('bld-attack@');
+    // Выкуп по стадии и ситуации (ночная задача, этап 3) — одинаково для обычной игры и Турбо:
+    // бьют базу (башни 3–4-го уровня, казармы, трон) — выкупаться; лейт и долгое возрождение — по ситуации в драке;
+    // иначе — сохранить золото. Стадия — по времени с поправкой на Турбо, уровню и потерянным зданиям
+    const attackedAt = c.mem.marks.get('bld-base-attack@');
     const baseUnderAttack = attackedAt !== undefined && c.now - attackedAt <= 20_000;
-    // Порог 30 минут — для обычной игры; в Турбо (матч ~25 мин) правило не проверено
-    // Совета «выкупаться или нет» в Турбо нет — но цена, золото и время возрождения игроку нужны
-    if (c.look.isTurbo) buyback = { advice: 'unknown', text: `Выкуп ${d.buybackCost}, у вас ${d.gold} — хватает${respawn !== null ? `; возрождение через ${respawn} с` : ''}.` };
-    else if (clock >= 30 * 60 && baseUnderAttack) buyback = { advice: 'buy', text: `Выкупитесь (${d.buybackCost}): бьют ваши здания.` };
-    else buyback = { advice: 'save', text: `Сохраните ${d.buybackCost} золота: выкуп сейчас не решает.` };
+    const wait = respawn !== null ? `возрождение через ${respawn} с` : 'возрождение не скоро';
+    const price = `${d.buybackCost}, у вас ${d.gold}`;
+    if (baseUnderAttack) buyback = { advice: 'buy', text: `Выкупайтесь (${price}): бьют вашу базу, а ${wait}.` };
+    else if (stage === 'late' && (respawn === null || respawn >= 40)) buyback = { advice: 'unknown', text: `Выкуп ${price}: выкупайтесь, если команда сейчас дерётся или защищает базу; иначе сохраните — в лейте выкуп спасает от проигрыша.` };
+    else buyback = { advice: 'save', text: `Сохраните выкуп (${price}): база цела, ${wait}.` };
   }
 
   const facts = [

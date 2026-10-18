@@ -5,7 +5,7 @@ import { nearEnemyCount, tpReady } from '../memory.ts';
 import { NEAR_UNITS, dist, mapSide } from '../geo.ts';
 import { derivedFact, fact, kbFact } from '../view.ts';
 import { draft, game, mmss, playing, plural, type Rule } from './context.ts';
-import type { GameContext } from '../game-context.ts';
+import { MAP_POINTS, RUN_SPEED, type GameContext } from '../game-context.ts';
 import type { HintDraft } from '../types.ts';
 import outpostsJson from '../../../data/outposts.json';
 
@@ -127,6 +127,17 @@ export function runeForMe(id: string, at: number, g: Pick<GameContext, 'stage' |
   return g.position === 2 || g.position === 4;
 }
 
+/** На сколько секунд можно опоздать к руне, чтобы она ещё лежала (руну обычно забирают за 10–20 с) */
+export const RUNE_LATE_SEC = 20;
+
+/** Секунд бега до ближайшей точки руны (сила и вода — на точках руны силы, богатство — свои точки); null — не руна или позиция неизвестна */
+export function runeRunSec(id: string, me: { x: number; y: number } | null): number | null {
+  if (!me || !id.startsWith('rune-')) return null;
+  const pts = id === 'rune-bounty' ? MAP_POINTS.runes.bounty : MAP_POINTS.runes.power;
+  if (!pts.length) return null;
+  return Math.round(Math.min(...pts.map((p) => dist(p, me))) / RUN_SPEED);
+}
+
 /** Руны, день и ночь, Мучитель, окно Рошана — по механике базы знаний; объявляем за 15 с один раз */
 export const timersRule: Rule = (c) => {
   const clock = c.v.clock.value;
@@ -140,10 +151,14 @@ export const timersRule: Rule = (c) => {
     if (!runeForMe(e.id, e.at, g)) continue;
     const lead = e.id === 'roshan-respawn' || e.id === 'tormentor' ? 30 : 15;
     if (e.inSec > lead || e.inSec < 3) continue;
+    // Руна — только если успеваете добежать (время бега до ближайшей точки этой руны ≤ до появления + 20 с);
+    // позиция не известна — объявляем, как раньше
+    const run = runeRunSec(e.id, c.v.me.pos.value);
+    if (run !== null && run > e.inSec + RUNE_LATE_SEC) continue;
     const key = `timer:${e.id}@${e.at}`;
     if (c.mem.once.has(key)) continue;
     c.mem.once.add(key);
-    const what = e.id === 'day-night' ? `Скоро ${e.detailRu ?? 'смена суток'}` : `${e.nameRu} через ${Math.round(e.inSec)} с`;
+    const what = e.id === 'day-night' ? `Скоро ${e.detailRu ?? 'смена суток'}` : run !== null ? `${e.nameRu} через ${Math.round(e.inSec)} с, бежать ${run} с` : `${e.nameRu} через ${Math.round(e.inSec)} с`;
     const verified = e.verification === 'verified';
     out.push(
       draft({
@@ -181,14 +196,15 @@ export const outpostRule: Rule = (c) => {
   const o = OUTPOSTS.find((p) => dist(p, me) <= OUTPOST_NEAR_UNITS && mapSide(p, team) === 'enemy');
   if (!o) return null;
   const capture = c.look.mechanicValue('outpost', 'capture');
+  const d = Math.round(dist(o, me));
   return draft({
     id: `macro.outpost:${o.id}`,
     ruleId: 'macro.outpost',
     category: 'macro',
     priority: 'info',
     confidence: 0.6,
-    short: 'Аванпост врага рядом — захватите',
-    normal: `Рядом аванпост на стороне врага. Если он ещё вражеский, захватите его${capture !== null ? ` (стоять у него ${capture} с)` : ''}: обзор и телепорт для команды. Врагов рядом не видно.`,
+    short: `Аванпост врага в ${d} ед. — захватите`,
+    normal: `Аванпост на стороне врага в ${d} ед. от вас, врагов рядом не видно. Если он ещё вражеский, захватите его${capture !== null ? ` (стоять у него ${capture} с)` : ''}: обзор и телепорт для команды.`,
     facts: [derivedFact('outpost-distance', 'До аванпоста', Math.round(dist(o, me)), 0.9), kbFact('outpost-capture', 'Захват, с', capture, false)],
     ttlSec: 8,
     cooldownSec: 300,

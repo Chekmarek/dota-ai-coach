@@ -319,7 +319,7 @@ describe('6. аванпост', () => {
       return { v, mem, ev: mem.ingest(v, 1800), look, settings: defaultCoachSettings(), now: T0 } as never;
     };
     const h = outpostRule(ctx([])) as { short: string; detail: { normal: string } } | null;
-    expect(h?.short).toBe('Аванпост врага рядом — захватите');
+    expect(h?.short).toMatch(/^Аванпост врага в \d+ ед\. — захватите$/);
     expect(h?.detail.normal).toContain('6 с');
     expect(outpostRule(ctx([{ slot: 0, hero: 'lina', pos: { x: -3900, y: -500 } }]))).toBeNull();
   });

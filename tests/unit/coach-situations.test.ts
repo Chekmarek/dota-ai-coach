@@ -84,6 +84,34 @@ describe('обязательные проверки задачи', () => {
   });
 });
 
+describe('обязательные проверки ночной задачи', () => {
+  it('другое окно активно → оверлея нет (и Дота свёрнута → нет); вернулись в Доту → есть', async () => {
+    const { hudShouldShow } = await import('../../src/main/live/window-rect');
+    const dota = { x: 0, y: 0, width: 1920, height: 1080, minimized: false };
+    const base = { enabled: true, hasContent: true, demo: false };
+    expect(hudShouldShow({ ...base, rect: { ...dota, active: false, foreground: 'Telegram' } })).toBe(false);
+    expect(hudShouldShow({ ...base, rect: { ...dota, minimized: true, active: false } })).toBe(false);
+    expect(hudShouldShow({ ...base, rect: { ...dota, active: true, foreground: 'dota2' } })).toBe(true);
+  });
+  it('в драке → нет советов про фарм, предметы и линию', () => {
+    let now = T0;
+    const e = new CoachEngine({ data, now: () => now, settings: { ...defaultCoachSettings(), position: '1' } });
+    const said: { id: string; short: string; category: string; inFight: boolean }[] = [];
+    const enemies = [5, 6].map((slot) => ({ slot, hero: slot === 5 ? 'lina' : 'axe', pos: { x: 200 + slot * 20, y: 0 }, hpPercent: 60, barLevel: 14 }));
+    for (let t = 0; t < 40; t++) {
+      now = T0 + t * 1000;
+      // 10 с спокойно, потом драка: враги рядом, здоровье падает; золота много, простой — всё, что звало бы фармить
+      const fight = t >= 10;
+      const s = sim({ wallMs: now, clock: 900 + t, level: 15, hp: fight ? Math.max(400, 2000 - (t - 10) * 60) : 2000, maxHp: 2000, gold: 4000, pos: { x: 0, y: 0 }, enemies: fight ? enemies : [], items: [{ slot: 'inv0', key: 'power_treads' }] });
+      const u = e.tick(s.state, s.gsi, now);
+      for (const h of u.shown) said.push({ id: h.id, short: h.short, category: h.category, inFight: u.inFight });
+    }
+    const duringFight = said.filter((x) => x.inFight);
+    expect(duringFight.length).toBeGreaterThan(0);
+    expect(duringFight.filter((x) => ['economy', 'laning'].includes(x.category) || /фарм|лес|купите|дальше/i.test(x.short))).toEqual([]);
+  });
+});
+
 describe('ситуации из матчей владельца 18.10 (что сказал бы сильный игрок → коуч)', () => {
   it('0:30, оффлейнер на линии, у союзников драка на другой линии → «стой на линии» → без «телепорт»', () => {
     const c = ctxOf({ clock: 30, level: 1, team: 'dire', pos: { x: 6000, y: -5000 }, allies: [{ slot: 6, hero: 'lion', pos: { x: -6000, y: 5000 } }], enemies: [0, 1].map((slot) => ({ slot, hero: slot ? 'axe' : 'lina', pos: { x: -6000 + slot * 200, y: 5100 } })) }, { position: '3' });

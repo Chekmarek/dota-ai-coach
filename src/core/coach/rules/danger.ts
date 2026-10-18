@@ -78,7 +78,7 @@ export const gankerRule: Rule = (c) => {
     category: 'danger',
     priority: 'advice',
     confidence: 0.6,
-    short: `${name} не видно — опасность ганка`,
+    short: `${name} не видно ${Math.round(g.missingForSec ?? 0)} с — опасность ганка`,
     normal: `${name} не виден ${Math.round(g.missingForSec ?? 0)} с — он умеет ловить. ${hp !== null && hp < 50 ? 'У вас мало здоровья.' : 'Вы на чужой стороне.'}`,
     facts: [fact('ganker', 'Пропал', g.hero), derivedFact('missing-for', 'Не виден, с', Math.round(g.missingForSec ?? 0), 0.7), kbFact('roles', 'Роли (база)', 'Initiator/Disabler', false)],
     ttlSec: 8,
@@ -145,6 +145,8 @@ export const buildingRule: Rule = (c) => {
     }
     if (base - pct >= 4 && pct > 0) {
       c.mem.marks.set('bld-attack@', c.now);
+      // бьют базу (башни 3–4-го уровня, казармы, трон) — для решения о выкупе
+      if (/tower3_|tower4|rax_|fort/.test(b.key)) c.mem.marks.set('bld-base-attack@', c.now);
       const lane = buildingLane(b.key);
       const away = lane === null || c.v.me.zone !== lane;
       // Мёртвому важны только здания базы (решение о выкупе); в лайнинге башня 1-го уровня на чужой линии —
@@ -160,7 +162,7 @@ export const buildingRule: Rule = (c) => {
             category: 'danger',
             priority: pct < 40 ? 'critical' : 'advice',
             confidence: 0.9,
-            short: `Бьют ${BUILDING_RU(b.key)}`,
+            short: `Бьют ${BUILDING_RU(b.key)} (${Math.round(pct)}%)`,
             normal: `${BUILDING_RU(b.key)[0]!.toUpperCase()}${BUILDING_RU(b.key).slice(1)} под атакой: ${Math.round(pct)}% здоровья. Защитите${c.v.me.alive.value ? ' или телепорт' : ''}.`,
             facts: [{ key: 'building-hp', label: 'Здоровье здания, %', value: Math.round(pct), source: 'gsi', ageSec: 0, confidence: 1, verified: true }],
             ttlSec: 8,

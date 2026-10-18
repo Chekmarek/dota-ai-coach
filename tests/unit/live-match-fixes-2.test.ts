@@ -103,7 +103,8 @@ describe('разбор смерти', () => {
       e.tick(s.state, s.gsi, w);
     }
     const text = e.deathReviewNow!.buyback.text;
-    expect(text).toMatch(/^Выкуп 8900, у вас 13700 — хватает/);
+    // лейт, возрождение 67 с, база цела — «выкупайтесь, если команда дерётся», с ценой и золотом
+    expect(text).toMatch(/^Выкуп 8900, у вас 13700: выкупайтесь, если команда/);
     expect(text).not.toContain('не проверен');
   });
 });

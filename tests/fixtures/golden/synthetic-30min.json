@@ -626,7 +626,7 @@
      "category": "danger",
      "priority": "advice",
      "confidence": 0.9,
-     "short": "Бьют башню T1 на средней линии",
+     "short": "Бьют башню T1 на средней линии (82%)",
      "detail": {
       "normal": "Башню T1 на средней линии под атакой: 82% здоровья. Защитите или телепорт.",
       "detailed": "Башню T1 на средней линии под атакой: 82% здоровья. Защитите или телепорт. · Здоровье здания, %: 82 (игра, 0 с)"
@@ -997,10 +997,10 @@
      "category": "economy",
      "priority": "advice",
      "confidence": 0.7,
-     "short": "Против Riki: Dust of Appearance",
+     "short": "Купите Dust of Appearance: 1 враг — невидимость",
      "detail": {
-      "normal": "У врагов невидимость (Riki) — без обнаружения его не ударить. Хватает на Dust of Appearance (80).",
-      "detailed": "У врагов невидимость (Riki) — без обнаружения его не ударить. Хватает на Dust of Appearance (80). · Угроза: невидимость: Riki (вывод, 0 с) · Цена: 80 (база, не проверено)"
+      "normal": "Купите Dust of Appearance (80, у вас 600): у врагов 1 герой — невидимость (Riki), без обнаружения его не ударить.",
+      "detailed": "Купите Dust of Appearance (80, у вас 600): у врагов 1 герой — невидимость (Riki), без обнаружения его не ударить. · Угроза: невидимость: Riki (вывод, 0 с) · Цена: 80 (база, не проверено)"
      },
      "percent": null,
      "facts": [
@@ -1177,10 +1177,10 @@
      "category": "economy",
      "priority": "advice",
      "confidence": 0.7,
-     "short": "Против Riki: Dust of Appearance",
+     "short": "Купите Dust of Appearance: 1 враг — невидимость",
      "detail": {
-      "normal": "У врагов невидимость (Riki) — без обнаружения его не ударить. Хватает на Dust of Appearance (80).",
-      "detailed": "У врагов невидимость (Riki) — без обнаружения его не ударить. Хватает на Dust of Appearance (80). · Угроза: невидимость: Riki (вывод, 0 с) · Цена: 80 (база, не проверено)"
+      "normal": "Купите Dust of Appearance (80, у вас 600): у врагов 1 герой — невидимость (Riki), без обнаружения его не ударить.",
+      "detailed": "Купите Dust of Appearance (80, у вас 600): у врагов 1 герой — невидимость (Riki), без обнаружения его не ударить. · Угроза: невидимость: Riki (вывод, 0 с) · Цена: 80 (база, не проверено)"
      },
      "percent": null,
      "facts": [
@@ -1789,7 +1789,7 @@
      "category": "danger",
      "priority": "critical",
      "confidence": 0.9,
-     "short": "Бьют башню T1 на средней линии",
+     "short": "Бьют башню T1 на средней линии (16%)",
      "detail": {
       "normal": "Башню T1 на средней линии под атакой: 16% здоровья. Защитите или телепорт.",
       "detailed": "Башню T1 на средней линии под атакой: 16% здоровья. Защитите или телепорт. · Здоровье здания, %: 16 (игра, 0 с)"
@@ -1883,7 +1883,7 @@
      "category": "danger",
      "priority": "critical",
      "confidence": 0.9,
-     "short": "Бьют башню T1 на средней линии",
+     "short": "Бьют башню T1 на средней линии (16%)",
      "detail": {
       "normal": "Башню T1 на средней линии под атакой: 16% здоровья. Защитите или телепорт.",
       "detailed": "Башню T1 на средней линии под атакой: 16% здоровья. Защитите или телепорт. · Здоровье здания, %: 16 (игра, 0 с)"
@@ -3079,7 +3079,7 @@
      "category": "danger",
      "priority": "critical",
      "confidence": 0.9,
-     "short": "Бьют башню T1 на средней линии",
+     "short": "Бьют башню T1 на средней линии (38%)",
      "detail": {
       "normal": "Башню T1 на средней линии под атакой: 38% здоровья. Защитите или телепорт.",
       "detailed": "Башню T1 на средней линии под атакой: 38% здоровья. Защитите или телепорт. · Здоровье здания, %: 38 (игра, 0 с)"
@@ -3538,7 +3538,7 @@
      "category": "danger",
      "priority": "critical",
      "confidence": 0.9,
-     "short": "Бьют башню T1 на средней линии",
+     "short": "Бьют башню T1 на средней линии (38%)",
      "detail": {
       "normal": "Башню T1 на средней линии под атакой: 38% здоровья. Защитите или телепорт.",
       "detailed": "Башню T1 на средней линии под атакой: 38% здоровья. Защитите или телепорт. · Здоровье здания, %: 38 (игра, 0 с)"
@@ -4742,7 +4742,7 @@
      "category": "danger",
      "priority": "advice",
      "confidence": 0.9,
-     "short": "Бьют башню T1 на средней линии",
+     "short": "Бьют башню T1 на средней линии (82%)",
      "detail": {
       "normal": "Башню T1 на средней линии под атакой: 82% здоровья. Защитите или телепорт.",
       "detailed": "Башню T1 на средней линии под атакой: 82% здоровья. Защитите или телепорт. · Здоровье здания, %: 82 (игра, 0 с)"
@@ -4793,7 +4793,7 @@
      "category": "danger",
      "priority": "advice",
      "confidence": 0.9,
-     "short": "Бьют башню T1 на средней линии",
+     "short": "Бьют башню T1 на средней линии (82%)",
      "detail": {
       "normal": "Башню T1 на средней линии под атакой: 82% здоровья. Защитите или телепорт.",
       "detailed": "Башню T1 на средней линии под атакой: 82% здоровья. Защитите или телепорт. · Здоровье здания, %: 82 (игра, 0 с)"
@@ -4840,10 +4840,10 @@
      "category": "timing",
      "priority": "info",
      "confidence": 0.8,
-     "short": "Руна силы через 15 с",
+     "short": "Руна силы через 15 с, бежать 14 с",
      "detail": {
-      "normal": "Руна силы через 15 с (10:00).",
-      "detailed": "Руна силы через 15 с (10:00). · Руна силы: 10:00 (база, не проверено) · Игровое время, с: 585 (игра, 0 с)"
+      "normal": "Руна силы через 15 с, бежать 14 с (10:00).",
+      "detailed": "Руна силы через 15 с, бежать 14 с (10:00). · Руна силы: 10:00 (база, не проверено) · Игровое время, с: 585 (игра, 0 с)"
      },
      "percent": null,
      "facts": [
@@ -6881,10 +6881,10 @@
      "category": "timing",
      "priority": "info",
      "confidence": 0.8,
-     "short": "Руна богатства через 15 с",
+     "short": "Руна богатства через 15 с, бежать 13 с",
      "detail": {
-      "normal": "Руна богатства через 15 с (12:00).",
-      "detailed": "Руна богатства через 15 с (12:00). · Руна богатства: 12:00 (база, не проверено) · Игровое время, с: 705 (игра, 0 с)"
+      "normal": "Руна богатства через 15 с, бежать 13 с (12:00).",
+      "detailed": "Руна богатства через 15 с, бежать 13 с (12:00). · Руна богатства: 12:00 (база, не проверено) · Игровое время, с: 705 (игра, 0 с)"
      },
      "percent": null,
      "facts": [
@@ -6940,10 +6940,10 @@
      "category": "timing",
      "priority": "info",
      "confidence": 0.8,
-     "short": "Руна силы через 15 с",
+     "short": "Руна силы через 15 с, бежать 17 с",
      "detail": {
-      "normal": "Руна силы через 15 с (12:00).",
-      "detailed": "Руна силы через 15 с (12:00). · Руна силы: 12:00 (база, не проверено) · Игровое время, с: 705 (игра, 0 с)"
+      "normal": "Руна силы через 15 с, бежать 17 с (12:00).",
+      "detailed": "Руна силы через 15 с, бежать 17 с (12:00). · Руна силы: 12:00 (база, не проверено) · Игровое время, с: 705 (игра, 0 с)"
      },
      "percent": null,
      "facts": [
@@ -7060,7 +7060,7 @@
      "category": "danger",
      "priority": "critical",
      "confidence": 0.9,
-     "short": "Бьют башню T1 на средней линии",
+     "short": "Бьют башню T1 на средней линии (38%)",
      "detail": {
       "normal": "Башню T1 на средней линии под атакой: 38% здоровья. Защитите или телепорт.",
       "detailed": "Башню T1 на средней линии под атакой: 38% здоровья. Защитите или телепорт. · Здоровье здания, %: 38 (игра, 0 с)"
@@ -7519,7 +7519,7 @@
      "category": "danger",
      "priority": "critical",
      "confidence": 0.9,
-     "short": "Бьют башню T1 на средней линии",
+     "short": "Бьют башню T1 на средней линии (38%)",
      "detail": {
       "normal": "Башню T1 на средней линии под атакой: 38% здоровья. Защитите или телепорт.",
       "detailed": "Башню T1 на средней линии под атакой: 38% здоровья. Защитите или телепорт. · Здоровье здания, %: 38 (игра, 0 с)"
@@ -7569,10 +7569,10 @@
      "category": "timing",
      "priority": "info",
      "confidence": 0.8,
-     "short": "Руна силы через 15 с",
+     "short": "Руна силы через 15 с, бежать 17 с",
      "detail": {
-      "normal": "Руна силы через 15 с (12:00).",
-      "detailed": "Руна силы через 15 с (12:00). · Руна силы: 12:00 (база, не проверено) · Игровое время, с: 705 (игра, 0 с)"
+      "normal": "Руна силы через 15 с, бежать 17 с (12:00).",
+      "detailed": "Руна силы через 15 с, бежать 17 с (12:00). · Руна силы: 12:00 (база, не проверено) · Игровое время, с: 705 (игра, 0 с)"
      },
      "percent": null,
      "facts": [
@@ -8497,7 +8497,7 @@
      "category": "danger",
      "priority": "advice",
      "confidence": 0.9,
-     "short": "Бьют башню T1 на средней линии",
+     "short": "Бьют башню T1 на средней линии (82%)",
      "detail": {
       "normal": "Башню T1 на средней линии под атакой: 82% здоровья. Защитите или телепорт.",
       "detailed": "Башню T1 на средней линии под атакой: 82% здоровья. Защитите или телепорт. · Здоровье здания, %: 82 (игра, 0 с)"
@@ -9692,7 +9692,7 @@
      "category": "danger",
      "priority": "critical",
      "confidence": 0.9,
-     "short": "Бьют башню T1 на средней линии",
+     "short": "Бьют башню T1 на средней линии (16%)",
      "detail": {
       "normal": "Башню T1 на средней линии под атакой: 16% здоровья. Защитите или телепорт.",
       "detailed": "Башню T1 на средней линии под атакой: 16% здоровья. Защитите или телепорт. · Здоровье здания, %: 16 (игра, 0 с)"
@@ -9795,7 +9795,7 @@
      "category": "danger",
      "priority": "critical",
      "confidence": 0.9,
-     "short": "Бьют башню T1 на средней линии",
+     "short": "Бьют башню T1 на средней линии (16%)",
      "detail": {
       "normal": "Башню T1 на средней линии под атакой: 16% здоровья. Защитите или телепорт.",
       "detailed": "Башню T1 на средней линии под атакой: 16% здоровья. Защитите или телепорт. · Здоровье здания, %: 16 (игра, 0 с)"
@@ -10849,7 +10849,7 @@
      "category": "danger",
      "priority": "critical",
      "confidence": 0.9,
-     "short": "Бьют башню T1 на средней линии",
+     "short": "Бьют башню T1 на средней линии (38%)",
      "detail": {
       "normal": "Башню T1 на средней линии под атакой: 38% здоровья. Защитите или телепорт.",
       "detailed": "Башню T1 на средней линии под атакой: 38% здоровья. Защитите или телепорт. · Здоровье здания, %: 38 (игра, 0 с)"
@@ -11308,7 +11308,7 @@
      "category": "danger",
      "priority": "critical",
      "confidence": 0.9,
-     "short": "Бьют башню T1 на средней линии",
+     "short": "Бьют башню T1 на средней линии (38%)",
      "detail": {
       "normal": "Башню T1 на средней линии под атакой: 38% здоровья. Защитите или телепорт.",
       "detailed": "Башню T1 на средней линии под атакой: 38% здоровья. Защитите или телепорт. · Здоровье здания, %: 38 (игра, 0 с)"
@@ -12631,7 +12631,7 @@
      "category": "danger",
      "priority": "advice",
      "confidence": 0.9,
-     "short": "Бьют башню T1 на средней линии",
+     "short": "Бьют башню T1 на средней линии (82%)",
      "detail": {
       "normal": "Башню T1 на средней линии под атакой: 82% здоровья. Защитите или телепорт.",
       "detailed": "Башню T1 на средней линии под атакой: 82% здоровья. Защитите или телепорт. · Здоровье здания, %: 82 (игра, 0 с)"
@@ -12682,7 +12682,7 @@
      "category": "danger",
      "priority": "advice",
      "confidence": 0.9,
-     "short": "Бьют башню T1 на средней линии",
+     "short": "Бьют башню T1 на средней линии (82%)",
      "detail": {
       "normal": "Башню T1 на средней линии под атакой: 82% здоровья. Защитите или телепорт.",
       "detailed": "Башню T1 на средней линии под атакой: 82% здоровья. Защитите или телепорт. · Здоровье здания, %: 82 (игра, 0 с)"
@@ -12797,10 +12797,10 @@
      "category": "timing",
      "priority": "info",
      "confidence": 0.8,
-     "short": "Руна силы через 15 с",
+     "short": "Руна силы через 15 с, бежать 14 с",
      "detail": {
-      "normal": "Руна силы через 15 с (18:00).",
-      "detailed": "Руна силы через 15 с (18:00). · Руна силы: 18:00 (база, не проверено) · Игровое время, с: 1065 (игра, 0 с)"
+      "normal": "Руна силы через 15 с, бежать 14 с (18:00).",
+      "detailed": "Руна силы через 15 с, бежать 14 с (18:00). · Руна силы: 18:00 (база, не проверено) · Игровое время, с: 1065 (игра, 0 с)"
      },
      "percent": null,
      "facts": [
@@ -12915,66 +12915,6 @@
   }
  },
  {
-  "t": 777,
-  "tick": {
-   "wallMs": 5777000,
-   "shown": [
-    {
-     "id": "timing.enemy-item:lion:blink",
-     "ruleId": "timing.enemy-item",
-     "category": "timing",
-     "priority": "info",
-     "confidence": 0.6,
-     "short": "Lion: скоро Blink Dagger",
-     "detail": {
-      "normal": "Профи на Lion покупают Blink Dagger к 19:12. Драку против него лучше начать раньше или подождать.",
-      "detailed": "Профи на Lion покупают Blink Dagger к 19:12. Драку против него лучше начать раньше или подождать. · Lion: Blink Dagger, обычно к: 19:12 (статистика патча, не проверено) · Берут в доле игр: 92 (статистика патча, не проверено)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "enemy-item",
-       "label": "Lion: Blink Dagger, обычно к",
-       "value": "19:12",
-       "source": "stats",
-       "ageSec": null,
-       "confidence": 1,
-       "verified": false
-      },
-      {
-       "key": "share",
-       "label": "Берут в доле игр",
-       "value": 92,
-       "source": "stats",
-       "ageSec": null,
-       "confidence": 1,
-       "verified": false
-      }
-     ],
-     "ttlMs": 10000,
-     "cooldownMs": 0,
-     "zone": "timing",
-     "icon": "item:blink",
-     "seq": 72,
-     "createdWallMs": 5777000,
-     "expiresWallMs": 5787000,
-     "clock": 1077,
-     "textSource": "template"
-    }
-   ],
-   "expired": [],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
-   "visible": [
-    "timing.rune-power",
-    "timing.enemy-item:lion:blink"
-   ]
-  }
- },
- {
   "t": 780,
   "tick": {
    "wallMs": 5780000,
@@ -12986,10 +12926,10 @@
      "category": "timing",
      "priority": "info",
      "confidence": 0.8,
-     "short": "Руна силы через 15 с",
+     "short": "Руна силы через 15 с, бежать 14 с",
      "detail": {
-      "normal": "Руна силы через 15 с (18:00).",
-      "detailed": "Руна силы через 15 с (18:00). · Руна силы: 18:00 (база, не проверено) · Игровое время, с: 1065 (игра, 0 с)"
+      "normal": "Руна силы через 15 с, бежать 14 с (18:00).",
+      "detailed": "Руна силы через 15 с, бежать 14 с (18:00). · Руна силы: 18:00 (база, не проверено) · Игровое время, с: 1065 (игра, 0 с)"
      },
      "percent": null,
      "facts": [
@@ -13028,9 +12968,7 @@
    "deathReview": null,
    "matchReview": null,
    "inFight": false,
-   "visible": [
-    "timing.enemy-item:lion:blink"
-   ]
+   "visible": []
   }
  },
  {
@@ -13441,63 +13379,6 @@
   }
  },
  {
-  "t": 787,
-  "tick": {
-   "wallMs": 5787000,
-   "shown": [],
-   "expired": [
-    {
-     "id": "timing.enemy-item:lion:blink",
-     "ruleId": "timing.enemy-item",
-     "category": "timing",
-     "priority": "info",
-     "confidence": 0.6,
-     "short": "Lion: скоро Blink Dagger",
-     "detail": {
-      "normal": "Профи на Lion покупают Blink Dagger к 19:12. Драку против него лучше начать раньше или подождать.",
-      "detailed": "Профи на Lion покупают Blink Dagger к 19:12. Драку против него лучше начать раньше или подождать. · Lion: Blink Dagger, обычно к: 19:12 (статистика патча, не проверено) · Берут в доле игр: 92 (статистика патча, не проверено)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "enemy-item",
-       "label": "Lion: Blink Dagger, обычно к",
-       "value": "19:12",
-       "source": "stats",
-       "ageSec": null,
-       "confidence": 1,
-       "verified": false
-      },
-      {
-       "key": "share",
-       "label": "Берут в доле игр",
-       "value": 92,
-       "source": "stats",
-       "ageSec": null,
-       "confidence": 1,
-       "verified": false
-      }
-     ],
-     "ttlMs": 10000,
-     "cooldownMs": 0,
-     "zone": "timing",
-     "icon": "item:blink",
-     "seq": 72,
-     "createdWallMs": 5777000,
-     "expiresWallMs": 5787000,
-     "clock": 1077,
-     "textSource": "template"
-    }
-   ],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
-   "visible": []
-  }
- },
- {
   "t": 800,
   "tick": {
    "wallMs": 5800000,
@@ -13628,7 +13509,7 @@
      "cooldownMs": 30000,
      "zone": "decision",
      "icon": null,
-     "seq": 73,
+     "seq": 72,
      "createdWallMs": 5800000,
      "expiresWallMs": 5847000,
      "clock": 1100,
@@ -13724,7 +13605,7 @@
      "cooldownMs": 8000,
      "zone": "decision",
      "icon": "hero:axe",
-     "seq": 74,
+     "seq": 73,
      "createdWallMs": 5806000,
      "expiresWallMs": 5844000,
      "clock": 1106,
@@ -13802,7 +13683,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 75,
+     "seq": 74,
      "createdWallMs": 5840000,
      "expiresWallMs": 5848000,
      "clock": 1140,
@@ -13835,7 +13716,7 @@
      "cooldownMs": 60000,
      "zone": "alert",
      "icon": null,
-     "seq": 76,
+     "seq": 75,
      "createdWallMs": 5840000,
      "expiresWallMs": 5850000,
      "clock": 1140,
@@ -14393,7 +14274,7 @@
      "cooldownMs": 30000,
      "zone": "decision",
      "icon": null,
-     "seq": 73,
+     "seq": 72,
      "createdWallMs": 5800000,
      "expiresWallMs": 5847000,
      "clock": 1100,
@@ -14451,7 +14332,7 @@
      "cooldownMs": 120000,
      "zone": "timing",
      "icon": "item:tpscroll",
-     "seq": 77,
+     "seq": 76,
      "createdWallMs": 5843000,
      "expiresWallMs": 5853000,
      "clock": 1143,
@@ -14503,7 +14384,7 @@
      "cooldownMs": 60000,
      "zone": "alert",
      "icon": null,
-     "seq": 76,
+     "seq": 75,
      "createdWallMs": 5840000,
      "expiresWallMs": 5850000,
      "clock": 1140,
@@ -14570,7 +14451,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 78,
+     "seq": 77,
      "createdWallMs": 5851000,
      "expiresWallMs": 5877000,
      "clock": 1151,
@@ -14631,7 +14512,7 @@
      "cooldownMs": 120000,
      "zone": "timing",
      "icon": "item:tpscroll",
-     "seq": 77,
+     "seq": 76,
      "createdWallMs": 5843000,
      "expiresWallMs": 5853000,
      "clock": 1143,
@@ -14707,7 +14588,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 79,
+     "seq": 78,
      "createdWallMs": 5870000,
      "expiresWallMs": 5887000,
      "clock": 1170,
@@ -14749,7 +14630,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 80,
+     "seq": 79,
      "createdWallMs": 5870000,
      "expiresWallMs": 5885000,
      "clock": 1170,
@@ -14828,7 +14709,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 79,
+     "seq": 78,
      "createdWallMs": 5870000,
      "expiresWallMs": 5887000,
      "clock": 1170,
@@ -14895,7 +14776,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": "item:bfury",
-     "seq": 81,
+     "seq": 80,
      "createdWallMs": 5883000,
      "expiresWallMs": 5893000,
      "clock": 1183,
@@ -14946,10 +14827,10 @@
      "category": "timing",
      "priority": "info",
      "confidence": 0.8,
-     "short": "Руна богатства через 15 с",
+     "short": "Руна богатства через 15 с, бежать 13 с",
      "detail": {
-      "normal": "Руна богатства через 15 с (20:00).",
-      "detailed": "Руна богатства через 15 с (20:00). · Руна богатства: 20:00 (база, не проверено) · Игровое время, с: 1185 (игра, 0 с)"
+      "normal": "Руна богатства через 15 с, бежать 13 с (20:00).",
+      "detailed": "Руна богатства через 15 с, бежать 13 с (20:00). · Руна богатства: 20:00 (база, не проверено) · Игровое время, с: 1185 (игра, 0 с)"
      },
      "percent": null,
      "facts": [
@@ -14976,7 +14857,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 82,
+     "seq": 81,
      "createdWallMs": 5885000,
      "expiresWallMs": 5900000,
      "clock": 1185,
@@ -15046,7 +14927,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": "item:bfury",
-     "seq": 81,
+     "seq": 80,
      "createdWallMs": 5883000,
      "expiresWallMs": 5893000,
      "clock": 1183,
@@ -15074,7 +14955,7 @@
      "category": "danger",
      "priority": "critical",
      "confidence": 0.9,
-     "short": "Бьют башню T1 на средней линии",
+     "short": "Бьют башню T1 на средней линии (38%)",
      "detail": {
       "normal": "Башню T1 на средней линии под атакой: 38% здоровья. Защитите или телепорт.",
       "detailed": "Башню T1 на средней линии под атакой: 38% здоровья. Защитите или телепорт. · Здоровье здания, %: 38 (игра, 0 с)"
@@ -15095,7 +14976,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 83,
+     "seq": 82,
      "createdWallMs": 5896000,
      "expiresWallMs": 5904000,
      "clock": 1196,
@@ -15126,10 +15007,10 @@
      "category": "timing",
      "priority": "info",
      "confidence": 0.8,
-     "short": "Руна богатства через 15 с",
+     "short": "Руна богатства через 15 с, бежать 13 с",
      "detail": {
-      "normal": "Руна богатства через 15 с (20:00).",
-      "detailed": "Руна богатства через 15 с (20:00). · Руна богатства: 20:00 (база, не проверено) · Игровое время, с: 1185 (игра, 0 с)"
+      "normal": "Руна богатства через 15 с, бежать 13 с (20:00).",
+      "detailed": "Руна богатства через 15 с, бежать 13 с (20:00). · Руна богатства: 20:00 (база, не проверено) · Игровое время, с: 1185 (игра, 0 с)"
      },
      "percent": null,
      "facts": [
@@ -15156,7 +15037,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 82,
+     "seq": 81,
      "createdWallMs": 5885000,
      "expiresWallMs": 5900000,
      "clock": 1185,
@@ -15639,7 +15520,7 @@
      "cooldownMs": 0,
      "zone": "decision",
      "icon": null,
-     "seq": 84,
+     "seq": 83,
      "createdWallMs": 5903000,
      "expiresWallMs": 5913000,
      "clock": 1203,
@@ -15670,7 +15551,7 @@
      "category": "danger",
      "priority": "critical",
      "confidence": 0.9,
-     "short": "Бьют башню T1 на средней линии",
+     "short": "Бьют башню T1 на средней линии (38%)",
      "detail": {
       "normal": "Башню T1 на средней линии под атакой: 38% здоровья. Защитите или телепорт.",
       "detailed": "Башню T1 на средней линии под атакой: 38% здоровья. Защитите или телепорт. · Здоровье здания, %: 38 (игра, 0 с)"
@@ -15691,7 +15572,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 83,
+     "seq": 82,
      "createdWallMs": 5896000,
      "expiresWallMs": 5904000,
      "clock": 1196,
@@ -15768,7 +15649,7 @@
      "cooldownMs": 0,
      "zone": "decision",
      "icon": null,
-     "seq": 84,
+     "seq": 83,
      "createdWallMs": 5903000,
      "expiresWallMs": 5913000,
      "clock": 1203,
@@ -15815,7 +15696,7 @@
      "cooldownMs": 60000,
      "zone": "timing",
      "icon": null,
-     "seq": 85,
+     "seq": 84,
      "createdWallMs": 5925000,
      "expiresWallMs": 5935000,
      "clock": 1225,
@@ -15887,7 +15768,7 @@
      "cooldownMs": 60000,
      "zone": "timing",
      "icon": null,
-     "seq": 85,
+     "seq": 84,
      "createdWallMs": 5925000,
      "expiresWallMs": 5935000,
      "clock": 1225,
@@ -15943,7 +15824,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 86,
+     "seq": 85,
      "createdWallMs": 5945000,
      "expiresWallMs": 5960000,
      "clock": 1245,
@@ -16092,7 +15973,7 @@
      "cooldownMs": 30000,
      "zone": "decision",
      "icon": null,
-     "seq": 87,
+     "seq": 86,
      "createdWallMs": 5960000,
      "expiresWallMs": 6007000,
      "clock": 1260,
@@ -16136,7 +16017,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 86,
+     "seq": 85,
      "createdWallMs": 5945000,
      "expiresWallMs": 5960000,
      "clock": 1245,
@@ -16601,7 +16482,7 @@
      "cooldownMs": 8000,
      "zone": "decision",
      "icon": "hero:axe",
-     "seq": 88,
+     "seq": 87,
      "createdWallMs": 5966000,
      "expiresWallMs": 5980000,
      "clock": 1266,
@@ -16631,7 +16512,7 @@
      "category": "danger",
      "priority": "advice",
      "confidence": 0.9,
-     "short": "Бьют башню T1 на средней линии",
+     "short": "Бьют башню T1 на средней линии (82%)",
      "detail": {
       "normal": "Башню T1 на средней линии под атакой: 82% здоровья. Защитите или телепорт.",
       "detailed": "Башню T1 на средней линии под атакой: 82% здоровья. Защитите или телепорт. · Здоровье здания, %: 82 (игра, 0 с)"
@@ -16652,7 +16533,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 89,
+     "seq": 88,
      "createdWallMs": 5976000,
      "expiresWallMs": 5984000,
      "clock": 1276,
@@ -16712,7 +16593,7 @@
      "cooldownMs": 8000,
      "zone": "decision",
      "icon": "hero:axe",
-     "seq": 90,
+     "seq": 89,
      "createdWallMs": 5983000,
      "expiresWallMs": 6004000,
      "clock": 1283,
@@ -16790,7 +16671,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 91,
+     "seq": 90,
      "createdWallMs": 6000000,
      "expiresWallMs": 6008000,
      "clock": 1300,
@@ -16823,7 +16704,7 @@
      "cooldownMs": 60000,
      "zone": "alert",
      "icon": null,
-     "seq": 92,
+     "seq": 91,
      "createdWallMs": 6000000,
      "expiresWallMs": 6010000,
      "clock": 1300,
@@ -16974,7 +16855,7 @@
      "cooldownMs": 30000,
      "zone": "decision",
      "icon": null,
-     "seq": 87,
+     "seq": 86,
      "createdWallMs": 5960000,
      "expiresWallMs": 6007000,
      "clock": 1260,
@@ -17032,7 +16913,7 @@
      "cooldownMs": 120000,
      "zone": "timing",
      "icon": "item:tpscroll",
-     "seq": 93,
+     "seq": 92,
      "createdWallMs": 6003000,
      "expiresWallMs": 6013000,
      "clock": 1303,
@@ -17084,7 +16965,7 @@
      "cooldownMs": 60000,
      "zone": "alert",
      "icon": null,
-     "seq": 92,
+     "seq": 91,
      "createdWallMs": 6000000,
      "expiresWallMs": 6010000,
      "clock": 1300,
@@ -17151,7 +17032,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 94,
+     "seq": 93,
      "createdWallMs": 6011000,
      "expiresWallMs": 6037000,
      "clock": 1311,
@@ -17212,7 +17093,7 @@
      "cooldownMs": 120000,
      "zone": "timing",
      "icon": "item:tpscroll",
-     "seq": 93,
+     "seq": 92,
      "createdWallMs": 6003000,
      "expiresWallMs": 6013000,
      "clock": 1303,
@@ -17695,7 +17576,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 95,
+     "seq": 94,
      "createdWallMs": 6030000,
      "expiresWallMs": 6044000,
      "clock": 1330,
@@ -17724,7 +17605,7 @@
      "category": "danger",
      "priority": "critical",
      "confidence": 0.9,
-     "short": "Бьют башню T1 на средней линии",
+     "short": "Бьют башню T1 на средней линии (16%)",
      "detail": {
       "normal": "Башню T1 на средней линии под атакой: 16% здоровья. Защитите или телепорт.",
       "detailed": "Башню T1 на средней линии под атакой: 16% здоровья. Защитите или телепорт. · Здоровье здания, %: 16 (игра, 0 с)"
@@ -17745,7 +17626,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 96,
+     "seq": 95,
      "createdWallMs": 6036000,
      "expiresWallMs": 6044000,
      "clock": 1336,
@@ -17804,7 +17685,7 @@
      "cooldownMs": 300000,
      "zone": "timing",
      "icon": null,
-     "seq": 97,
+     "seq": 96,
      "createdWallMs": 6040000,
      "expiresWallMs": 6050000,
      "clock": 1340,
@@ -17835,7 +17716,7 @@
      "category": "danger",
      "priority": "critical",
      "confidence": 0.9,
-     "short": "Бьют башню T1 на средней линии",
+     "short": "Бьют башню T1 на средней линии (16%)",
      "detail": {
       "normal": "Башню T1 на средней линии под атакой: 16% здоровья. Защитите или телепорт.",
       "detailed": "Башню T1 на средней линии под атакой: 16% здоровья. Защитите или телепорт. · Здоровье здания, %: 16 (игра, 0 с)"
@@ -17856,7 +17737,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 96,
+     "seq": 95,
      "createdWallMs": 6036000,
      "expiresWallMs": 6044000,
      "clock": 1336,
@@ -17915,7 +17796,7 @@
      "cooldownMs": 300000,
      "zone": "timing",
      "icon": null,
-     "seq": 97,
+     "seq": 96,
      "createdWallMs": 6040000,
      "expiresWallMs": 6050000,
      "clock": 1340,
@@ -17980,7 +17861,7 @@
      "cooldownMs": 300000,
      "zone": "timing",
      "icon": null,
-     "seq": 98,
+     "seq": 97,
      "createdWallMs": 6080000,
      "expiresWallMs": 6088000,
      "clock": 1380,
@@ -18456,7 +18337,7 @@
      "cooldownMs": 300000,
      "zone": "timing",
      "icon": null,
-     "seq": 98,
+     "seq": 97,
      "createdWallMs": 6080000,
      "expiresWallMs": 6088000,
      "clock": 1380,
@@ -18602,7 +18483,7 @@
      "cooldownMs": 30000,
      "zone": "decision",
      "icon": null,
-     "seq": 99,
+     "seq": 98,
      "createdWallMs": 6120000,
      "expiresWallMs": 6167000,
      "clock": 1420,
@@ -18670,7 +18551,7 @@
      "cooldownMs": 480000,
      "zone": "timing",
      "icon": "item:dust",
-     "seq": 100,
+     "seq": 99,
      "createdWallMs": 6126000,
      "expiresWallMs": 6140000,
      "clock": 1426,
@@ -18730,7 +18611,7 @@
      "cooldownMs": 8000,
      "zone": "decision",
      "icon": "hero:axe",
-     "seq": 101,
+     "seq": 100,
      "createdWallMs": 6130000,
      "expiresWallMs": 6140000,
      "clock": 1430,
@@ -18760,7 +18641,7 @@
      "category": "danger",
      "priority": "critical",
      "confidence": 0.9,
-     "short": "Бьют башню T1 на средней линии",
+     "short": "Бьют башню T1 на средней линии (38%)",
      "detail": {
       "normal": "Башню T1 на средней линии под атакой: 38% здоровья. Защитите или телепорт.",
       "detailed": "Башню T1 на средней линии под атакой: 38% здоровья. Защитите или телепорт. · Здоровье здания, %: 38 (игра, 0 с)"
@@ -18781,7 +18662,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 102,
+     "seq": 101,
      "createdWallMs": 6136000,
      "expiresWallMs": 6144000,
      "clock": 1436,
@@ -19219,7 +19100,7 @@
      "category": "danger",
      "priority": "critical",
      "confidence": 0.9,
-     "short": "Бьют башню T1 на средней линии",
+     "short": "Бьют башню T1 на средней линии (38%)",
      "detail": {
       "normal": "Башню T1 на средней линии под атакой: 38% здоровья. Защитите или телепорт.",
       "detailed": "Башню T1 на средней линии под атакой: 38% здоровья. Защитите или телепорт. · Здоровье здания, %: 38 (игра, 0 с)"
@@ -19240,7 +19121,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 102,
+     "seq": 101,
      "createdWallMs": 6136000,
      "expiresWallMs": 6144000,
      "clock": 1436,
@@ -19298,7 +19179,7 @@
      "cooldownMs": 8000,
      "zone": "decision",
      "icon": "hero:axe",
-     "seq": 103,
+     "seq": 102,
      "createdWallMs": 6145000,
      "expiresWallMs": 6164000,
      "clock": 1445,
@@ -19376,7 +19257,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 104,
+     "seq": 103,
      "createdWallMs": 6160000,
      "expiresWallMs": 6168000,
      "clock": 1460,
@@ -19409,7 +19290,7 @@
      "cooldownMs": 60000,
      "zone": "alert",
      "icon": null,
-     "seq": 105,
+     "seq": 104,
      "createdWallMs": 6160000,
      "expiresWallMs": 6170000,
      "clock": 1460,
@@ -19560,7 +19441,7 @@
      "cooldownMs": 30000,
      "zone": "decision",
      "icon": null,
-     "seq": 99,
+     "seq": 98,
      "createdWallMs": 6120000,
      "expiresWallMs": 6167000,
      "clock": 1420,
@@ -19618,7 +19499,7 @@
      "cooldownMs": 120000,
      "zone": "timing",
      "icon": "item:tpscroll",
-     "seq": 106,
+     "seq": 105,
      "createdWallMs": 6163000,
      "expiresWallMs": 6173000,
      "clock": 1463,
@@ -19670,7 +19551,7 @@
      "cooldownMs": 60000,
      "zone": "alert",
      "icon": null,
-     "seq": 105,
+     "seq": 104,
      "createdWallMs": 6160000,
      "expiresWallMs": 6170000,
      "clock": 1460,
@@ -19737,7 +19618,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 107,
+     "seq": 106,
      "createdWallMs": 6171000,
      "expiresWallMs": 6197000,
      "clock": 1471,
@@ -19798,7 +19679,7 @@
      "cooldownMs": 120000,
      "zone": "timing",
      "icon": "item:tpscroll",
-     "seq": 106,
+     "seq": 105,
      "createdWallMs": 6163000,
      "expiresWallMs": 6173000,
      "clock": 1463,
@@ -19856,7 +19737,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 108,
+     "seq": 107,
      "createdWallMs": 6186000,
      "expiresWallMs": 6201000,
      "clock": 1486,
@@ -19934,7 +19815,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 109,
+     "seq": 108,
      "createdWallMs": 6190000,
      "expiresWallMs": 6207000,
      "clock": 1490,
@@ -19985,7 +19866,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 110,
+     "seq": 109,
      "createdWallMs": 6200000,
      "expiresWallMs": 6210000,
      "clock": 1500,
@@ -20471,7 +20352,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 109,
+     "seq": 108,
      "createdWallMs": 6190000,
      "expiresWallMs": 6207000,
      "clock": 1490,
@@ -20547,7 +20428,7 @@
      "cooldownMs": 0,
      "zone": "decision",
      "icon": null,
-     "seq": 111,
+     "seq": 110,
      "createdWallMs": 6205000,
      "expiresWallMs": 6215000,
      "clock": 1505,
@@ -20599,7 +20480,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 110,
+     "seq": 109,
      "createdWallMs": 6200000,
      "expiresWallMs": 6210000,
      "clock": 1500,
@@ -20676,7 +20557,7 @@
      "cooldownMs": 0,
      "zone": "decision",
      "icon": null,
-     "seq": 111,
+     "seq": 110,
      "createdWallMs": 6205000,
      "expiresWallMs": 6215000,
      "clock": 1505,
@@ -20702,7 +20583,7 @@
      "category": "danger",
      "priority": "advice",
      "confidence": 0.9,
-     "short": "Бьют башню T1 на средней линии",
+     "short": "Бьют башню T1 на средней линии (60%)",
      "detail": {
       "normal": "Башню T1 на средней линии под атакой: 60% здоровья. Защитите или телепорт.",
       "detailed": "Башню T1 на средней линии под атакой: 60% здоровья. Защитите или телепорт. · Здоровье здания, %: 60 (игра, 0 с)"
@@ -20723,7 +20604,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 112,
+     "seq": 111,
      "createdWallMs": 6236000,
      "expiresWallMs": 6244000,
      "clock": 1536,
@@ -20753,7 +20634,7 @@
      "category": "danger",
      "priority": "advice",
      "confidence": 0.9,
-     "short": "Бьют башню T1 на средней линии",
+     "short": "Бьют башню T1 на средней линии (60%)",
      "detail": {
       "normal": "Башню T1 на средней линии под атакой: 60% здоровья. Защитите или телепорт.",
       "detailed": "Башню T1 на средней линии под атакой: 60% здоровья. Защитите или телепорт. · Здоровье здания, %: 60 (игра, 0 с)"
@@ -20774,7 +20655,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 112,
+     "seq": 111,
      "createdWallMs": 6236000,
      "expiresWallMs": 6244000,
      "clock": 1536,
@@ -20800,10 +20681,10 @@
      "category": "timing",
      "priority": "info",
      "confidence": 0.8,
-     "short": "Руна силы через 15 с",
+     "short": "Руна силы через 15 с, бежать 14 с",
      "detail": {
-      "normal": "Руна силы через 15 с (26:00).",
-      "detailed": "Руна силы через 15 с (26:00). · Руна силы: 26:00 (база, не проверено) · Игровое время, с: 1545 (игра, 0 с)"
+      "normal": "Руна силы через 15 с, бежать 14 с (26:00).",
+      "detailed": "Руна силы через 15 с, бежать 14 с (26:00). · Руна силы: 26:00 (база, не проверено) · Игровое время, с: 1545 (игра, 0 с)"
      },
      "percent": null,
      "facts": [
@@ -20830,7 +20711,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 113,
+     "seq": 112,
      "createdWallMs": 6245000,
      "expiresWallMs": 6260000,
      "clock": 1545,
@@ -20860,10 +20741,10 @@
      "category": "timing",
      "priority": "info",
      "confidence": 0.8,
-     "short": "Руна силы через 15 с",
+     "short": "Руна силы через 15 с, бежать 14 с",
      "detail": {
-      "normal": "Руна силы через 15 с (26:00).",
-      "detailed": "Руна силы через 15 с (26:00). · Руна силы: 26:00 (база, не проверено) · Игровое время, с: 1545 (игра, 0 с)"
+      "normal": "Руна силы через 15 с, бежать 14 с (26:00).",
+      "detailed": "Руна силы через 15 с, бежать 14 с (26:00). · Руна силы: 26:00 (база, не проверено) · Игровое время, с: 1545 (игра, 0 с)"
      },
      "percent": null,
      "facts": [
@@ -20890,7 +20771,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 113,
+     "seq": 112,
      "createdWallMs": 6245000,
      "expiresWallMs": 6260000,
      "clock": 1545,
@@ -21353,7 +21234,7 @@
      "cooldownMs": 8000,
      "zone": "decision",
      "icon": "hero:axe",
-     "seq": 114,
+     "seq": 113,
      "createdWallMs": 6280000,
      "expiresWallMs": 6324000,
      "clock": 1580,
@@ -21502,7 +21383,7 @@
      "cooldownMs": 30000,
      "zone": "decision",
      "icon": null,
-     "seq": 115,
+     "seq": 114,
      "createdWallMs": 6286000,
      "expiresWallMs": 6327000,
      "clock": 1586,
@@ -21580,7 +21461,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 116,
+     "seq": 115,
      "createdWallMs": 6320000,
      "expiresWallMs": 6328000,
      "clock": 1620,
@@ -21613,7 +21494,7 @@
      "cooldownMs": 60000,
      "zone": "alert",
      "icon": null,
-     "seq": 117,
+     "seq": 116,
      "createdWallMs": 6320000,
      "expiresWallMs": 6330000,
      "clock": 1620,
@@ -21655,7 +21536,7 @@
      "cooldownMs": 120000,
      "zone": "timing",
      "icon": "item:tpscroll",
-     "seq": 118,
+     "seq": 117,
      "createdWallMs": 6320000,
      "expiresWallMs": 6330000,
      "clock": 1620,
@@ -22114,7 +21995,7 @@
      "cooldownMs": 60000,
      "zone": "alert",
      "icon": null,
-     "seq": 117,
+     "seq": 116,
      "createdWallMs": 6320000,
      "expiresWallMs": 6330000,
      "clock": 1620,
@@ -22156,7 +22037,7 @@
      "cooldownMs": 120000,
      "zone": "timing",
      "icon": "item:tpscroll",
-     "seq": 118,
+     "seq": 117,
      "createdWallMs": 6320000,
      "expiresWallMs": 6330000,
      "clock": 1620,
@@ -22221,7 +22102,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 119,
+     "seq": 118,
      "createdWallMs": 6331000,
      "expiresWallMs": 6357000,
      "clock": 1631,
@@ -22298,7 +22179,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 120,
+     "seq": 119,
      "createdWallMs": 6350000,
      "expiresWallMs": 6367000,
      "clock": 1650,
@@ -22357,7 +22238,7 @@
      "cooldownMs": 300000,
      "zone": "timing",
      "icon": null,
-     "seq": 121,
+     "seq": 120,
      "createdWallMs": 6360000,
      "expiresWallMs": 6370000,
      "clock": 1660,
@@ -22436,7 +22317,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 120,
+     "seq": 119,
      "createdWallMs": 6350000,
      "expiresWallMs": 6367000,
      "clock": 1650,
@@ -22464,10 +22345,10 @@
      "category": "timing",
      "priority": "info",
      "confidence": 0.8,
-     "short": "Руна богатства через 15 с",
+     "short": "Руна богатства через 15 с, бежать 13 с",
      "detail": {
-      "normal": "Руна богатства через 15 с (28:00).",
-      "detailed": "Руна богатства через 15 с (28:00). · Руна богатства: 28:00 (база, не проверено) · Игровое время, с: 1665 (игра, 0 с)"
+      "normal": "Руна богатства через 15 с, бежать 13 с (28:00).",
+      "detailed": "Руна богатства через 15 с, бежать 13 с (28:00). · Руна богатства: 28:00 (база, не проверено) · Игровое время, с: 1665 (игра, 0 с)"
      },
      "percent": null,
      "facts": [
@@ -22494,7 +22375,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 122,
+     "seq": 121,
      "createdWallMs": 6365000,
      "expiresWallMs": 6380000,
      "clock": 1665,
@@ -22524,10 +22405,10 @@
      "category": "timing",
      "priority": "info",
      "confidence": 0.8,
-     "short": "Руна силы через 15 с",
+     "short": "Руна силы через 15 с, бежать 17 с",
      "detail": {
-      "normal": "Руна силы через 15 с (28:00).",
-      "detailed": "Руна силы через 15 с (28:00). · Руна силы: 28:00 (база, не проверено) · Игровое время, с: 1665 (игра, 0 с)"
+      "normal": "Руна силы через 15 с, бежать 17 с (28:00).",
+      "detailed": "Руна силы через 15 с, бежать 17 с (28:00). · Руна силы: 28:00 (база, не проверено) · Игровое время, с: 1665 (игра, 0 с)"
      },
      "percent": null,
      "facts": [
@@ -22554,7 +22435,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 123,
+     "seq": 122,
      "createdWallMs": 6370000,
      "expiresWallMs": 6385000,
      "clock": 1670,
@@ -22584,7 +22465,7 @@
      "category": "danger",
      "priority": "critical",
      "confidence": 0.9,
-     "short": "Бьют башню T1 на средней линии",
+     "short": "Бьют башню T1 на средней линии (38%)",
      "detail": {
       "normal": "Башню T1 на средней линии под атакой: 38% здоровья. Защитите или телепорт.",
       "detailed": "Башню T1 на средней линии под атакой: 38% здоровья. Защитите или телепорт. · Здоровье здания, %: 38 (игра, 0 с)"
@@ -22605,7 +22486,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 124,
+     "seq": 123,
      "createdWallMs": 6376000,
      "expiresWallMs": 6384000,
      "clock": 1676,
@@ -23043,7 +22924,7 @@
      "category": "danger",
      "priority": "critical",
      "confidence": 0.9,
-     "short": "Бьют башню T1 на средней линии",
+     "short": "Бьют башню T1 на средней линии (38%)",
      "detail": {
       "normal": "Башню T1 на средней линии под атакой: 38% здоровья. Защитите или телепорт.",
       "detailed": "Башню T1 на средней линии под атакой: 38% здоровья. Защитите или телепорт. · Здоровье здания, %: 38 (игра, 0 с)"
@@ -23064,7 +22945,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 124,
+     "seq": 123,
      "createdWallMs": 6376000,
      "expiresWallMs": 6384000,
      "clock": 1676,
@@ -23093,10 +22974,10 @@
      "category": "timing",
      "priority": "info",
      "confidence": 0.8,
-     "short": "Руна силы через 15 с",
+     "short": "Руна силы через 15 с, бежать 17 с",
      "detail": {
-      "normal": "Руна силы через 15 с (28:00).",
-      "detailed": "Руна силы через 15 с (28:00). · Руна силы: 28:00 (база, не проверено) · Игровое время, с: 1665 (игра, 0 с)"
+      "normal": "Руна силы через 15 с, бежать 17 с (28:00).",
+      "detailed": "Руна силы через 15 с, бежать 17 с (28:00). · Руна силы: 28:00 (база, не проверено) · Игровое время, с: 1665 (игра, 0 с)"
      },
      "percent": null,
      "facts": [
@@ -23123,7 +23004,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 123,
+     "seq": 122,
      "createdWallMs": 6370000,
      "expiresWallMs": 6385000,
      "clock": 1670,
@@ -23188,7 +23069,7 @@
      "cooldownMs": 300000,
      "zone": "timing",
      "icon": null,
-     "seq": 125,
+     "seq": 124,
      "createdWallMs": 6400000,
      "expiresWallMs": 6408000,
      "clock": 1700,
@@ -23257,7 +23138,7 @@
      "cooldownMs": 300000,
      "zone": "timing",
      "icon": null,
-     "seq": 125,
+     "seq": 124,
      "createdWallMs": 6400000,
      "expiresWallMs": 6408000,
      "clock": 1700,
@@ -23313,7 +23194,7 @@
      "cooldownMs": 8000,
      "zone": "decision",
      "icon": "hero:axe",
-     "seq": 126,
+     "seq": 125,
      "createdWallMs": 6440000,
      "expiresWallMs": 6460000,
      "clock": 1740,
@@ -23869,7 +23750,7 @@
      "cooldownMs": 30000,
      "zone": "decision",
      "icon": null,
-     "seq": 127,
+     "seq": 126,
      "createdWallMs": 6446000,
      "expiresWallMs": 6470000,
      "clock": 1746,
@@ -23899,7 +23780,7 @@
      "category": "danger",
      "priority": "advice",
      "confidence": 0.9,
-     "short": "Бьют башню T1 на средней линии",
+     "short": "Бьют башню T1 на средней линии (82%)",
      "detail": {
       "normal": "Башню T1 на средней линии под атакой: 82% здоровья. Защитите или телепорт.",
       "detailed": "Башню T1 на средней линии под атакой: 82% здоровья. Защитите или телепорт. · Здоровье здания, %: 82 (игра, 0 с)"
@@ -23920,7 +23801,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 128,
+     "seq": 127,
      "createdWallMs": 6456000,
      "expiresWallMs": 6464000,
      "clock": 1756,
@@ -23980,7 +23861,7 @@
      "cooldownMs": 8000,
      "zone": "decision",
      "icon": "hero:axe",
-     "seq": 129,
+     "seq": 128,
      "createdWallMs": 6463000,
      "expiresWallMs": 6484000,
      "clock": 1763,
@@ -24011,7 +23892,7 @@
      "category": "danger",
      "priority": "advice",
      "confidence": 0.9,
-     "short": "Бьют башню T1 на средней линии",
+     "short": "Бьют башню T1 на средней линии (82%)",
      "detail": {
       "normal": "Башню T1 на средней линии под атакой: 82% здоровья. Защитите или телепорт.",
       "detailed": "Башню T1 на средней линии под атакой: 82% здоровья. Защитите или телепорт. · Здоровье здания, %: 82 (игра, 0 с)"
@@ -24032,7 +23913,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 128,
+     "seq": 127,
      "createdWallMs": 6456000,
      "expiresWallMs": 6464000,
      "clock": 1756,
@@ -24108,7 +23989,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 130,
+     "seq": 129,
      "createdWallMs": 6480000,
      "expiresWallMs": 6488000,
      "clock": 1780,
@@ -24141,7 +24022,7 @@
      "cooldownMs": 60000,
      "zone": "alert",
      "icon": null,
-     "seq": 131,
+     "seq": 130,
      "createdWallMs": 6480000,
      "expiresWallMs": 6490000,
      "clock": 1780,
@@ -24183,7 +24064,7 @@
      "cooldownMs": 120000,
      "zone": "timing",
      "icon": "item:tpscroll",
-     "seq": 132,
+     "seq": 131,
      "createdWallMs": 6480000,
      "expiresWallMs": 6490000,
      "clock": 1780,
@@ -24235,7 +24116,7 @@
      "cooldownMs": 60000,
      "zone": "alert",
      "icon": null,
-     "seq": 131,
+     "seq": 130,
      "createdWallMs": 6480000,
      "expiresWallMs": 6490000,
      "clock": 1780,
@@ -24277,7 +24158,7 @@
      "cooldownMs": 120000,
      "zone": "timing",
      "icon": "item:tpscroll",
-     "seq": 132,
+     "seq": 131,
      "createdWallMs": 6480000,
      "expiresWallMs": 6490000,
      "clock": 1780,
@@ -24342,7 +24223,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 133,
+     "seq": 132,
      "createdWallMs": 6500000,
      "expiresWallMs": 6517000,
      "clock": 1800,
@@ -24826,7 +24707,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 134,
+     "seq": 133,
      "createdWallMs": 6510000,
      "expiresWallMs": 6524000,
      "clock": 1810,
@@ -24855,7 +24736,7 @@
      "category": "danger",
      "priority": "critical",
      "confidence": 0.9,
-     "short": "Бьют башню T1 на средней линии",
+     "short": "Бьют башню T1 на средней линии (16%)",
      "detail": {
       "normal": "Башню T1 на средней линии под атакой: 16% здоровья. Защитите или телепорт.",
       "detailed": "Башню T1 на средней линии под атакой: 16% здоровья. Защитите или телепорт. · Здоровье здания, %: 16 (игра, 0 с)"
@@ -24876,7 +24757,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 135,
+     "seq": 134,
      "createdWallMs": 6516000,
      "expiresWallMs": 6524000,
      "clock": 1816,
@@ -24906,7 +24787,7 @@
      "category": "danger",
      "priority": "critical",
      "confidence": 0.9,
-     "short": "Бьют башню T1 на средней линии",
+     "short": "Бьют башню T1 на средней линии (16%)",
      "detail": {
       "normal": "Башню T1 на средней линии под атакой: 16% здоровья. Защитите или телепорт.",
       "detailed": "Башню T1 на средней линии под атакой: 16% здоровья. Защитите или телепорт. · Здоровье здания, %: 16 (игра, 0 с)"
@@ -24927,7 +24808,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 135,
+     "seq": 134,
      "createdWallMs": 6516000,
      "expiresWallMs": 6524000,
      "clock": 1816,
@@ -25390,7 +25271,7 @@
      "cooldownMs": 8000,
      "zone": "decision",
      "icon": "hero:axe",
-     "seq": 136,
+     "seq": 135,
      "createdWallMs": 6600000,
      "expiresWallMs": 6614000,
      "clock": 1900,
@@ -25539,7 +25420,7 @@
      "cooldownMs": 30000,
      "zone": "decision",
      "icon": null,
-     "seq": 137,
+     "seq": 136,
      "createdWallMs": 6606000,
      "expiresWallMs": 6623000,
      "clock": 1906,
@@ -25608,7 +25489,7 @@
      "cooldownMs": 480000,
      "zone": "timing",
      "icon": "item:dust",
-     "seq": 138,
+     "seq": 137,
      "createdWallMs": 6610000,
      "expiresWallMs": 6630000,
      "clock": 1910,
@@ -25638,7 +25519,7 @@
      "category": "danger",
      "priority": "critical",
      "confidence": 0.9,
-     "short": "Бьют башню T1 на средней линии",
+     "short": "Бьют башню T1 на средней линии (38%)",
      "detail": {
       "normal": "Башню T1 на средней линии под атакой: 38% здоровья. Защитите или телепорт.",
       "detailed": "Башню T1 на средней линии под атакой: 38% здоровья. Защитите или телепорт. · Здоровье здания, %: 38 (игра, 0 с)"
@@ -25659,7 +25540,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 139,
+     "seq": 138,
      "createdWallMs": 6616000,
      "expiresWallMs": 6624000,
      "clock": 1916,
@@ -25719,7 +25600,7 @@
      "cooldownMs": 8000,
      "zone": "decision",
      "icon": "hero:axe",
-     "seq": 140,
+     "seq": 139,
      "createdWallMs": 6620000,
      "expiresWallMs": 6644000,
      "clock": 1920,
@@ -26157,7 +26038,7 @@
      "category": "danger",
      "priority": "critical",
      "confidence": 0.9,
-     "short": "Бьют башню T1 на средней линии",
+     "short": "Бьют башню T1 на средней линии (38%)",
      "detail": {
       "normal": "Башню T1 на средней линии под атакой: 38% здоровья. Защитите или телепорт.",
       "detailed": "Башню T1 на средней линии под атакой: 38% здоровья. Защитите или телепорт. · Здоровье здания, %: 38 (игра, 0 с)"
@@ -26178,7 +26059,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 139,
+     "seq": 138,
      "createdWallMs": 6616000,
      "expiresWallMs": 6624000,
      "clock": 1916,
@@ -26254,7 +26135,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 141,
+     "seq": 140,
      "createdWallMs": 6640000,
      "expiresWallMs": 6648000,
      "clock": 1940,
@@ -26287,7 +26168,7 @@
      "cooldownMs": 60000,
      "zone": "alert",
      "icon": null,
-     "seq": 142,
+     "seq": 141,
      "createdWallMs": 6640000,
      "expiresWallMs": 6650000,
      "clock": 1940,
@@ -26329,7 +26210,7 @@
      "cooldownMs": 120000,
      "zone": "timing",
      "icon": "item:tpscroll",
-     "seq": 143,
+     "seq": 142,
      "createdWallMs": 6640000,
      "expiresWallMs": 6650000,
      "clock": 1940,
@@ -26381,7 +26262,7 @@
      "cooldownMs": 60000,
      "zone": "alert",
      "icon": null,
-     "seq": 142,
+     "seq": 141,
      "createdWallMs": 6640000,
      "expiresWallMs": 6650000,
      "clock": 1940,
@@ -26423,7 +26304,7 @@
      "cooldownMs": 120000,
      "zone": "timing",
      "icon": "item:tpscroll",
-     "seq": 143,
+     "seq": 142,
      "createdWallMs": 6640000,
      "expiresWallMs": 6650000,
      "clock": 1940,
@@ -26488,7 +26369,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 144,
+     "seq": 143,
      "createdWallMs": 6660000,
      "expiresWallMs": 6677000,
      "clock": 1960,
@@ -26565,7 +26446,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 145,
+     "seq": 144,
      "createdWallMs": 6670000,
      "expiresWallMs": 6687000,
      "clock": 1970,
@@ -26624,7 +26505,7 @@
      "cooldownMs": 300000,
      "zone": "timing",
      "icon": null,
-     "seq": 146,
+     "seq": 145,
      "createdWallMs": 6680000,
      "expiresWallMs": 6690000,
      "clock": 1980,
@@ -27110,7 +26991,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 145,
+     "seq": 144,
      "createdWallMs": 6670000,
      "expiresWallMs": 6687000,
      "clock": 1970,
@@ -27169,7 +27050,7 @@
      "cooldownMs": 300000,
      "zone": "timing",
      "icon": null,
-     "seq": 146,
+     "seq": 145,
      "createdWallMs": 6680000,
      "expiresWallMs": 6690000,
      "clock": 1980,
@@ -27195,7 +27076,7 @@
      "category": "danger",
      "priority": "advice",
      "confidence": 0.9,
-     "short": "Бьют башню T1 на средней линии",
+     "short": "Бьют башню T1 на средней линии (82%)",
      "detail": {
       "normal": "Башню T1 на средней линии под атакой: 82% здоровья. Защитите или телепорт.",
       "detailed": "Башню T1 на средней линии под атакой: 82% здоровья. Защитите или телепорт. · Здоровье здания, %: 82 (игра, 0 с)"
@@ -27216,7 +27097,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 147,
+     "seq": 146,
      "createdWallMs": 6696000,
      "expiresWallMs": 6704000,
      "clock": 1996,
@@ -27246,7 +27127,7 @@
      "category": "danger",
      "priority": "advice",
      "confidence": 0.9,
-     "short": "Бьют башню T1 на средней линии",
+     "short": "Бьют башню T1 на средней линии (82%)",
      "detail": {
       "normal": "Башню T1 на средней линии под атакой: 82% здоровья. Защитите или телепорт.",
       "detailed": "Башню T1 на средней линии под атакой: 82% здоровья. Защитите или телепорт. · Здоровье здания, %: 82 (игра, 0 с)"
@@ -27267,7 +27148,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 147,
+     "seq": 146,
      "createdWallMs": 6696000,
      "expiresWallMs": 6704000,
      "clock": 1996,
@@ -27332,7 +27213,7 @@
      "cooldownMs": 300000,
      "zone": "timing",
      "icon": null,
-     "seq": 148,
+     "seq": 147,
      "createdWallMs": 6720000,
      "expiresWallMs": 6728000,
      "clock": 2020,
@@ -27361,10 +27242,10 @@
      "category": "timing",
      "priority": "info",
      "confidence": 0.8,
-     "short": "Руна силы через 15 с",
+     "short": "Руна силы через 15 с, бежать 14 с",
      "detail": {
-      "normal": "Руна силы через 15 с (34:00).",
-      "detailed": "Руна силы через 15 с (34:00). · Руна силы: 34:00 (база, не проверено) · Игровое время, с: 2025 (игра, 0 с)"
+      "normal": "Руна силы через 15 с, бежать 14 с (34:00).",
+      "detailed": "Руна силы через 15 с, бежать 14 с (34:00). · Руна силы: 34:00 (база, не проверено) · Игровое время, с: 2025 (игра, 0 с)"
      },
      "percent": null,
      "facts": [
@@ -27391,7 +27272,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 149,
+     "seq": 148,
      "createdWallMs": 6725000,
      "expiresWallMs": 6740000,
      "clock": 2025,
@@ -27461,7 +27342,7 @@
      "cooldownMs": 300000,
      "zone": "timing",
      "icon": null,
-     "seq": 148,
+     "seq": 147,
      "createdWallMs": 6720000,
      "expiresWallMs": 6728000,
      "clock": 2020,
@@ -27490,10 +27371,10 @@
      "category": "timing",
      "priority": "info",
      "confidence": 0.8,
-     "short": "Руна силы через 15 с",
+     "short": "Руна силы через 15 с, бежать 14 с",
      "detail": {
-      "normal": "Руна силы через 15 с (34:00).",
-      "detailed": "Руна силы через 15 с (34:00). · Руна силы: 34:00 (база, не проверено) · Игровое время, с: 2025 (игра, 0 с)"
+      "normal": "Руна силы через 15 с, бежать 14 с (34:00).",
+      "detailed": "Руна силы через 15 с, бежать 14 с (34:00). · Руна силы: 34:00 (база, не проверено) · Игровое время, с: 2025 (игра, 0 с)"
      },
      "percent": null,
      "facts": [
@@ -27520,7 +27401,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 149,
+     "seq": 148,
      "createdWallMs": 6725000,
      "expiresWallMs": 6740000,
      "clock": 2025,
@@ -27983,7 +27864,7 @@
      "cooldownMs": 8000,
      "zone": "decision",
      "icon": "hero:axe",
-     "seq": 150,
+     "seq": 149,
      "createdWallMs": 6760000,
      "expiresWallMs": 6804000,
      "clock": 2060,
@@ -28132,7 +28013,7 @@
      "cooldownMs": 30000,
      "zone": "decision",
      "icon": null,
-     "seq": 151,
+     "seq": 150,
      "createdWallMs": 6766000,
      "expiresWallMs": 6807000,
      "clock": 2066,
@@ -28174,7 +28055,7 @@
     "clock": 316,
     "kind": "hint",
     "id": "danger.building:tower1_mid",
-    "text": "Бьют башню T1 на средней линии",
+    "text": "Бьют башню T1 на средней линии (82%)",
     "source": "template"
    },
    {
@@ -28206,7 +28087,7 @@
     "clock": 343,
     "kind": "hint",
     "id": "draft.item:dust",
-    "text": "Против Riki: Dust of Appearance",
+    "text": "Купите Dust of Appearance: 1 враг — невидимость",
     "source": "template"
    },
    {
@@ -28238,7 +28119,7 @@
     "clock": 376,
     "kind": "hint",
     "id": "danger.building:tower1_mid",
-    "text": "Бьют башню T1 на средней линии",
+    "text": "Бьют башню T1 на средней линии (16%)",
     "source": "template"
    },
    {
@@ -28310,7 +28191,7 @@
     "clock": 476,
     "kind": "hint",
     "id": "danger.building:tower1_mid",
-    "text": "Бьют башню T1 на средней линии",
+    "text": "Бьют башню T1 на средней линии (38%)",
     "source": "template"
    },
    {
@@ -28374,7 +28255,7 @@
     "clock": 556,
     "kind": "hint",
     "id": "danger.building:tower1_mid",
-    "text": "Бьют башню T1 на средней линии",
+    "text": "Бьют башню T1 на средней линии (82%)",
     "source": "template"
    },
    {
@@ -28382,7 +28263,7 @@
     "clock": 585,
     "kind": "hint",
     "id": "timing.rune-power",
-    "text": "Руна силы через 15 с",
+    "text": "Руна силы через 15 с, бежать 14 с",
     "source": "template"
    },
    {
@@ -28470,7 +28351,7 @@
     "clock": 705,
     "kind": "hint",
     "id": "timing.rune-bounty",
-    "text": "Руна богатства через 15 с",
+    "text": "Руна богатства через 15 с, бежать 13 с",
     "source": "template"
    },
    {
@@ -28478,7 +28359,7 @@
     "clock": 710,
     "kind": "hint",
     "id": "timing.rune-power",
-    "text": "Руна силы через 15 с",
+    "text": "Руна силы через 15 с, бежать 17 с",
     "source": "template"
    },
    {
@@ -28494,7 +28375,7 @@
     "clock": 716,
     "kind": "hint",
     "id": "danger.building:tower1_mid",
-    "text": "Бьют башню T1 на средней линии",
+    "text": "Бьют башню T1 на средней линии (38%)",
     "source": "template"
    },
    {
@@ -28542,7 +28423,7 @@
     "clock": 796,
     "kind": "hint",
     "id": "danger.building:tower1_mid",
-    "text": "Бьют башню T1 на средней линии",
+    "text": "Бьют башню T1 на средней линии (82%)",
     "source": "template"
    },
    {
@@ -28606,7 +28487,7 @@
     "clock": 856,
     "kind": "hint",
     "id": "danger.building:tower1_mid",
-    "text": "Бьют башню T1 на средней линии",
+    "text": "Бьют башню T1 на средней линии (16%)",
     "source": "template"
    },
    {
@@ -28678,7 +28559,7 @@
     "clock": 956,
     "kind": "hint",
     "id": "danger.building:tower1_mid",
-    "text": "Бьют башню T1 на средней линии",
+    "text": "Бьют башню T1 на средней линии (38%)",
     "source": "template"
    },
    {
@@ -28750,7 +28631,7 @@
     "clock": 1036,
     "kind": "hint",
     "id": "danger.building:tower1_mid",
-    "text": "Бьют башню T1 на средней линии",
+    "text": "Бьют башню T1 на средней линии (82%)",
     "source": "template"
    },
    {
@@ -28766,15 +28647,7 @@
     "clock": 1065,
     "kind": "hint",
     "id": "timing.rune-power",
-    "text": "Руна силы через 15 с",
-    "source": "template"
-   },
-   {
-    "wallMs": 5777000,
-    "clock": 1077,
-    "kind": "hint",
-    "id": "timing.enemy-item:lion:blink",
-    "text": "Lion: скоро Blink Dagger",
+    "text": "Руна силы через 15 с, бежать 14 с",
     "source": "template"
    },
    {
@@ -28870,7 +28743,7 @@
     "clock": 1185,
     "kind": "hint",
     "id": "timing.rune-bounty",
-    "text": "Руна богатства через 15 с",
+    "text": "Руна богатства через 15 с, бежать 13 с",
     "source": "template"
    },
    {
@@ -28878,7 +28751,7 @@
     "clock": 1196,
     "kind": "hint",
     "id": "danger.building:tower1_mid",
-    "text": "Бьют башню T1 на средней линии",
+    "text": "Бьют башню T1 на средней линии (38%)",
     "source": "template"
    },
    {
@@ -28934,7 +28807,7 @@
     "clock": 1276,
     "kind": "hint",
     "id": "danger.building:tower1_mid",
-    "text": "Бьют башню T1 на средней линии",
+    "text": "Бьют башню T1 на средней линии (82%)",
     "source": "template"
    },
    {
@@ -28990,7 +28863,7 @@
     "clock": 1336,
     "kind": "hint",
     "id": "danger.building:tower1_mid",
-    "text": "Бьют башню T1 на средней линии",
+    "text": "Бьют башню T1 на средней линии (16%)",
     "source": "template"
    },
    {
@@ -29038,7 +28911,7 @@
     "clock": 1436,
     "kind": "hint",
     "id": "danger.building:tower1_mid",
-    "text": "Бьют башню T1 на средней линии",
+    "text": "Бьют башню T1 на средней линии (38%)",
     "source": "template"
    },
    {
@@ -29118,7 +28991,7 @@
     "clock": 1536,
     "kind": "hint",
     "id": "danger.building:tower1_mid",
-    "text": "Бьют башню T1 на средней линии",
+    "text": "Бьют башню T1 на средней линии (60%)",
     "source": "template"
    },
    {
@@ -29126,7 +28999,7 @@
     "clock": 1545,
     "kind": "hint",
     "id": "timing.rune-power",
-    "text": "Руна силы через 15 с",
+    "text": "Руна силы через 15 с, бежать 14 с",
     "source": "template"
    },
    {
@@ -29198,7 +29071,7 @@
     "clock": 1665,
     "kind": "hint",
     "id": "timing.rune-bounty",
-    "text": "Руна богатства через 15 с",
+    "text": "Руна богатства через 15 с, бежать 13 с",
     "source": "template"
    },
    {
@@ -29206,7 +29079,7 @@
     "clock": 1670,
     "kind": "hint",
     "id": "timing.rune-power",
-    "text": "Руна силы через 15 с",
+    "text": "Руна силы через 15 с, бежать 17 с",
     "source": "template"
    },
    {
@@ -29214,7 +29087,7 @@
     "clock": 1676,
     "kind": "hint",
     "id": "danger.building:tower1_mid",
-    "text": "Бьют башню T1 на средней линии",
+    "text": "Бьют башню T1 на средней линии (38%)",
     "source": "template"
    },
    {
@@ -29246,7 +29119,7 @@
     "clock": 1756,
     "kind": "hint",
     "id": "danger.building:tower1_mid",
-    "text": "Бьют башню T1 на средней линии",
+    "text": "Бьют башню T1 на средней линии (82%)",
     "source": "template"
    },
    {
@@ -29302,7 +29175,7 @@
     "clock": 1816,
     "kind": "hint",
     "id": "danger.building:tower1_mid",
-    "text": "Бьют башню T1 на средней линии",
+    "text": "Бьют башню T1 на средней линии (16%)",
     "source": "template"
    },
    {
@@ -29334,7 +29207,7 @@
     "clock": 1916,
     "kind": "hint",
     "id": "danger.building:tower1_mid",
-    "text": "Бьют башню T1 на средней линии",
+    "text": "Бьют башню T1 на средней линии (38%)",
     "source": "template"
    },
    {
@@ -29398,7 +29271,7 @@
     "clock": 1996,
     "kind": "hint",
     "id": "danger.building:tower1_mid",
-    "text": "Бьют башню T1 на средней линии",
+    "text": "Бьют башню T1 на средней линии (82%)",
     "source": "template"
    },
    {
@@ -29414,7 +29287,7 @@
     "clock": 2025,
     "kind": "hint",
     "id": "timing.rune-power",
-    "text": "Руна силы через 15 с",
+    "text": "Руна силы через 15 с, бежать 14 с",
     "source": "template"
    },
    {
