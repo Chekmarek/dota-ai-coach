@@ -1,6 +1,7 @@
 // Окно подсказок поверх игры: номер окна Доты из захвата, разбор строк помощника, настройки подсказок.
-import { describe, expect, it } from 'vitest';
-import { hwndFromSourceId, parseRectLine, rectScript } from '../../src/main/live/window-rect';
+import { EventEmitter } from 'node:events';
+import { describe, expect, it, vi } from 'vitest';
+import { WindowRectTracker, hudShouldShow, hwndFromSourceId, parseRectLine, rectScript } from '../../src/main/live/window-rect';
 import { settingsSchema, settingsPatchSchema, applySettingsPatch, defaultSettings } from '../../src/shared/schemas/settings';
 import { hudStateSchema } from '../../src/shared/types/hud';
 import { sampleHints } from '../../src/shared/hud-samples';
@@ -13,9 +14,10 @@ describe('положение окна Доты', () => {
     expect(hwndFromSourceId('window:abc:0')).toBeNull();
   });
   it('строки помощника: прямоугольник, свёрнуто, окно закрыто, мусор', () => {
-    expect(parseRectLine('0 0 1920 1080 0')).toEqual({ x: 0, y: 0, width: 1920, height: 1080, minimized: false, active: null });
-    expect(parseRectLine('-1920 0 2560 1440 0\r')).toEqual({ x: -1920, y: 0, width: 2560, height: 1440, minimized: false, active: null });
-    expect(parseRectLine('-32000 -32000 0 0 1')).toEqual({ x: -32000, y: -32000, width: 0, height: 0, minimized: true, active: null });
+    expect(parseRectLine('0 0 1920 1080 0')).toEqual({ x: 0, y: 0, width: 1920, height: 1080, minimized: false, active: null, foreground: null });
+    expect(parseRectLine('-1920 0 2560 1440 0\r')).toEqual({ x: -1920, y: 0, width: 2560, height: 1440, minimized: false, active: null, foreground: null });
+    expect(parseRectLine('-32000 -32000 0 0 1')).toEqual({ x: -32000, y: -32000, width: 0, height: 0, minimized: true, active: null, foreground: null });
+    expect(parseRectLine('0 0 1920 1080 0 0 Telegram')).toMatchObject({ active: false, foreground: 'Telegram' });
     expect(parseRectLine('gone')).toBe('gone');
     expect(parseRectLine('Exception: ...')).toBeNull();
     expect(parseRectLine('10 10 50 50 0')).toBeNull();
@@ -41,7 +43,99 @@ describe('положение окна Доты', () => {
   it('скрипт только читает: GetClientRect / ClientToScreen / IsIconic, без записи и без процесса игры', () => {
     const s = rectScript(132456, 1000);
     expect(s).toContain('[IntPtr]::new(132456)');
-    for (const bad of ['OpenProcess', 'ReadProcessMemory', 'WriteProcessMemory', 'SetWindowPos', 'SendMessage', 'PostMessage', 'keybd_event', 'SendInput']) expect(s).not.toContain(bad);
+    for (const bad of ['OpenProcess', 'ReadProcessMemory', 'WriteProcessMemory', 'SetWindowPos', 'SendMessage', 'PostMessage', 'keybd_event', 'SendInput', 'SetWindowLong']) expect(s).not.toContain(bad);
+  });
+  it('оверлеи поверх игры (Discord, NVIDIA), окна самого коуча и процесса Доты — не «ушёл из игры»', () => {
+    const s = rectScript(132456, 1000, 4242);
+    expect(s).toContain('$self = 4242');
+    expect(s).toContain('0x080000A0'); // WS_EX_NOACTIVATE | WS_EX_TOOLWINDOW | WS_EX_TRANSPARENT
+    expect(s).toContain('$fp -eq $dp');
+  });
+});
+
+describe('помощник положения окна: защита от ложного «Дота не активна» (подсказки пропали в конце матча)', () => {
+  const fakeChild = () => {
+    const c = new EventEmitter() as EventEmitter & { stdout: EventEmitter & { setEncoding(): void }; stderr: EventEmitter; kill(): void };
+    c.stdout = Object.assign(new EventEmitter(), { setEncoding() {} });
+    c.stderr = new EventEmitter();
+    c.kill = () => {};
+    return c;
+  };
+  const make = () => {
+    let t = 0;
+    const children: ReturnType<typeof fakeChild>[] = [];
+    const logs: unknown[][] = [];
+    const tr = new WindowRectTracker(() => {}, (...a) => logs.push(a), {
+      now: () => t,
+      platform: 'win32',
+      spawnHelper: () => {
+        const c = fakeChild();
+        children.push(c);
+        return c as never;
+      },
+    });
+    return { tr, children, logs, at: (ms: number) => (t = ms) };
+  };
+  const line = (active: 0 | 1, fg = 'dota2') => `0 0 2560 1440 0 ${active} ${fg}\n`;
+
+  it('чужое окно на мгновение (уведомление, оверлей) — подсказки не прячутся; дольше 2,5 с — прячутся', () => {
+    const { tr, children, logs, at } = make();
+    tr.track(1);
+    children[0]!.stdout.emit('data', line(1));
+    at(1000);
+    children[0]!.stdout.emit('data', line(0, 'Discord'));
+    expect(tr.rect?.active).toBe(true);
+    at(2000);
+    children[0]!.stdout.emit('data', line(1));
+    at(3000);
+    children[0]!.stdout.emit('data', line(0, 'Telegram'));
+    at(5000);
+    children[0]!.stdout.emit('data', line(0, 'Telegram'));
+    expect(tr.rect?.active).toBe(true);
+    at(5600);
+    children[0]!.stdout.emit('data', line(0, 'Telegram'));
+    expect(tr.rect?.active).toBe(false);
+    expect(logs).toContainEqual(['hud active', { active: false, foreground: 'Telegram' }]);
+    children[0]!.stdout.emit('data', line(1));
+    expect(tr.rect?.active).toBe(true);
+  });
+
+  it('помощник завершился сам — «активно» сбрасывается в «не известно» (подсказки видны) и помощник перезапускается', () => {
+    vi.useFakeTimers();
+    try {
+      const { tr, children, at } = make();
+      tr.track(1);
+      at(0);
+      children[0]!.stdout.emit('data', line(0, 'Telegram'));
+      at(3000);
+      children[0]!.stdout.emit('data', line(0, 'Telegram'));
+      expect(tr.rect?.active).toBe(false);
+      children[0]!.emit('exit', 0);
+      expect(tr.rect?.active).toBeNull();
+      expect(hudShouldShow({ enabled: true, hasContent: true, demo: false, rect: tr.rect })).toBe(true);
+      vi.advanceTimersByTime(2500);
+      expect(children.length).toBe(2);
+      children[1]!.stdout.emit('data', line(1));
+      expect(tr.rect?.active).toBe(true);
+      tr.stop();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('окно Доты закрыто («gone») — помощник не перезапускается', () => {
+    vi.useFakeTimers();
+    try {
+      const { tr, children } = make();
+      tr.track(1);
+      children[0]!.stdout.emit('data', 'gone\n');
+      children[0]!.emit('exit', 0);
+      vi.advanceTimersByTime(10_000);
+      expect(children.length).toBe(1);
+      expect(tr.rect).toBeNull();
+    } finally {
+      vi.useRealTimers();
+    }
   });
 });
 

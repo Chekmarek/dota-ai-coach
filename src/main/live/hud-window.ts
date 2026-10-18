@@ -49,6 +49,7 @@ export class HudOverlay {
   private inMatch = false;
   private readonly tracker: WindowRectTracker;
   private lastBoundsKey = '';
+  private lastBlocked = false;
   private modeBanner: ModeBanner | null = null;
   private modeTimer: ReturnType<typeof setTimeout> | null = null;
 
@@ -124,6 +125,13 @@ export class HudOverlay {
     // Дота свёрнута или активно другое окно (Telegram, браузер) — поверх него подсказки не рисуем;
     // вернулись в игру — показываем то, что ещё актуально (устаревшее очередь подсказок уже убрала)
     const visible = hudShouldShow({ enabled: s.hud.enabled, hasContent: list.length > 0 || banner, demo: this.demoHints !== null, rect: this.tracker.rect });
+    // В лог — только смена решения при непустом списке: почему подсказки есть, а на экране их нет
+    const blocked = !visible && list.length > 0;
+    if (blocked !== this.lastBlocked) {
+      this.lastBlocked = blocked;
+      const r = this.tracker.rect;
+      this.deps.log('hud скрыт', { blocked, hints: list.length, enabled: s.hud.enabled, minimized: r?.minimized ?? null, active: r?.active ?? null, foreground: r?.foreground ?? null });
+    }
     if (!visible) {
       // отправляем пустой список (карточки и индикатор уходят анимацией), потом прячем окно
       if (this.win && !this.win.isDestroyed() && this.win.isVisible()) {
