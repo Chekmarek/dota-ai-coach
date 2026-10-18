@@ -152,6 +152,8 @@ export const timersRule: Rule = (c) => {
     if (e.status !== 'ok' || e.inSec === null || e.at === null) continue;
     if (!['rune-power', 'rune-bounty', 'rune-water', 'day-night', 'tormentor', 'roshan-respawn', 'shrine-of-wisdom'].includes(e.id)) continue;
     if (!runeForMe(e.id, e.at, g)) continue;
+    // Руна — живому: мёртвому «бежать 5 с» не к месту (режим тени: 4 из 60 советов)
+    if (e.id.startsWith('rune-') && c.v.me.alive.value !== true) continue;
     // «Скоро ночь» — к месту, только когда ночь меняет драку: у врагов Night Stalker (ночью он сильнее и видит дальше)
     if (e.id === 'day-night' && !c.v.enemies.some((x) => x.hero.value === 'night_stalker')) continue;
     // Святилище мудрости — опыт для саппортов (4–5); позиция не известна — как раньше
