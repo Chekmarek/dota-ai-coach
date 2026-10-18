@@ -1,14 +1,20 @@
 // Набор ситуаций драфта для проверки ИИ (tests/ai/draft-questions.json): факты и ожидаемые выводы считают правила.
 //   node --experimental-transform-types tests/ai/make-draft-questions.ts
 // Набор детерминирован (статистика патча 7.41f); после смены stats.json его пересоздают и смотрят разницу.
-import { writeFileSync } from 'node:fs';
+//   ... make-draft-questions.ts --turbo — те же ситуации по статистике Турбо (stats-turbo.json) → draft-questions-turbo.json
+import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { CoachLookup } from '../../src/core/coach/data.ts';
 import { counterItems, draftFacts, enemyThreats, itemRole, suggestHeroes } from '../../src/core/draft/index.ts';
 import { realData } from '../unit/coach-sim.ts';
+import { parseKbStats } from '../../src/shared/types/stats.ts';
 
-const data = realData();
+const TURBO = process.argv.includes('--turbo');
+const real = realData();
+const data = TURBO ? { ...real, statsTurbo: parseKbStats(JSON.parse(readFileSync(join(import.meta.dirname, '../../resources/data/kb/7.41f/stats-turbo.json'), 'utf8')), '7.41f', 'turbo') } : real;
 const look = new CoachLookup(data);
+if (TURBO) look.setMode({ mode: 'turbo', source: 'manual', raw: null });
+const pub = look.pubStats;
 
 // Враги, союзники, позиция: от одного врага до полного драфта, все позиции, известные контрпики
 const SETUPS: [string[], string[], number | null][] = [
@@ -52,7 +58,7 @@ const out = SETUPS.map(([enemies, allies, position], n) => {
   for (const k of [...enemies, ...allies]) if (!look.heroByKey.has(k)) throw new Error(`нет героя ${k}`);
   const cands = suggestHeroes(look, { allies, enemies, position, limit: 3 });
   const threats = enemyThreats(enemies, look.invisHeroes);
-  const facts = draftFacts({ candidates: cands, name: (k) => look.heroName(k), enemies, allies, position, patch: data.stats?.patch ?? null, statsAt: data.stats?.generatedAt ?? null, compact: true });
+  const facts = draftFacts({ candidates: cands, name: (k) => look.heroName(k), enemies, allies, position, patch: pub?.patch ?? null, statsAt: pub?.generatedAt ?? null, compact: true, mode: TURBO ? 'turbo' : undefined });
   const top = cands[0]!;
   const role = itemRole(look.statsFor(null, top.hero)?.pro?.positions, look.heroByKey.get(top.hero)?.roles ?? [], look.statsFor(null, top.hero)?.pro?.games ?? 0);
   return {
@@ -74,5 +80,5 @@ const out = SETUPS.map(([enemies, allies, position], n) => {
   };
 });
 
-writeFileSync(join(import.meta.dirname, 'draft-questions.json'), JSON.stringify({ patch: data.stats?.patch, statsAt: data.stats?.generatedAt, cases: out }, null, 2));
+writeFileSync(join(import.meta.dirname, TURBO ? 'draft-questions-turbo.json' : 'draft-questions.json'), JSON.stringify({ patch: pub?.patch, statsAt: pub?.generatedAt, ...(TURBO ? { mode: 'turbo' } : {}), cases: out }, null, 2));
 console.log(`ситуаций: ${out.length}; лучшие: ${out.map((c) => c.expect.topName).join(', ')}`);

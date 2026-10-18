@@ -158,6 +158,8 @@ export function matchReview(v: CoachView, mem: CoachMemory, look: CoachLookup, m
   if (!goals.length) goals.push('Повторить: следить за мини-картой и тратить золото вовремя');
 
   const facts = [
+    // Турбо — чтобы ИИ не сравнивал с обычной игрой (норм для Турбо нет)
+    look.isTurbo ? 'Режим игры: Турбо — норм для сравнения GPM, XPM и добиваний нет' : '',
     result ? `Результат: ${result === 'win' ? 'победа' : 'поражение'}` : '',
     hero ? `Герой: ${hero.name}` : '',
     clock !== null ? `Длительность: ${mmss(clock)}` : '',

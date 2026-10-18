@@ -33,6 +33,17 @@ export interface DraftCheck {
   misattributed: string[];
   /** Не годится для уведомления: повтор вопроса, списки, разметка */
   badFormat: boolean;
+  /** Назван не тот режим игры: в Турбо — «All Pick», «рейтинг», «обычная игра»; в обычной — «Турбо» */
+  wrongMode: string[];
+}
+
+/** Режим из фактов: источник «статистика публичных матчей Турбо» — Турбо, иначе обычные матчи */
+export const factsAreTurbo = (facts: readonly string[]): boolean => facts.some((f) => /^Источник:.*матчей Турбо/.test(f));
+
+/** Слова о режиме игры в ответе, которые противоречат фактам */
+export function wrongModeWords(answer: string, turbo: boolean): string[] {
+  const re = turbo ? /all[\s-]?pick|рейтинг[а-яё]*|обычн[а-яё]*\s+(?:игр|матч|режим)[а-яё]*/gi : /турбо/gi;
+  return [...answer.matchAll(re)].map((m) => m[0]);
 }
 
 export const DRAFT_MAX_CHARS = 260;
@@ -134,9 +145,11 @@ export function checkDraftAnswer(i: DraftCheckInput): DraftCheck {
   const wrongPlace = misattributed(i.answer, i.facts, i.heroes);
   // флаг m: ^ — начало каждой строки (списки «- …», «1. …»)
   const badFormat = /кого сейчас взять|^\s*[-*•]\s|\*\*|^\s*\d+\.\s/im.test(i.answer);
+  const wrongMode = wrongModeWords(i.answer, factsAreTurbo(i.facts));
   return {
-    ok: !inventedNumbers.length && !inventedHeroes.length && !wrongPlace.length && topFirst && !tooLong && !promises && !badFormat,
+    ok: !inventedNumbers.length && !inventedHeroes.length && !wrongPlace.length && topFirst && !tooLong && !promises && !badFormat && !wrongMode.length,
     badFormat,
+    wrongMode,
     inventedNumbers,
     inventedHeroes,
     firstHero,

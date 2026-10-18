@@ -9,6 +9,8 @@ import type { MatchEvent, MatchState, Tracked, TrackedItemSlot } from '../match-
 import { MAP_ZONE_RU } from '../match-state/map-zones.ts';
 import { buildAiContext, type Fact } from './context.ts';
 import { HERO_ALIASES, ITEM_ALIASES } from './aliases.ts';
+import { gameModeRu, type GameModeInfo } from '../gsi/mode.ts';
+import { turboMechanics, type ModeOverrides } from '../knowledge-base/modes.ts';
 
 export type AiPage = 'assistant' | 'live' | 'replay' | 'match' | 'kb' | 'summary';
 
@@ -23,6 +25,10 @@ export interface FactsInput {
   history?: { label: string; lines: string[] } | null;
   /** Что ещё показывает страница (например, открытая запись базы знаний) */
   extra?: string[];
+  /** Режим игры (с ручным выбором); есть — ИИ получает строку о режиме, в Турбо — механику Турбо */
+  mode?: GameModeInfo | null;
+  /** Справочник Турбо (src/data/modes/turbo.json) */
+  turbo?: ModeOverrides | null;
 }
 
 export interface AiFacts {
@@ -390,12 +396,21 @@ const STAT_WORDS = / характерист| брон| скорост| атак|
 export function assembleFacts(input: FactsInput): AiFacts {
   const lines: string[] = [];
   const used: string[] = [];
-  const kb = input.kb ?? null;
+  const turboOn = input.mode?.mode === 'turbo';
+  // В Турбо механика карты (тайминги, награды) — по справочнику Турбо, непроверенное — «нет данных»
+  const kb = input.kb && turboOn ? { ...input.kb, mechanics: turboMechanics(input.kb.mechanics, input.turbo ?? null, input.kb.meta.patch) } : (input.kb ?? null);
   const q = input.question ?? '';
   const qn = normalize(q);
   const push = (l: string) => {
     if (!lines.includes(l)) lines.push(l);
   };
+
+  // 0. Режим игры — первым: ИИ называет только его
+  if (input.mode) {
+    const m = input.mode;
+    const tail = m.mode === 'turbo' ? ' — тайминги и награды Турбо (справочник Турбо)' : m.mode === 'unknown' ? ' — тайминги как в обычной игре' : '';
+    push(`Режим игры: ${gameModeRu(m)}${tail}`);
+  }
 
   // 1. База знаний — по названиям в вопросе
   if (kb && q) {

@@ -24,6 +24,8 @@ export interface DraftFactsInput {
    * Модель читает факты дольше, чем пишет ответ (8B: ~900 токенов фактов — 9 с из 16), поэтому их меньше
    */
   compact?: boolean;
+  /** Чья статистика: Турбо — так и пишется в источнике (ИИ называет только этот режим); нет поля — обычные матчи */
+  mode?: 'normal' | 'turbo';
 }
 
 const POS_RU = ['керри (1)', 'мид (2)', 'оффлейн (3)', 'частичная поддержка (4)', 'полная поддержка (5)'];
@@ -37,7 +39,8 @@ const games = gamesRu;
 
 export function draftFacts(i: DraftFactsInput): string[] {
   const out: string[] = [];
-  out.push(`Источник: статистика публичных матчей OpenDota, патч ${i.patch ?? 'неизвестен'}${i.statsAt ? `, от ${i.statsAt.slice(0, 10)}` : ''}. Проценты — оценка изменения шанса победы, не гарантия.`);
+  const what = i.mode === 'turbo' ? 'статистика публичных матчей Турбо (режим игры — Турбо), OpenDota' : 'статистика публичных матчей OpenDota';
+  out.push(`Источник: ${what}, патч ${i.patch ?? 'неизвестен'}${i.statsAt ? `, от ${i.statsAt.slice(0, 10)}` : ''}. Проценты — оценка изменения шанса победы, не гарантия.`);
   if (i.enemies.length) out.push(`Враги: ${i.enemies.map(i.name).join(', ')}.`);
   if (i.allies.length) out.push(`Союзники: ${i.allies.map(i.name).join(', ')}.`);
   if (i.position) out.push(`Позиция игрока: ${POS_RU[i.position - 1]}.`);

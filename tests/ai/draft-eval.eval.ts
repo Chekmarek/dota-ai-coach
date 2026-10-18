@@ -17,12 +17,15 @@ interface Case {
   facts: string[];
   expect: { topHero: string; topName: string; allowedHeroes: string[] };
 }
-const set = JSON.parse(readFileSync(join(ROOT, 'tests/ai/draft-questions.json'), 'utf8')) as { cases: Case[] };
+// Набор: DOTACOACH_DRAFT_SET (например tests/ai/draft-questions-turbo.json — те же ситуации по статистике Турбо)
+const SET = process.env.DOTACOACH_DRAFT_SET ?? 'tests/ai/draft-questions.json';
+const set = JSON.parse(readFileSync(join(ROOT, SET), 'utf8')) as { cases: Case[] };
+const OUT = SET.includes('turbo') ? '.tmp/draft-eval-turbo.json' : '.tmp/draft-eval.json';
 const heroes = realData().heroes.map((h) => ({ key: h.key, name: h.name }));
 const rows: Record<string, unknown>[] = [];
 const answers: Record<string, unknown>[] = [];
 afterAll(() => {
-  writeFileSync(join(ROOT, '.tmp/draft-eval.json'), JSON.stringify({ rows, answers }, null, 2));
+  writeFileSync(join(ROOT, OUT), JSON.stringify({ rows, answers }, null, 2));
   console.table(rows);
 });
 
@@ -33,7 +36,7 @@ for (const model of localModels()) {
       const t0 = Date.now();
       await sidecar.ensure(model);
       const loadMs = Date.now() - t0;
-      let ok = 0, top = 0, invNum = 0, invHero = 0, long = 0, promise = 0, errors = 0, total = 0, first = 0;
+      let ok = 0, top = 0, invNum = 0, invHero = 0, long = 0, promise = 0, mode = 0, errors = 0, total = 0, first = 0;
       const times: number[] = [];
       for (const c of set.cases) {
         const r = await service.ask({ requestId: c.id, kind: 'draft', facts: c.facts }, () => undefined);
@@ -50,6 +53,7 @@ for (const model of localModels()) {
         invHero += +(ch.inventedHeroes.length > 0);
         long += +ch.tooLong;
         promise += +ch.promises;
+        mode += +(ch.wrongMode.length > 0);
         total += r.totalMs;
         first += r.firstChunkMs ?? 0;
         times.push(r.totalMs);
@@ -66,6 +70,7 @@ for (const model of localModels()) {
         'выдуманные герои': invHero,
         'слишком длинно': long,
         'обещание победы': promise,
+        'чужой режим': mode,
         ошибок: errors,
         'загрузка, с': +(loadMs / 1000).toFixed(1),
         'первый токен, с': n ? +(first / n / 1000).toFixed(1) : null,

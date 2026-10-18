@@ -13,6 +13,10 @@ export function History() {
   const [list, setList] = useState<HistorySummary[] | null>(null);
   const [current, setCurrent] = useState<HistoryMatch | null>(null);
   const [selected, setSelected] = useState<string | null>(null);
+  // Фильтр по режиму: Турбо, обычные (по данным игры или выбран вручную), остальные — неизвестен/другой/не записан
+  const [modeFilter, setModeFilter] = useState<'all' | 'turbo' | 'normal' | 'other'>('all');
+  const modeKind = (m: HistorySummary): 'turbo' | 'normal' | 'other' => (m.gameMode?.mode === 'turbo' ? 'turbo' : m.gameMode?.mode === 'all-pick' ? 'normal' : 'other');
+  const shown = (list ?? []).filter((m) => modeFilter === 'all' || modeKind(m) === modeFilter);
 
   useEffect(() => {
     void window.dotacoach.listHistory().then((l) => {
@@ -37,8 +41,18 @@ export function History() {
       {list && list.length > 0 && (
         <div className="history-layout">
           <Card title="Матчи">
+            <label className="small">
+              Режим:{' '}
+              <select value={modeFilter} onChange={(e) => setModeFilter(e.target.value as typeof modeFilter)} data-testid="history-mode-filter">
+                <option value="all">все</option>
+                <option value="turbo">Турбо</option>
+                <option value="normal">обычные</option>
+                <option value="other">другие и неизвестные</option>
+              </select>
+            </label>
+            {shown.length === 0 && <p className="muted small">Матчей этого режима нет.</p>}
             <ul className="history-list" data-testid="history-list">
-              {list.map((m) => (
+              {shown.map((m) => (
                 <li key={m.id}>
                   <button className={m.id === selected ? 'active' : ''} onClick={() => setSelected(m.id)}>
                     {new Date(m.startedAt).toLocaleString('ru-RU', { dateStyle: 'short', timeStyle: 'short' })} · {m.heroName ?? 'герой ?'} · {m.gameMode ? gameModeRu(m.gameMode) : 'режим не записан'}

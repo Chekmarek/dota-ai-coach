@@ -1,0 +1,1468 @@
+{
+  "patch": "7.41f",
+  "statsAt": "2026-10-18T08:49:09.486Z",
+  "mode": "turbo",
+  "cases": [
+    {
+      "id": "d01",
+      "enemies": [
+        "bristleback"
+      ],
+      "allies": [],
+      "position": null,
+      "facts": [
+        "Источник: статистика публичных матчей Турбо (режим игры — Турбо), OpenDota, патч 7.41f, от 2026-10-18. Проценты — оценка изменения шанса победы, не гарантия.",
+        "Враги: Bristleback.",
+        "Кандидат 1: Slark, итог +5,8%: против Bristleback +5,3% (11 356 игр); сила в патче +0,5%.",
+        "Кандидат 2: Nyx Assassin, итог +5,1%: против Bristleback +4,1% (10 529 игр); сила в патче +0,9%.",
+        "Кандидат 3: Primal Beast, итог +4,4%: против Bristleback +3,4% (4 775 игр); сила в патче +1%."
+      ],
+      "expect": {
+        "topHero": "slark",
+        "topName": "Slark",
+        "allowedHeroes": [
+          "bristleback",
+          "slark",
+          "nyx_assassin",
+          "primal_beast"
+        ],
+        "threats": [
+          "passives"
+        ],
+        "itemsForTop": [
+          "silver_edge"
+        ]
+      }
+    },
+    {
+      "id": "d02",
+      "enemies": [
+        "phantom_assassin"
+      ],
+      "allies": [],
+      "position": null,
+      "facts": [
+        "Источник: статистика публичных матчей Турбо (режим игры — Турбо), OpenDota, патч 7.41f, от 2026-10-18. Проценты — оценка изменения шанса победы, не гарантия.",
+        "Враги: Phantom Assassin.",
+        "Кандидат 1: Bristleback, итог +4,3%: против Phantom Assassin +2,7% (24 203 игры); сила в патче +1,6%.",
+        "Кандидат 2: Wraith King, итог +3,8%: сила в патче +2,3%; против Phantom Assassin +1,5% (25 976 игр).",
+        "Кандидат 3: Centaur Warrunner, итог +3,6%: против Phantom Assassin +2,5% (13 203 игры); сила в патче +1,1%."
+      ],
+      "expect": {
+        "topHero": "bristleback",
+        "topName": "Bristleback",
+        "allowedHeroes": [
+          "phantom_assassin",
+          "bristleback",
+          "skeleton_king",
+          "centaur"
+        ],
+        "threats": [
+          "evasion",
+          "physical",
+          "passives"
+        ],
+        "itemsForTop": [
+          "monkey_king_bar",
+          "heavens_halberd",
+          "silver_edge"
+        ]
+      }
+    },
+    {
+      "id": "d03",
+      "enemies": [
+        "riki"
+      ],
+      "allies": [],
+      "position": 5,
+      "facts": [
+        "Источник: статистика публичных матчей Турбо (режим игры — Турбо), OpenDota, патч 7.41f, от 2026-10-18. Проценты — оценка изменения шанса победы, не гарантия.",
+        "Враги: Riki.",
+        "Позиция игрока: полная поддержка (5).",
+        "Кандидат 1: Vengeful Spirit, итог +3,2%: сила в патче +2,2%; против Riki +1% (8 457 игр).",
+        "Кандидат 2: Omniknight, итог +2,6%: против Riki +2,3% (2 004 игры); сила в патче +0,2%.",
+        "Кандидат 3: Ogre Magi, итог +2,6%: сила в патче +1,5%; против Riki +1,1% (22 394 игры)."
+      ],
+      "expect": {
+        "topHero": "vengefulspirit",
+        "topName": "Vengeful Spirit",
+        "allowedHeroes": [
+          "riki",
+          "vengefulspirit",
+          "omniknight",
+          "ogre_magi"
+        ],
+        "threats": [
+          "invis",
+          "evasion"
+        ],
+        "itemsForTop": [
+          "dust"
+        ]
+      }
+    },
+    {
+      "id": "d04",
+      "enemies": [
+        "antimage"
+      ],
+      "allies": [],
+      "position": 2,
+      "facts": [
+        "Источник: статистика публичных матчей Турбо (режим игры — Турбо), OpenDota, патч 7.41f, от 2026-10-18. Проценты — оценка изменения шанса победы, не гарантия.",
+        "Враги: Anti-Mage.",
+        "Позиция игрока: мид (2).",
+        "Кандидат 1: Meepo, итог +5,1%: против Anti-Mage +5,5% (4 814 игр); сила в патче −0,3%.",
+        "Кандидат 2: Troll Warlord, итог +5%: против Anti-Mage +3,9% (6 822 игры); сила в патче +1,1%.",
+        "Кандидат 3: Centaur Warrunner, итог +3,8%: против Anti-Mage +2,7% (6 487 игр); сила в патче +1,1%."
+      ],
+      "expect": {
+        "topHero": "meepo",
+        "topName": "Meepo",
+        "allowedHeroes": [
+          "antimage",
+          "meepo",
+          "troll_warlord",
+          "centaur"
+        ],
+        "threats": [
+          "mobile",
+          "physical"
+        ],
+        "itemsForTop": [
+          "orchid",
+          "heavens_halberd"
+        ]
+      }
+    },
+    {
+      "id": "d05",
+      "enemies": [
+        "pudge"
+      ],
+      "allies": [],
+      "position": 4,
+      "facts": [
+        "Источник: статистика публичных матчей Турбо (режим игры — Турбо), OpenDota, патч 7.41f, от 2026-10-18. Проценты — оценка изменения шанса победы, не гарантия.",
+        "Враги: Pudge.",
+        "Позиция игрока: частичная поддержка (4).",
+        "Кандидат 1: Vengeful Spirit, итог +3,5%: сила в патче +2,2%; против Pudge +1,3% (42 513 игр).",
+        "Кандидат 2: Silencer, итог +2,5%: против Pudge +1,9% (37 620 игр); сила в патче +0,6%.",
+        "Кандидат 3: Lich, итог +2%: сила в патче +1,2%; против Pudge +0,8% (29 459 игр)."
+      ],
+      "expect": {
+        "topHero": "vengefulspirit",
+        "topName": "Vengeful Spirit",
+        "allowedHeroes": [
+          "pudge",
+          "vengefulspirit",
+          "silencer",
+          "lich"
+        ],
+        "threats": [],
+        "itemsForTop": []
+      }
+    },
+    {
+      "id": "d06",
+      "enemies": [
+        "invoker"
+      ],
+      "allies": [
+        "lion"
+      ],
+      "position": 1,
+      "facts": [
+        "Источник: статистика публичных матчей Турбо (режим игры — Турбо), OpenDota, патч 7.41f, от 2026-10-18. Проценты — оценка изменения шанса победы, не гарантия.",
+        "Враги: Invoker.",
+        "Союзники: Lion.",
+        "Позиция игрока: керри (1).",
+        "Кандидат 1: Bristleback, итог +4,6%: против Invoker +1,9% (22 240 игр); сила в патче +1,6%; в связке с Lion +1,1% (20 153 игры).",
+        "Кандидат 2: Phantom Assassin, итог +4,4%: против Invoker +1,6% (52 327 игр); в связке с Lion +1,5% (47 757 игр); сила в патче +1,3%.",
+        "Кандидат 3: Phantom Lancer, итог +4%: сила в патче +2,1%; в связке с Lion +1,1% (21 045 игр); против Invoker +0,9% (24 025 игр)."
+      ],
+      "expect": {
+        "topHero": "bristleback",
+        "topName": "Bristleback",
+        "allowedHeroes": [
+          "invoker",
+          "lion",
+          "bristleback",
+          "phantom_assassin",
+          "phantom_lancer"
+        ],
+        "threats": [
+          "invis",
+          "magic"
+        ],
+        "itemsForTop": [
+          "dust",
+          "black_king_bar"
+        ]
+      }
+    },
+    {
+      "id": "d07",
+      "enemies": [
+        "huskar"
+      ],
+      "allies": [],
+      "position": 3,
+      "facts": [
+        "Источник: статистика публичных матчей Турбо (режим игры — Турбо), OpenDota, патч 7.41f, от 2026-10-18. Проценты — оценка изменения шанса победы, не гарантия.",
+        "Враги: Huskar.",
+        "Позиция игрока: оффлейн (3).",
+        "Кандидат 1: Viper, итог +3,6%: против Huskar +4% (9 985 игр); сила в патче −0,4%.",
+        "Кандидат 2: Dark Seer, итог +2,6%: против Huskar +1,7% (2 635 игр); сила в патче +0,8%.",
+        "Кандидат 3: Bristleback, итог +1,7%: сила в патче +1,6%; против Huskar +0,1% (10 109 игр)."
+      ],
+      "expect": {
+        "topHero": "viper",
+        "topName": "Viper",
+        "allowedHeroes": [
+          "huskar",
+          "viper",
+          "dark_seer",
+          "bristleback"
+        ],
+        "threats": [
+          "healing",
+          "passives"
+        ],
+        "itemsForTop": [
+          "shivas_guard",
+          "silver_edge"
+        ]
+      }
+    },
+    {
+      "id": "d08",
+      "enemies": [
+        "meepo"
+      ],
+      "allies": [],
+      "position": null,
+      "facts": [
+        "Источник: статистика публичных матчей Турбо (режим игры — Турбо), OpenDota, патч 7.41f, от 2026-10-18. Проценты — оценка изменения шанса победы, не гарантия.",
+        "Враги: Meepo.",
+        "Кандидат 1: Elder Titan, итог +6,2%: против Meepo +6% (405 игр); сила в патче +0,2%.",
+        "Кандидат 2: Witch Doctor, итог +5,7%: против Meepo +4,7% (3 058 игр); сила в патче +1%.",
+        "Кандидат 3: Earthshaker, итог +5,6%: против Meepo +6,1% (5 381 игра); сила в патче −0,4%."
+      ],
+      "expect": {
+        "topHero": "elder_titan",
+        "topName": "Elder Titan",
+        "allowedHeroes": [
+          "meepo",
+          "elder_titan",
+          "witch_doctor",
+          "earthshaker"
+        ],
+        "threats": [
+          "illusions"
+        ],
+        "itemsForTop": [
+          "bfury"
+        ]
+      }
+    },
+    {
+      "id": "d09",
+      "enemies": [
+        "bristleback",
+        "invoker"
+      ],
+      "allies": [
+        "lion"
+      ],
+      "position": null,
+      "facts": [
+        "Источник: статистика публичных матчей Турбо (режим игры — Турбо), OpenDota, патч 7.41f, от 2026-10-18. Проценты — оценка изменения шанса победы, не гарантия.",
+        "Враги: Bristleback, Invoker.",
+        "Союзники: Lion.",
+        "Кандидат 1: Necrophos, итог +4,8%: против Bristleback +3,5% (15 294 игры); против Invoker +0,6% (32 778 игр); сила в патче +0,4%.",
+        "Кандидат 2: Phantom Lancer, итог +4%: сила в патче +2,1%; в связке с Lion +1,1% (21 045 игр); против Invoker +0,9% (24 025 игр).",
+        "Кандидат 3: Lifestealer, итог +4%: против Invoker +1,9% (22 005 игр); против Bristleback +1,1% (12 453 игры); в связке с Lion +0,9% (18 155 игр)."
+      ],
+      "expect": {
+        "topHero": "necrolyte",
+        "topName": "Necrophos",
+        "allowedHeroes": [
+          "bristleback",
+          "invoker",
+          "lion",
+          "necrolyte",
+          "phantom_lancer",
+          "life_stealer"
+        ],
+        "threats": [
+          "invis",
+          "passives",
+          "magic"
+        ],
+        "itemsForTop": [
+          "dust",
+          "silver_edge",
+          "black_king_bar"
+        ]
+      }
+    },
+    {
+      "id": "d10",
+      "enemies": [
+        "phantom_lancer",
+        "crystal_maiden"
+      ],
+      "allies": [],
+      "position": 3,
+      "facts": [
+        "Источник: статистика публичных матчей Турбо (режим игры — Турбо), OpenDota, патч 7.41f, от 2026-10-18. Проценты — оценка изменения шанса победы, не гарантия.",
+        "Враги: Phantom Lancer, Crystal Maiden.",
+        "Позиция игрока: оффлейн (3).",
+        "Кандидат 1: Tidehunter, итог +6%: против Phantom Lancer +4,9% (14 870 игр); сила в патче +0,9%; против Crystal Maiden +0,2% (23 124 игры).",
+        "Кандидат 2: Axe, итог +5,2%: против Phantom Lancer +5,5% (11 534 игры); против Crystal Maiden −0,5% (16 261 игра); сила в патче +0,2%.",
+        "Кандидат 3: Sand King, итог +5,2%: против Phantom Lancer +5,4% (4 622 игры); против Crystal Maiden −0,7% (6 591 игра); сила в патче +0,4%."
+      ],
+      "expect": {
+        "topHero": "tidehunter",
+        "topName": "Tidehunter",
+        "allowedHeroes": [
+          "phantom_lancer",
+          "crystal_maiden",
+          "tidehunter",
+          "axe",
+          "sand_king"
+        ],
+        "threats": [
+          "illusions",
+          "mobile"
+        ],
+        "itemsForTop": [
+          "bfury",
+          "orchid"
+        ]
+      }
+    },
+    {
+      "id": "d11",
+      "enemies": [
+        "slark",
+        "lion"
+      ],
+      "allies": [
+        "axe"
+      ],
+      "position": 2,
+      "facts": [
+        "Источник: статистика публичных матчей Турбо (режим игры — Турбо), OpenDota, патч 7.41f, от 2026-10-18. Проценты — оценка изменения шанса победы, не гарантия.",
+        "Враги: Slark, Lion.",
+        "Союзники: Axe.",
+        "Позиция игрока: мид (2).",
+        "Кандидат 1: Elder Titan, итог +5,1%: против Slark +6,2% (1 815 игр); в связке с Axe −1,4% (1 056 игр); против Lion +0,2% (3 416 игр).",
+        "Кандидат 2: Leshrac, итог +4,2%: против Slark +3,5% (3 651 игра); сила в патче +1,3%; в связке с Axe −0,6% (2 759 игр).",
+        "Кандидат 3: Spectre, итог +2,9%: сила в патче +2%; против Lion +1,6% (18 584 игры); против Slark −1,5% (10 712 игр)."
+      ],
+      "expect": {
+        "topHero": "elder_titan",
+        "topName": "Elder Titan",
+        "allowedHeroes": [
+          "slark",
+          "lion",
+          "axe",
+          "elder_titan",
+          "leshrac",
+          "spectre"
+        ],
+        "threats": [
+          "physical",
+          "mobile",
+          "magic",
+          "disable"
+        ],
+        "itemsForTop": [
+          "heavens_halberd",
+          "orchid",
+          "black_king_bar",
+          "sphere"
+        ]
+      }
+    },
+    {
+      "id": "d12",
+      "enemies": [
+        "templar_assassin",
+        "shadow_shaman"
+      ],
+      "allies": [
+        "juggernaut"
+      ],
+      "position": 5,
+      "facts": [
+        "Источник: статистика публичных матчей Турбо (режим игры — Турбо), OpenDota, патч 7.41f, от 2026-10-18. Проценты — оценка изменения шанса победы, не гарантия.",
+        "Враги: Templar Assassin, Shadow Shaman.",
+        "Союзники: Juggernaut.",
+        "Позиция игрока: полная поддержка (5).",
+        "Кандидат 1: Crystal Maiden, итог +4%: против Templar Assassin +2% (5 062 игры); в связке с Juggernaut +1,4% (30 528 игр); сила в патче +1,1%.",
+        "Кандидат 2: Gyrocopter, итог +3,8%: против Shadow Shaman +2,5% (5 770 игр); в связке с Juggernaut +1,6% (5 487 игр); сила в патче −1,4%.",
+        "Кандидат 3: Vengeful Spirit, итог +3,4%: сила в патче +2,2%; против Templar Assassin +1,4% (3 880 игр); в связке с Juggernaut −1,1% (20 379 игр)."
+      ],
+      "expect": {
+        "topHero": "crystal_maiden",
+        "topName": "Crystal Maiden",
+        "allowedHeroes": [
+          "templar_assassin",
+          "shadow_shaman",
+          "juggernaut",
+          "crystal_maiden",
+          "gyrocopter",
+          "vengefulspirit"
+        ],
+        "threats": [
+          "invis",
+          "physical",
+          "disable",
+          "summons"
+        ],
+        "itemsForTop": [
+          "dust",
+          "ghost",
+          "lotus_orb"
+        ]
+      }
+    },
+    {
+      "id": "d13",
+      "enemies": [
+        "tinker",
+        "sniper"
+      ],
+      "allies": [],
+      "position": 4,
+      "facts": [
+        "Источник: статистика публичных матчей Турбо (режим игры — Турбо), OpenDota, патч 7.41f, от 2026-10-18. Проценты — оценка изменения шанса победы, не гарантия.",
+        "Враги: Tinker, Sniper.",
+        "Позиция игрока: частичная поддержка (4).",
+        "Кандидат 1: Nyx Assassin, итог +2,8%: против Sniper +1,7% (37 083 игры); сила в патче +0,9%; против Tinker +0,2% (6 429 игр).",
+        "Кандидат 2: Mirana, итог +2,8%: против Sniper +1,4% (28 361 игра); сила в патче +1,1%; против Tinker +0,3% (4 693 игры).",
+        "Кандидат 3: Pudge, итог +2,5%: против Sniper +1,8% (111 701 игра); против Tinker +0,7% (24 171 игра)."
+      ],
+      "expect": {
+        "topHero": "nyx_assassin",
+        "topName": "Nyx Assassin",
+        "allowedHeroes": [
+          "tinker",
+          "sniper",
+          "nyx_assassin",
+          "mirana",
+          "pudge"
+        ],
+        "threats": [
+          "magic",
+          "mobile",
+          "physical"
+        ],
+        "itemsForTop": [
+          "pipe",
+          "cyclone",
+          "ghost"
+        ]
+      }
+    },
+    {
+      "id": "d14",
+      "enemies": [
+        "necrolyte",
+        "drow_ranger"
+      ],
+      "allies": [
+        "earthshaker"
+      ],
+      "position": 1,
+      "facts": [
+        "Источник: статистика публичных матчей Турбо (режим игры — Турбо), OpenDota, патч 7.41f, от 2026-10-18. Проценты — оценка изменения шанса победы, не гарантия.",
+        "Враги: Necrophos, Drow Ranger.",
+        "Союзники: Earthshaker.",
+        "Позиция игрока: керри (1).",
+        "Кандидат 1: Dark Seer, итог +5,3%: против Drow Ranger +3% (15 401 игра); против Necrophos +1,8% (6 078 игр); сила в патче +0,8%.",
+        "Кандидат 2: Muerta, итог +4,9%: против Necrophos +4% (6 194 игры); против Drow Ranger +1,1% (15 855 игр); в связке с Earthshaker −0,6% (7 075 игр).",
+        "Кандидат 3: Medusa, итог +3,7%: сила в патче +1,4%; против Necrophos +1,2% (4 688 игр); в связке с Earthshaker +0,7% (5 117 игр)."
+      ],
+      "expect": {
+        "topHero": "dark_seer",
+        "topName": "Dark Seer",
+        "allowedHeroes": [
+          "necrolyte",
+          "drow_ranger",
+          "earthshaker",
+          "dark_seer",
+          "muerta",
+          "medusa"
+        ],
+        "threats": [
+          "healing",
+          "magic",
+          "physical"
+        ],
+        "itemsForTop": [
+          "shivas_guard",
+          "black_king_bar",
+          "heavens_halberd"
+        ]
+      }
+    },
+    {
+      "id": "d15",
+      "enemies": [
+        "ursa",
+        "witch_doctor",
+        "tidehunter"
+      ],
+      "allies": [],
+      "position": null,
+      "facts": [
+        "Источник: статистика публичных матчей Турбо (режим игры — Турбо), OpenDota, патч 7.41f, от 2026-10-18. Проценты — оценка изменения шанса победы, не гарантия.",
+        "Враги: Ursa, Witch Doctor, Tidehunter.",
+        "Кандидат 1: Slark, итог +4,9%: против Tidehunter +2,6% (23 700 игр); против Witch Doctor +1,3% (17 706 игр); против Ursa +0,6% (8 786 игр).",
+        "Кандидат 2: Razor, итог +4,6%: против Tidehunter +3% (12 112 игр); против Ursa +2,2% (4 911 игр); против Witch Doctor −1,1% (9 081 игра).",
+        "Кандидат 3: Weaver, итог +3,6%: против Ursa +2,7% (5 816 игр); против Witch Doctor +1,2% (11 202 игры); сила в патче −0,2%."
+      ],
+      "expect": {
+        "topHero": "slark",
+        "topName": "Slark",
+        "allowedHeroes": [
+          "ursa",
+          "witch_doctor",
+          "tidehunter",
+          "slark",
+          "razor",
+          "weaver"
+        ],
+        "threats": [
+          "passives",
+          "physical",
+          "healing"
+        ],
+        "itemsForTop": [
+          "silver_edge",
+          "heavens_halberd",
+          "shivas_guard"
+        ]
+      }
+    },
+    {
+      "id": "d16",
+      "enemies": [
+        "storm_spirit",
+        "faceless_void",
+        "lion"
+      ],
+      "allies": [
+        "crystal_maiden"
+      ],
+      "position": 1,
+      "facts": [
+        "Источник: статистика публичных матчей Турбо (режим игры — Турбо), OpenDota, патч 7.41f, от 2026-10-18. Проценты — оценка изменения шанса победы, не гарантия.",
+        "Враги: Storm Spirit, Faceless Void, Lion.",
+        "Союзники: Crystal Maiden.",
+        "Позиция игрока: керри (1).",
+        "Кандидат 1: Chaos Knight, итог +7%: против Faceless Void +3% (4 726 игр); против Storm Spirit +1,5% (2 785 игр); в связке с Crystal Maiden +1,4% (6 756 игр).",
+        "Кандидат 2: Wraith King, итог +6%: сила в патче +2,3%; против Lion +1,9% (25 544 игры); против Storm Spirit +0,9% (6 284 игры).",
+        "Кандидат 3: Riki, итог +4,8%: против Storm Spirit +2,2% (4 792 игры); против Faceless Void +2% (7 954 игры); в связке с Crystal Maiden +0,7% (9 533 игры)."
+      ],
+      "expect": {
+        "topHero": "chaos_knight",
+        "topName": "Chaos Knight",
+        "allowedHeroes": [
+          "storm_spirit",
+          "faceless_void",
+          "lion",
+          "crystal_maiden",
+          "chaos_knight",
+          "skeleton_king",
+          "riki"
+        ],
+        "threats": [
+          "magic",
+          "disable",
+          "mobile",
+          "physical"
+        ],
+        "itemsForTop": [
+          "black_king_bar",
+          "sphere",
+          "orchid",
+          "heavens_halberd"
+        ]
+      }
+    },
+    {
+      "id": "d17",
+      "enemies": [
+        "spectre",
+        "zuus",
+        "bane"
+      ],
+      "allies": [
+        "pudge",
+        "sven"
+      ],
+      "position": 2,
+      "facts": [
+        "Источник: статистика публичных матчей Турбо (режим игры — Турбо), OpenDota, патч 7.41f, от 2026-10-18. Проценты — оценка изменения шанса победы, не гарантия.",
+        "Враги: Spectre, Zeus, Bane.",
+        "Союзники: Pudge, Sven.",
+        "Позиция игрока: мид (2).",
+        "Кандидат 1: Meepo, итог +8,1%: против Spectre +3,2% (2 127 игр); против Zeus +2,5% (4 474 игры); против Bane +2,2% (691 игра).",
+        "Кандидат 2: Dark Seer, итог +7,4%: против Spectre +2,6% (3 697 игр); в связке с Sven +1,7% (3 147 игр); против Bane +1,3% (1 264 игры).",
+        "Кандидат 3: Io, итог +7,3%: против Spectre +3,9% (3 873 игры); против Bane +2,1% (1 296 игр); против Zeus +1% (8 336 игр)."
+      ],
+      "expect": {
+        "topHero": "meepo",
+        "topName": "Meepo",
+        "allowedHeroes": [
+          "spectre",
+          "zuus",
+          "bane",
+          "pudge",
+          "sven",
+          "meepo",
+          "dark_seer",
+          "wisp"
+        ],
+        "threats": [
+          "passives",
+          "illusions",
+          "magic",
+          "disable"
+        ],
+        "itemsForTop": [
+          "silver_edge",
+          "bfury",
+          "black_king_bar",
+          "sphere"
+        ]
+      }
+    },
+    {
+      "id": "d18",
+      "enemies": [
+        "alchemist",
+        "enigma",
+        "oracle"
+      ],
+      "allies": [
+        "invoker"
+      ],
+      "position": 3,
+      "facts": [
+        "Источник: статистика публичных матчей Турбо (режим игры — Турбо), OpenDota, патч 7.41f, от 2026-10-18. Проценты — оценка изменения шанса победы, не гарантия.",
+        "Враги: Alchemist, Enigma, Oracle.",
+        "Союзники: Invoker.",
+        "Позиция игрока: оффлейн (3).",
+        "Кандидат 1: Bristleback, итог +6%: против Enigma +3,6% (5 317 игр); сила в патче +1,6%; в связке с Invoker +1,1% (18 939 игр).",
+        "Кандидат 2: Slardar, итог +4,9%: против Enigma +1,8% (2 992 игры); против Oracle +1,6% (2 277 игр); сила в патче +0,8%.",
+        "Кандидат 3: Dragon Knight, итог +3,5%: против Alchemist +1,3% (1 996 игр); сила в патче +1,2%; против Enigma +1,1% (3 709 игр)."
+      ],
+      "expect": {
+        "topHero": "bristleback",
+        "topName": "Bristleback",
+        "allowedHeroes": [
+          "alchemist",
+          "enigma",
+          "oracle",
+          "invoker",
+          "bristleback",
+          "slardar",
+          "dragon_knight"
+        ],
+        "threats": [
+          "healing",
+          "disable",
+          "summons"
+        ],
+        "itemsForTop": [
+          "shivas_guard",
+          "black_king_bar",
+          "crimson_guard"
+        ]
+      }
+    },
+    {
+      "id": "d19",
+      "enemies": [
+        "weaver",
+        "viper",
+        "disruptor"
+      ],
+      "allies": [
+        "mars",
+        "lina"
+      ],
+      "position": 4,
+      "facts": [
+        "Источник: статистика публичных матчей Турбо (режим игры — Турбо), OpenDota, патч 7.41f, от 2026-10-18. Проценты — оценка изменения шанса победы, не гарантия.",
+        "Враги: Weaver, Viper, Disruptor.",
+        "Союзники: Mars, Lina.",
+        "Позиция игрока: частичная поддержка (4).",
+        "Кандидат 1: Vengeful Spirit, итог +6%: сила в патче +2,2%; против Disruptor +1,2% (4 918 игр); против Weaver +1,2% (8 528 игр).",
+        "Кандидат 2: Rubick, итог +4,5%: против Weaver +2,9% (17 282 игры); в связке с Mars +1,2% (7 367 игр); против Viper +1% (21 891 игра).",
+        "Кандидат 3: Mirana, итог +4,3%: против Weaver +1,9% (7 882 игры); сила в патче +1,1%; в связке с Lina +0,6% (10 702 игры)."
+      ],
+      "expect": {
+        "topHero": "vengefulspirit",
+        "topName": "Vengeful Spirit",
+        "allowedHeroes": [
+          "weaver",
+          "viper",
+          "disruptor",
+          "mars",
+          "lina",
+          "vengefulspirit",
+          "rubick",
+          "mirana"
+        ],
+        "threats": [
+          "invis",
+          "mobile",
+          "physical"
+        ],
+        "itemsForTop": [
+          "dust",
+          "cyclone",
+          "ghost"
+        ]
+      }
+    },
+    {
+      "id": "d20",
+      "enemies": [
+        "broodmother",
+        "leshrac",
+        "treant"
+      ],
+      "allies": [],
+      "position": 5,
+      "facts": [
+        "Источник: статистика публичных матчей Турбо (режим игры — Турбо), OpenDota, патч 7.41f, от 2026-10-18. Проценты — оценка изменения шанса победы, не гарантия.",
+        "Враги: Broodmother, Leshrac, Treant Protector.",
+        "Позиция игрока: полная поддержка (5).",
+        "Кандидат 1: Undying, итог +6,2%: против Leshrac +3,6% (2 926 игр); против Treant Protector +1,9% (3 762 игры); против Broodmother +0,9% (3 197 игр).",
+        "Кандидат 2: Ancient Apparition, итог +5,7%: против Leshrac +2,2% (2 822 игры); против Treant Protector +1,7% (3 570 игр); против Broodmother +1% (3 107 игр).",
+        "Кандидат 3: Warlock, итог +4,4%: против Leshrac +2,4% (1 398 игр); против Broodmother +1,5% (1 479 игр); против Treant Protector +0,6% (1 667 игр)."
+      ],
+      "expect": {
+        "topHero": "undying",
+        "topName": "Undying",
+        "allowedHeroes": [
+          "broodmother",
+          "leshrac",
+          "treant",
+          "undying",
+          "ancient_apparition",
+          "warlock"
+        ],
+        "threats": [
+          "invis",
+          "summons",
+          "magic",
+          "healing"
+        ],
+        "itemsForTop": [
+          "dust",
+          "pipe",
+          "spirit_vessel"
+        ]
+      }
+    },
+    {
+      "id": "d21",
+      "enemies": [
+        "terrorblade",
+        "puck",
+        "centaur",
+        "lich"
+      ],
+      "allies": [
+        "ursa"
+      ],
+      "position": null,
+      "facts": [
+        "Источник: статистика публичных матчей Турбо (режим игры — Турбо), OpenDota, патч 7.41f, от 2026-10-18. Проценты — оценка изменения шанса победы, не гарантия.",
+        "Враги: Terrorblade, Puck, Centaur Warrunner, Lich.",
+        "Союзники: Ursa.",
+        "Кандидат 1: Warlock, итог +6,8%: против Centaur Warrunner +2,7% (2 392 игры); против Terrorblade +2,2% (3 383 игры); в связке с Ursa +1,5% (2 765 игр).",
+        "Кандидат 2: Underlord, итог +6,7%: в связке с Ursa +3,7% (2 231 игра); против Terrorblade +2% (2 956 игр); против Lich +0,6% (3 892 игры).",
+        "Кандидат 3: Nyx Assassin, итог +6,1%: в связке с Ursa +1,9% (6 193 игры); против Terrorblade +1,2% (8 714 игр); против Puck +1,1% (3 465 игр)."
+      ],
+      "expect": {
+        "topHero": "warlock",
+        "topName": "Warlock",
+        "allowedHeroes": [
+          "terrorblade",
+          "puck",
+          "centaur",
+          "lich",
+          "ursa",
+          "warlock",
+          "abyssal_underlord",
+          "nyx_assassin"
+        ],
+        "threats": [
+          "illusions",
+          "physical",
+          "mobile",
+          "magic"
+        ],
+        "itemsForTop": [
+          "ghost",
+          "cyclone",
+          "pipe"
+        ]
+      }
+    },
+    {
+      "id": "d22",
+      "enemies": [
+        "chaos_knight",
+        "void_spirit",
+        "beastmaster",
+        "jakiro"
+      ],
+      "allies": [
+        "windrunner",
+        "shadow_shaman"
+      ],
+      "position": 1,
+      "facts": [
+        "Источник: статистика публичных матчей Турбо (режим игры — Турбо), OpenDota, патч 7.41f, от 2026-10-18. Проценты — оценка изменения шанса победы, не гарантия.",
+        "Враги: Chaos Knight, Void Spirit, Beastmaster, Jakiro.",
+        "Союзники: Windranger, Shadow Shaman.",
+        "Позиция игрока: керри (1).",
+        "Кандидат 1: Dragon Knight, итог +7,6%: против Beastmaster +2,3% (1 041 игра); против Chaos Knight +2,1% (8 952 игры); против Void Spirit +1,5% (2 435 игр).",
+        "Кандидат 2: Phantom Lancer, итог +6,1%: против Chaos Knight +3,7% (4 656 игр); сила в патче +2,1%; в связке с Windranger +1% (13 356 игр).",
+        "Кандидат 3: Bristleback, итог +5,8%: против Void Spirit +1,6% (3 523 игры); сила в патче +1,6%; против Beastmaster +1,3% (1 727 игр)."
+      ],
+      "expect": {
+        "topHero": "dragon_knight",
+        "topName": "Dragon Knight",
+        "allowedHeroes": [
+          "chaos_knight",
+          "void_spirit",
+          "beastmaster",
+          "jakiro",
+          "windrunner",
+          "shadow_shaman",
+          "dragon_knight",
+          "phantom_lancer",
+          "bristleback"
+        ],
+        "threats": [
+          "illusions",
+          "physical",
+          "mobile",
+          "magic",
+          "disable",
+          "summons"
+        ],
+        "itemsForTop": [
+          "bfury",
+          "heavens_halberd",
+          "orchid",
+          "black_king_bar",
+          "sphere",
+          "crimson_guard"
+        ]
+      }
+    },
+    {
+      "id": "d23",
+      "enemies": [
+        "luna",
+        "queenofpain",
+        "dark_seer",
+        "rubick"
+      ],
+      "allies": [
+        "legion_commander"
+      ],
+      "position": 2,
+      "facts": [
+        "Источник: статистика публичных матчей Турбо (режим игры — Турбо), OpenDota, патч 7.41f, от 2026-10-18. Проценты — оценка изменения шанса победы, не гарантия.",
+        "Враги: Luna, Queen of Pain, Dark Seer, Rubick.",
+        "Союзники: Legion Commander.",
+        "Позиция игрока: мид (2).",
+        "Кандидат 1: Ursa, итог +6%: против Dark Seer +3% (2 931 игра); в связке с Legion Commander +2% (9 458 игр); против Rubick +1,9% (13 519 игр).",
+        "Кандидат 2: Ember Spirit, итог +5%: против Dark Seer +2,2% (2 298 игр); против Rubick +1,8% (11 184 игры); сила в патче −1,7%.",
+        "Кандидат 3: Earth Spirit, итог +3,9%: против Queen of Pain +2,1% (2 724 игры); против Rubick +2% (8 844 игры); сила в патче −1,6%."
+      ],
+      "expect": {
+        "topHero": "ursa",
+        "topName": "Ursa",
+        "allowedHeroes": [
+          "luna",
+          "queenofpain",
+          "dark_seer",
+          "rubick",
+          "legion_commander",
+          "ursa",
+          "ember_spirit",
+          "earth_spirit"
+        ],
+        "threats": [
+          "physical",
+          "magic",
+          "mobile"
+        ],
+        "itemsForTop": [
+          "heavens_halberd",
+          "black_king_bar",
+          "orchid"
+        ]
+      }
+    },
+    {
+      "id": "d24",
+      "enemies": [
+        "troll_warlord",
+        "kunkka",
+        "legion_commander",
+        "dazzle",
+        "lion"
+      ],
+      "allies": [],
+      "position": null,
+      "facts": [
+        "Источник: статистика публичных матчей Турбо (режим игры — Турбо), OpenDota, патч 7.41f, от 2026-10-18. Проценты — оценка изменения шанса победы, не гарантия.",
+        "Враги: Troll Warlord, Kunkka, Legion Commander, Dazzle, Lion.",
+        "Кандидат 1: Doom, итог +6,8%: против Dazzle +3,7% (1 272 игры); против Kunkka +1,7% (1 459 игр); против Legion Commander +1,6% (4 318 игр).",
+        "Кандидат 2: Underlord, итог +6,7%: против Dazzle +2,6% (1 736 игр); против Troll Warlord +1,7% (1 808 игр); против Lion +1,4% (11 578 игр).",
+        "Кандидат 3: Axe, итог +6,2%: против Troll Warlord +3,7% (9 540 игр); против Dazzle +2,4% (4 236 игр); против Lion +1,2% (28 188 игр)."
+      ],
+      "expect": {
+        "topHero": "doom_bringer",
+        "topName": "Doom",
+        "allowedHeroes": [
+          "troll_warlord",
+          "kunkka",
+          "legion_commander",
+          "dazzle",
+          "lion",
+          "doom_bringer",
+          "abyssal_underlord",
+          "axe"
+        ],
+        "threats": [
+          "physical",
+          "disable",
+          "healing",
+          "magic"
+        ],
+        "itemsForTop": [
+          "heavens_halberd",
+          "black_king_bar",
+          "shivas_guard",
+          "eternal_shroud"
+        ]
+      }
+    },
+    {
+      "id": "d25",
+      "enemies": [
+        "bristleback",
+        "invoker",
+        "riki",
+        "lion",
+        "faceless_void"
+      ],
+      "allies": [
+        "axe",
+        "crystal_maiden"
+      ],
+      "position": 1,
+      "facts": [
+        "Источник: статистика публичных матчей Турбо (режим игры — Турбо), OpenDota, патч 7.41f, от 2026-10-18. Проценты — оценка изменения шанса победы, не гарантия.",
+        "Враги: Bristleback, Invoker, Riki, Lion, Faceless Void.",
+        "Союзники: Axe, Crystal Maiden.",
+        "Позиция игрока: керри (1).",
+        "Кандидат 1: Necrophos, итог +7,3%: против Bristleback +3,5% (15 294 игры); против Riki +1,5% (10 649 игр); в связке с Axe +0,7% (14 300 игр).",
+        "Кандидат 2: Dragon Knight, итог +7,1%: против Riki +2,9% (5 204 игры); против Lion +1,7% (15 161 игра); в связке с Crystal Maiden +1,3% (8 685 игр).",
+        "Кандидат 3: Meepo, итог +6,5%: в связке с Crystal Maiden +2,3% (2 641 игра); против Riki +2,3% (2 346 игр); в связке с Axe +2% (2 550 игр)."
+      ],
+      "expect": {
+        "topHero": "necrolyte",
+        "topName": "Necrophos",
+        "allowedHeroes": [
+          "bristleback",
+          "invoker",
+          "riki",
+          "lion",
+          "faceless_void",
+          "axe",
+          "crystal_maiden",
+          "necrolyte",
+          "dragon_knight",
+          "meepo"
+        ],
+        "threats": [
+          "invis",
+          "magic",
+          "disable",
+          "passives",
+          "evasion",
+          "physical"
+        ],
+        "itemsForTop": [
+          "dust",
+          "black_king_bar",
+          "sphere",
+          "silver_edge",
+          "monkey_king_bar",
+          "heavens_halberd"
+        ]
+      }
+    },
+    {
+      "id": "d26",
+      "enemies": [
+        "phantom_lancer",
+        "ember_spirit",
+        "axe",
+        "witch_doctor",
+        "rubick"
+      ],
+      "allies": [
+        "sven",
+        "tinker",
+        "tusk"
+      ],
+      "position": 5,
+      "facts": [
+        "Источник: статистика публичных матчей Турбо (режим игры — Турбо), OpenDota, патч 7.41f, от 2026-10-18. Проценты — оценка изменения шанса победы, не гарантия.",
+        "Враги: Phantom Lancer, Ember Spirit, Axe, Witch Doctor, Rubick.",
+        "Союзники: Sven, Tinker, Tusk.",
+        "Позиция игрока: полная поддержка (5).",
+        "Кандидат 1: Warlock, итог +8,6%: против Phantom Lancer +3,8% (4 748 игр); против Axe +2,5% (6 148 игр); в связке с Sven +2,2% (3 302 игры).",
+        "Кандидат 2: Phoenix, итог +8,3%: против Axe +3,6% (4 028 игр); против Rubick +1,5% (8 215 игр); против Phantom Lancer +1,5% (3 030 игр).",
+        "Кандидат 3: Abaddon, итог +8,1%: против Axe +2,9% (4 565 игр); в связке с Tusk +2,5% (1 384 игры); против Ember Spirit +1,7% (1 711 игр)."
+      ],
+      "expect": {
+        "topHero": "warlock",
+        "topName": "Warlock",
+        "allowedHeroes": [
+          "phantom_lancer",
+          "ember_spirit",
+          "axe",
+          "witch_doctor",
+          "rubick",
+          "sven",
+          "tinker",
+          "tusk",
+          "warlock",
+          "phoenix",
+          "abaddon"
+        ],
+        "threats": [
+          "mobile",
+          "illusions",
+          "healing"
+        ],
+        "itemsForTop": [
+          "cyclone",
+          "spirit_vessel"
+        ]
+      }
+    },
+    {
+      "id": "d27",
+      "enemies": [
+        "medusa",
+        "nyx_assassin",
+        "mars",
+        "shadow_shaman",
+        "skywrath_mage"
+      ],
+      "allies": [
+        "slark",
+        "pugna"
+      ],
+      "position": 3,
+      "facts": [
+        "Источник: статистика публичных матчей Турбо (режим игры — Турбо), OpenDota, патч 7.41f, от 2026-10-18. Проценты — оценка изменения шанса победы, не гарантия.",
+        "Враги: Medusa, Nyx Assassin, Mars, Shadow Shaman, Skywrath Mage.",
+        "Союзники: Slark, Pugna.",
+        "Позиция игрока: оффлейн (3).",
+        "Кандидат 1: Dragon Knight, итог +6,9%: против Shadow Shaman +1,5% (9 202 игры); в связке с Slark +1,4% (7 753 игры); сила в патче +1,2%.",
+        "Кандидат 2: Centaur Warrunner, итог +6,4%: против Medusa +3% (1 652 игры); против Mars +1,3% (1 567 игр); сила в патче +1,1%.",
+        "Кандидат 3: Lycan, итог +5,7%: против Skywrath Mage +3,1% (1 704 игры); против Shadow Shaman +2,7% (1 907 игр); сила в патче −1,4%."
+      ],
+      "expect": {
+        "topHero": "dragon_knight",
+        "topName": "Dragon Knight",
+        "allowedHeroes": [
+          "medusa",
+          "nyx_assassin",
+          "mars",
+          "shadow_shaman",
+          "skywrath_mage",
+          "slark",
+          "pugna",
+          "dragon_knight",
+          "centaur",
+          "lycan"
+        ],
+        "threats": [
+          "invis",
+          "magic",
+          "disable",
+          "summons"
+        ],
+        "itemsForTop": [
+          "dust",
+          "black_king_bar",
+          "sphere",
+          "crimson_guard"
+        ]
+      }
+    },
+    {
+      "id": "d28",
+      "enemies": [
+        "life_stealer",
+        "kez",
+        "abaddon",
+        "oracle",
+        "tidehunter"
+      ],
+      "allies": [
+        "zuus",
+        "pudge",
+        "lich"
+      ],
+      "position": 2,
+      "facts": [
+        "Источник: статистика публичных матчей Турбо (режим игры — Турбо), OpenDota, патч 7.41f, от 2026-10-18. Проценты — оценка изменения шанса победы, не гарантия.",
+        "Враги: Lifestealer, Kez, Abaddon, Oracle, Tidehunter.",
+        "Союзники: Zeus, Pudge, Lich.",
+        "Позиция игрока: мид (2).",
+        "Кандидат 1: Razor, итог +8,4%: против Tidehunter +3% (12 112 игр); против Abaddon +2,2% (2 768 игр); против Oracle +1,8% (3 063 игры).",
+        "Кандидат 2: Death Prophet, итог +6,5%: против Oracle +2,1% (2 279 игр); против Tidehunter +1,7% (8 467 игр); против Abaddon +1,6% (2 034 игры).",
+        "Кандидат 3: Anti-Mage, итог +5,7%: против Oracle +2,3% (7 011 игр); в связке с Lich +2,2% (10 156 игр); против Abaddon +2% (5 741 игра)."
+      ],
+      "expect": {
+        "topHero": "razor",
+        "topName": "Razor",
+        "allowedHeroes": [
+          "life_stealer",
+          "kez",
+          "abaddon",
+          "oracle",
+          "tidehunter",
+          "zuus",
+          "pudge",
+          "lich",
+          "razor",
+          "death_prophet",
+          "antimage"
+        ],
+        "threats": [
+          "invis",
+          "healing",
+          "physical",
+          "passives"
+        ],
+        "itemsForTop": [
+          "dust",
+          "shivas_guard",
+          "heavens_halberd",
+          "silver_edge"
+        ]
+      }
+    },
+    {
+      "id": "d29",
+      "enemies": [
+        "juggernaut",
+        "storm_spirit",
+        "sand_king",
+        "vengefulspirit",
+        "treant"
+      ],
+      "allies": [
+        "monkey_king",
+        "enigma",
+        "ogre_magi",
+        "drow_ranger"
+      ],
+      "position": 4,
+      "facts": [
+        "Источник: статистика публичных матчей Турбо (режим игры — Турбо), OpenDota, патч 7.41f, от 2026-10-18. Проценты — оценка изменения шанса победы, не гарантия.",
+        "Враги: Juggernaut, Storm Spirit, Sand King, Vengeful Spirit, Treant Protector.",
+        "Союзники: Monkey King, Enigma, Ogre Magi, Drow Ranger.",
+        "Позиция игрока: частичная поддержка (4).",
+        "Кандидат 1: Abaddon, итог +6,2%: против Storm Spirit +1,9% (2 198 игр); против Vengeful Spirit +1,7% (3 938 игр); в связке с Drow Ranger +1,5% (11 691 игра).",
+        "Кандидат 2: Phoenix, итог +5,4%: против Sand King +3,1% (1 557 игр); против Treant Protector +2,9% (1 152 игры); против Juggernaut −1,8% (6 361 игра).",
+        "Кандидат 3: Oracle, итог +5,2%: против Storm Spirit +2,8% (2 686 игр); против Sand King +2,1% (2 221 игра); в связке с Monkey King +1,9% (2 970 игр)."
+      ],
+      "expect": {
+        "topHero": "abaddon",
+        "topName": "Abaddon",
+        "allowedHeroes": [
+          "juggernaut",
+          "storm_spirit",
+          "sand_king",
+          "vengefulspirit",
+          "treant",
+          "monkey_king",
+          "enigma",
+          "ogre_magi",
+          "drow_ranger",
+          "abaddon",
+          "phoenix",
+          "oracle"
+        ],
+        "threats": [
+          "invis",
+          "magic",
+          "physical",
+          "mobile",
+          "healing"
+        ],
+        "itemsForTop": [
+          "dust",
+          "black_king_bar",
+          "heavens_halberd",
+          "orchid",
+          "shivas_guard"
+        ]
+      }
+    },
+    {
+      "id": "d30",
+      "enemies": [
+        "sniper",
+        "templar_assassin",
+        "bounty_hunter",
+        "warlock",
+        "shadow_demon"
+      ],
+      "allies": [
+        "faceless_void",
+        "puck",
+        "magnataur"
+      ],
+      "position": null,
+      "facts": [
+        "Источник: статистика публичных матчей Турбо (режим игры — Турбо), OpenDota, патч 7.41f, от 2026-10-18. Проценты — оценка изменения шанса победы, не гарантия.",
+        "Враги: Sniper, Templar Assassin, Bounty Hunter, Warlock, Shadow Demon.",
+        "Союзники: Faceless Void, Puck, Magnus.",
+        "Кандидат 1: Morphling, итог +9,8%: в связке с Puck +3,9% (1 351 игра); против Shadow Demon +3,6% (902 игры); против Sniper +2,8% (13 828 игр).",
+        "Кандидат 2: Troll Warlord, итог +8,8%: против Templar Assassin +4% (1 686 игр); в связке с Magnus +2,1% (3 152 игры); в связке с Puck +1,7% (1 118 игр).",
+        "Кандидат 3: Chaos Knight, итог +8,5%: против Templar Assassin +2,9% (1 927 игр); против Warlock −2,7% (2 435 игр); против Bounty Hunter +2,2% (3 274 игры)."
+      ],
+      "expect": {
+        "topHero": "morphling",
+        "topName": "Morphling",
+        "allowedHeroes": [
+          "sniper",
+          "templar_assassin",
+          "bounty_hunter",
+          "warlock",
+          "shadow_demon",
+          "faceless_void",
+          "puck",
+          "magnataur",
+          "morphling",
+          "troll_warlord",
+          "chaos_knight"
+        ],
+        "threats": [
+          "invis",
+          "physical",
+          "healing",
+          "summons"
+        ],
+        "itemsForTop": [
+          "dust",
+          "heavens_halberd",
+          "shivas_guard",
+          "crimson_guard"
+        ]
+      }
+    },
+    {
+      "id": "d31",
+      "enemies": [
+        "naga_siren",
+        "clinkz",
+        "centaur",
+        "hoodwink",
+        "chen"
+      ],
+      "allies": [
+        "antimage"
+      ],
+      "position": 4,
+      "facts": [
+        "Источник: статистика публичных матчей Турбо (режим игры — Турбо), OpenDota, патч 7.41f, от 2026-10-18. Проценты — оценка изменения шанса победы, не гарантия.",
+        "Враги: Naga Siren, Clinkz, Centaur Warrunner, Hoodwink, Chen.",
+        "Союзники: Anti-Mage.",
+        "Позиция игрока: частичная поддержка (4).",
+        "Кандидат 1: Warlock, итог +9,8%: против Chen +3,3% (382 игры); против Naga Siren +3,1% (1 136 игр); против Centaur Warrunner +2,7% (2 392 игры).",
+        "Кандидат 2: Clockwerk, итог +7%: в связке с Anti-Mage +3% (4 684 игры); против Clinkz +2,9% (2 856 игр); против Hoodwink +2,3% (2 915 игр).",
+        "Кандидат 3: Winter Wyvern, итог +6,9%: в связке с Anti-Mage +2,6% (5 501 игра); против Naga Siren +2,3% (1 022 игры); против Chen +1,5% (336 игр)."
+      ],
+      "expect": {
+        "topHero": "warlock",
+        "topName": "Warlock",
+        "allowedHeroes": [
+          "naga_siren",
+          "clinkz",
+          "centaur",
+          "hoodwink",
+          "chen",
+          "antimage",
+          "warlock",
+          "rattletrap",
+          "winter_wyvern"
+        ],
+        "threats": [
+          "invis",
+          "illusions",
+          "physical",
+          "summons",
+          "healing"
+        ],
+        "itemsForTop": [
+          "dust",
+          "ghost",
+          "spirit_vessel"
+        ]
+      }
+    },
+    {
+      "id": "d32",
+      "enemies": [
+        "skeleton_king",
+        "batrider",
+        "doom_bringer",
+        "undying",
+        "grimstroke"
+      ],
+      "allies": [
+        "gyrocopter",
+        "death_prophet"
+      ],
+      "position": 2,
+      "facts": [
+        "Источник: статистика публичных матчей Турбо (режим игры — Турбо), OpenDota, патч 7.41f, от 2026-10-18. Проценты — оценка изменения шанса победы, не гарантия.",
+        "Враги: Wraith King, Batrider, Doom, Undying, Grimstroke.",
+        "Союзники: Gyrocopter, Death Prophet.",
+        "Позиция игрока: мид (2).",
+        "Кандидат 1: Troll Warlord, итог +11,1%: против Wraith King +2,5% (7 432 игры); в связке с Gyrocopter +2% (1 189 игр); против Grimstroke +1,8% (1 587 игр).",
+        "Кандидат 2: Medusa, итог +11%: против Undying +4,1% (3 745 игр); против Doom +3% (1 292 игры); против Wraith King +1,5% (3 880 игр).",
+        "Кандидат 3: Chaos Knight, итог +9,8%: в связке с Gyrocopter +2,2% (1 547 игр); против Wraith King +1,6% (8 370 игр); сила в патче +1,4%."
+      ],
+      "expect": {
+        "topHero": "troll_warlord",
+        "topName": "Troll Warlord",
+        "allowedHeroes": [
+          "skeleton_king",
+          "batrider",
+          "doom_bringer",
+          "undying",
+          "grimstroke",
+          "gyrocopter",
+          "death_prophet",
+          "troll_warlord",
+          "medusa",
+          "chaos_knight"
+        ],
+        "threats": [
+          "disable"
+        ],
+        "itemsForTop": [
+          "black_king_bar"
+        ]
+      }
+    },
+    {
+      "id": "d33",
+      "enemies": [
+        "morphling",
+        "arc_warden",
+        "primal_beast",
+        "snapfire",
+        "disruptor"
+      ],
+      "allies": [],
+      "position": 5,
+      "facts": [
+        "Источник: статистика публичных матчей Турбо (режим игры — Турбо), OpenDota, патч 7.41f, от 2026-10-18. Проценты — оценка изменения шанса победы, не гарантия.",
+        "Враги: Morphling, Arc Warden, Primal Beast, Snapfire, Disruptor.",
+        "Позиция игрока: полная поддержка (5).",
+        "Кандидат 1: Visage, итог +7%: против Arc Warden +2,9% (765 игр); против Primal Beast +2,1% (805 игр); против Disruptor +1,4% (539 игр).",
+        "Кандидат 2: Vengeful Spirit, итог +5,2%: сила в патче +2,2%; против Primal Beast +1,3% (5 395 игр); против Disruptor +1,2% (4 918 игр).",
+        "Кандидат 3: Nyx Assassin, итог +5,1%: против Morphling +3,6% (5 427 игр); против Primal Beast +2,3% (6 492 игры); против Disruptor −1% (6 033 игры)."
+      ],
+      "expect": {
+        "topHero": "visage",
+        "topName": "Visage",
+        "allowedHeroes": [
+          "morphling",
+          "arc_warden",
+          "primal_beast",
+          "snapfire",
+          "disruptor",
+          "visage",
+          "vengefulspirit",
+          "nyx_assassin"
+        ],
+        "threats": [],
+        "itemsForTop": []
+      }
+    },
+    {
+      "id": "d34",
+      "enemies": [
+        "marci",
+        "muerta",
+        "dawnbreaker",
+        "ringmaster",
+        "largo"
+      ],
+      "allies": [
+        "lina",
+        "axe"
+      ],
+      "position": 1,
+      "facts": [
+        "Источник: статистика публичных матчей Турбо (режим игры — Турбо), OpenDota, патч 7.41f, от 2026-10-18. Проценты — оценка изменения шанса победы, не гарантия.",
+        "Враги: Marci, Muerta, Dawnbreaker, Ringmaster, Largo.",
+        "Союзники: Lina, Axe.",
+        "Позиция игрока: керри (1).",
+        "Кандидат 1: Bloodseeker, итог +7,1%: против Largo +2,3% (1 092 игры); против Ringmaster +2,2% (1 565 игр); против Dawnbreaker +1,6% (2 368 игр).",
+        "Кандидат 2: Templar Assassin, итог +6,4%: против Muerta +2% (1 843 игры); против Dawnbreaker +1,7% (1 499 игр); сила в патче −1,7%.",
+        "Кандидат 3: Faceless Void, итог +5%: против Largo +2,6% (1 777 игр); против Ringmaster +1% (2 988 игр); в связке с Lina +1% (11 827 игр)."
+      ],
+      "expect": {
+        "topHero": "bloodseeker",
+        "topName": "Bloodseeker",
+        "allowedHeroes": [
+          "marci",
+          "muerta",
+          "dawnbreaker",
+          "ringmaster",
+          "largo",
+          "lina",
+          "axe",
+          "bloodseeker",
+          "templar_assassin",
+          "faceless_void"
+        ],
+        "threats": [],
+        "itemsForTop": []
+      }
+    }
+  ]
+}
