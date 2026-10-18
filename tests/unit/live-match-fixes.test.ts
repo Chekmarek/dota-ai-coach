@@ -141,9 +141,9 @@ describe('3. на настоящей записи матча', () => {
 });
 
 describe('4. выкуп: цена выкупа и золото, а не одна недостача', () => {
-  it('подсказка в драке: «Выкуп 4370, у вас 79» (числа из настоящего матча, 25:00)', () => {
+  it('подсказка в драке: «Выкуп 4370, у вас 79» (числа из настоящего матча Турбо, 25:00, 25-й уровень — лейт)', () => {
     const e = new CoachEngine({ data, now: () => T0 });
-    const s = sim({ wallMs: T0, clock: 1500, gold: 79, pos: { x: 0, y: 0 }, enemies: [{ slot: 5, hero: 'lina', pos: { x: 300, y: 0 } }] });
+    const s = sim({ wallMs: T0, clock: 1500, level: 25, gold: 79, pos: { x: 0, y: 0 }, enemies: [{ slot: 5, hero: 'lina', pos: { x: 300, y: 0 } }] });
     s.gsi!.extra!.buybackCost = 4370;
     const u = e.tick(s.state, s.gsi, T0);
     const h = u.shown.find((x) => x.id === 'fight.no-buyback');

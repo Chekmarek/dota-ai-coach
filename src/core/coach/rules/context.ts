@@ -4,6 +4,7 @@ import type { CoachMemory, MemoryEvents } from '../memory.ts';
 import type { CoachLookup } from '../data.ts';
 import type { CoachSettings, FactRef, HintCategory, HintDraft, HintPriority } from '../types.ts';
 import { MAP_ZONE_RU, type MapZone } from '../../match-state/map-zones.ts';
+import { buildGameContext, type GameContext } from '../game-context.ts';
 
 export interface RuleContext {
   v: CoachView;
@@ -13,6 +14,14 @@ export interface RuleContext {
   settings: CoachSettings;
   /** wallMs снимка */
   now: number;
+  /** Контекст игры (стадия, позиция, герой) — движок считает раз за тик; читать через game(c) */
+  g?: GameContext;
+}
+
+/** Контекст игры тика: посчитан движком или (в тестах отдельных правил) — здесь, один раз */
+export function game(c: RuleContext): GameContext {
+  c.g ??= buildGameContext(c.v, c.mem, c.look, c.settings.position ?? 'auto');
+  return c.g;
 }
 
 export type Rule = (c: RuleContext) => HintDraft | HintDraft[] | null;

@@ -9,8 +9,18 @@ import { GameModeBadge, currentGameMode } from './gsi';
 import { showModeToast } from './mode-toast';
 import { useGsi } from '../hooks/useGsi';
 import { modeBannerText, resolveGameMode } from '@core/gsi/mode.ts';
+import { POSITION_OVERRIDES, type PositionOverride } from '@core/coach/game-context.ts';
 
-const MODE_RU: Record<GameModeOverride, string> = { auto: 'Определять по данным игры', turbo: 'Турбо', normal: 'Обычный режим (All Pick, рейтинг)' };
+const POSITION_OPTION_RU: Record<PositionOverride, string> = {
+  auto: 'Определять сама (по герою и линии)',
+  '1': '1 — керри (лёгкая линия)',
+  '2': '2 — центр',
+  '3': '3 — оффлейн (сложная линия)',
+  '4': '4 — частичная поддержка',
+  '5': '5 — полная поддержка',
+};
+
+const MODE_RU: Record<GameModeOverride, string> ={ auto: 'Определять по данным игры', turbo: 'Турбо', normal: 'Обычный режим (All Pick, рейтинг)' };
 
 const DETAIL_RU: Record<HintDetail, string> = { min: 'Только действие — одна фраза', normal: 'Коротко — действие и причина', detailed: 'Подробно — с фактами и факторами %' };
 const CATEGORY_RU: Record<keyof HintCategories, string> = {
@@ -63,6 +73,20 @@ export function HintsToggles({ settings, update, testIdPrefix = 'setting-hints' 
       <p className="muted small">
         Сейчас: <GameModeBadge testId={`${testIdPrefix}-game-mode-now`} />. Если Dota не сообщает режим, выберите его здесь вручную. Без данных
         игры и без выбора коуч считает игру обычной.
+      </p>
+      <label>
+        Моя позиция
+        <select value={h.position} onChange={(e) => void update({ hints: { position: e.target.value as PositionOverride } })} data-testid={`${testIdPrefix}-position`}>
+          {POSITION_OVERRIDES.map((p) => (
+            <option key={p} value={p}>
+              {POSITION_OPTION_RU[p]}
+            </option>
+          ))}
+        </select>
+      </label>
+      <p className="muted small">
+        От позиции зависят советы: керри в лайнинге не зовут в лес и на чужие драки, саппорту напоминают про варды и стаки. «Определять
+        сама» — по герою и линии в первые минуты; если коуч не уверен, он попросит выбрать позицию здесь.
       </p>
       <label>
         Подробность подсказок

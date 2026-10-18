@@ -2,7 +2,8 @@
 import { ACTION_RU, actionChoice, engagePercent, factorsText, matchupPercent, nearEnemies } from '../prob.ts';
 import { nearEnemyCount, ultReady } from '../memory.ts';
 import { derivedFact, fact, kbFact, poolPct } from '../view.ts';
-import { draft, playing, plural, type Rule } from './context.ts';
+import { draft, game, playing, plural, type Rule } from './context.ts';
+import { NEAR_UNITS, dist } from '../geo.ts';
 import type { HintDraft } from '../types.ts';
 
 /** Сколько после «Отходи» не советовать «Вступать» */
@@ -16,6 +17,9 @@ export const engageRule: Rule = (c) => {
   const e = engagePercent(c.v, c.mem, c.look, c.settings.minPercentConfidence);
   if (c.mem.inFight && c.mem.engageAtEntry === null) c.mem.engageAtEntry = e.value;
   if (!e.showable) return null;
+  // В лайнинге один враг рядом — это обычный размен на линии, а не драка: процент «вступать» каждые 15 с только мешал
+  // (матч 9051402480: «Вступать: шанс 92%» в 0:10 на 1-м уровне)
+  if (game(c).stage === 'laning' && n < 2) return null;
   const enemies = `${n} ${plural(n, 'враг', 'врага', 'врагов')} рядом`;
   // Только что сказали «Отходи» — «Вступать» сразу после него противоречит; ждём DISENGAGE_HOLD_MS
   const disengagedAt = c.mem.marks.get('disengage@');
@@ -199,7 +203,14 @@ export const disengageRule: Rule = (c) => {
   const now = nearEnemyCount(c.v);
   // Подкрепление — только если драка уже шла (враги были рядом и раньше)
   const reinforce = before >= 1 && now - before >= 2;
-  const allyLost = c.ev.allyDied.length > 0 && me !== null;
+  // Союзник погиб рядом (там, где идёт ваша драка), а не на другом конце карты: раньше «Отходи: союзник погиб»
+  // звучало на любую смерть союзника — 99 раз за 5 матчей
+  const allyLost =
+    me !== null &&
+    c.ev.allyDied.some((slot) => {
+      const a = c.v.allies.find((x) => x.slot === slot);
+      return !!a?.pos.value && (a.pos.ageSec ?? 99) <= 5 && dist(a.pos.value, me) <= NEAR_UNITS * 1.5;
+    });
   if (!reinforce && !allyLost) return null;
   // «Отходи» — только когда врагов рядом больше, чем вас с союзниками: иначе это противоречило «Вступать: 95%»
   // секундой раньше (матч 9051402480: 21:52, 22:10, 23:45, 26:07)
@@ -226,7 +237,9 @@ export const buybackRule: Rule = (c) => {
   const clock = c.v.clock.value;
   const cost = c.v.me.buybackCost.value;
   const gold = c.v.me.gold.value;
-  if (clock === null || clock < 25 * 60 || cost === null || gold === null) return null;
+  // Выкуп важен в лейте (стадия — по времени с поправкой на Турбо, уровню и потерянным зданиям), а не «после 25 минут»
+  // обычной игры: в Турбо 25 минут — это уже конец матча
+  if (clock === null || game(c).stage !== 'late' || cost === null || gold === null) return null;
   // Только что выкупились — выкуп на перезарядке: «выкуп X, у вас Y» тогда сбивает с толку (матч 9051402480, 32:10)
   if ((c.v.me.buybackCooldown.value ?? 0) > 0) return null;
   const facts = [fact('gold', 'Золото', c.v.me.gold), fact('buyback', 'Цена выкупа', c.v.me.buybackCost)];
@@ -244,7 +257,7 @@ export const buybackRule: Rule = (c) => {
       cooldownSec: 90,
     });
   }
-  if (clock >= 35 * 60 && gold >= cost && gold < cost + 600) {
+  if (gold >= cost && gold < cost + 600) {
     return draft({
       id: 'fight.keep-buyback',
       category: 'economy',
@@ -252,7 +265,7 @@ export const buybackRule: Rule = (c) => {
       confidence: 0.8,
       short: `Держите ${cost} золота на выкуп`,
       normal: `Поздняя игра: не тратьте последние ${cost} — это выкуп.`,
-      facts: [...facts, kbFact('phase', 'Поздняя игра с, мин', 35, false)],
+      facts: [...facts, derivedFact('stage', 'Стадия игры', 'лейт', 0.8)],
       ttlSec: 8,
       cooldownSec: 300,
     });
@@ -260,4 +273,5 @@ export const buybackRule: Rule = (c) => {
   return null;
 };
 
-export const FIGHT_RULES: Rule[] = [disengageRule, engageRule, matchupRule, targetRule, ultWindowRule, buybackRule, actionRule];
+// actionRule («Фармить: 59%») убран (аудит, этап 1): проценты эвристики без стадии и роли, дублировал совет «что делать»
+export const FIGHT_RULES: Rule[] = [disengageRule, engageRule, matchupRule, targetRule, ultWindowRule, buybackRule];

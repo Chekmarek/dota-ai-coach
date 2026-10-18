@@ -5,7 +5,7 @@ import { hasItem, nearEnemyCount, tpReady } from '../memory.ts';
 import { actionChoice, nearEnemies } from '../prob.ts';
 import { isOwnBase } from '../geo.ts';
 import { derivedFact, fact, kbFact, poolPct } from '../view.ts';
-import { draft, playing, type Rule, type RuleContext } from './context.ts';
+import { draft, game, playing, type Rule, type RuleContext } from './context.ts';
 
 
 /** Порог «много золота» по умолчанию */
@@ -218,7 +218,9 @@ export const wardsRule: Rule = (c) => {
   const key = c.v.me.hero.value?.key;
   if (!playing(c) || clock === null || clock < 2 * 60 || !key || !c.v.me.itemsKnown) return null;
   const roles = c.look.heroByKey.get(key)?.roles ?? [];
-  if (!roles.includes('Support') || roles.includes('Carry')) return null;
+  // Варды — дело позиций 4–5; позиция не известна — по ролям героя, как раньше
+  const pos = game(c).position;
+  if (pos !== null ? pos < 4 : !roles.includes('Support') || roles.includes('Carry')) return null;
   if (hasItem(c.v, ['ward_observer', 'ward_dispenser', 'ward_sentry'])) {
     c.mem.marks.delete('no-wards@');
     return null;

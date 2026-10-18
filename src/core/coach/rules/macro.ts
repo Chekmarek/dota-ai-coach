@@ -4,7 +4,8 @@ import { MAP_ZONE_RU, mapZone } from '../../match-state/map-zones.ts';
 import { nearEnemyCount, tpReady } from '../memory.ts';
 import { NEAR_UNITS, dist, mapSide } from '../geo.ts';
 import { derivedFact, fact, kbFact } from '../view.ts';
-import { draft, mmss, playing, plural, type Rule } from './context.ts';
+import { draft, game, mmss, playing, plural, type Rule } from './context.ts';
+import type { GameContext } from '../game-context.ts';
 import type { HintDraft } from '../types.ts';
 import outpostsJson from '../../../data/outposts.json';
 
@@ -67,6 +68,8 @@ export const groupRule: Rule = (c) => {
 export const helpRule: Rule = (c) => {
   const me = c.v.me.pos.value;
   if (!playing(c) || !me || c.mem.inFight) return null;
+  // В лайнинге каждый стоит на своей линии: «телепорт на верхнюю линию» в 0:30 керри только вредил (13 раз до 3:00)
+  if (game(c).stage === 'laning') return null;
   const enemies = c.v.enemies.filter((e) => e.alive.value !== false && freshPos(e));
   for (const a of c.v.allies) {
     if (a.alive.value === false || !freshPos(a)) continue;
@@ -114,15 +117,27 @@ export const roshanKilledRule: Rule = (c) => {
   });
 };
 
+/**
+ * Чья руна: руну силы и воду в лайнинге контролирует центр (и роумер-четвёрка), богатство — саппорты и центр.
+ * Позиция не известна или игра уже не в лайнинге — объявляем всем. Первая руна богатства (0:00) — всем.
+ */
+export function runeForMe(id: string, at: number, g: Pick<GameContext, 'stage' | 'position'>): boolean {
+  if (!id.startsWith('rune-') || g.position === null || g.stage !== 'laning' || at <= 0) return true;
+  if (id === 'rune-bounty') return g.position === 2 || g.position >= 4;
+  return g.position === 2 || g.position === 4;
+}
+
 /** Руны, день и ночь, Мучитель, окно Рошана — по механике базы знаний; объявляем за 15 с один раз */
 export const timersRule: Rule = (c) => {
   const clock = c.v.clock.value;
   if (!c.v.inGame || clock === null || clock < -30) return null;
   const evs = upcomingEvents(c.look.mechanics, clock, { roshanDeathAt: c.mem.roshanKilledAt, tormentorDeathAt: c.mem.tormentorKilledAt });
   const out: HintDraft[] = [];
+  const g = game(c);
   for (const e of evs) {
     if (e.status !== 'ok' || e.inSec === null || e.at === null) continue;
     if (!['rune-power', 'rune-bounty', 'rune-water', 'day-night', 'tormentor', 'roshan-respawn', 'shrine-of-wisdom'].includes(e.id)) continue;
+    if (!runeForMe(e.id, e.at, g)) continue;
     const lead = e.id === 'roshan-respawn' || e.id === 'tormentor' ? 30 : 15;
     if (e.inSec > lead || e.inSec < 3) continue;
     const key = `timer:${e.id}@${e.at}`;
@@ -180,4 +195,30 @@ export const outpostRule: Rule = (c) => {
   });
 };
 
-export const MACRO_RULES: Rule[] = [helpRule, pushWindowRule, roshanKilledRule, groupRule, outpostRule, timersRule];
+/** С этой секунды без уверенной позиции коуч просит выбрать её (к 2:00 линия уже понятна) */
+export const POSITION_ASK_AT = 120;
+
+/**
+ * Позиция не определилась (герой играет на разных позициях, линия неясна) — один раз за матч просим выбрать её в окне
+ * коуча. Окно поверх игры не берёт фокус и не принимает клики, поэтому выбор — там, а не на плашке.
+ */
+export const positionAskRule: Rule = (c) => {
+  const clock = c.v.clock.value;
+  if (!c.v.inGame || clock === null || clock < POSITION_ASK_AT || c.mem.once.has('ask:position')) return null;
+  const g = game(c);
+  if (g.positionSource === 'settings' || (g.position !== null && g.positionConfidence >= 0.6)) return null;
+  c.mem.once.add('ask:position');
+  return draft({
+    id: 'macro.ask-position',
+    category: 'macro',
+    priority: 'info',
+    confidence: 0.9,
+    short: 'Какая у вас позиция? Выберите в окне коуча',
+    normal: 'Коуч не уверен в вашей позиции — от неё зависят советы. Окно коуча → «Настройки» → «Моя позиция».',
+    facts: [derivedFact('position', 'Позиция (догадка коуча)', g.position, g.positionConfidence)],
+    ttlSec: 12,
+    cooldownSec: 0,
+  });
+};
+
+export const MACRO_RULES: Rule[] = [positionAskRule,helpRule, pushWindowRule, roshanKilledRule, groupRule, outpostRule, timersRule];

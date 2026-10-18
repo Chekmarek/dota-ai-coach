@@ -5,7 +5,7 @@ import { hasItem, hasRegen, nearEnemyCount, tpReady } from '../memory.ts';
 import { nearEnemies } from '../prob.ts';
 import { BUILDING_RU, NEAR_UNITS, buildingLane, dist, isEnemyJungle, mapSide } from '../geo.ts';
 import { derivedFact, fact, kbFact, poolPct } from '../view.ts';
-import { draft, playing, plural, zoneRu, type Rule } from './context.ts';
+import { draft, game, playing, plural, zoneRu, type Rule } from './context.ts';
 import type { HintDraft } from '../types.ts';
 
 const alliesNear = (c: Parameters<Rule>[0]): number => {
@@ -39,6 +39,9 @@ export const missingRule: Rule = (c) => {
 
 export const smokeRule: Rule = (c) => {
   if (!c.ev.smoke || !c.v.inGame) return null;
+  // В лайнинге враги всё время уходят в туман у своих линий, а сразу после драки — отступают все вместе:
+  // «трое пропали» тогда не смок (31 раз за 5 матчей)
+  if (game(c).stage === 'laning' || c.mem.inFight) return null;
   const n = c.ev.smoke.length;
   return draft({
     id: 'danger.smoke',
@@ -57,7 +60,9 @@ export const gankerRule: Rule = (c) => {
   if (!playing(c) || !c.v.team || !c.v.me.pos.value) return null;
   const hp = poolPct(c.v.me.hp.value);
   const side = mapSide(c.v.me.pos.value, c.v.team);
-  if (!((hp !== null && hp < 50) || side === 'enemy')) return null;
+  // В лайнинге — только при малом здоровье (на чужой половине вы и так стоите на линии)
+  const laning = game(c).stage === 'laning';
+  if (!((hp !== null && hp < 50) || (side === 'enemy' && !laning))) return null;
   const g = c.v.enemies.find((e) => {
     if (e.missing !== true || !e.hero.value) return false;
     const t = e.missingForSec ?? 0;
@@ -67,7 +72,8 @@ export const gankerRule: Rule = (c) => {
   if (!g) return null;
   const name = c.look.heroName(g.hero.value);
   return draft({
-    id: `danger.ganker:${g.hero.value}`,
+    // Один id на правило: с id по герою предупреждения о разных героях шли подряд (78 раз за 5 матчей)
+    id: 'danger.ganker',
     ruleId: 'danger.ganker',
     category: 'danger',
     priority: 'advice',
@@ -76,7 +82,7 @@ export const gankerRule: Rule = (c) => {
     normal: `${name} не виден ${Math.round(g.missingForSec ?? 0)} с — он умеет ловить. ${hp !== null && hp < 50 ? 'У вас мало здоровья.' : 'Вы на чужой стороне.'}`,
     facts: [fact('ganker', 'Пропал', g.hero), derivedFact('missing-for', 'Не виден, с', Math.round(g.missingForSec ?? 0), 0.7), kbFact('roles', 'Роли (база)', 'Initiator/Disabler', false)],
     ttlSec: 8,
-    cooldownSec: 40,
+    cooldownSec: 90,
     icon: `hero:${g.hero.value}`,
   });
 };
@@ -141,7 +147,12 @@ export const buildingRule: Rule = (c) => {
       c.mem.marks.set('bld-attack@', c.now);
       const lane = buildingLane(b.key);
       const away = lane === null || c.v.me.zone !== lane;
-      if (away) {
+      // Мёртвому важны только здания базы (решение о выкупе); в лайнинге башня 1-го уровня на чужой линии —
+      // дело тех, кто на ней стоит (54 раза за 5 матчей, в том числе когда вы были мертвы)
+      const base3 = /tower3_|tower4|rax_|fort/.test(b.key);
+      const dead = c.v.me.alive.value === false;
+      const relevant = dead ? base3 : !(game(c).stage === 'laning' && /tower1_/.test(b.key));
+      if (away && relevant) {
         out.push(
           draft({
             id: `danger.building:${b.key}`,
@@ -194,7 +205,8 @@ export const invisRule: Rule = (c) => {
   const name = c.look.heroName(inv.hero.value);
   const dust = c.look.itemCost('dust');
   return draft({
-    id: `danger.invis:${inv.hero.value}`,
+    // Один id на правило и перерыв 8 минут: напоминание о пыли шло каждые 4 минуты на каждого невидимку
+    id: 'danger.invis',
     ruleId: 'danger.invis',
     category: 'danger',
     priority: 'advice',
@@ -203,7 +215,7 @@ export const invisRule: Rule = (c) => {
     normal: `У врага ${name} есть невидимость, а у вас нет пыли или сентри. Пыль стоит ${dust ?? '?'}.`,
     facts: [fact('invis-hero', 'Невидимый враг', inv.hero), kbFact('dust-cost', 'Цена пыли', dust, c.look.data.kbVerified), kbFact('invis', 'Невидимость (по описанию способностей)', 'да', false)],
     ttlSec: 10,
-    cooldownSec: 240,
+    cooldownSec: 480,
     zone: 'timing',
     icon: 'item:dust',
   });

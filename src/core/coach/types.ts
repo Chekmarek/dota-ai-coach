@@ -1,5 +1,6 @@
 // Типы движка подсказок (этап 2). Чистое ядро: без Electron, DOM, сети и файлов; время передаётся снаружи.
 import type { GameModeOverride } from '../gsi/mode.ts';
+import type { PositionOverride } from './game-context.ts';
 
 /** Категории подсказок; каждую можно выключить в настройках */
 export const HINT_CATEGORIES = ['fight', 'danger', 'laning', 'economy', 'macro', 'timing', 'mistake', 'review'] as const;
@@ -125,6 +126,8 @@ export interface CoachSettings {
   aiLive: boolean;
   /** Режим игры: auto — по данным игры (state.match.mode), turbo / normal — выбран пользователем */
   gameMode: GameModeOverride;
+  /** Моя позиция: auto — по герою и линии, '1'…'5' — выбрана пользователем (в старых настройках поля нет) */
+  position?: PositionOverride;
 }
 
 export function defaultCoachSettings(): CoachSettings {
@@ -135,6 +138,7 @@ export function defaultCoachSettings(): CoachSettings {
     minPercentConfidence: 0.55,
     aiLive: true,
     gameMode: 'auto',
+    position: 'auto',
   };
 }
 

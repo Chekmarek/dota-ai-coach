@@ -3,10 +3,14 @@
 import { upcomingEvents } from '../../knowledge-base/timers.ts';
 import { myRole } from './draft.ts';
 import { fact, kbFact } from '../view.ts';
-import { draft, mmss, playing, type Rule, type RuleContext } from './context.ts';
+import { draft, game, mmss, playing, type Rule, type RuleContext } from './context.ts';
 import type { HintDraft } from '../types.ts';
 
-const isSupport = (c: RuleContext): boolean => myRole(c) === 'support';
+// Саппорт — по позиции (4–5) из контекста игры; позиция не известна — по герою, как раньше
+const isSupport = (c: RuleContext): boolean => {
+  const g = game(c);
+  return g.position !== null ? g.position >= 4 : myRole(c) === 'support';
+};
 
 /** Саппорту: окно стака через несколько секунд — пора к лагерю (с 3-й по 20-ю минуту, не в драке) */
 export const stackRule: Rule = (c) => {

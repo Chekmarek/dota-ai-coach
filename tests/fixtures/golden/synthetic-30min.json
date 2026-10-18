@@ -1066,119 +1066,6 @@
   }
  },
  {
-  "t": 43,
-  "tick": {
-   "wallMs": 5043000,
-   "shown": [
-    {
-     "id": "laning.buy-regen",
-     "ruleId": "laning.buy-regen",
-     "category": "laning",
-     "priority": "advice",
-     "confidence": 0.8,
-     "short": "Купите Healing Salve — курьером",
-     "detail": {
-      "normal": "Здоровья 25%, регенерации нет. Healing Salve стоит 100, у вас 600.",
-      "detailed": "Здоровья 25%, регенерации нет. Healing Salve стоит 100, у вас 600. · Здоровье, %: 25 (игра, 0 с) · Цена Healing Salve: 100 (база, не проверено) · Золото: 600 (игра, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "hp",
-       "label": "Здоровье, %",
-       "value": 25,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      },
-      {
-       "key": "flask-cost",
-       "label": "Цена Healing Salve",
-       "value": 100,
-       "source": "kb",
-       "ageSec": null,
-       "confidence": 1,
-       "verified": false
-      },
-      {
-       "key": "gold",
-       "label": "Золото",
-       "value": 600,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      }
-     ],
-     "ttlMs": 8000,
-     "cooldownMs": 90000,
-     "zone": "decision",
-     "icon": "item:flask",
-     "seq": 7,
-     "createdWallMs": 5043000,
-     "expiresWallMs": 5087000,
-     "clock": 343,
-     "textSource": "template"
-    },
-    {
-     "id": "fight.action:farm",
-     "ruleId": "fight.action",
-     "category": "fight",
-     "priority": "info",
-     "confidence": 0.9,
-     "short": "Фармить: 50%",
-     "detail": {
-      "normal": "Фармить: 50% — ранняя игра.",
-      "detailed": "Фармить: 50%. Остальное: драться 4%, пушить 14%, отходить 32%. Почему: ранняя игра."
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "action",
-       "label": "Рекомендация",
-       "value": "farm",
-       "source": "derived",
-       "ageSec": 0,
-       "confidence": 0.9,
-       "verified": true
-      },
-      {
-       "key": "action-pct",
-       "label": "Доля, %",
-       "value": 50,
-       "source": "derived",
-       "ageSec": 0,
-       "confidence": 0.9,
-       "verified": true
-      }
-     ],
-     "ttlMs": 10000,
-     "cooldownMs": 20000,
-     "zone": "decision",
-     "icon": null,
-     "seq": 8,
-     "createdWallMs": 5043000,
-     "expiresWallMs": 5053000,
-     "clock": 343,
-     "textSource": "template"
-    }
-   ],
-   "expired": [],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
-   "visible": [
-    "danger.smoke",
-    "economy.tp",
-    "laning.buy-regen",
-    "fight.action:farm"
-   ]
-  }
- },
- {
   "t": 45,
   "tick": {
    "wallMs": 5045000,
@@ -1219,7 +1106,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 9,
+     "seq": 7,
      "createdWallMs": 5045000,
      "expiresWallMs": 5060000,
      "clock": 345,
@@ -1235,8 +1122,6 @@
    "visible": [
     "danger.smoke",
     "economy.tp",
-    "laning.buy-regen",
-    "fight.action:farm",
     "timing.rune-power"
    ]
   }
@@ -1288,8 +1173,6 @@
    "inFight": false,
    "visible": [
     "economy.tp",
-    "laning.buy-regen",
-    "fight.action:farm",
     "timing.rune-power"
    ]
   }
@@ -1344,7 +1227,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 10,
+     "seq": 8,
      "createdWallMs": 5051000,
      "expiresWallMs": 5077000,
      "clock": 351,
@@ -1359,70 +1242,6 @@
    "inFight": false,
    "visible": [
     "economy.tp",
-    "laning.buy-regen",
-    "danger.missing",
-    "fight.action:farm",
-    "timing.rune-power"
-   ]
-  }
- },
- {
-  "t": 53,
-  "tick": {
-   "wallMs": 5053000,
-   "shown": [],
-   "expired": [
-    {
-     "id": "fight.action:farm",
-     "ruleId": "fight.action",
-     "category": "fight",
-     "priority": "info",
-     "confidence": 0.9,
-     "short": "Фармить: 50%",
-     "detail": {
-      "normal": "Фармить: 50% — ранняя игра.",
-      "detailed": "Фармить: 50%. Остальное: драться 4%, пушить 14%, отходить 32%. Почему: ранняя игра."
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "action",
-       "label": "Рекомендация",
-       "value": "farm",
-       "source": "derived",
-       "ageSec": 0,
-       "confidence": 0.9,
-       "verified": true
-      },
-      {
-       "key": "action-pct",
-       "label": "Доля, %",
-       "value": 50,
-       "source": "derived",
-       "ageSec": 0,
-       "confidence": 0.9,
-       "verified": true
-      }
-     ],
-     "ttlMs": 10000,
-     "cooldownMs": 20000,
-     "zone": "decision",
-     "icon": null,
-     "seq": 8,
-     "createdWallMs": 5043000,
-     "expiresWallMs": 5053000,
-     "clock": 343,
-     "textSource": "template"
-    }
-   ],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
-   "visible": [
-    "economy.tp",
-    "laning.buy-regen",
     "danger.missing",
     "timing.rune-power"
    ]
@@ -1434,7 +1253,7 @@
    "wallMs": 5060000,
    "shown": [
     {
-     "id": "danger.invis:riki",
+     "id": "danger.invis",
      "ruleId": "danger.invis",
      "category": "danger",
      "priority": "advice",
@@ -1475,10 +1294,10 @@
       }
      ],
      "ttlMs": 10000,
-     "cooldownMs": 240000,
+     "cooldownMs": 480000,
      "zone": "timing",
      "icon": "item:dust",
-     "seq": 11,
+     "seq": 9,
      "createdWallMs": 5060000,
      "expiresWallMs": 6809000,
      "clock": 360,
@@ -1522,7 +1341,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 9,
+     "seq": 7,
      "createdWallMs": 5045000,
      "expiresWallMs": 5060000,
      "clock": 345,
@@ -1536,9 +1355,8 @@
    "inFight": false,
    "visible": [
     "economy.tp",
-    "laning.buy-regen",
     "danger.missing",
-    "danger.invis:riki"
+    "danger.invis"
    ]
   }
  },
@@ -1950,50 +1768,59 @@
   }
  },
  {
-  "t": 63,
+  "t": 61,
   "tick": {
-   "wallMs": 5063000,
+   "wallMs": 5061000,
    "shown": [
     {
-     "id": "economy.next:wraith_band",
-     "ruleId": "economy.next",
+     "id": "fight.keep-buyback",
+     "ruleId": "fight.keep-buyback",
      "category": "economy",
      "priority": "info",
-     "confidence": 0.7,
-     "short": "Дальше: Wraith Band",
+     "confidence": 0.8,
+     "short": "Держите 500 золота на выкуп",
      "detail": {
-      "normal": "Следующий предмет: Wraith Band — профи патча берут его к 2 мин.",
-      "detailed": "Следующий предмет: Wraith Band — профи патча берут его к 2 мин. · Следующий предмет (профи патча): Wraith Band (статистика патча, не проверено) · Обычно к минуте: 2.4 (статистика патча, не проверено)"
+      "normal": "Поздняя игра: не тратьте последние 500 — это выкуп.",
+      "detailed": "Поздняя игра: не тратьте последние 500 — это выкуп. · Золото: 600 (игра, 0 с) · Цена выкупа: 500 (игра, 0 с) · Стадия игры: лейт (вывод, 0 с)"
      },
      "percent": null,
      "facts": [
       {
-       "key": "next-item",
-       "label": "Следующий предмет (профи патча)",
-       "value": "Wraith Band",
-       "source": "stats",
-       "ageSec": null,
+       "key": "gold",
+       "label": "Золото",
+       "value": 600,
+       "source": "gsi",
+       "ageSec": 0,
        "confidence": 1,
-       "verified": false
+       "verified": true
       },
       {
-       "key": "median-min",
-       "label": "Обычно к минуте",
-       "value": 2.4,
-       "source": "stats",
-       "ageSec": null,
+       "key": "buyback",
+       "label": "Цена выкупа",
+       "value": 500,
+       "source": "gsi",
+       "ageSec": 0,
        "confidence": 1,
-       "verified": false
+       "verified": true
+      },
+      {
+       "key": "stage",
+       "label": "Стадия игры",
+       "value": "лейт",
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.8,
+       "verified": true
       }
      ],
-     "ttlMs": 10000,
+     "ttlMs": 8000,
      "cooldownMs": 300000,
      "zone": "timing",
-     "icon": "item:wraith_band",
-     "seq": 12,
-     "createdWallMs": 5063000,
-     "expiresWallMs": 5140000,
-     "clock": 363,
+     "icon": null,
+     "seq": 10,
+     "createdWallMs": 5061000,
+     "expiresWallMs": 5087000,
+     "clock": 361,
      "textSource": "template"
     }
    ],
@@ -2005,10 +1832,9 @@
    "inFight": false,
    "visible": [
     "economy.tp",
-    "laning.buy-regen",
     "danger.missing",
-    "danger.invis:riki",
-    "economy.next:wraith_band"
+    "danger.invis",
+    "fight.keep-buyback"
    ]
   }
  },
@@ -2071,7 +1897,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 13,
+     "seq": 11,
      "createdWallMs": 5070000,
      "expiresWallMs": 5084000,
      "clock": 370,
@@ -2087,9 +1913,8 @@
    "visible": [
     "danger.low-hp",
     "economy.tp",
-    "laning.buy-regen",
-    "danger.invis:riki",
-    "economy.next:wraith_band"
+    "danger.invis",
+    "fight.keep-buyback"
    ]
   }
  },
@@ -2125,7 +1950,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 14,
+     "seq": 12,
      "createdWallMs": 5076000,
      "expiresWallMs": 5084000,
      "clock": 376,
@@ -2141,80 +1966,8 @@
    "visible": [
     "danger.building:tower1_mid",
     "economy.tp",
-    "laning.buy-regen",
-    "danger.invis:riki",
-    "economy.next:wraith_band"
-   ]
-  }
- },
- {
-  "t": 82,
-  "tick": {
-   "wallMs": 5082000,
-   "shown": [],
-   "expired": [
-    {
-     "id": "laning.buy-regen",
-     "ruleId": "laning.buy-regen",
-     "category": "laning",
-     "priority": "advice",
-     "confidence": 0.8,
-     "short": "Купите Healing Salve — курьером",
-     "detail": {
-      "normal": "Здоровья 25%, регенерации нет. Healing Salve стоит 100, у вас 600.",
-      "detailed": "Здоровья 25%, регенерации нет. Healing Salve стоит 100, у вас 600. · Здоровье, %: 25 (игра, 0 с) · Цена Healing Salve: 100 (база, не проверено) · Золото: 600 (игра, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "hp",
-       "label": "Здоровье, %",
-       "value": 25,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      },
-      {
-       "key": "flask-cost",
-       "label": "Цена Healing Salve",
-       "value": 100,
-       "source": "kb",
-       "ageSec": null,
-       "confidence": 1,
-       "verified": false
-      },
-      {
-       "key": "gold",
-       "label": "Золото",
-       "value": 600,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      }
-     ],
-     "ttlMs": 8000,
-     "cooldownMs": 90000,
-     "zone": "decision",
-     "icon": "item:flask",
-     "seq": 7,
-     "createdWallMs": 5043000,
-     "expiresWallMs": 5087000,
-     "clock": 343,
-     "textSource": "template"
-    }
-   ],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
-   "visible": [
-    "danger.building:tower1_mid",
-    "economy.tp",
-    "danger.invis:riki",
-    "economy.next:wraith_band"
+    "danger.invis",
+    "fight.keep-buyback"
    ]
   }
  },
@@ -2251,7 +2004,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 14,
+     "seq": 12,
      "createdWallMs": 5076000,
      "expiresWallMs": 5084000,
      "clock": 376,
@@ -2265,8 +2018,138 @@
    "inFight": false,
    "visible": [
     "economy.tp",
-    "danger.invis:riki",
-    "economy.next:wraith_band"
+    "danger.invis",
+    "fight.keep-buyback"
+   ]
+  }
+ },
+ {
+  "t": 87,
+  "tick": {
+   "wallMs": 5087000,
+   "shown": [],
+   "expired": [
+    {
+     "id": "fight.keep-buyback",
+     "ruleId": "fight.keep-buyback",
+     "category": "economy",
+     "priority": "info",
+     "confidence": 0.8,
+     "short": "Держите 500 золота на выкуп",
+     "detail": {
+      "normal": "Поздняя игра: не тратьте последние 500 — это выкуп.",
+      "detailed": "Поздняя игра: не тратьте последние 500 — это выкуп. · Золото: 600 (игра, 0 с) · Цена выкупа: 500 (игра, 0 с) · Стадия игры: лейт (вывод, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "gold",
+       "label": "Золото",
+       "value": 600,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      },
+      {
+       "key": "buyback",
+       "label": "Цена выкупа",
+       "value": 500,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      },
+      {
+       "key": "stage",
+       "label": "Стадия игры",
+       "value": "лейт",
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.8,
+       "verified": true
+      }
+     ],
+     "ttlMs": 8000,
+     "cooldownMs": 300000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 10,
+     "createdWallMs": 5061000,
+     "expiresWallMs": 5087000,
+     "clock": 361,
+     "textSource": "template"
+    }
+   ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "economy.tp",
+    "danger.invis"
+   ]
+  }
+ },
+ {
+  "t": 88,
+  "tick": {
+   "wallMs": 5088000,
+   "shown": [
+    {
+     "id": "economy.neutral",
+     "ruleId": "economy.neutral",
+     "category": "economy",
+     "priority": "info",
+     "confidence": 0.8,
+     "short": "Пустой слот нейтрального предмета",
+     "detail": {
+      "normal": "Слот нейтрального предмета пуст — выберите предмет текущего уровня.",
+      "detailed": "Слот нейтрального предмета пуст — выберите предмет текущего уровня. · Нейтральный слот: пусто (игра, 0 с) · Нейтральные предметы с, с: 0 (база)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "neutral",
+       "label": "Нейтральный слот",
+       "value": "пусто",
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      },
+      {
+       "key": "neutral-t1",
+       "label": "Нейтральные предметы с, с",
+       "value": 0,
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": true
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 300000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 13,
+     "createdWallMs": 5088000,
+     "expiresWallMs": 5209000,
+     "clock": 388,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "economy.tp",
+    "danger.invis",
+    "economy.neutral"
    ]
   }
  },
@@ -2346,56 +2229,56 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki",
-    "economy.next:wraith_band"
+    "danger.invis",
+    "economy.neutral"
    ]
   }
  },
  {
-  "t": 90,
+  "t": 105,
   "tick": {
-   "wallMs": 5090000,
+   "wallMs": 5105000,
    "shown": [
     {
-     "id": "economy.neutral",
-     "ruleId": "economy.neutral",
-     "category": "economy",
+     "id": "timing.shrine-of-wisdom",
+     "ruleId": "timing.shrine-of-wisdom",
+     "category": "timing",
      "priority": "info",
      "confidence": 0.8,
-     "short": "Пустой слот нейтрального предмета",
+     "short": "Святилище мудрости через 15 с",
      "detail": {
-      "normal": "Слот нейтрального предмета пуст — выберите предмет текущего уровня.",
-      "detailed": "Слот нейтрального предмета пуст — выберите предмет текущего уровня. · Нейтральный слот: пусто (игра, 0 с) · Нейтральные предметы с, с: 0 (база)"
+      "normal": "Святилище мудрости через 15 с (7:00).",
+      "detailed": "Святилище мудрости через 15 с (7:00). · Святилище мудрости: 7:00 (база, не проверено) · Игровое время, с: 405 (игра, 0 с)"
      },
      "percent": null,
      "facts": [
       {
-       "key": "neutral",
-       "label": "Нейтральный слот",
-       "value": "пусто",
+       "key": "shrine-of-wisdom",
+       "label": "Святилище мудрости",
+       "value": "7:00",
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      },
+      {
+       "key": "clock",
+       "label": "Игровое время, с",
+       "value": 405,
        "source": "gsi",
        "ageSec": 0,
        "confidence": 1,
        "verified": true
-      },
-      {
-       "key": "neutral-t1",
-       "label": "Нейтральные предметы с, с",
-       "value": 0,
-       "source": "kb",
-       "ageSec": null,
-       "confidence": 1,
-       "verified": true
       }
      ],
-     "ttlMs": 10000,
-     "cooldownMs": 300000,
+     "ttlMs": 15000,
+     "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 15,
-     "createdWallMs": 5090000,
-     "expiresWallMs": 5209000,
-     "clock": 390,
+     "seq": 14,
+     "createdWallMs": 5105000,
+     "expiresWallMs": 5120000,
+     "clock": 405,
      "textSource": "template"
     }
    ],
@@ -2406,8 +2289,68 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki",
-    "economy.next:wraith_band",
+    "danger.invis",
+    "economy.neutral",
+    "timing.shrine-of-wisdom"
+   ]
+  }
+ },
+ {
+  "t": 120,
+  "tick": {
+   "wallMs": 5120000,
+   "shown": [],
+   "expired": [
+    {
+     "id": "timing.shrine-of-wisdom",
+     "ruleId": "timing.shrine-of-wisdom",
+     "category": "timing",
+     "priority": "info",
+     "confidence": 0.8,
+     "short": "Святилище мудрости через 15 с",
+     "detail": {
+      "normal": "Святилище мудрости через 15 с (7:00).",
+      "detailed": "Святилище мудрости через 15 с (7:00). · Святилище мудрости: 7:00 (база, не проверено) · Игровое время, с: 405 (игра, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "shrine-of-wisdom",
+       "label": "Святилище мудрости",
+       "value": "7:00",
+       "source": "kb",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      },
+      {
+       "key": "clock",
+       "label": "Игровое время, с",
+       "value": 405,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      }
+     ],
+     "ttlMs": 15000,
+     "cooldownMs": 0,
+     "zone": "timing",
+     "icon": null,
+     "seq": 14,
+     "createdWallMs": 5105000,
+     "expiresWallMs": 5120000,
+     "clock": 405,
+     "textSource": "template"
+    }
+   ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "danger.invis",
     "economy.neutral"
    ]
   }
@@ -2820,6 +2763,67 @@
   }
  },
  {
+  "t": 121,
+  "tick": {
+   "wallMs": 5121000,
+   "shown": [
+    {
+     "id": "economy.next:wraith_band",
+     "ruleId": "economy.next",
+     "category": "economy",
+     "priority": "info",
+     "confidence": 0.7,
+     "short": "Дальше: Wraith Band",
+     "detail": {
+      "normal": "Следующий предмет: Wraith Band — профи патча берут его к 2 мин.",
+      "detailed": "Следующий предмет: Wraith Band — профи патча берут его к 2 мин. · Следующий предмет (профи патча): Wraith Band (статистика патча, не проверено) · Обычно к минуте: 2.4 (статистика патча, не проверено)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "next-item",
+       "label": "Следующий предмет (профи патча)",
+       "value": "Wraith Band",
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      },
+      {
+       "key": "median-min",
+       "label": "Обычно к минуте",
+       "value": 2.4,
+       "source": "stats",
+       "ageSec": null,
+       "confidence": 1,
+       "verified": false
+      }
+     ],
+     "ttlMs": 10000,
+     "cooldownMs": 300000,
+     "zone": "timing",
+     "icon": "item:wraith_band",
+     "seq": 15,
+     "createdWallMs": 5121000,
+     "expiresWallMs": 5140000,
+     "clock": 421,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "danger.invis",
+    "economy.neutral",
+    "economy.next:wraith_band"
+   ]
+  }
+ },
+ {
   "t": 140,
   "tick": {
    "wallMs": 5140000,
@@ -2861,10 +2865,10 @@
      "cooldownMs": 300000,
      "zone": "timing",
      "icon": "item:wraith_band",
-     "seq": 12,
-     "createdWallMs": 5063000,
+     "seq": 15,
+     "createdWallMs": 5121000,
      "expiresWallMs": 5140000,
-     "clock": 363,
+     "clock": 421,
      "textSource": "template"
     }
    ],
@@ -2874,7 +2878,7 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki",
+    "danger.invis",
     "economy.neutral"
    ]
   }
@@ -3025,7 +3029,7 @@
    "inFight": true,
    "visible": [
     "fight.engage",
-    "danger.invis:riki",
+    "danger.invis",
     "economy.neutral"
    ]
   }
@@ -3086,7 +3090,7 @@
    "inFight": true,
    "visible": [
     "fight.engage",
-    "danger.invis:riki",
+    "danger.invis",
     "fight.target:axe",
     "economy.neutral"
    ]
@@ -3140,7 +3144,7 @@
    "visible": [
     "fight.engage",
     "danger.building:tower1_mid",
-    "danger.invis:riki",
+    "danger.invis",
     "fight.target:axe",
     "economy.neutral"
    ]
@@ -3600,7 +3604,7 @@
    "inFight": true,
    "visible": [
     "fight.engage",
-    "danger.invis:riki",
+    "danger.invis",
     "fight.target:axe",
     "economy.neutral"
    ]
@@ -3756,7 +3760,7 @@
    "visible": [
     "fight.engage",
     "danger.smoke",
-    "danger.invis:riki",
+    "danger.invis",
     "fight.target:axe",
     "economy.tp",
     "economy.neutral"
@@ -3951,80 +3955,8 @@
    "inFight": false,
    "visible": [
     "danger.smoke",
-    "danger.invis:riki",
+    "danger.invis",
     "economy.tp",
-    "economy.neutral"
-   ]
-  }
- },
- {
-  "t": 203,
-  "tick": {
-   "wallMs": 5203000,
-   "shown": [
-    {
-     "id": "laning.buy-regen",
-     "ruleId": "laning.buy-regen",
-     "category": "laning",
-     "priority": "advice",
-     "confidence": 0.8,
-     "short": "Купите Healing Salve — курьером",
-     "detail": {
-      "normal": "Здоровья 25%, регенерации нет. Healing Salve стоит 100, у вас 600.",
-      "detailed": "Здоровья 25%, регенерации нет. Healing Salve стоит 100, у вас 600. · Здоровье, %: 25 (игра, 0 с) · Цена Healing Salve: 100 (база, не проверено) · Золото: 600 (игра, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "hp",
-       "label": "Здоровье, %",
-       "value": 25,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      },
-      {
-       "key": "flask-cost",
-       "label": "Цена Healing Salve",
-       "value": 100,
-       "source": "kb",
-       "ageSec": null,
-       "confidence": 1,
-       "verified": false
-      },
-      {
-       "key": "gold",
-       "label": "Золото",
-       "value": 600,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      }
-     ],
-     "ttlMs": 8000,
-     "cooldownMs": 90000,
-     "zone": "decision",
-     "icon": "item:flask",
-     "seq": 22,
-     "createdWallMs": 5203000,
-     "expiresWallMs": 5247000,
-     "clock": 503,
-     "textSource": "template"
-    }
-   ],
-   "expired": [],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
-   "visible": [
-    "danger.smoke",
-    "danger.invis:riki",
-    "economy.tp",
-    "laning.buy-regen",
     "economy.neutral"
    ]
   }
@@ -4063,9 +3995,8 @@
    "inFight": false,
    "visible": [
     "danger.smoke",
-    "danger.invis:riki",
+    "danger.invis",
     "economy.tp",
-    "laning.buy-regen",
     "economy.neutral"
    ]
   }
@@ -4112,10 +4043,10 @@
      "cooldownMs": 300000,
      "zone": "timing",
      "icon": null,
-     "seq": 15,
-     "createdWallMs": 5090000,
+     "seq": 13,
+     "createdWallMs": 5088000,
      "expiresWallMs": 5209000,
-     "clock": 390,
+     "clock": 388,
      "textSource": "template"
     }
    ],
@@ -4126,9 +4057,8 @@
    "inFight": false,
    "visible": [
     "danger.smoke",
-    "danger.invis:riki",
-    "economy.tp",
-    "laning.buy-regen"
+    "danger.invis",
+    "economy.tp"
    ]
   }
  },
@@ -4178,9 +4108,8 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki",
-    "economy.tp",
-    "laning.buy-regen"
+    "danger.invis",
+    "economy.tp"
    ]
   }
  },
@@ -4234,7 +4163,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 23,
+     "seq": 22,
      "createdWallMs": 5211000,
      "expiresWallMs": 5237000,
      "clock": 511,
@@ -4248,9 +4177,8 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki",
+    "danger.invis",
     "economy.tp",
-    "laning.buy-regen",
     "danger.missing"
    ]
   }
@@ -4287,7 +4215,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 24,
+     "seq": 23,
      "createdWallMs": 5225000,
      "expiresWallMs": 5233000,
      "clock": 525,
@@ -4301,9 +4229,8 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki",
+    "danger.invis",
     "economy.tp",
-    "laning.buy-regen",
     "danger.missing",
     "timing.lotus"
    ]
@@ -4368,7 +4295,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 25,
+     "seq": 24,
      "createdWallMs": 5230000,
      "expiresWallMs": 5247000,
      "clock": 530,
@@ -4383,9 +4310,8 @@
    "inFight": false,
    "visible": [
     "danger.low-hp",
-    "danger.invis:riki",
+    "danger.invis",
     "economy.tp",
-    "laning.buy-regen",
     "timing.lotus"
    ]
   }
@@ -4423,7 +4349,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 24,
+     "seq": 23,
      "createdWallMs": 5225000,
      "expiresWallMs": 5233000,
      "clock": 525,
@@ -4437,9 +4363,8 @@
    "inFight": false,
    "visible": [
     "danger.low-hp",
-    "danger.invis:riki",
-    "economy.tp",
-    "laning.buy-regen"
+    "danger.invis",
+    "economy.tp"
    ]
   }
  },
@@ -4910,61 +4835,10 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 25,
+     "seq": 24,
      "createdWallMs": 5230000,
      "expiresWallMs": 5247000,
      "clock": 530,
-     "textSource": "template"
-    },
-    {
-     "id": "laning.buy-regen",
-     "ruleId": "laning.buy-regen",
-     "category": "laning",
-     "priority": "advice",
-     "confidence": 0.8,
-     "short": "Купите Healing Salve — курьером",
-     "detail": {
-      "normal": "Здоровья 25%, регенерации нет. Healing Salve стоит 100, у вас 600.",
-      "detailed": "Здоровья 25%, регенерации нет. Healing Salve стоит 100, у вас 600. · Здоровье, %: 25 (игра, 0 с) · Цена Healing Salve: 100 (база, не проверено) · Золото: 600 (игра, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "hp",
-       "label": "Здоровье, %",
-       "value": 25,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      },
-      {
-       "key": "flask-cost",
-       "label": "Цена Healing Salve",
-       "value": 100,
-       "source": "kb",
-       "ageSec": null,
-       "confidence": 1,
-       "verified": false
-      },
-      {
-       "key": "gold",
-       "label": "Золото",
-       "value": 600,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      }
-     ],
-     "ttlMs": 8000,
-     "cooldownMs": 90000,
-     "zone": "decision",
-     "icon": "item:flask",
-     "seq": 22,
-     "createdWallMs": 5203000,
-     "expiresWallMs": 5247000,
-     "clock": 503,
      "textSource": "template"
     }
    ],
@@ -4974,7 +4848,7 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki",
+    "danger.invis",
     "economy.tp"
    ]
   }
@@ -5034,7 +4908,7 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki"
+    "danger.invis"
    ]
   }
  },
@@ -5070,7 +4944,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 26,
+     "seq": 25,
      "createdWallMs": 5256000,
      "expiresWallMs": 5264000,
      "clock": 556,
@@ -5084,7 +4958,7 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki",
+    "danger.invis",
     "danger.building:tower1_mid"
    ]
   }
@@ -5122,7 +4996,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 26,
+     "seq": 25,
      "createdWallMs": 5256000,
      "expiresWallMs": 5264000,
      "clock": 556,
@@ -5135,7 +5009,7 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki"
+    "danger.invis"
    ]
   }
  },
@@ -5180,7 +5054,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 27,
+     "seq": 26,
      "createdWallMs": 5285000,
      "expiresWallMs": 5300000,
      "clock": 585,
@@ -5194,7 +5068,7 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki",
+    "danger.invis",
     "timing.rune-power"
    ]
   }
@@ -5241,7 +5115,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 27,
+     "seq": 26,
      "createdWallMs": 5285000,
      "expiresWallMs": 5300000,
      "clock": 585,
@@ -5254,7 +5128,7 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki"
+    "danger.invis"
    ]
   }
  },
@@ -5796,7 +5670,7 @@
      "cooldownMs": 15000,
      "zone": "decision",
      "icon": null,
-     "seq": 28,
+     "seq": 27,
      "createdWallMs": 5320000,
      "expiresWallMs": 5367000,
      "clock": 620,
@@ -5811,7 +5685,7 @@
    "inFight": true,
    "visible": [
     "fight.engage",
-    "danger.invis:riki"
+    "danger.invis"
    ]
   }
  },
@@ -5856,7 +5730,7 @@
      "cooldownMs": 8000,
      "zone": "decision",
      "icon": "hero:axe",
-     "seq": 29,
+     "seq": 28,
      "createdWallMs": 5323000,
      "expiresWallMs": 5364000,
      "clock": 623,
@@ -5871,7 +5745,7 @@
    "inFight": true,
    "visible": [
     "fight.engage",
-    "danger.invis:riki",
+    "danger.invis",
     "fight.target:axe"
    ]
   }
@@ -5910,7 +5784,7 @@
    "inFight": true,
    "visible": [
     "fight.engage",
-    "danger.invis:riki",
+    "danger.invis",
     "fight.target:axe"
    ]
   }
@@ -5974,7 +5848,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 30,
+     "seq": 29,
      "createdWallMs": 5360000,
      "expiresWallMs": 5368000,
      "clock": 660,
@@ -6007,7 +5881,7 @@
      "cooldownMs": 60000,
      "zone": "alert",
      "icon": null,
-     "seq": 31,
+     "seq": 30,
      "createdWallMs": 5360000,
      "expiresWallMs": 5370000,
      "clock": 660,
@@ -6049,7 +5923,7 @@
      "cooldownMs": 120000,
      "zone": "timing",
      "icon": "item:tpscroll",
-     "seq": 32,
+     "seq": 31,
      "createdWallMs": 5360000,
      "expiresWallMs": 5409000,
      "clock": 660,
@@ -6065,7 +5939,7 @@
    "visible": [
     "fight.engage",
     "danger.smoke",
-    "danger.invis:riki",
+    "danger.invis",
     "fight.target:axe",
     "economy.tp"
    ]
@@ -6610,7 +6484,7 @@
      "cooldownMs": 15000,
      "zone": "decision",
      "icon": null,
-     "seq": 28,
+     "seq": 27,
      "createdWallMs": 5320000,
      "expiresWallMs": 5367000,
      "clock": 620,
@@ -6652,7 +6526,7 @@
      "cooldownMs": 8000,
      "zone": "decision",
      "icon": "hero:axe",
-     "seq": 29,
+     "seq": 28,
      "createdWallMs": 5323000,
      "expiresWallMs": 5364000,
      "clock": 623,
@@ -6666,79 +6540,8 @@
    "inFight": false,
    "visible": [
     "danger.smoke",
-    "danger.invis:riki",
+    "danger.invis",
     "economy.tp"
-   ]
-  }
- },
- {
-  "t": 363,
-  "tick": {
-   "wallMs": 5363000,
-   "shown": [
-    {
-     "id": "laning.buy-regen",
-     "ruleId": "laning.buy-regen",
-     "category": "laning",
-     "priority": "advice",
-     "confidence": 0.8,
-     "short": "Купите Healing Salve — курьером",
-     "detail": {
-      "normal": "Здоровья 25%, регенерации нет. Healing Salve стоит 100, у вас 600.",
-      "detailed": "Здоровья 25%, регенерации нет. Healing Salve стоит 100, у вас 600. · Здоровье, %: 25 (игра, 0 с) · Цена Healing Salve: 100 (база, не проверено) · Золото: 600 (игра, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "hp",
-       "label": "Здоровье, %",
-       "value": 25,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      },
-      {
-       "key": "flask-cost",
-       "label": "Цена Healing Salve",
-       "value": 100,
-       "source": "kb",
-       "ageSec": null,
-       "confidence": 1,
-       "verified": false
-      },
-      {
-       "key": "gold",
-       "label": "Золото",
-       "value": 600,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      }
-     ],
-     "ttlMs": 8000,
-     "cooldownMs": 90000,
-     "zone": "decision",
-     "icon": "item:flask",
-     "seq": 33,
-     "createdWallMs": 5363000,
-     "expiresWallMs": 5407000,
-     "clock": 663,
-     "textSource": "template"
-    }
-   ],
-   "expired": [],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
-   "visible": [
-    "danger.smoke",
-    "danger.invis:riki",
-    "economy.tp",
-    "laning.buy-regen"
    ]
   }
  },
@@ -6775,7 +6578,7 @@
      "cooldownMs": 60000,
      "zone": "alert",
      "icon": null,
-     "seq": 31,
+     "seq": 30,
      "createdWallMs": 5360000,
      "expiresWallMs": 5370000,
      "clock": 660,
@@ -6788,9 +6591,8 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki",
-    "economy.tp",
-    "laning.buy-regen"
+    "danger.invis",
+    "economy.tp"
    ]
   }
  },
@@ -6844,7 +6646,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 34,
+     "seq": 32,
      "createdWallMs": 5371000,
      "expiresWallMs": 5397000,
      "clock": 671,
@@ -6858,10 +6660,80 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki",
+    "danger.invis",
     "economy.tp",
-    "laning.buy-regen",
     "danger.missing"
+   ]
+  }
+ },
+ {
+  "t": 380,
+  "tick": {
+   "wallMs": 5380000,
+   "shown": [
+    {
+     "id": "fight.keep-buyback",
+     "ruleId": "fight.keep-buyback",
+     "category": "economy",
+     "priority": "info",
+     "confidence": 0.8,
+     "short": "Держите 500 золота на выкуп",
+     "detail": {
+      "normal": "Поздняя игра: не тратьте последние 500 — это выкуп.",
+      "detailed": "Поздняя игра: не тратьте последние 500 — это выкуп. · Золото: 600 (игра, 0 с) · Цена выкупа: 500 (игра, 0 с) · Стадия игры: лейт (вывод, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "gold",
+       "label": "Золото",
+       "value": 600,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      },
+      {
+       "key": "buyback",
+       "label": "Цена выкупа",
+       "value": 500,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      },
+      {
+       "key": "stage",
+       "label": "Стадия игры",
+       "value": "лейт",
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.8,
+       "verified": true
+      }
+     ],
+     "ttlMs": 8000,
+     "cooldownMs": 300000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 33,
+     "createdWallMs": 5380000,
+     "expiresWallMs": 5407000,
+     "clock": 680,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "danger.invis",
+    "economy.tp",
+    "danger.missing",
+    "fight.keep-buyback"
    ]
   }
  },
@@ -6924,7 +6796,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 35,
+     "seq": 34,
      "createdWallMs": 5390000,
      "expiresWallMs": 5407000,
      "clock": 690,
@@ -6939,9 +6811,9 @@
    "inFight": false,
    "visible": [
     "danger.low-hp",
-    "danger.invis:riki",
+    "danger.invis",
     "economy.tp",
-    "laning.buy-regen"
+    "fight.keep-buyback"
    ]
   }
  },
@@ -7005,43 +6877,44 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 35,
+     "seq": 34,
      "createdWallMs": 5390000,
      "expiresWallMs": 5407000,
      "clock": 690,
      "textSource": "template"
-    },
+    }
+   ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "danger.invis",
+    "economy.tp",
+    "fight.keep-buyback"
+   ]
+  }
+ },
+ {
+  "t": 407,
+  "tick": {
+   "wallMs": 5407000,
+   "shown": [],
+   "expired": [
     {
-     "id": "laning.buy-regen",
-     "ruleId": "laning.buy-regen",
-     "category": "laning",
-     "priority": "advice",
+     "id": "fight.keep-buyback",
+     "ruleId": "fight.keep-buyback",
+     "category": "economy",
+     "priority": "info",
      "confidence": 0.8,
-     "short": "Купите Healing Salve — курьером",
+     "short": "Держите 500 золота на выкуп",
      "detail": {
-      "normal": "Здоровья 25%, регенерации нет. Healing Salve стоит 100, у вас 600.",
-      "detailed": "Здоровья 25%, регенерации нет. Healing Salve стоит 100, у вас 600. · Здоровье, %: 25 (игра, 0 с) · Цена Healing Salve: 100 (база, не проверено) · Золото: 600 (игра, 0 с)"
+      "normal": "Поздняя игра: не тратьте последние 500 — это выкуп.",
+      "detailed": "Поздняя игра: не тратьте последние 500 — это выкуп. · Золото: 600 (игра, 0 с) · Цена выкупа: 500 (игра, 0 с) · Стадия игры: лейт (вывод, 0 с)"
      },
      "percent": null,
      "facts": [
-      {
-       "key": "hp",
-       "label": "Здоровье, %",
-       "value": 25,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      },
-      {
-       "key": "flask-cost",
-       "label": "Цена Healing Salve",
-       "value": 100,
-       "source": "kb",
-       "ageSec": null,
-       "confidence": 1,
-       "verified": false
-      },
       {
        "key": "gold",
        "label": "Золото",
@@ -7050,88 +6923,45 @@
        "ageSec": 0,
        "confidence": 1,
        "verified": true
-      }
-     ],
-     "ttlMs": 8000,
-     "cooldownMs": 90000,
-     "zone": "decision",
-     "icon": "item:flask",
-     "seq": 33,
-     "createdWallMs": 5363000,
-     "expiresWallMs": 5407000,
-     "clock": 663,
-     "textSource": "template"
-    }
-   ],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
-   "visible": [
-    "danger.invis:riki",
-    "economy.tp"
-   ]
-  }
- },
- {
-  "t": 405,
-  "tick": {
-   "wallMs": 5405000,
-   "shown": [
-    {
-     "id": "timing.rune-bounty",
-     "ruleId": "timing.rune-bounty",
-     "category": "timing",
-     "priority": "info",
-     "confidence": 0.8,
-     "short": "Руна богатства через 15 с",
-     "detail": {
-      "normal": "Руна богатства через 15 с (12:00).",
-      "detailed": "Руна богатства через 15 с (12:00). · Руна богатства: 12:00 (база, не проверено) · Игровое время, с: 705 (игра, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "rune-bounty",
-       "label": "Руна богатства",
-       "value": "12:00",
-       "source": "kb",
-       "ageSec": null,
-       "confidence": 1,
-       "verified": false
       },
       {
-       "key": "clock",
-       "label": "Игровое время, с",
-       "value": 705,
+       "key": "buyback",
+       "label": "Цена выкупа",
+       "value": 500,
        "source": "gsi",
        "ageSec": 0,
        "confidence": 1,
        "verified": true
+      },
+      {
+       "key": "stage",
+       "label": "Стадия игры",
+       "value": "лейт",
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.8,
+       "verified": true
       }
      ],
-     "ttlMs": 15000,
-     "cooldownMs": 0,
+     "ttlMs": 8000,
+     "cooldownMs": 300000,
      "zone": "timing",
      "icon": null,
-     "seq": 36,
-     "createdWallMs": 5405000,
-     "expiresWallMs": 5420000,
-     "clock": 705,
+     "seq": 33,
+     "createdWallMs": 5380000,
+     "expiresWallMs": 5407000,
+     "clock": 680,
      "textSource": "template"
     }
    ],
-   "expired": [],
    "changed": [],
    "mistakes": [],
    "deathReview": null,
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki",
-    "economy.tp",
-    "timing.rune-bounty"
+    "danger.invis",
+    "economy.tp"
    ]
   }
  },
@@ -7177,7 +7007,7 @@
      "cooldownMs": 120000,
      "zone": "timing",
      "icon": "item:tpscroll",
-     "seq": 32,
+     "seq": 31,
      "createdWallMs": 5360000,
      "expiresWallMs": 5409000,
      "clock": 660,
@@ -7190,8 +7020,7 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki",
-    "timing.rune-bounty"
+    "danger.invis"
    ]
   }
  },
@@ -7227,7 +7056,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 37,
+     "seq": 35,
      "createdWallMs": 5416000,
      "expiresWallMs": 5424000,
      "clock": 716,
@@ -7242,68 +7071,7 @@
    "inFight": false,
    "visible": [
     "danger.building:tower1_mid",
-    "danger.invis:riki",
-    "timing.rune-bounty"
-   ]
-  }
- },
- {
-  "t": 420,
-  "tick": {
-   "wallMs": 5420000,
-   "shown": [],
-   "expired": [
-    {
-     "id": "timing.rune-bounty",
-     "ruleId": "timing.rune-bounty",
-     "category": "timing",
-     "priority": "info",
-     "confidence": 0.8,
-     "short": "Руна богатства через 15 с",
-     "detail": {
-      "normal": "Руна богатства через 15 с (12:00).",
-      "detailed": "Руна богатства через 15 с (12:00). · Руна богатства: 12:00 (база, не проверено) · Игровое время, с: 705 (игра, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "rune-bounty",
-       "label": "Руна богатства",
-       "value": "12:00",
-       "source": "kb",
-       "ageSec": null,
-       "confidence": 1,
-       "verified": false
-      },
-      {
-       "key": "clock",
-       "label": "Игровое время, с",
-       "value": 705,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      }
-     ],
-     "ttlMs": 15000,
-     "cooldownMs": 0,
-     "zone": "timing",
-     "icon": null,
-     "seq": 36,
-     "createdWallMs": 5405000,
-     "expiresWallMs": 5420000,
-     "clock": 705,
-     "textSource": "template"
-    }
-   ],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
-   "visible": [
-    "danger.building:tower1_mid",
-    "danger.invis:riki"
+    "danger.invis"
    ]
   }
  },
@@ -7747,7 +7515,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 37,
+     "seq": 35,
      "createdWallMs": 5416000,
      "expiresWallMs": 5424000,
      "clock": 716,
@@ -7760,7 +7528,7 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki"
+    "danger.invis"
    ]
   }
  },
@@ -7796,7 +7564,7 @@
      "cooldownMs": 60000,
      "zone": "timing",
      "icon": null,
-     "seq": 38,
+     "seq": 36,
      "createdWallMs": 5445000,
      "expiresWallMs": 5455000,
      "clock": 745,
@@ -7831,7 +7599,7 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki",
+    "danger.invis",
     "mistake.missed-rune"
    ]
   }
@@ -7869,7 +7637,7 @@
      "cooldownMs": 60000,
      "zone": "timing",
      "icon": null,
-     "seq": 38,
+     "seq": 36,
      "createdWallMs": 5445000,
      "expiresWallMs": 5455000,
      "clock": 745,
@@ -7882,7 +7650,7 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki"
+    "danger.invis"
    ]
   }
  },
@@ -8017,7 +7785,7 @@
      "cooldownMs": 15000,
      "zone": "decision",
      "icon": null,
-     "seq": 39,
+     "seq": 37,
      "createdWallMs": 5480000,
      "expiresWallMs": 5527000,
      "clock": 780,
@@ -8032,7 +7800,7 @@
    "inFight": true,
    "visible": [
     "fight.engage",
-    "danger.invis:riki"
+    "danger.invis"
    ]
   }
  },
@@ -8484,7 +8252,7 @@
      "cooldownMs": 8000,
      "zone": "decision",
      "icon": "hero:axe",
-     "seq": 40,
+     "seq": 38,
      "createdWallMs": 5483000,
      "expiresWallMs": 5524000,
      "clock": 783,
@@ -8499,7 +8267,7 @@
    "inFight": true,
    "visible": [
     "fight.engage",
-    "danger.invis:riki",
+    "danger.invis",
     "fight.target:axe"
    ]
   }
@@ -8536,7 +8304,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 41,
+     "seq": 39,
      "createdWallMs": 5496000,
      "expiresWallMs": 5504000,
      "clock": 796,
@@ -8551,7 +8319,7 @@
    "inFight": true,
    "visible": [
     "fight.engage",
-    "danger.invis:riki",
+    "danger.invis",
     "fight.target:axe",
     "danger.building:tower1_mid"
    ]
@@ -8590,7 +8358,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 41,
+     "seq": 39,
      "createdWallMs": 5496000,
      "expiresWallMs": 5504000,
      "clock": 796,
@@ -8604,7 +8372,7 @@
    "inFight": true,
    "visible": [
     "fight.engage",
-    "danger.invis:riki",
+    "danger.invis",
     "fight.target:axe"
    ]
   }
@@ -8668,7 +8436,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 42,
+     "seq": 40,
      "createdWallMs": 5520000,
      "expiresWallMs": 5528000,
      "clock": 820,
@@ -8701,7 +8469,7 @@
      "cooldownMs": 60000,
      "zone": "alert",
      "icon": null,
-     "seq": 43,
+     "seq": 41,
      "createdWallMs": 5520000,
      "expiresWallMs": 5530000,
      "clock": 820,
@@ -8743,7 +8511,7 @@
      "cooldownMs": 120000,
      "zone": "timing",
      "icon": "item:tpscroll",
-     "seq": 44,
+     "seq": 42,
      "createdWallMs": 5520000,
      "expiresWallMs": 5569000,
      "clock": 820,
@@ -8759,7 +8527,7 @@
    "visible": [
     "fight.engage",
     "danger.smoke",
-    "danger.invis:riki",
+    "danger.invis",
     "fight.target:axe",
     "economy.tp"
    ]
@@ -8897,7 +8665,7 @@
      "cooldownMs": 15000,
      "zone": "decision",
      "icon": null,
-     "seq": 39,
+     "seq": 37,
      "createdWallMs": 5480000,
      "expiresWallMs": 5527000,
      "clock": 780,
@@ -8939,7 +8707,7 @@
      "cooldownMs": 8000,
      "zone": "decision",
      "icon": "hero:axe",
-     "seq": 40,
+     "seq": 38,
      "createdWallMs": 5483000,
      "expiresWallMs": 5524000,
      "clock": 783,
@@ -8953,79 +8721,8 @@
    "inFight": false,
    "visible": [
     "danger.smoke",
-    "danger.invis:riki",
+    "danger.invis",
     "economy.tp"
-   ]
-  }
- },
- {
-  "t": 523,
-  "tick": {
-   "wallMs": 5523000,
-   "shown": [
-    {
-     "id": "laning.buy-regen",
-     "ruleId": "laning.buy-regen",
-     "category": "laning",
-     "priority": "advice",
-     "confidence": 0.8,
-     "short": "Купите Healing Salve — курьером",
-     "detail": {
-      "normal": "Здоровья 25%, регенерации нет. Healing Salve стоит 100, у вас 600.",
-      "detailed": "Здоровья 25%, регенерации нет. Healing Salve стоит 100, у вас 600. · Здоровье, %: 25 (игра, 0 с) · Цена Healing Salve: 100 (база, не проверено) · Золото: 600 (игра, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "hp",
-       "label": "Здоровье, %",
-       "value": 25,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      },
-      {
-       "key": "flask-cost",
-       "label": "Цена Healing Salve",
-       "value": 100,
-       "source": "kb",
-       "ageSec": null,
-       "confidence": 1,
-       "verified": false
-      },
-      {
-       "key": "gold",
-       "label": "Золото",
-       "value": 600,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      }
-     ],
-     "ttlMs": 8000,
-     "cooldownMs": 90000,
-     "zone": "decision",
-     "icon": "item:flask",
-     "seq": 45,
-     "createdWallMs": 5523000,
-     "expiresWallMs": 5567000,
-     "clock": 823,
-     "textSource": "template"
-    }
-   ],
-   "expired": [],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
-   "visible": [
-    "danger.smoke",
-    "danger.invis:riki",
-    "economy.tp",
-    "laning.buy-regen"
    ]
   }
  },
@@ -9070,7 +8767,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 46,
+     "seq": 43,
      "createdWallMs": 5525000,
      "expiresWallMs": 5540000,
      "clock": 825,
@@ -9085,9 +8782,8 @@
    "inFight": false,
    "visible": [
     "danger.smoke",
-    "danger.invis:riki",
+    "danger.invis",
     "economy.tp",
-    "laning.buy-regen",
     "timing.rune-power"
    ]
   }
@@ -9125,7 +8821,7 @@
      "cooldownMs": 60000,
      "zone": "alert",
      "icon": null,
-     "seq": 43,
+     "seq": 41,
      "createdWallMs": 5520000,
      "expiresWallMs": 5530000,
      "clock": 820,
@@ -9138,9 +8834,8 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki",
+    "danger.invis",
     "economy.tp",
-    "laning.buy-regen",
     "timing.rune-power"
    ]
   }
@@ -9195,7 +8890,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 47,
+     "seq": 44,
      "createdWallMs": 5531000,
      "expiresWallMs": 5557000,
      "clock": 831,
@@ -9209,9 +8904,8 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki",
+    "danger.invis",
     "economy.tp",
-    "laning.buy-regen",
     "danger.missing",
     "timing.rune-power"
    ]
@@ -9259,7 +8953,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 46,
+     "seq": 43,
      "createdWallMs": 5525000,
      "expiresWallMs": 5540000,
      "clock": 825,
@@ -9272,9 +8966,8 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki",
+    "danger.invis",
     "economy.tp",
-    "laning.buy-regen",
     "danger.missing"
    ]
   }
@@ -9745,7 +9438,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 48,
+     "seq": 45,
      "createdWallMs": 5550000,
      "expiresWallMs": 5564000,
      "clock": 850,
@@ -9760,9 +9453,8 @@
    "inFight": false,
    "visible": [
     "danger.low-hp",
-    "danger.invis:riki",
-    "economy.tp",
-    "laning.buy-regen"
+    "danger.invis",
+    "economy.tp"
    ]
   }
  },
@@ -9798,7 +9490,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 49,
+     "seq": 46,
      "createdWallMs": 5556000,
      "expiresWallMs": 5564000,
      "clock": 856,
@@ -9813,9 +9505,8 @@
    "inFight": false,
    "visible": [
     "danger.building:tower1_mid",
-    "danger.invis:riki",
-    "economy.tp",
-    "laning.buy-regen"
+    "danger.invis",
+    "economy.tp"
    ]
   }
  },
@@ -9860,7 +9551,7 @@
      "cooldownMs": 300000,
      "zone": "timing",
      "icon": null,
-     "seq": 50,
+     "seq": 47,
      "createdWallMs": 5560000,
      "expiresWallMs": 5689000,
      "clock": 860,
@@ -9875,79 +9566,7 @@
    "inFight": false,
    "visible": [
     "danger.building:tower1_mid",
-    "danger.invis:riki",
-    "economy.tp",
-    "laning.buy-regen",
-    "economy.neutral"
-   ]
-  }
- },
- {
-  "t": 562,
-  "tick": {
-   "wallMs": 5562000,
-   "shown": [],
-   "expired": [
-    {
-     "id": "laning.buy-regen",
-     "ruleId": "laning.buy-regen",
-     "category": "laning",
-     "priority": "advice",
-     "confidence": 0.8,
-     "short": "Купите Healing Salve — курьером",
-     "detail": {
-      "normal": "Здоровья 25%, регенерации нет. Healing Salve стоит 100, у вас 600.",
-      "detailed": "Здоровья 25%, регенерации нет. Healing Salve стоит 100, у вас 600. · Здоровье, %: 25 (игра, 0 с) · Цена Healing Salve: 100 (база, не проверено) · Золото: 600 (игра, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "hp",
-       "label": "Здоровье, %",
-       "value": 25,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      },
-      {
-       "key": "flask-cost",
-       "label": "Цена Healing Salve",
-       "value": 100,
-       "source": "kb",
-       "ageSec": null,
-       "confidence": 1,
-       "verified": false
-      },
-      {
-       "key": "gold",
-       "label": "Золото",
-       "value": 600,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      }
-     ],
-     "ttlMs": 8000,
-     "cooldownMs": 90000,
-     "zone": "decision",
-     "icon": "item:flask",
-     "seq": 45,
-     "createdWallMs": 5523000,
-     "expiresWallMs": 5567000,
-     "clock": 823,
-     "textSource": "template"
-    }
-   ],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
-   "visible": [
-    "danger.building:tower1_mid",
-    "danger.invis:riki",
+    "danger.invis",
     "economy.tp",
     "economy.neutral"
    ]
@@ -9986,7 +9605,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 49,
+     "seq": 46,
      "createdWallMs": 5556000,
      "expiresWallMs": 5564000,
      "clock": 856,
@@ -9999,7 +9618,7 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki",
+    "danger.invis",
     "economy.tp",
     "economy.neutral"
    ]
@@ -10038,7 +9657,7 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki",
+    "danger.invis",
     "economy.tp",
     "economy.neutral"
    ]
@@ -10086,7 +9705,7 @@
      "cooldownMs": 120000,
      "zone": "timing",
      "icon": "item:tpscroll",
-     "seq": 44,
+     "seq": 42,
      "createdWallMs": 5520000,
      "expiresWallMs": 5569000,
      "clock": 820,
@@ -10099,7 +9718,7 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki",
+    "danger.invis",
     "economy.neutral"
    ]
   }
@@ -10145,7 +9764,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 51,
+     "seq": 48,
      "createdWallMs": 5585000,
      "expiresWallMs": 5600000,
      "clock": 885,
@@ -10159,7 +9778,7 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki",
+    "danger.invis",
     "economy.neutral",
     "timing.day-night"
    ]
@@ -10207,7 +9826,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 51,
+     "seq": 48,
      "createdWallMs": 5585000,
      "expiresWallMs": 5600000,
      "clock": 885,
@@ -10220,7 +9839,7 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki",
+    "danger.invis",
     "economy.neutral"
    ]
   }
@@ -10763,7 +10382,7 @@
      "cooldownMs": 15000,
      "zone": "decision",
      "icon": null,
-     "seq": 52,
+     "seq": 49,
      "createdWallMs": 5640000,
      "expiresWallMs": 5687000,
      "clock": 940,
@@ -10778,7 +10397,7 @@
    "inFight": true,
    "visible": [
     "fight.engage",
-    "danger.invis:riki",
+    "danger.invis",
     "economy.neutral"
    ]
   }
@@ -10824,7 +10443,7 @@
      "cooldownMs": 8000,
      "zone": "decision",
      "icon": "hero:axe",
-     "seq": 53,
+     "seq": 50,
      "createdWallMs": 5643000,
      "expiresWallMs": 5684000,
      "clock": 943,
@@ -10839,7 +10458,7 @@
    "inFight": true,
    "visible": [
     "fight.engage",
-    "danger.invis:riki",
+    "danger.invis",
     "fight.target:axe",
     "economy.neutral"
    ]
@@ -10877,7 +10496,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 54,
+     "seq": 51,
      "createdWallMs": 5656000,
      "expiresWallMs": 5664000,
      "clock": 956,
@@ -10893,7 +10512,7 @@
    "visible": [
     "fight.engage",
     "danger.building:tower1_mid",
-    "danger.invis:riki",
+    "danger.invis",
     "fight.target:axe",
     "economy.neutral"
    ]
@@ -11339,7 +10958,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 54,
+     "seq": 51,
      "createdWallMs": 5656000,
      "expiresWallMs": 5664000,
      "clock": 956,
@@ -11353,7 +10972,7 @@
    "inFight": true,
    "visible": [
     "fight.engage",
-    "danger.invis:riki",
+    "danger.invis",
     "fight.target:axe",
     "economy.neutral"
    ]
@@ -11418,7 +11037,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 55,
+     "seq": 52,
      "createdWallMs": 5680000,
      "expiresWallMs": 5688000,
      "clock": 980,
@@ -11451,7 +11070,7 @@
      "cooldownMs": 60000,
      "zone": "alert",
      "icon": null,
-     "seq": 56,
+     "seq": 53,
      "createdWallMs": 5680000,
      "expiresWallMs": 5690000,
      "clock": 980,
@@ -11493,7 +11112,7 @@
      "cooldownMs": 120000,
      "zone": "timing",
      "icon": "item:tpscroll",
-     "seq": 57,
+     "seq": 54,
      "createdWallMs": 5680000,
      "expiresWallMs": 5729000,
      "clock": 980,
@@ -11509,7 +11128,7 @@
    "visible": [
     "fight.engage",
     "danger.smoke",
-    "danger.invis:riki",
+    "danger.invis",
     "fight.target:axe",
     "economy.tp",
     "economy.neutral"
@@ -11648,7 +11267,7 @@
      "cooldownMs": 15000,
      "zone": "decision",
      "icon": null,
-     "seq": 52,
+     "seq": 49,
      "createdWallMs": 5640000,
      "expiresWallMs": 5687000,
      "clock": 940,
@@ -11690,7 +11309,7 @@
      "cooldownMs": 8000,
      "zone": "decision",
      "icon": "hero:axe",
-     "seq": 53,
+     "seq": 50,
      "createdWallMs": 5643000,
      "expiresWallMs": 5684000,
      "clock": 943,
@@ -11704,80 +11323,8 @@
    "inFight": false,
    "visible": [
     "danger.smoke",
-    "danger.invis:riki",
+    "danger.invis",
     "economy.tp",
-    "economy.neutral"
-   ]
-  }
- },
- {
-  "t": 683,
-  "tick": {
-   "wallMs": 5683000,
-   "shown": [
-    {
-     "id": "laning.buy-regen",
-     "ruleId": "laning.buy-regen",
-     "category": "laning",
-     "priority": "advice",
-     "confidence": 0.8,
-     "short": "Купите Healing Salve — курьером",
-     "detail": {
-      "normal": "Здоровья 25%, регенерации нет. Healing Salve стоит 100, у вас 600.",
-      "detailed": "Здоровья 25%, регенерации нет. Healing Salve стоит 100, у вас 600. · Здоровье, %: 25 (игра, 0 с) · Цена Healing Salve: 100 (база, не проверено) · Золото: 600 (игра, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "hp",
-       "label": "Здоровье, %",
-       "value": 25,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      },
-      {
-       "key": "flask-cost",
-       "label": "Цена Healing Salve",
-       "value": 100,
-       "source": "kb",
-       "ageSec": null,
-       "confidence": 1,
-       "verified": false
-      },
-      {
-       "key": "gold",
-       "label": "Золото",
-       "value": 600,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      }
-     ],
-     "ttlMs": 8000,
-     "cooldownMs": 90000,
-     "zone": "decision",
-     "icon": "item:flask",
-     "seq": 58,
-     "createdWallMs": 5683000,
-     "expiresWallMs": 5727000,
-     "clock": 983,
-     "textSource": "template"
-    }
-   ],
-   "expired": [],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
-   "visible": [
-    "danger.smoke",
-    "danger.invis:riki",
-    "economy.tp",
-    "laning.buy-regen",
     "economy.neutral"
    ]
   }
@@ -11816,9 +11363,8 @@
    "inFight": false,
    "visible": [
     "danger.smoke",
-    "danger.invis:riki",
+    "danger.invis",
     "economy.tp",
-    "laning.buy-regen",
     "economy.neutral"
    ]
   }
@@ -11865,7 +11411,7 @@
      "cooldownMs": 300000,
      "zone": "timing",
      "icon": null,
-     "seq": 50,
+     "seq": 47,
      "createdWallMs": 5560000,
      "expiresWallMs": 5689000,
      "clock": 860,
@@ -11879,9 +11425,8 @@
    "inFight": false,
    "visible": [
     "danger.smoke",
-    "danger.invis:riki",
-    "economy.tp",
-    "laning.buy-regen"
+    "danger.invis",
+    "economy.tp"
    ]
   }
  },
@@ -11918,7 +11463,7 @@
      "cooldownMs": 60000,
      "zone": "alert",
      "icon": null,
-     "seq": 56,
+     "seq": 53,
      "createdWallMs": 5680000,
      "expiresWallMs": 5690000,
      "clock": 980,
@@ -11931,9 +11476,8 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki",
-    "economy.tp",
-    "laning.buy-regen"
+    "danger.invis",
+    "economy.tp"
    ]
   }
  },
@@ -11987,7 +11531,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 59,
+     "seq": 55,
      "createdWallMs": 5691000,
      "expiresWallMs": 5717000,
      "clock": 991,
@@ -12001,10 +11545,80 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki",
+    "danger.invis",
     "economy.tp",
-    "laning.buy-regen",
     "danger.missing"
+   ]
+  }
+ },
+ {
+  "t": 700,
+  "tick": {
+   "wallMs": 5700000,
+   "shown": [
+    {
+     "id": "fight.keep-buyback",
+     "ruleId": "fight.keep-buyback",
+     "category": "economy",
+     "priority": "info",
+     "confidence": 0.8,
+     "short": "Держите 500 золота на выкуп",
+     "detail": {
+      "normal": "Поздняя игра: не тратьте последние 500 — это выкуп.",
+      "detailed": "Поздняя игра: не тратьте последние 500 — это выкуп. · Золото: 600 (игра, 0 с) · Цена выкупа: 500 (игра, 0 с) · Стадия игры: лейт (вывод, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "gold",
+       "label": "Золото",
+       "value": 600,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      },
+      {
+       "key": "buyback",
+       "label": "Цена выкупа",
+       "value": 500,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      },
+      {
+       "key": "stage",
+       "label": "Стадия игры",
+       "value": "лейт",
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.8,
+       "verified": true
+      }
+     ],
+     "ttlMs": 8000,
+     "cooldownMs": 300000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 56,
+     "createdWallMs": 5700000,
+     "expiresWallMs": 5727000,
+     "clock": 1000,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "danger.invis",
+    "economy.tp",
+    "danger.missing",
+    "fight.keep-buyback"
    ]
   }
  },
@@ -12067,7 +11681,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 60,
+     "seq": 57,
      "createdWallMs": 5710000,
      "expiresWallMs": 5727000,
      "clock": 1010,
@@ -12082,9 +11696,9 @@
    "inFight": false,
    "visible": [
     "danger.low-hp",
-    "danger.invis:riki",
+    "danger.invis",
     "economy.tp",
-    "laning.buy-regen"
+    "fight.keep-buyback"
    ]
   }
  },
@@ -12555,61 +12169,10 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 60,
+     "seq": 57,
      "createdWallMs": 5710000,
      "expiresWallMs": 5727000,
      "clock": 1010,
-     "textSource": "template"
-    },
-    {
-     "id": "laning.buy-regen",
-     "ruleId": "laning.buy-regen",
-     "category": "laning",
-     "priority": "advice",
-     "confidence": 0.8,
-     "short": "Купите Healing Salve — курьером",
-     "detail": {
-      "normal": "Здоровья 25%, регенерации нет. Healing Salve стоит 100, у вас 600.",
-      "detailed": "Здоровья 25%, регенерации нет. Healing Salve стоит 100, у вас 600. · Здоровье, %: 25 (игра, 0 с) · Цена Healing Salve: 100 (база, не проверено) · Золото: 600 (игра, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "hp",
-       "label": "Здоровье, %",
-       "value": 25,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      },
-      {
-       "key": "flask-cost",
-       "label": "Цена Healing Salve",
-       "value": 100,
-       "source": "kb",
-       "ageSec": null,
-       "confidence": 1,
-       "verified": false
-      },
-      {
-       "key": "gold",
-       "label": "Золото",
-       "value": 600,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      }
-     ],
-     "ttlMs": 8000,
-     "cooldownMs": 90000,
-     "zone": "decision",
-     "icon": "item:flask",
-     "seq": 58,
-     "createdWallMs": 5683000,
-     "expiresWallMs": 5727000,
-     "clock": 983,
      "textSource": "template"
     }
    ],
@@ -12619,7 +12182,77 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki",
+    "danger.invis",
+    "economy.tp",
+    "fight.keep-buyback"
+   ]
+  }
+ },
+ {
+  "t": 727,
+  "tick": {
+   "wallMs": 5727000,
+   "shown": [],
+   "expired": [
+    {
+     "id": "fight.keep-buyback",
+     "ruleId": "fight.keep-buyback",
+     "category": "economy",
+     "priority": "info",
+     "confidence": 0.8,
+     "short": "Держите 500 золота на выкуп",
+     "detail": {
+      "normal": "Поздняя игра: не тратьте последние 500 — это выкуп.",
+      "detailed": "Поздняя игра: не тратьте последние 500 — это выкуп. · Золото: 600 (игра, 0 с) · Цена выкупа: 500 (игра, 0 с) · Стадия игры: лейт (вывод, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "gold",
+       "label": "Золото",
+       "value": 600,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      },
+      {
+       "key": "buyback",
+       "label": "Цена выкупа",
+       "value": 500,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      },
+      {
+       "key": "stage",
+       "label": "Стадия игры",
+       "value": "лейт",
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.8,
+       "verified": true
+      }
+     ],
+     "ttlMs": 8000,
+     "cooldownMs": 300000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 56,
+     "createdWallMs": 5700000,
+     "expiresWallMs": 5727000,
+     "clock": 1000,
+     "textSource": "template"
+    }
+   ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "danger.invis",
     "economy.tp"
    ]
   }
@@ -12666,7 +12299,7 @@
      "cooldownMs": 120000,
      "zone": "timing",
      "icon": "item:tpscroll",
-     "seq": 57,
+     "seq": 54,
      "createdWallMs": 5680000,
      "expiresWallMs": 5729000,
      "clock": 980,
@@ -12679,7 +12312,7 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki"
+    "danger.invis"
    ]
   }
  },
@@ -12715,7 +12348,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 61,
+     "seq": 58,
      "createdWallMs": 5736000,
      "expiresWallMs": 5744000,
      "clock": 1036,
@@ -12729,7 +12362,7 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki",
+    "danger.invis",
     "danger.building:tower1_mid"
    ]
   }
@@ -12767,7 +12400,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 61,
+     "seq": 58,
      "createdWallMs": 5736000,
      "expiresWallMs": 5744000,
      "clock": 1036,
@@ -12780,7 +12413,7 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki"
+    "danger.invis"
    ]
   }
  },
@@ -12825,7 +12458,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 62,
+     "seq": 59,
      "createdWallMs": 5765000,
      "expiresWallMs": 5780000,
      "clock": 1065,
@@ -12839,7 +12472,7 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki",
+    "danger.invis",
     "timing.rune-power"
    ]
   }
@@ -12885,7 +12518,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": "item:blink",
-     "seq": 63,
+     "seq": 60,
      "createdWallMs": 5777000,
      "expiresWallMs": 5787000,
      "clock": 1077,
@@ -12899,7 +12532,7 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki",
+    "danger.invis",
     "timing.rune-power",
     "timing.enemy-item:lion:blink"
    ]
@@ -12947,7 +12580,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 62,
+     "seq": 59,
      "createdWallMs": 5765000,
      "expiresWallMs": 5780000,
      "clock": 1065,
@@ -12960,7 +12593,7 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki",
+    "danger.invis",
     "timing.enemy-item:lion:blink"
    ]
   }
@@ -13414,7 +13047,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": "item:blink",
-     "seq": 63,
+     "seq": 60,
      "createdWallMs": 5777000,
      "expiresWallMs": 5787000,
      "clock": 1077,
@@ -13427,7 +13060,7 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki"
+    "danger.invis"
    ]
   }
  },
@@ -13562,7 +13195,7 @@
      "cooldownMs": 15000,
      "zone": "decision",
      "icon": null,
-     "seq": 64,
+     "seq": 61,
      "createdWallMs": 5800000,
      "expiresWallMs": 5847000,
      "clock": 1100,
@@ -13577,7 +13210,7 @@
    "inFight": true,
    "visible": [
     "fight.engage",
-    "danger.invis:riki"
+    "danger.invis"
    ]
   }
  },
@@ -13622,7 +13255,7 @@
      "cooldownMs": 8000,
      "zone": "decision",
      "icon": "hero:axe",
-     "seq": 65,
+     "seq": 62,
      "createdWallMs": 5803000,
      "expiresWallMs": 5844000,
      "clock": 1103,
@@ -13637,7 +13270,7 @@
    "inFight": true,
    "visible": [
     "fight.engage",
-    "danger.invis:riki",
+    "danger.invis",
     "fight.target:axe"
    ]
   }
@@ -13676,7 +13309,7 @@
    "inFight": true,
    "visible": [
     "fight.engage",
-    "danger.invis:riki",
+    "danger.invis",
     "fight.target:axe"
    ]
   }
@@ -13740,7 +13373,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 66,
+     "seq": 63,
      "createdWallMs": 5840000,
      "expiresWallMs": 5848000,
      "clock": 1140,
@@ -13773,7 +13406,7 @@
      "cooldownMs": 60000,
      "zone": "alert",
      "icon": null,
-     "seq": 67,
+     "seq": 64,
      "createdWallMs": 5840000,
      "expiresWallMs": 5850000,
      "clock": 1140,
@@ -13815,7 +13448,7 @@
      "cooldownMs": 120000,
      "zone": "timing",
      "icon": "item:tpscroll",
-     "seq": 68,
+     "seq": 65,
      "createdWallMs": 5840000,
      "expiresWallMs": 5889000,
      "clock": 1140,
@@ -13831,7 +13464,7 @@
    "visible": [
     "fight.engage",
     "danger.smoke",
-    "danger.invis:riki",
+    "danger.invis",
     "fight.target:axe",
     "economy.tp"
    ]
@@ -14376,7 +14009,7 @@
      "cooldownMs": 15000,
      "zone": "decision",
      "icon": null,
-     "seq": 64,
+     "seq": 61,
      "createdWallMs": 5800000,
      "expiresWallMs": 5847000,
      "clock": 1100,
@@ -14418,7 +14051,7 @@
      "cooldownMs": 8000,
      "zone": "decision",
      "icon": "hero:axe",
-     "seq": 65,
+     "seq": 62,
      "createdWallMs": 5803000,
      "expiresWallMs": 5844000,
      "clock": 1103,
@@ -14432,79 +14065,8 @@
    "inFight": false,
    "visible": [
     "danger.smoke",
-    "danger.invis:riki",
+    "danger.invis",
     "economy.tp"
-   ]
-  }
- },
- {
-  "t": 843,
-  "tick": {
-   "wallMs": 5843000,
-   "shown": [
-    {
-     "id": "laning.buy-regen",
-     "ruleId": "laning.buy-regen",
-     "category": "laning",
-     "priority": "advice",
-     "confidence": 0.8,
-     "short": "Купите Healing Salve — курьером",
-     "detail": {
-      "normal": "Здоровья 25%, регенерации нет. Healing Salve стоит 100, у вас 600.",
-      "detailed": "Здоровья 25%, регенерации нет. Healing Salve стоит 100, у вас 600. · Здоровье, %: 25 (игра, 0 с) · Цена Healing Salve: 100 (база, не проверено) · Золото: 600 (игра, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "hp",
-       "label": "Здоровье, %",
-       "value": 25,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      },
-      {
-       "key": "flask-cost",
-       "label": "Цена Healing Salve",
-       "value": 100,
-       "source": "kb",
-       "ageSec": null,
-       "confidence": 1,
-       "verified": false
-      },
-      {
-       "key": "gold",
-       "label": "Золото",
-       "value": 600,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      }
-     ],
-     "ttlMs": 8000,
-     "cooldownMs": 90000,
-     "zone": "decision",
-     "icon": "item:flask",
-     "seq": 69,
-     "createdWallMs": 5843000,
-     "expiresWallMs": 5887000,
-     "clock": 1143,
-     "textSource": "template"
-    }
-   ],
-   "expired": [],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
-   "visible": [
-    "danger.smoke",
-    "danger.invis:riki",
-    "economy.tp",
-    "laning.buy-regen"
    ]
   }
  },
@@ -14541,7 +14103,7 @@
      "cooldownMs": 60000,
      "zone": "alert",
      "icon": null,
-     "seq": 67,
+     "seq": 64,
      "createdWallMs": 5840000,
      "expiresWallMs": 5850000,
      "clock": 1140,
@@ -14554,9 +14116,8 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki",
-    "economy.tp",
-    "laning.buy-regen"
+    "danger.invis",
+    "economy.tp"
    ]
   }
  },
@@ -14610,7 +14171,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 70,
+     "seq": 66,
      "createdWallMs": 5851000,
      "expiresWallMs": 5877000,
      "clock": 1151,
@@ -14624,9 +14185,8 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki",
+    "danger.invis",
     "economy.tp",
-    "laning.buy-regen",
     "danger.missing"
    ]
   }
@@ -14690,7 +14250,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 71,
+     "seq": 67,
      "createdWallMs": 5870000,
      "expiresWallMs": 5887000,
      "clock": 1170,
@@ -14732,7 +14292,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 72,
+     "seq": 68,
      "createdWallMs": 5870000,
      "expiresWallMs": 5885000,
      "clock": 1170,
@@ -14747,9 +14307,8 @@
    "inFight": false,
    "visible": [
     "danger.low-hp",
-    "danger.invis:riki",
+    "danger.invis",
     "economy.tp",
-    "laning.buy-regen",
     "timing.tormentor"
    ]
   }
@@ -14814,61 +14373,10 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 71,
+     "seq": 67,
      "createdWallMs": 5870000,
      "expiresWallMs": 5887000,
      "clock": 1170,
-     "textSource": "template"
-    },
-    {
-     "id": "laning.buy-regen",
-     "ruleId": "laning.buy-regen",
-     "category": "laning",
-     "priority": "advice",
-     "confidence": 0.8,
-     "short": "Купите Healing Salve — курьером",
-     "detail": {
-      "normal": "Здоровья 25%, регенерации нет. Healing Salve стоит 100, у вас 600.",
-      "detailed": "Здоровья 25%, регенерации нет. Healing Salve стоит 100, у вас 600. · Здоровье, %: 25 (игра, 0 с) · Цена Healing Salve: 100 (база, не проверено) · Золото: 600 (игра, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "hp",
-       "label": "Здоровье, %",
-       "value": 25,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      },
-      {
-       "key": "flask-cost",
-       "label": "Цена Healing Salve",
-       "value": 100,
-       "source": "kb",
-       "ageSec": null,
-       "confidence": 1,
-       "verified": false
-      },
-      {
-       "key": "gold",
-       "label": "Золото",
-       "value": 600,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      }
-     ],
-     "ttlMs": 8000,
-     "cooldownMs": 90000,
-     "zone": "decision",
-     "icon": "item:flask",
-     "seq": 69,
-     "createdWallMs": 5843000,
-     "expiresWallMs": 5887000,
-     "clock": 1143,
      "textSource": "template"
     }
    ],
@@ -14878,7 +14386,7 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki",
+    "danger.invis",
     "economy.tp",
     "timing.tormentor"
    ]
@@ -14917,7 +14425,7 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki",
+    "danger.invis",
     "economy.tp",
     "timing.tormentor"
    ]
@@ -14965,7 +14473,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 72,
+     "seq": 68,
      "createdWallMs": 5870000,
      "expiresWallMs": 5885000,
      "clock": 1170,
@@ -14978,7 +14486,7 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki",
+    "danger.invis",
     "economy.tp"
    ]
   }
@@ -15025,7 +14533,7 @@
      "cooldownMs": 120000,
      "zone": "timing",
      "icon": "item:tpscroll",
-     "seq": 68,
+     "seq": 65,
      "createdWallMs": 5840000,
      "expiresWallMs": 5889000,
      "clock": 1140,
@@ -15038,7 +14546,7 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki"
+    "danger.invis"
    ]
   }
  },
@@ -15074,7 +14582,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 73,
+     "seq": 69,
      "createdWallMs": 5896000,
      "expiresWallMs": 5904000,
      "clock": 1196,
@@ -15089,7 +14597,7 @@
    "inFight": false,
    "visible": [
     "danger.building:tower1_mid",
-    "danger.invis:riki"
+    "danger.invis"
    ]
   }
  },
@@ -15533,7 +15041,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 73,
+     "seq": 69,
      "createdWallMs": 5896000,
      "expiresWallMs": 5904000,
      "clock": 1196,
@@ -15546,7 +15054,7 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki"
+    "danger.invis"
    ]
   }
  },
@@ -15582,7 +15090,7 @@
      "cooldownMs": 60000,
      "zone": "timing",
      "icon": null,
-     "seq": 74,
+     "seq": 70,
      "createdWallMs": 5925000,
      "expiresWallMs": 5935000,
      "clock": 1225,
@@ -15617,7 +15125,7 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki",
+    "danger.invis",
     "mistake.missed-rune"
    ]
   }
@@ -15655,7 +15163,7 @@
      "cooldownMs": 60000,
      "zone": "timing",
      "icon": null,
-     "seq": 74,
+     "seq": 70,
      "createdWallMs": 5925000,
      "expiresWallMs": 5935000,
      "clock": 1225,
@@ -15668,7 +15176,7 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki"
+    "danger.invis"
    ]
   }
  },
@@ -15713,7 +15221,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 75,
+     "seq": 71,
      "createdWallMs": 5945000,
      "expiresWallMs": 5960000,
      "clock": 1245,
@@ -15727,7 +15235,7 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki",
+    "danger.invis",
     "timing.shrine-of-wisdom"
    ]
   }
@@ -15863,7 +15371,7 @@
      "cooldownMs": 15000,
      "zone": "decision",
      "icon": null,
-     "seq": 76,
+     "seq": 72,
      "createdWallMs": 5960000,
      "expiresWallMs": 6007000,
      "clock": 1260,
@@ -15907,7 +15415,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 75,
+     "seq": 71,
      "createdWallMs": 5945000,
      "expiresWallMs": 5960000,
      "clock": 1245,
@@ -15921,7 +15429,7 @@
    "inFight": true,
    "visible": [
     "fight.engage",
-    "danger.invis:riki"
+    "danger.invis"
    ]
   }
  },
@@ -16373,7 +15881,7 @@
      "cooldownMs": 8000,
      "zone": "decision",
      "icon": "hero:axe",
-     "seq": 77,
+     "seq": 73,
      "createdWallMs": 5963000,
      "expiresWallMs": 6004000,
      "clock": 1263,
@@ -16388,7 +15896,7 @@
    "inFight": true,
    "visible": [
     "fight.engage",
-    "danger.invis:riki",
+    "danger.invis",
     "fight.target:axe"
    ]
   }
@@ -16425,7 +15933,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 78,
+     "seq": 74,
      "createdWallMs": 5976000,
      "expiresWallMs": 5984000,
      "clock": 1276,
@@ -16440,7 +15948,7 @@
    "inFight": true,
    "visible": [
     "fight.engage",
-    "danger.invis:riki",
+    "danger.invis",
     "fight.target:axe",
     "danger.building:tower1_mid"
    ]
@@ -16479,7 +15987,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 78,
+     "seq": 74,
      "createdWallMs": 5976000,
      "expiresWallMs": 5984000,
      "clock": 1276,
@@ -16493,7 +16001,7 @@
    "inFight": true,
    "visible": [
     "fight.engage",
-    "danger.invis:riki",
+    "danger.invis",
     "fight.target:axe"
    ]
   }
@@ -16557,7 +16065,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 79,
+     "seq": 75,
      "createdWallMs": 6000000,
      "expiresWallMs": 6008000,
      "clock": 1300,
@@ -16590,7 +16098,7 @@
      "cooldownMs": 60000,
      "zone": "alert",
      "icon": null,
-     "seq": 80,
+     "seq": 76,
      "createdWallMs": 6000000,
      "expiresWallMs": 6010000,
      "clock": 1300,
@@ -16632,7 +16140,7 @@
      "cooldownMs": 120000,
      "zone": "timing",
      "icon": "item:tpscroll",
-     "seq": 81,
+     "seq": 77,
      "createdWallMs": 6000000,
      "expiresWallMs": 6049000,
      "clock": 1300,
@@ -16648,7 +16156,7 @@
    "visible": [
     "fight.engage",
     "danger.smoke",
-    "danger.invis:riki",
+    "danger.invis",
     "fight.target:axe",
     "economy.tp"
    ]
@@ -16786,7 +16294,7 @@
      "cooldownMs": 15000,
      "zone": "decision",
      "icon": null,
-     "seq": 76,
+     "seq": 72,
      "createdWallMs": 5960000,
      "expiresWallMs": 6007000,
      "clock": 1260,
@@ -16828,7 +16336,7 @@
      "cooldownMs": 8000,
      "zone": "decision",
      "icon": "hero:axe",
-     "seq": 77,
+     "seq": 73,
      "createdWallMs": 5963000,
      "expiresWallMs": 6004000,
      "clock": 1263,
@@ -16842,7 +16350,7 @@
    "inFight": false,
    "visible": [
     "danger.smoke",
-    "danger.invis:riki",
+    "danger.invis",
     "economy.tp"
    ]
   }
@@ -16888,7 +16396,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 82,
+     "seq": 78,
      "createdWallMs": 6005000,
      "expiresWallMs": 6020000,
      "clock": 1305,
@@ -16903,7 +16411,7 @@
    "inFight": false,
    "visible": [
     "danger.smoke",
-    "danger.invis:riki",
+    "danger.invis",
     "economy.tp",
     "timing.rune-power"
    ]
@@ -16942,7 +16450,7 @@
      "cooldownMs": 60000,
      "zone": "alert",
      "icon": null,
-     "seq": 80,
+     "seq": 76,
      "createdWallMs": 6000000,
      "expiresWallMs": 6010000,
      "clock": 1300,
@@ -16955,7 +16463,7 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki",
+    "danger.invis",
     "economy.tp",
     "timing.rune-power"
    ]
@@ -17011,7 +16519,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 83,
+     "seq": 79,
      "createdWallMs": 6011000,
      "expiresWallMs": 6037000,
      "clock": 1311,
@@ -17025,7 +16533,7 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki",
+    "danger.invis",
     "economy.tp",
     "danger.missing",
     "timing.rune-power"
@@ -17074,7 +16582,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 82,
+     "seq": 78,
      "createdWallMs": 6005000,
      "expiresWallMs": 6020000,
      "clock": 1305,
@@ -17087,7 +16595,7 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki",
+    "danger.invis",
     "economy.tp",
     "danger.missing"
    ]
@@ -17501,6 +17009,77 @@
   }
  },
  {
+  "t": 1021,
+  "tick": {
+   "wallMs": 6021000,
+   "shown": [
+    {
+     "id": "fight.keep-buyback",
+     "ruleId": "fight.keep-buyback",
+     "category": "economy",
+     "priority": "info",
+     "confidence": 0.8,
+     "short": "Держите 500 золота на выкуп",
+     "detail": {
+      "normal": "Поздняя игра: не тратьте последние 500 — это выкуп.",
+      "detailed": "Поздняя игра: не тратьте последние 500 — это выкуп. · Золото: 600 (игра, 0 с) · Цена выкупа: 500 (игра, 0 с) · Стадия игры: лейт (вывод, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "gold",
+       "label": "Золото",
+       "value": 600,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      },
+      {
+       "key": "buyback",
+       "label": "Цена выкупа",
+       "value": 500,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      },
+      {
+       "key": "stage",
+       "label": "Стадия игры",
+       "value": "лейт",
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.8,
+       "verified": true
+      }
+     ],
+     "ttlMs": 8000,
+     "cooldownMs": 300000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 80,
+     "createdWallMs": 6021000,
+     "expiresWallMs": 6047000,
+     "clock": 1321,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "danger.invis",
+    "economy.tp",
+    "danger.missing",
+    "fight.keep-buyback"
+   ]
+  }
+ },
+ {
   "t": 1030,
   "tick": {
    "wallMs": 6030000,
@@ -17559,7 +17138,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 84,
+     "seq": 81,
      "createdWallMs": 6030000,
      "expiresWallMs": 6044000,
      "clock": 1330,
@@ -17574,8 +17153,9 @@
    "inFight": false,
    "visible": [
     "danger.low-hp",
-    "danger.invis:riki",
-    "economy.tp"
+    "danger.invis",
+    "economy.tp",
+    "fight.keep-buyback"
    ]
   }
  },
@@ -17611,7 +17191,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 85,
+     "seq": 82,
      "createdWallMs": 6036000,
      "expiresWallMs": 6044000,
      "clock": 1336,
@@ -17626,15 +17206,137 @@
    "inFight": false,
    "visible": [
     "danger.building:tower1_mid",
-    "danger.invis:riki",
+    "danger.invis",
+    "economy.tp",
+    "fight.keep-buyback"
+   ]
+  }
+ },
+ {
+  "t": 1044,
+  "tick": {
+   "wallMs": 6044000,
+   "shown": [],
+   "expired": [
+    {
+     "id": "danger.building:tower1_mid",
+     "ruleId": "danger.building",
+     "category": "danger",
+     "priority": "critical",
+     "confidence": 0.9,
+     "short": "Бьют башню T1 на средней линии",
+     "detail": {
+      "normal": "Башню T1 на средней линии под атакой: 16% здоровья. Защитите или телепорт.",
+      "detailed": "Башню T1 на средней линии под атакой: 16% здоровья. Защитите или телепорт. · Здоровье здания, %: 16 (игра, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "building-hp",
+       "label": "Здоровье здания, %",
+       "value": 16,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      }
+     ],
+     "ttlMs": 8000,
+     "cooldownMs": 45000,
+     "zone": "alert",
+     "icon": null,
+     "seq": 82,
+     "createdWallMs": 6036000,
+     "expiresWallMs": 6044000,
+     "clock": 1336,
+     "textSource": "template"
+    }
+   ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "danger.invis",
+    "economy.tp",
+    "fight.keep-buyback"
+   ]
+  }
+ },
+ {
+  "t": 1047,
+  "tick": {
+   "wallMs": 6047000,
+   "shown": [],
+   "expired": [
+    {
+     "id": "fight.keep-buyback",
+     "ruleId": "fight.keep-buyback",
+     "category": "economy",
+     "priority": "info",
+     "confidence": 0.8,
+     "short": "Держите 500 золота на выкуп",
+     "detail": {
+      "normal": "Поздняя игра: не тратьте последние 500 — это выкуп.",
+      "detailed": "Поздняя игра: не тратьте последние 500 — это выкуп. · Золото: 600 (игра, 0 с) · Цена выкупа: 500 (игра, 0 с) · Стадия игры: лейт (вывод, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "gold",
+       "label": "Золото",
+       "value": 600,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      },
+      {
+       "key": "buyback",
+       "label": "Цена выкупа",
+       "value": 500,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      },
+      {
+       "key": "stage",
+       "label": "Стадия игры",
+       "value": "лейт",
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.8,
+       "verified": true
+      }
+     ],
+     "ttlMs": 8000,
+     "cooldownMs": 300000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 80,
+     "createdWallMs": 6021000,
+     "expiresWallMs": 6047000,
+     "clock": 1321,
+     "textSource": "template"
+    }
+   ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "danger.invis",
     "economy.tp"
    ]
   }
  },
  {
-  "t": 1040,
+  "t": 1048,
   "tick": {
-   "wallMs": 6040000,
+   "wallMs": 6048000,
    "shown": [
     {
      "id": "economy.neutral",
@@ -17672,10 +17374,10 @@
      "cooldownMs": 300000,
      "zone": "timing",
      "icon": null,
-     "seq": 86,
-     "createdWallMs": 6040000,
+     "seq": 83,
+     "createdWallMs": 6048000,
      "expiresWallMs": 6169000,
-     "clock": 1340,
+     "clock": 1348,
      "textSource": "template"
     }
    ],
@@ -17686,60 +17388,7 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.building:tower1_mid",
-    "danger.invis:riki",
-    "economy.tp",
-    "economy.neutral"
-   ]
-  }
- },
- {
-  "t": 1044,
-  "tick": {
-   "wallMs": 6044000,
-   "shown": [],
-   "expired": [
-    {
-     "id": "danger.building:tower1_mid",
-     "ruleId": "danger.building",
-     "category": "danger",
-     "priority": "critical",
-     "confidence": 0.9,
-     "short": "Бьют башню T1 на средней линии",
-     "detail": {
-      "normal": "Башню T1 на средней линии под атакой: 16% здоровья. Защитите или телепорт.",
-      "detailed": "Башню T1 на средней линии под атакой: 16% здоровья. Защитите или телепорт. · Здоровье здания, %: 16 (игра, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "building-hp",
-       "label": "Здоровье здания, %",
-       "value": 16,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      }
-     ],
-     "ttlMs": 8000,
-     "cooldownMs": 45000,
-     "zone": "alert",
-     "icon": null,
-     "seq": 85,
-     "createdWallMs": 6036000,
-     "expiresWallMs": 6044000,
-     "clock": 1336,
-     "textSource": "template"
-    }
-   ],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
-   "visible": [
-    "danger.invis:riki",
+    "danger.invis",
     "economy.tp",
     "economy.neutral"
    ]
@@ -17787,7 +17436,7 @@
      "cooldownMs": 120000,
      "zone": "timing",
      "icon": "item:tpscroll",
-     "seq": 81,
+     "seq": 77,
      "createdWallMs": 6000000,
      "expiresWallMs": 6049000,
      "clock": 1300,
@@ -17800,7 +17449,7 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki",
+    "danger.invis",
     "economy.neutral"
    ]
   }
@@ -18343,7 +17992,7 @@
      "cooldownMs": 15000,
      "zone": "decision",
      "icon": null,
-     "seq": 87,
+     "seq": 84,
      "createdWallMs": 6120000,
      "expiresWallMs": 6167000,
      "clock": 1420,
@@ -18358,7 +18007,7 @@
    "inFight": true,
    "visible": [
     "fight.engage",
-    "danger.invis:riki",
+    "danger.invis",
     "economy.neutral"
    ]
   }
@@ -18404,7 +18053,7 @@
      "cooldownMs": 8000,
      "zone": "decision",
      "icon": "hero:axe",
-     "seq": 88,
+     "seq": 85,
      "createdWallMs": 6123000,
      "expiresWallMs": 6164000,
      "clock": 1423,
@@ -18419,7 +18068,7 @@
    "inFight": true,
    "visible": [
     "fight.engage",
-    "danger.invis:riki",
+    "danger.invis",
     "fight.target:axe",
     "economy.neutral"
    ]
@@ -18457,7 +18106,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 89,
+     "seq": 86,
      "createdWallMs": 6136000,
      "expiresWallMs": 6144000,
      "clock": 1436,
@@ -18473,7 +18122,7 @@
    "visible": [
     "fight.engage",
     "danger.building:tower1_mid",
-    "danger.invis:riki",
+    "danger.invis",
     "fight.target:axe",
     "economy.neutral"
    ]
@@ -18919,7 +18568,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 89,
+     "seq": 86,
      "createdWallMs": 6136000,
      "expiresWallMs": 6144000,
      "clock": 1436,
@@ -18933,7 +18582,7 @@
    "inFight": true,
    "visible": [
     "fight.engage",
-    "danger.invis:riki",
+    "danger.invis",
     "fight.target:axe",
     "economy.neutral"
    ]
@@ -18998,7 +18647,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 90,
+     "seq": 87,
      "createdWallMs": 6160000,
      "expiresWallMs": 6168000,
      "clock": 1460,
@@ -19031,7 +18680,7 @@
      "cooldownMs": 60000,
      "zone": "alert",
      "icon": null,
-     "seq": 91,
+     "seq": 88,
      "createdWallMs": 6160000,
      "expiresWallMs": 6170000,
      "clock": 1460,
@@ -19073,7 +18722,7 @@
      "cooldownMs": 120000,
      "zone": "timing",
      "icon": "item:tpscroll",
-     "seq": 92,
+     "seq": 89,
      "createdWallMs": 6160000,
      "expiresWallMs": 6209000,
      "clock": 1460,
@@ -19089,7 +18738,7 @@
    "visible": [
     "fight.engage",
     "danger.smoke",
-    "danger.invis:riki",
+    "danger.invis",
     "fight.target:axe",
     "economy.tp",
     "economy.neutral"
@@ -19228,7 +18877,7 @@
      "cooldownMs": 15000,
      "zone": "decision",
      "icon": null,
-     "seq": 87,
+     "seq": 84,
      "createdWallMs": 6120000,
      "expiresWallMs": 6167000,
      "clock": 1420,
@@ -19270,7 +18919,7 @@
      "cooldownMs": 8000,
      "zone": "decision",
      "icon": "hero:axe",
-     "seq": 88,
+     "seq": 85,
      "createdWallMs": 6123000,
      "expiresWallMs": 6164000,
      "clock": 1423,
@@ -19284,7 +18933,7 @@
    "inFight": false,
    "visible": [
     "danger.smoke",
-    "danger.invis:riki",
+    "danger.invis",
     "economy.tp",
     "economy.neutral"
    ]
@@ -19332,10 +18981,10 @@
      "cooldownMs": 300000,
      "zone": "timing",
      "icon": null,
-     "seq": 86,
-     "createdWallMs": 6040000,
+     "seq": 83,
+     "createdWallMs": 6048000,
      "expiresWallMs": 6169000,
-     "clock": 1340,
+     "clock": 1348,
      "textSource": "template"
     }
    ],
@@ -19346,7 +18995,7 @@
    "inFight": false,
    "visible": [
     "danger.smoke",
-    "danger.invis:riki",
+    "danger.invis",
     "economy.tp"
    ]
   }
@@ -19384,7 +19033,7 @@
      "cooldownMs": 60000,
      "zone": "alert",
      "icon": null,
-     "seq": 91,
+     "seq": 88,
      "createdWallMs": 6160000,
      "expiresWallMs": 6170000,
      "clock": 1460,
@@ -19397,7 +19046,7 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki",
+    "danger.invis",
     "economy.tp"
    ]
   }
@@ -19452,7 +19101,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 93,
+     "seq": 90,
      "createdWallMs": 6171000,
      "expiresWallMs": 6197000,
      "clock": 1471,
@@ -19466,7 +19115,7 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki",
+    "danger.invis",
     "economy.tp",
     "danger.missing"
    ]
@@ -19513,7 +19162,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 94,
+     "seq": 91,
      "createdWallMs": 6185000,
      "expiresWallMs": 6200000,
      "clock": 1485,
@@ -19527,7 +19176,7 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki",
+    "danger.invis",
     "economy.tp",
     "danger.missing",
     "timing.day-night"
@@ -19593,7 +19242,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 95,
+     "seq": 92,
      "createdWallMs": 6190000,
      "expiresWallMs": 6207000,
      "clock": 1490,
@@ -19608,7 +19257,7 @@
    "inFight": false,
    "visible": [
     "danger.low-hp",
-    "danger.invis:riki",
+    "danger.invis",
     "economy.tp",
     "timing.day-night"
    ]
@@ -19656,7 +19305,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 94,
+     "seq": 91,
      "createdWallMs": 6185000,
      "expiresWallMs": 6200000,
      "clock": 1485,
@@ -19670,7 +19319,7 @@
    "inFight": false,
    "visible": [
     "danger.low-hp",
-    "danger.invis:riki",
+    "danger.invis",
     "economy.tp"
    ]
   }
@@ -20142,7 +19791,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 95,
+     "seq": 92,
      "createdWallMs": 6190000,
      "expiresWallMs": 6207000,
      "clock": 1490,
@@ -20155,7 +19804,7 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki",
+    "danger.invis",
     "economy.tp"
    ]
   }
@@ -20202,7 +19851,7 @@
      "cooldownMs": 120000,
      "zone": "timing",
      "icon": "item:tpscroll",
-     "seq": 92,
+     "seq": 89,
      "createdWallMs": 6160000,
      "expiresWallMs": 6209000,
      "clock": 1460,
@@ -20215,7 +19864,7 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki"
+    "danger.invis"
    ]
   }
  },
@@ -20251,7 +19900,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 96,
+     "seq": 93,
      "createdWallMs": 6216000,
      "expiresWallMs": 6224000,
      "clock": 1516,
@@ -20265,7 +19914,7 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki",
+    "danger.invis",
     "danger.building:tower1_mid"
    ]
   }
@@ -20303,7 +19952,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 96,
+     "seq": 93,
      "createdWallMs": 6216000,
      "expiresWallMs": 6224000,
      "clock": 1516,
@@ -20316,7 +19965,7 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki"
+    "danger.invis"
    ]
   }
  },
@@ -20361,7 +20010,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 97,
+     "seq": 94,
      "createdWallMs": 6245000,
      "expiresWallMs": 6260000,
      "clock": 1545,
@@ -20375,7 +20024,7 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki",
+    "danger.invis",
     "timing.rune-power"
    ]
   }
@@ -20422,7 +20071,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 97,
+     "seq": 94,
      "createdWallMs": 6245000,
      "expiresWallMs": 6260000,
      "clock": 1545,
@@ -20435,7 +20084,7 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki"
+    "danger.invis"
    ]
   }
  },
@@ -20887,7 +20536,7 @@
      "cooldownMs": 8000,
      "zone": "decision",
      "icon": "hero:axe",
-     "seq": 98,
+     "seq": 95,
      "createdWallMs": 6280000,
      "expiresWallMs": 6324000,
      "clock": 1580,
@@ -20901,7 +20550,7 @@
    "matchReview": null,
    "inFight": true,
    "visible": [
-    "danger.invis:riki",
+    "danger.invis",
     "fight.target:axe"
    ]
   }
@@ -21037,7 +20686,7 @@
      "cooldownMs": 15000,
      "zone": "decision",
      "icon": null,
-     "seq": 99,
+     "seq": 96,
      "createdWallMs": 6283000,
      "expiresWallMs": 6327000,
      "clock": 1583,
@@ -21051,7 +20700,7 @@
    "matchReview": null,
    "inFight": true,
    "visible": [
-    "danger.invis:riki",
+    "danger.invis",
     "fight.target:axe",
     "fight.engage"
    ]
@@ -21116,7 +20765,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 100,
+     "seq": 97,
      "createdWallMs": 6320000,
      "expiresWallMs": 6328000,
      "clock": 1620,
@@ -21149,7 +20798,7 @@
      "cooldownMs": 60000,
      "zone": "alert",
      "icon": null,
-     "seq": 101,
+     "seq": 98,
      "createdWallMs": 6320000,
      "expiresWallMs": 6330000,
      "clock": 1620,
@@ -21191,7 +20840,7 @@
      "cooldownMs": 120000,
      "zone": "timing",
      "icon": "item:tpscroll",
-     "seq": 102,
+     "seq": 99,
      "createdWallMs": 6320000,
      "expiresWallMs": 6369000,
      "clock": 1620,
@@ -21206,7 +20855,7 @@
    "inFight": false,
    "visible": [
     "danger.smoke",
-    "danger.invis:riki",
+    "danger.invis",
     "fight.target:axe",
     "fight.engage",
     "economy.tp"
@@ -21662,7 +21311,7 @@
      "cooldownMs": 8000,
      "zone": "decision",
      "icon": "hero:axe",
-     "seq": 98,
+     "seq": 95,
      "createdWallMs": 6280000,
      "expiresWallMs": 6324000,
      "clock": 1580,
@@ -21794,7 +21443,7 @@
      "cooldownMs": 15000,
      "zone": "decision",
      "icon": null,
-     "seq": 99,
+     "seq": 96,
      "createdWallMs": 6283000,
      "expiresWallMs": 6327000,
      "clock": 1583,
@@ -21808,7 +21457,7 @@
    "inFight": false,
    "visible": [
     "danger.smoke",
-    "danger.invis:riki",
+    "danger.invis",
     "economy.tp"
    ]
   }
@@ -21846,7 +21495,7 @@
      "cooldownMs": 60000,
      "zone": "alert",
      "icon": null,
-     "seq": 101,
+     "seq": 98,
      "createdWallMs": 6320000,
      "expiresWallMs": 6330000,
      "clock": 1620,
@@ -21859,7 +21508,7 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki",
+    "danger.invis",
     "economy.tp"
    ]
   }
@@ -21914,7 +21563,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 103,
+     "seq": 100,
      "createdWallMs": 6331000,
      "expiresWallMs": 6357000,
      "clock": 1631,
@@ -21928,9 +21577,80 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki",
+    "danger.invis",
     "economy.tp",
     "danger.missing"
+   ]
+  }
+ },
+ {
+  "t": 1340,
+  "tick": {
+   "wallMs": 6340000,
+   "shown": [
+    {
+     "id": "fight.keep-buyback",
+     "ruleId": "fight.keep-buyback",
+     "category": "economy",
+     "priority": "info",
+     "confidence": 0.8,
+     "short": "Держите 500 золота на выкуп",
+     "detail": {
+      "normal": "Поздняя игра: не тратьте последние 500 — это выкуп.",
+      "detailed": "Поздняя игра: не тратьте последние 500 — это выкуп. · Золото: 600 (игра, 0 с) · Цена выкупа: 500 (игра, 0 с) · Стадия игры: лейт (вывод, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "gold",
+       "label": "Золото",
+       "value": 600,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      },
+      {
+       "key": "buyback",
+       "label": "Цена выкупа",
+       "value": 500,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      },
+      {
+       "key": "stage",
+       "label": "Стадия игры",
+       "value": "лейт",
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.8,
+       "verified": true
+      }
+     ],
+     "ttlMs": 8000,
+     "cooldownMs": 300000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 101,
+     "createdWallMs": 6340000,
+     "expiresWallMs": 6367000,
+     "clock": 1640,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "danger.invis",
+    "economy.tp",
+    "danger.missing",
+    "fight.keep-buyback"
    ]
   }
  },
@@ -21993,7 +21713,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 104,
+     "seq": 102,
      "createdWallMs": 6350000,
      "expiresWallMs": 6367000,
      "clock": 1650,
@@ -22008,8 +21728,9 @@
    "inFight": false,
    "visible": [
     "danger.low-hp",
-    "danger.invis:riki",
-    "economy.tp"
+    "danger.invis",
+    "economy.tp",
+    "fight.keep-buyback"
    ]
   }
  },
@@ -22073,7 +21794,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 104,
+     "seq": 102,
      "createdWallMs": 6350000,
      "expiresWallMs": 6367000,
      "clock": 1650,
@@ -22086,69 +21807,78 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki",
-    "economy.tp"
+    "danger.invis",
+    "economy.tp",
+    "fight.keep-buyback"
    ]
   }
  },
  {
-  "t": 1365,
+  "t": 1367,
   "tick": {
-   "wallMs": 6365000,
-   "shown": [
+   "wallMs": 6367000,
+   "shown": [],
+   "expired": [
     {
-     "id": "timing.rune-bounty",
-     "ruleId": "timing.rune-bounty",
-     "category": "timing",
+     "id": "fight.keep-buyback",
+     "ruleId": "fight.keep-buyback",
+     "category": "economy",
      "priority": "info",
      "confidence": 0.8,
-     "short": "Руна богатства через 15 с",
+     "short": "Держите 500 золота на выкуп",
      "detail": {
-      "normal": "Руна богатства через 15 с (28:00).",
-      "detailed": "Руна богатства через 15 с (28:00). · Руна богатства: 28:00 (база, не проверено) · Игровое время, с: 1665 (игра, 0 с)"
+      "normal": "Поздняя игра: не тратьте последние 500 — это выкуп.",
+      "detailed": "Поздняя игра: не тратьте последние 500 — это выкуп. · Золото: 600 (игра, 0 с) · Цена выкупа: 500 (игра, 0 с) · Стадия игры: лейт (вывод, 0 с)"
      },
      "percent": null,
      "facts": [
       {
-       "key": "rune-bounty",
-       "label": "Руна богатства",
-       "value": "28:00",
-       "source": "kb",
-       "ageSec": null,
-       "confidence": 1,
-       "verified": false
-      },
-      {
-       "key": "clock",
-       "label": "Игровое время, с",
-       "value": 1665,
+       "key": "gold",
+       "label": "Золото",
+       "value": 600,
        "source": "gsi",
        "ageSec": 0,
        "confidence": 1,
        "verified": true
+      },
+      {
+       "key": "buyback",
+       "label": "Цена выкупа",
+       "value": 500,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      },
+      {
+       "key": "stage",
+       "label": "Стадия игры",
+       "value": "лейт",
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.8,
+       "verified": true
       }
      ],
-     "ttlMs": 15000,
-     "cooldownMs": 0,
+     "ttlMs": 8000,
+     "cooldownMs": 300000,
      "zone": "timing",
      "icon": null,
-     "seq": 105,
-     "createdWallMs": 6365000,
-     "expiresWallMs": 6380000,
-     "clock": 1665,
+     "seq": 101,
+     "createdWallMs": 6340000,
+     "expiresWallMs": 6367000,
+     "clock": 1640,
      "textSource": "template"
     }
    ],
-   "expired": [],
    "changed": [],
    "mistakes": [],
    "deathReview": null,
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki",
-    "economy.tp",
-    "timing.rune-bounty"
+    "danger.invis",
+    "economy.tp"
    ]
   }
  },
@@ -22194,7 +21924,7 @@
      "cooldownMs": 120000,
      "zone": "timing",
      "icon": "item:tpscroll",
-     "seq": 102,
+     "seq": 99,
      "createdWallMs": 6320000,
      "expiresWallMs": 6369000,
      "clock": 1620,
@@ -22207,8 +21937,7 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki",
-    "timing.rune-bounty"
+    "danger.invis"
    ]
   }
  },
@@ -22244,7 +21973,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 106,
+     "seq": 103,
      "createdWallMs": 6376000,
      "expiresWallMs": 6384000,
      "clock": 1676,
@@ -22259,68 +21988,7 @@
    "inFight": false,
    "visible": [
     "danger.building:tower1_mid",
-    "danger.invis:riki",
-    "timing.rune-bounty"
-   ]
-  }
- },
- {
-  "t": 1380,
-  "tick": {
-   "wallMs": 6380000,
-   "shown": [],
-   "expired": [
-    {
-     "id": "timing.rune-bounty",
-     "ruleId": "timing.rune-bounty",
-     "category": "timing",
-     "priority": "info",
-     "confidence": 0.8,
-     "short": "Руна богатства через 15 с",
-     "detail": {
-      "normal": "Руна богатства через 15 с (28:00).",
-      "detailed": "Руна богатства через 15 с (28:00). · Руна богатства: 28:00 (база, не проверено) · Игровое время, с: 1665 (игра, 0 с)"
-     },
-     "percent": null,
-     "facts": [
-      {
-       "key": "rune-bounty",
-       "label": "Руна богатства",
-       "value": "28:00",
-       "source": "kb",
-       "ageSec": null,
-       "confidence": 1,
-       "verified": false
-      },
-      {
-       "key": "clock",
-       "label": "Игровое время, с",
-       "value": 1665,
-       "source": "gsi",
-       "ageSec": 0,
-       "confidence": 1,
-       "verified": true
-      }
-     ],
-     "ttlMs": 15000,
-     "cooldownMs": 0,
-     "zone": "timing",
-     "icon": null,
-     "seq": 105,
-     "createdWallMs": 6365000,
-     "expiresWallMs": 6380000,
-     "clock": 1665,
-     "textSource": "template"
-    }
-   ],
-   "changed": [],
-   "mistakes": [],
-   "deathReview": null,
-   "matchReview": null,
-   "inFight": false,
-   "visible": [
-    "danger.building:tower1_mid",
-    "danger.invis:riki"
+    "danger.invis"
    ]
   }
  },
@@ -22764,7 +22432,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 106,
+     "seq": 103,
      "createdWallMs": 6376000,
      "expiresWallMs": 6384000,
      "clock": 1676,
@@ -22777,7 +22445,7 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki"
+    "danger.invis"
    ]
   }
  },
@@ -22822,7 +22490,7 @@
      "cooldownMs": 8000,
      "zone": "decision",
      "icon": "hero:axe",
-     "seq": 107,
+     "seq": 104,
      "createdWallMs": 6440000,
      "expiresWallMs": 6484000,
      "clock": 1740,
@@ -22836,7 +22504,7 @@
    "matchReview": null,
    "inFight": true,
    "visible": [
-    "danger.invis:riki",
+    "danger.invis",
     "fight.target:axe"
    ]
   }
@@ -23379,7 +23047,7 @@
      "cooldownMs": 15000,
      "zone": "decision",
      "icon": null,
-     "seq": 108,
+     "seq": 105,
      "createdWallMs": 6443000,
      "expiresWallMs": 6487000,
      "clock": 1743,
@@ -23393,7 +23061,7 @@
    "matchReview": null,
    "inFight": true,
    "visible": [
-    "danger.invis:riki",
+    "danger.invis",
     "fight.target:axe",
     "fight.engage"
    ]
@@ -23431,7 +23099,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 109,
+     "seq": 106,
      "createdWallMs": 6456000,
      "expiresWallMs": 6464000,
      "clock": 1756,
@@ -23445,7 +23113,7 @@
    "matchReview": null,
    "inFight": true,
    "visible": [
-    "danger.invis:riki",
+    "danger.invis",
     "fight.target:axe",
     "fight.engage",
     "danger.building:tower1_mid"
@@ -23485,7 +23153,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 109,
+     "seq": 106,
      "createdWallMs": 6456000,
      "expiresWallMs": 6464000,
      "clock": 1756,
@@ -23498,7 +23166,7 @@
    "matchReview": null,
    "inFight": true,
    "visible": [
-    "danger.invis:riki",
+    "danger.invis",
     "fight.target:axe",
     "fight.engage"
    ]
@@ -23563,7 +23231,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 110,
+     "seq": 107,
      "createdWallMs": 6480000,
      "expiresWallMs": 6488000,
      "clock": 1780,
@@ -23596,7 +23264,7 @@
      "cooldownMs": 60000,
      "zone": "alert",
      "icon": null,
-     "seq": 111,
+     "seq": 108,
      "createdWallMs": 6480000,
      "expiresWallMs": 6490000,
      "clock": 1780,
@@ -23638,7 +23306,7 @@
      "cooldownMs": 120000,
      "zone": "timing",
      "icon": "item:tpscroll",
-     "seq": 112,
+     "seq": 109,
      "createdWallMs": 6480000,
      "expiresWallMs": 6529000,
      "clock": 1780,
@@ -23653,7 +23321,7 @@
    "inFight": false,
    "visible": [
     "danger.smoke",
-    "danger.invis:riki",
+    "danger.invis",
     "fight.target:axe",
     "fight.engage",
     "economy.tp"
@@ -23702,7 +23370,7 @@
      "cooldownMs": 8000,
      "zone": "decision",
      "icon": "hero:axe",
-     "seq": 107,
+     "seq": 104,
      "createdWallMs": 6440000,
      "expiresWallMs": 6484000,
      "clock": 1740,
@@ -23834,7 +23502,7 @@
      "cooldownMs": 15000,
      "zone": "decision",
      "icon": null,
-     "seq": 108,
+     "seq": 105,
      "createdWallMs": 6443000,
      "expiresWallMs": 6487000,
      "clock": 1743,
@@ -23848,7 +23516,7 @@
    "inFight": false,
    "visible": [
     "danger.smoke",
-    "danger.invis:riki",
+    "danger.invis",
     "economy.tp"
    ]
   }
@@ -23894,7 +23562,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 113,
+     "seq": 110,
      "createdWallMs": 6485000,
      "expiresWallMs": 6500000,
      "clock": 1785,
@@ -23909,7 +23577,7 @@
    "inFight": false,
    "visible": [
     "danger.smoke",
-    "danger.invis:riki",
+    "danger.invis",
     "economy.tp",
     "timing.rune-power"
    ]
@@ -23948,7 +23616,7 @@
      "cooldownMs": 60000,
      "zone": "alert",
      "icon": null,
-     "seq": 111,
+     "seq": 108,
      "createdWallMs": 6480000,
      "expiresWallMs": 6490000,
      "clock": 1780,
@@ -23961,7 +23629,7 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki",
+    "danger.invis",
     "economy.tp",
     "timing.rune-power"
    ]
@@ -24017,7 +23685,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 114,
+     "seq": 111,
      "createdWallMs": 6491000,
      "expiresWallMs": 6517000,
      "clock": 1791,
@@ -24031,7 +23699,7 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki",
+    "danger.invis",
     "economy.tp",
     "danger.missing",
     "timing.rune-power"
@@ -24080,7 +23748,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 113,
+     "seq": 110,
      "createdWallMs": 6485000,
      "expiresWallMs": 6500000,
      "clock": 1785,
@@ -24093,7 +23761,7 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki",
+    "danger.invis",
     "economy.tp",
     "danger.missing"
    ]
@@ -24565,7 +24233,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 115,
+     "seq": 112,
      "createdWallMs": 6510000,
      "expiresWallMs": 6524000,
      "clock": 1810,
@@ -24580,7 +24248,7 @@
    "inFight": false,
    "visible": [
     "danger.low-hp",
-    "danger.invis:riki",
+    "danger.invis",
     "economy.tp"
    ]
   }
@@ -24617,7 +24285,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 116,
+     "seq": 113,
      "createdWallMs": 6516000,
      "expiresWallMs": 6524000,
      "clock": 1816,
@@ -24632,7 +24300,7 @@
    "inFight": false,
    "visible": [
     "danger.building:tower1_mid",
-    "danger.invis:riki",
+    "danger.invis",
     "economy.tp"
    ]
   }
@@ -24678,7 +24346,7 @@
      "cooldownMs": 300000,
      "zone": "timing",
      "icon": null,
-     "seq": 117,
+     "seq": 114,
      "createdWallMs": 6520000,
      "expiresWallMs": 6649000,
      "clock": 1820,
@@ -24693,7 +24361,7 @@
    "inFight": false,
    "visible": [
     "danger.building:tower1_mid",
-    "danger.invis:riki",
+    "danger.invis",
     "economy.tp",
     "economy.neutral"
    ]
@@ -24732,7 +24400,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 116,
+     "seq": 113,
      "createdWallMs": 6516000,
      "expiresWallMs": 6524000,
      "clock": 1816,
@@ -24745,7 +24413,7 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki",
+    "danger.invis",
     "economy.tp",
     "economy.neutral"
    ]
@@ -24793,7 +24461,7 @@
      "cooldownMs": 120000,
      "zone": "timing",
      "icon": "item:tpscroll",
-     "seq": 112,
+     "seq": 109,
      "createdWallMs": 6480000,
      "expiresWallMs": 6529000,
      "clock": 1780,
@@ -24806,7 +24474,7 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki",
+    "danger.invis",
     "economy.neutral"
    ]
   }
@@ -25259,7 +24927,7 @@
      "cooldownMs": 8000,
      "zone": "decision",
      "icon": "hero:axe",
-     "seq": 118,
+     "seq": 115,
      "createdWallMs": 6600000,
      "expiresWallMs": 6644000,
      "clock": 1900,
@@ -25273,7 +24941,7 @@
    "matchReview": null,
    "inFight": true,
    "visible": [
-    "danger.invis:riki",
+    "danger.invis",
     "fight.target:axe",
     "economy.neutral"
    ]
@@ -25410,7 +25078,7 @@
      "cooldownMs": 15000,
      "zone": "decision",
      "icon": null,
-     "seq": 119,
+     "seq": 116,
      "createdWallMs": 6603000,
      "expiresWallMs": 6647000,
      "clock": 1903,
@@ -25424,7 +25092,7 @@
    "matchReview": null,
    "inFight": true,
    "visible": [
-    "danger.invis:riki",
+    "danger.invis",
     "fight.target:axe",
     "fight.engage",
     "economy.neutral"
@@ -25463,7 +25131,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 120,
+     "seq": 117,
      "createdWallMs": 6616000,
      "expiresWallMs": 6624000,
      "clock": 1916,
@@ -25478,7 +25146,7 @@
    "inFight": true,
    "visible": [
     "danger.building:tower1_mid",
-    "danger.invis:riki",
+    "danger.invis",
     "fight.target:axe",
     "fight.engage",
     "economy.neutral"
@@ -25925,7 +25593,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 120,
+     "seq": 117,
      "createdWallMs": 6616000,
      "expiresWallMs": 6624000,
      "clock": 1916,
@@ -25938,7 +25606,7 @@
    "matchReview": null,
    "inFight": true,
    "visible": [
-    "danger.invis:riki",
+    "danger.invis",
     "fight.target:axe",
     "fight.engage",
     "economy.neutral"
@@ -26004,7 +25672,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 121,
+     "seq": 118,
      "createdWallMs": 6640000,
      "expiresWallMs": 6648000,
      "clock": 1940,
@@ -26037,7 +25705,7 @@
      "cooldownMs": 60000,
      "zone": "alert",
      "icon": null,
-     "seq": 122,
+     "seq": 119,
      "createdWallMs": 6640000,
      "expiresWallMs": 6650000,
      "clock": 1940,
@@ -26079,7 +25747,7 @@
      "cooldownMs": 120000,
      "zone": "timing",
      "icon": "item:tpscroll",
-     "seq": 123,
+     "seq": 120,
      "createdWallMs": 6640000,
      "expiresWallMs": 6689000,
      "clock": 1940,
@@ -26094,7 +25762,7 @@
    "inFight": false,
    "visible": [
     "danger.smoke",
-    "danger.invis:riki",
+    "danger.invis",
     "fight.target:axe",
     "fight.engage",
     "economy.tp",
@@ -26144,7 +25812,7 @@
      "cooldownMs": 8000,
      "zone": "decision",
      "icon": "hero:axe",
-     "seq": 118,
+     "seq": 115,
      "createdWallMs": 6600000,
      "expiresWallMs": 6644000,
      "clock": 1900,
@@ -26276,7 +25944,7 @@
      "cooldownMs": 15000,
      "zone": "decision",
      "icon": null,
-     "seq": 119,
+     "seq": 116,
      "createdWallMs": 6603000,
      "expiresWallMs": 6647000,
      "clock": 1903,
@@ -26290,7 +25958,7 @@
    "inFight": false,
    "visible": [
     "danger.smoke",
-    "danger.invis:riki",
+    "danger.invis",
     "economy.tp",
     "economy.neutral"
    ]
@@ -26338,7 +26006,7 @@
      "cooldownMs": 300000,
      "zone": "timing",
      "icon": null,
-     "seq": 117,
+     "seq": 114,
      "createdWallMs": 6520000,
      "expiresWallMs": 6649000,
      "clock": 1820,
@@ -26352,7 +26020,7 @@
    "inFight": false,
    "visible": [
     "danger.smoke",
-    "danger.invis:riki",
+    "danger.invis",
     "economy.tp"
    ]
   }
@@ -26390,7 +26058,7 @@
      "cooldownMs": 60000,
      "zone": "alert",
      "icon": null,
-     "seq": 122,
+     "seq": 119,
      "createdWallMs": 6640000,
      "expiresWallMs": 6650000,
      "clock": 1940,
@@ -26403,7 +26071,7 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki",
+    "danger.invis",
     "economy.tp"
    ]
   }
@@ -26458,7 +26126,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 124,
+     "seq": 121,
      "createdWallMs": 6651000,
      "expiresWallMs": 6677000,
      "clock": 1951,
@@ -26472,9 +26140,80 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki",
+    "danger.invis",
     "economy.tp",
     "danger.missing"
+   ]
+  }
+ },
+ {
+  "t": 1660,
+  "tick": {
+   "wallMs": 6660000,
+   "shown": [
+    {
+     "id": "fight.keep-buyback",
+     "ruleId": "fight.keep-buyback",
+     "category": "economy",
+     "priority": "info",
+     "confidence": 0.8,
+     "short": "Держите 500 золота на выкуп",
+     "detail": {
+      "normal": "Поздняя игра: не тратьте последние 500 — это выкуп.",
+      "detailed": "Поздняя игра: не тратьте последние 500 — это выкуп. · Золото: 600 (игра, 0 с) · Цена выкупа: 500 (игра, 0 с) · Стадия игры: лейт (вывод, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "gold",
+       "label": "Золото",
+       "value": 600,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      },
+      {
+       "key": "buyback",
+       "label": "Цена выкупа",
+       "value": 500,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      },
+      {
+       "key": "stage",
+       "label": "Стадия игры",
+       "value": "лейт",
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.8,
+       "verified": true
+      }
+     ],
+     "ttlMs": 8000,
+     "cooldownMs": 300000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 122,
+     "createdWallMs": 6660000,
+     "expiresWallMs": 6687000,
+     "clock": 1960,
+     "textSource": "template"
+    }
+   ],
+   "expired": [],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "danger.invis",
+    "economy.tp",
+    "danger.missing",
+    "fight.keep-buyback"
    ]
   }
  },
@@ -26537,7 +26276,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 125,
+     "seq": 123,
      "createdWallMs": 6670000,
      "expiresWallMs": 6687000,
      "clock": 1970,
@@ -26552,8 +26291,9 @@
    "inFight": false,
    "visible": [
     "danger.low-hp",
-    "danger.invis:riki",
-    "economy.tp"
+    "danger.invis",
+    "economy.tp",
+    "fight.keep-buyback"
    ]
   }
  },
@@ -27024,7 +26764,7 @@
      "cooldownMs": 30000,
      "zone": "alert",
      "icon": null,
-     "seq": 125,
+     "seq": 123,
      "createdWallMs": 6670000,
      "expiresWallMs": 6687000,
      "clock": 1970,
@@ -27037,7 +26777,77 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki",
+    "danger.invis",
+    "economy.tp",
+    "fight.keep-buyback"
+   ]
+  }
+ },
+ {
+  "t": 1687,
+  "tick": {
+   "wallMs": 6687000,
+   "shown": [],
+   "expired": [
+    {
+     "id": "fight.keep-buyback",
+     "ruleId": "fight.keep-buyback",
+     "category": "economy",
+     "priority": "info",
+     "confidence": 0.8,
+     "short": "Держите 500 золота на выкуп",
+     "detail": {
+      "normal": "Поздняя игра: не тратьте последние 500 — это выкуп.",
+      "detailed": "Поздняя игра: не тратьте последние 500 — это выкуп. · Золото: 600 (игра, 0 с) · Цена выкупа: 500 (игра, 0 с) · Стадия игры: лейт (вывод, 0 с)"
+     },
+     "percent": null,
+     "facts": [
+      {
+       "key": "gold",
+       "label": "Золото",
+       "value": 600,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      },
+      {
+       "key": "buyback",
+       "label": "Цена выкупа",
+       "value": 500,
+       "source": "gsi",
+       "ageSec": 0,
+       "confidence": 1,
+       "verified": true
+      },
+      {
+       "key": "stage",
+       "label": "Стадия игры",
+       "value": "лейт",
+       "source": "derived",
+       "ageSec": 0,
+       "confidence": 0.8,
+       "verified": true
+      }
+     ],
+     "ttlMs": 8000,
+     "cooldownMs": 300000,
+     "zone": "timing",
+     "icon": null,
+     "seq": 122,
+     "createdWallMs": 6660000,
+     "expiresWallMs": 6687000,
+     "clock": 1960,
+     "textSource": "template"
+    }
+   ],
+   "changed": [],
+   "mistakes": [],
+   "deathReview": null,
+   "matchReview": null,
+   "inFight": false,
+   "visible": [
+    "danger.invis",
     "economy.tp"
    ]
   }
@@ -27084,7 +26894,7 @@
      "cooldownMs": 120000,
      "zone": "timing",
      "icon": "item:tpscroll",
-     "seq": 123,
+     "seq": 120,
      "createdWallMs": 6640000,
      "expiresWallMs": 6689000,
      "clock": 1940,
@@ -27097,7 +26907,7 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki"
+    "danger.invis"
    ]
   }
  },
@@ -27133,7 +26943,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 126,
+     "seq": 124,
      "createdWallMs": 6696000,
      "expiresWallMs": 6704000,
      "clock": 1996,
@@ -27147,7 +26957,7 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki",
+    "danger.invis",
     "danger.building:tower1_mid"
    ]
   }
@@ -27185,7 +26995,7 @@
      "cooldownMs": 45000,
      "zone": "alert",
      "icon": null,
-     "seq": 126,
+     "seq": 124,
      "createdWallMs": 6696000,
      "expiresWallMs": 6704000,
      "clock": 1996,
@@ -27198,7 +27008,7 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki"
+    "danger.invis"
    ]
   }
  },
@@ -27243,7 +27053,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 127,
+     "seq": 125,
      "createdWallMs": 6725000,
      "expiresWallMs": 6740000,
      "clock": 2025,
@@ -27257,7 +27067,7 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki",
+    "danger.invis",
     "timing.rune-power"
    ]
   }
@@ -27304,7 +27114,7 @@
      "cooldownMs": 0,
      "zone": "timing",
      "icon": null,
-     "seq": 127,
+     "seq": 125,
      "createdWallMs": 6725000,
      "expiresWallMs": 6740000,
      "clock": 2025,
@@ -27317,7 +27127,7 @@
    "matchReview": null,
    "inFight": false,
    "visible": [
-    "danger.invis:riki"
+    "danger.invis"
    ]
   }
  },
@@ -27769,7 +27579,7 @@
      "cooldownMs": 8000,
      "zone": "decision",
      "icon": "hero:axe",
-     "seq": 128,
+     "seq": 126,
      "createdWallMs": 6760000,
      "expiresWallMs": 6804000,
      "clock": 2060,
@@ -27783,7 +27593,7 @@
    "matchReview": null,
    "inFight": true,
    "visible": [
-    "danger.invis:riki",
+    "danger.invis",
     "fight.target:axe"
    ]
   }
@@ -27919,7 +27729,7 @@
      "cooldownMs": 15000,
      "zone": "decision",
      "icon": null,
-     "seq": 129,
+     "seq": 127,
      "createdWallMs": 6763000,
      "expiresWallMs": 6807000,
      "clock": 2063,
@@ -27933,7 +27743,7 @@
    "matchReview": null,
    "inFight": true,
    "visible": [
-    "danger.invis:riki",
+    "danger.invis",
     "fight.target:axe",
     "fight.engage"
    ]
@@ -27990,22 +27800,6 @@
     "source": "template"
    },
    {
-    "wallMs": 5043000,
-    "clock": 343,
-    "kind": "hint",
-    "id": "laning.buy-regen",
-    "text": "Купите Healing Salve — курьером",
-    "source": "template"
-   },
-   {
-    "wallMs": 5043000,
-    "clock": 343,
-    "kind": "hint",
-    "id": "fight.action:farm",
-    "text": "Фармить: 50%",
-    "source": "template"
-   },
-   {
     "wallMs": 5045000,
     "clock": 345,
     "kind": "hint",
@@ -28025,16 +27819,16 @@
     "wallMs": 5060000,
     "clock": 360,
     "kind": "hint",
-    "id": "danger.invis:riki",
+    "id": "danger.invis",
     "text": "Riki невидим — купите пыль",
     "source": "template"
    },
    {
-    "wallMs": 5063000,
-    "clock": 363,
+    "wallMs": 5061000,
+    "clock": 361,
     "kind": "hint",
-    "id": "economy.next:wraith_band",
-    "text": "Дальше: Wraith Band",
+    "id": "fight.keep-buyback",
+    "text": "Держите 500 золота на выкуп",
     "source": "template"
    },
    {
@@ -28054,6 +27848,14 @@
     "source": "template"
    },
    {
+    "wallMs": 5088000,
+    "clock": 388,
+    "kind": "hint",
+    "id": "economy.neutral",
+    "text": "Пустой слот нейтрального предмета",
+    "source": "template"
+   },
+   {
     "wallMs": 5089000,
     "clock": 360,
     "kind": "mistake",
@@ -28062,11 +27864,19 @@
     "source": "template"
    },
    {
-    "wallMs": 5090000,
-    "clock": 390,
+    "wallMs": 5105000,
+    "clock": 405,
     "kind": "hint",
-    "id": "economy.neutral",
-    "text": "Пустой слот нейтрального предмета",
+    "id": "timing.shrine-of-wisdom",
+    "text": "Святилище мудрости через 15 с",
+    "source": "template"
+   },
+   {
+    "wallMs": 5121000,
+    "clock": 421,
+    "kind": "hint",
+    "id": "economy.next:wraith_band",
+    "text": "Дальше: Wraith Band",
     "source": "template"
    },
    {
@@ -28115,14 +27925,6 @@
     "kind": "hint",
     "id": "economy.tp",
     "text": "Нет Town Portal Scroll — купите",
-    "source": "template"
-   },
-   {
-    "wallMs": 5203000,
-    "clock": 503,
-    "kind": "hint",
-    "id": "laning.buy-regen",
-    "text": "Купите Healing Salve — курьером",
     "source": "template"
    },
    {
@@ -28222,14 +28024,6 @@
     "source": "template"
    },
    {
-    "wallMs": 5363000,
-    "clock": 663,
-    "kind": "hint",
-    "id": "laning.buy-regen",
-    "text": "Купите Healing Salve — курьером",
-    "source": "template"
-   },
-   {
     "wallMs": 5371000,
     "clock": 671,
     "kind": "hint",
@@ -28238,19 +28032,19 @@
     "source": "template"
    },
    {
+    "wallMs": 5380000,
+    "clock": 680,
+    "kind": "hint",
+    "id": "fight.keep-buyback",
+    "text": "Держите 500 золота на выкуп",
+    "source": "template"
+   },
+   {
     "wallMs": 5390000,
     "clock": 690,
     "kind": "hint",
     "id": "danger.low-hp",
     "text": "Мало здоровья, нет регена — назад",
-    "source": "template"
-   },
-   {
-    "wallMs": 5405000,
-    "clock": 705,
-    "kind": "hint",
-    "id": "timing.rune-bounty",
-    "text": "Руна богатства через 15 с",
     "source": "template"
    },
    {
@@ -28323,14 +28117,6 @@
     "kind": "hint",
     "id": "economy.tp",
     "text": "Нет Town Portal Scroll — купите",
-    "source": "template"
-   },
-   {
-    "wallMs": 5523000,
-    "clock": 823,
-    "kind": "hint",
-    "id": "laning.buy-regen",
-    "text": "Купите Healing Salve — курьером",
     "source": "template"
    },
    {
@@ -28438,14 +28224,6 @@
     "source": "template"
    },
    {
-    "wallMs": 5683000,
-    "clock": 983,
-    "kind": "hint",
-    "id": "laning.buy-regen",
-    "text": "Купите Healing Salve — курьером",
-    "source": "template"
-   },
-   {
     "wallMs": 5685000,
     "clock": 960,
     "kind": "mistake",
@@ -28459,6 +28237,14 @@
     "kind": "hint",
     "id": "danger.missing",
     "text": "5 врагов не видно — осторожно",
+    "source": "template"
+   },
+   {
+    "wallMs": 5700000,
+    "clock": 1000,
+    "kind": "hint",
+    "id": "fight.keep-buyback",
+    "text": "Держите 500 золота на выкуп",
     "source": "template"
    },
    {
@@ -28539,14 +28325,6 @@
     "kind": "hint",
     "id": "economy.tp",
     "text": "Нет Town Portal Scroll — купите",
-    "source": "template"
-   },
-   {
-    "wallMs": 5843000,
-    "clock": 1143,
-    "kind": "hint",
-    "id": "laning.buy-regen",
-    "text": "Купите Healing Salve — курьером",
     "source": "template"
    },
    {
@@ -28678,6 +28456,14 @@
     "source": "template"
    },
    {
+    "wallMs": 6021000,
+    "clock": 1321,
+    "kind": "hint",
+    "id": "fight.keep-buyback",
+    "text": "Держите 500 золота на выкуп",
+    "source": "template"
+   },
+   {
     "wallMs": 6030000,
     "clock": 1330,
     "kind": "hint",
@@ -28694,8 +28480,8 @@
     "source": "template"
    },
    {
-    "wallMs": 6040000,
-    "clock": 1340,
+    "wallMs": 6048000,
+    "clock": 1348,
     "kind": "hint",
     "id": "economy.neutral",
     "text": "Пустой слот нейтрального предмета",
@@ -28838,19 +28624,19 @@
     "source": "template"
    },
    {
+    "wallMs": 6340000,
+    "clock": 1640,
+    "kind": "hint",
+    "id": "fight.keep-buyback",
+    "text": "Держите 500 золота на выкуп",
+    "source": "template"
+   },
+   {
     "wallMs": 6350000,
     "clock": 1650,
     "kind": "hint",
     "id": "danger.low-hp",
     "text": "Мало здоровья, нет регена — назад",
-    "source": "template"
-   },
-   {
-    "wallMs": 6365000,
-    "clock": 1665,
-    "kind": "hint",
-    "id": "timing.rune-bounty",
-    "text": "Руна богатства через 15 с",
     "source": "template"
    },
    {
@@ -29003,6 +28789,14 @@
     "kind": "hint",
     "id": "danger.missing",
     "text": "5 врагов не видно — осторожно",
+    "source": "template"
+   },
+   {
+    "wallMs": 6660000,
+    "clock": 1960,
+    "kind": "hint",
+    "id": "fight.keep-buyback",
+    "text": "Держите 500 золота на выкуп",
     "source": "template"
    },
    {

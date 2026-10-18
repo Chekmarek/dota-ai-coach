@@ -3,7 +3,7 @@
 import { mapZone, MAP_ZONE_RU } from '../match-state/map-zones.ts';
 import { dist } from './geo.ts';
 import { laneRole } from './rules/laning.ts';
-import { mmss, type RuleContext } from './rules/context.ts';
+import { game, mmss, type RuleContext } from './rules/context.ts';
 import { derivedFact } from './view.ts';
 import type { FactRef } from './types.ts';
 import { readyActiveNames, type DeathRecord } from './memory.ts';
@@ -126,6 +126,8 @@ export class MistakeDetector {
         this.allyFightZone = MAP_ZONE_RU[mapZone(fight.pos.value!.x, fight.pos.value!.y)];
       }
     }
+    // В лайнинге каждый на своей линии: «команда дралась без вас» тогда не ошибка (9 раз за матч у керри с 1:00)
+    if (this.allyFightMs !== null && c.ev.allyDied.length > 0 && c.now - this.allyFightMs <= 15_000 && game(c).stage === 'laning') this.allyFightMs = null;
     if (this.allyFightMs !== null && c.ev.allyDied.length > 0 && c.now - this.allyFightMs <= 15_000) {
       out.push(this.add(c, { type: 'missed-fight', severity: 2, text: `Команда дралась без вас (${this.allyFightZone}), союзник погиб`, instead: 'Когда у союзника 2+ врага, идите к нему или телепортируйтесь (Town Portal Scroll).', facts: [derivedFact('ally-fight', 'Драка союзников', this.allyFightZone, 0.6)] }));
       this.allyFightMs = null;

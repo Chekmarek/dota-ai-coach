@@ -73,7 +73,7 @@ describe('B. опасность', () => {
 
   it('невидимый враг, а пыли нет', () => {
     const ds = drafts({ enemies: [{ slot: 5, hero: 'riki', pos: { x: 5000, y: 5000 } }] });
-    expect(ids(ds)).toContain('danger.invis:riki');
+    expect(ids(ds)).toContain('danger.invis');
   });
 });
 

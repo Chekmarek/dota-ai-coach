@@ -4,7 +4,7 @@ import { hasRegen } from '../memory.ts';
 import { nearEnemies } from '../prob.ts';
 import { isOwnBase } from '../geo.ts';
 import { derivedFact, fact, kbFact, poolPct } from '../view.ts';
-import { draft, playing, type Rule, type RuleContext } from './context.ts';
+import { draft, game, playing, type Rule, type RuleContext } from './context.ts';
 import type { HintDraft } from '../types.ts';
 
 /** Роль на линии (как lane_role OpenDota): по тому, где герой стоял с 1:00 по 8:00. null — не понять */
@@ -64,8 +64,9 @@ const hasInv = (c: RuleContext, key: string) => c.v.me.items.some((i) => i.key =
 
 export const regenRule: Rule = (c) => {
   if (!playing(c) || c.mem.inFight || !c.v.me.itemsKnown) return null;
-  const clock = c.v.clock.value ?? 0;
-  if (clock > 20 * 60 || (c.v.team && isOwnBase(c.v.me.zone, c.v.team))) return null;
+  // Реген расходниками — совет лайнинга: в мидгейме и лейте «съешьте Tango» звучит нелепо (раньше — до 20:00, а в
+  // Турбо 20:00 — уже лейт)
+  if (game(c).stage !== 'laning' || (c.v.team && isOwnBase(c.v.me.zone, c.v.team))) return null;
   const hp = poolPct(c.v.me.hp.value);
   const mana = poolPct(c.v.me.mana.value);
   const out: HintDraft[] = [];
@@ -148,7 +149,8 @@ export const regenRule: Rule = (c) => {
 export const levelRule: Rule = (c) => {
   if (!c.v.inGame) return null;
   const out: HintDraft[] = [];
-  if (c.ev.levelUp === 6) {
+  // Пассивная ульта (Bristleback) — «ищите убийство с ультой» не про неё
+  if (c.ev.levelUp === 6 && game(c).hero.ultPassive !== true) {
     out.push(
       draft({
         id: 'laning.level6',
@@ -212,4 +214,5 @@ export const stackRule: Rule = (c) => {
   });
 };
 
-export const LANING_RULES: Rule[] = [regenRule, levelRule, csRule, stackRule];
+// stackRule этого файла не подключён: дублировал timing.stack из timings.ts (одинаковый id, разные тексты — аудит, этап 1)
+export const LANING_RULES: Rule[] = [regenRule, levelRule, csRule];

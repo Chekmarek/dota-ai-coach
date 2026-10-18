@@ -38,7 +38,7 @@ export interface CoachDeps {
 
 export function coachSettings(s: Settings): CoachSettings {
   const d = defaultCoachSettings();
-  return { ...d, detail: s.hints.detail, categories: { ...s.hints.categories }, aiLive: s.hints.ai, gameMode: s.hints.gameMode };
+  return { ...d, detail: s.hints.detail, categories: { ...s.hints.categories }, aiLive: s.hints.ai, gameMode: s.hints.gameMode, position: s.hints.position };
 }
 
 const safeId = (s: string) => s.replace(/[^0-9A-Za-z_-]/g, '-').slice(0, 80);
@@ -53,6 +53,8 @@ export class CoachService {
   /** Для live.log: когда пришёл первый снимок, был ли матч, когда последний раз писали о подсказках */
   private inputs = 0;
   private loggedInMatch: boolean | null = null;
+  /** Последние записанные в журнал стадия и позиция */
+  private loggedGame: string | null = null;
   private lastHintLogMs = 0;
   private readonly now: () => number;
   /** Индикатор режима: для какого матча и какого режима уже показан; кандидат на смену и с какого момента */
@@ -113,6 +115,12 @@ export class CoachService {
     if (e.inGame !== this.loggedInMatch) {
       this.loggedInMatch = e.inGame;
       this.deps.log?.('coach матч', { inGame: e.inGame, gameState: input.gsi?.gameState ?? null, clock: input.gsi?.clock ?? null });
+    }
+    const g = e.game;
+    const gSig = g && e.inGame ? `${g.stage}|${g.position ?? '-'}|${g.positionSource ?? '-'}` : null;
+    if (gSig && gSig !== this.loggedGame) {
+      this.loggedGame = gSig;
+      this.deps.log?.('coach контекст', { stage: g!.stage, why: g!.stageWhy, position: g!.position, source: g!.positionSource, confidence: g!.positionConfidence, clock: input.gsi?.clock ?? null });
     }
     if (u.shown.length && this.now() - this.lastHintLogMs >= 5000) {
       this.lastHintLogMs = this.now();

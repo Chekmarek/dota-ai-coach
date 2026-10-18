@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { HUD_ZONE_IDS, zoneOverridesSchema, type HudZoneId, type ZoneOverrides } from '../../core/hud/layout.ts';
 import { HUD_THEME_IDS, type HudThemeId } from '../types/hud.ts';
 import { GAME_MODE_OVERRIDES, type GameModeOverride } from '../../core/gsi/mode.ts';
+import { POSITION_OVERRIDES, type PositionOverride } from '../../core/coach/game-context.ts';
 
 export type HintDetail = 'min' | 'normal' | 'detailed';
 export type HintCategories = Record<'fight' | 'danger' | 'laning' | 'economy' | 'macro' | 'timing' | 'mistake' | 'review', boolean>;
@@ -33,6 +34,8 @@ const DEFAULTS = {
     inApp: true,
     // Турбо (0.13.3): режим берётся из игры; если Dota его не сообщает — пользователь выбирает вручную
     gameMode: 'auto' as GameModeOverride,
+    // Позиция 1–5 (0.13.8): auto — коуч определяет по герою и линии; в старых settings.json поля нет — auto
+    position: 'auto' as PositionOverride,
   },
   // Подсказки поверх игры (этап 3): тема, раскладка, анимации, прозрачность, размер
   hud: { enabled: true, theme: 'runes' as HudThemeId, reduceMotion: false, opacity: 1, scale: 1, zones: null as ZoneOverrides | null, hiddenZones: [] as HudZoneId[] },
@@ -155,6 +158,8 @@ const fields = {
     inApp: z.boolean(),
     /** Режим игры для подсказок и драфта: auto — по данным игры, turbo / normal — выбран вручную */
     gameMode: z.enum(GAME_MODE_OVERRIDES),
+    /** Моя позиция для советов: auto — по герою и линии, '1'…'5' — выбрана вручную */
+    position: z.enum(POSITION_OVERRIDES),
   },
   hud: {
     /** Показывать подсказки поверх окна игры */

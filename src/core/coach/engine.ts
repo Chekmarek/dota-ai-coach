@@ -10,7 +10,10 @@ import { MistakeDetector, MISTAKE_RU, type Mistake } from './mistakes.ts';
 import { deathReview, matchReview, type DeathReview, type MatchReview } from './reviews.ts';
 import { ACTION_RU, actionChoice, type ActionChoice } from './prob.ts';
 import { buildView, poolPct, type CoachView } from './view.ts';
-import { draft, mmss, type Rule, type RuleContext } from './rules/context.ts';
+import { draft, game, mmss, type Rule, type RuleContext } from './rules/context.ts';
+
+/** Пересказ шаблонных подсказок моделью во время матча (выключен, см. tick, шаг 6) */
+const PHRASE_REWRITE = false;
 import { FIGHT_RULES, matchupsOnDemand } from './rules/fight.ts';
 import { DANGER_RULES } from './rules/danger.ts';
 import { LANING_RULES } from './rules/laning.ts';
@@ -34,6 +37,7 @@ import {
 } from './ai.ts';
 import { PRIORITY_RANK, defaultCoachSettings, type CoachSettings, type Hint, type HintDraft } from './types.ts';
 import { asGameModeInfo, resolveGameMode } from '../gsi/mode.ts';
+import { buildGameContext, type GameContext } from './game-context.ts';
 
 export const ALL_RULES: Rule[] = [...DANGER_RULES, ...FIGHT_RULES, ...MACRO_RULES, ...TIMING_RULES, ...LANING_RULES, ...ECONOMY_RULES, ...DRAFT_RULES];
 /**
@@ -97,6 +101,8 @@ export class CoachEngine {
   readonly journal: JournalEntry[] = [];
   settings: CoachSettings;
   deathReviewNow: DeathReview | null = null;
+  /** Контекст игры последнего тика (стадия, позиция) — для журнала и интерфейса */
+  game: GameContext | null = null;
   matchReviewNow: MatchReview | null = null;
   private readonly ai: CoachAi | null;
   private readonly now: () => number;
@@ -175,7 +181,9 @@ export class CoachEngine {
       this.matchReviewNow = null;
       this.ai?.cancelAll();
     }
-    const ctx: RuleContext = { v, mem: this.mem, ev, look: this.look, settings: this.settings, now: v.wallMs };
+    const g = buildGameContext(v, this.mem, this.look, this.settings.position ?? 'auto');
+    const ctx: RuleContext = { v, mem: this.mem, ev, look: this.look, settings: this.settings, now: v.wallMs, g };
+    this.game = g;
     this.lastView = v;
     this.lastCtx = ctx;
     const shown: Hint[] = [...this.asyncShown];
@@ -275,8 +283,9 @@ export class CoachEngine {
     if (this.ai && this.settings.aiLive && v.inGame && !v.paused) this.maybeAdvise(ctx);
     this.prevInFight = this.mem.inFight;
 
-    // 6. Пересказ ИИ только для важного с долгим показом; одинаковые тексты — из кэша
-    if (this.ai && this.settings.detail !== 'min') {
+    // 6. Пересказ шаблонных подсказок моделью выключен (аудит, этап 1): маленькая модель писала бессмыслицу,
+    // а проверка по числам её не ловит. Шаблонный текст точный; модель объясняет только разборы после смерти и матча
+    if (this.ai && this.settings.detail !== 'min' && PHRASE_REWRITE) {
       const h = shown.find((x) => (x.priority === 'advice' || x.priority === 'critical') && x.textSource === 'template' && x.ttlMs >= 8000 && x.category !== 'review' && x.id !== 'ai.advice');
       if (h) {
         const cached = this.phraseCache.get(`${h.ruleId}|${h.short}`);
@@ -382,6 +391,9 @@ export class CoachEngine {
   private maybeAdvise(ctx: RuleContext): void {
     const { v, now } = ctx;
     if (v.me.alive.value !== true || this.mem.inFight) return;
+    // В лайнинге совет «что делать и куда идти» не нужен: каждый стоит на своей линии. Без стадии и роли он звал
+    // керри в лес на 1-й минуте (аудит, этап 1). Лучше промолчать
+    if (game(ctx).stage === 'laning') return;
     const choice = actionChoice(v, this.mem, this.look, this.settings.minPercentConfidence);
     const reason = this.adviceTrigger(ctx, choice);
     if (!reason || !choice.showable) return;
