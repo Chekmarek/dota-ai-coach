@@ -6,6 +6,7 @@ import type { HeroStats, KbStats } from '../../shared/types/stats.ts';
 import type { RankedHero, StatsRanked } from '../../shared/types/stats-ranked.ts';
 import type { PlayerProfile } from './profile.ts';
 import { modeRule, turboMechanics, type ModeOverrides } from '../knowledge-base/modes.ts';
+import type { DangerModel } from './danger-model.ts';
 import { UNKNOWN_MODE, type GameModeInfo } from '../gsi/mode.ts';
 
 export interface CoachData {
@@ -24,6 +25,8 @@ export interface CoachData {
   statsRanked?: StatsRanked | null;
   /** Профиль игрока: повторяющиеся ошибки из локальной истории коуча (profile.ts); нет — без напоминаний */
   profile?: PlayerProfile | null;
+  /** Модель опасности (src/data/danger-model.json, danger-model.ts); нет — предупреждения о риске только по правилам */
+  dangerModel?: DangerModel | null;
 }
 
 /** Сильные игроки рейтинга к минуте (средние): добивания, ценность героя, опыт, уровень */

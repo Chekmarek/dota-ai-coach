@@ -8,6 +8,7 @@ import { BUILDING_RU, NEAR_UNITS, buildingLane, dist, isEnemyJungle, mapSide } f
 import { derivedFact, fact, kbFact, poolPct } from '../view.ts';
 import { draft, game, playing, plural, zoneRu, type Rule } from './context.ts';
 import type { HintDraft } from '../types.ts';
+import { dangerFeatures, dangerProbability, dangerReasons, itemValueOf, type DangerFeature } from '../danger-model.ts';
 
 const alliesNear = (c: Parameters<Rule>[0]): number => {
   const me = c.v.me.pos.value;
@@ -231,4 +232,62 @@ export const invisRule: Rule = (c) => {
   });
 };
 
-export const DANGER_RULES: Rule[] = [smokeRule, lowHpRule, missingRule, buildingRule, deepRule, gankerRule, roshanRule, invisRule];
+/** Модель опасности этого режима, если включена (на отложенных матчах она была лучше правил о риске) */
+function dangerModelFor(c: Parameters<Rule>[0]) {
+  const m = c.look.data.dangerModel;
+  if (!m) return null;
+  const mode = c.look.isTurbo ? m.turbo : m.normal;
+  return mode.enabled ? { model: m, mode } : null;
+}
+
+const REASON_RU: Partial<Record<DangerFeature, string>> = {
+  hp: 'мало здоровья',
+  lowHp: 'здоровья почти нет',
+  closeXhurt: 'враг вплотную, а вы ранены',
+  enemiesNear: 'враги рядом',
+  enemiesClose: 'враг вплотную',
+  closestEnemy: 'враг совсем близко',
+  outnumbered: 'врагов больше, чем союзников',
+  enemyLevelAdv: 'у врагов рядом выше уровень',
+  missing: 'враги пропали с карты',
+  enemySide: 'вы на стороне врага',
+  enemyJungle: 'вы в лесу врага',
+  night: 'ночь',
+  itemStage: 'поздняя игра — убивают быстро',
+  level: 'поздняя игра — убивают быстро',
+  enemyHp: 'враги рядом здоровы',
+  lowHpXnear: 'мало здоровья при врагах рядом',
+  alliesNear: 'драка рядом',
+};
+
+/** Предупреждение модели опасности: вероятность смерти в ближайшие 15 с не ниже порога режима */
+export const modelRule: Rule = (c) => {
+  if (!playing(c)) return null;
+  const sel = dangerModelFor(c);
+  if (!sel) return null;
+  const itemValue = c.v.me.itemsKnown ? itemValueOf(c.v.me.items.map((i) => i.key), (k) => c.look.itemCost(k)) : null;
+  const f = dangerFeatures(c.v, { itemValue, turbo: c.look.isTurbo });
+  if (!f) return null;
+  // «hp» в модели с отрицательным весом: малое здоровье — это (1 − hp); показываем как причину отдельно
+  const p = dangerProbability(sel.mode.weights, f);
+  if (p < sel.mode.threshold) return null;
+  const hp = poolPct(c.v.me.hp.value);
+  const reasons = [...new Set([...(hp !== null && hp < 40 ? ['мало здоровья'] : []), ...dangerReasons(sel.mode.weights, f, 4).map((r) => REASON_RU[r.feature]).filter((x): x is string => !!x)])].slice(0, 3);
+  const pct = Math.round(p * 100);
+  return draft({
+    id: 'danger.model',
+    category: 'danger',
+    priority: 'critical',
+    confidence: 0.7,
+    short: 'Высокий риск смерти — отходите',
+    normal: `Так обычно умирают в ближайшие ${sel.model.horizonSec} с${reasons.length ? `: ${reasons.join(', ')}` : ''}. Отойдите к своим.`,
+    facts: [derivedFact('risk', `Риск смерти за ${sel.model.horizonSec} с, %`, pct, 0.7), derivedFact('near', 'Врагов рядом', nearEnemyCount(c.v), 0.75), ...(hp !== null ? [derivedFact('hp', 'Здоровье, %', Math.round(hp), 0.9)] : [])],
+    ttlSec: 6,
+    cooldownSec: sel.model.cooldownSec,
+  });
+};
+
+/** Правило о риске уступает модели в режиме, где она включена */
+const unlessModel = (r: Rule): Rule => (c) => (dangerModelFor(c) ? null : r(c));
+
+export const DANGER_RULES: Rule[] = [smokeRule, modelRule, unlessModel(lowHpRule), unlessModel(missingRule), buildingRule, unlessModel(deepRule), unlessModel(gankerRule), roshanRule, invisRule];

@@ -83,6 +83,8 @@ export interface CoachView {
   clockOffset: number | null;
   paused: boolean;
   dayNight: F<'day' | 'night'>;
+  /** Счёт убийств команд (GSI или верхняя панель) */
+  score: { radiant: F<number>; dire: F<number> };
   team: 'radiant' | 'dire' | null;
   me: {
     slot: number | null;
@@ -225,6 +227,7 @@ export function buildView(s: MatchState, gsi: GsiReading | null, gsiWallMs: numb
     clockOffset: g && g.gameTime !== null && g.clock !== null ? g.gameTime - g.clock : null,
     paused: s.match.paused,
     dayNight: fromTracked(s.match.dayNight, wallMs),
+    score: { radiant: fromTracked(s.match.scoreRadiant, wallMs), dire: fromTracked(s.match.scoreDire, wallMs) },
     team: s.ourTeam,
     me: {
       slot: g?.slot ?? null,

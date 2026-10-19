@@ -16,10 +16,14 @@ import { liveHeroes } from './draft';
 import { asGameModeInfo, modeBannerText, resolveGameMode, type GameModeInfo } from '@core/gsi/mode.ts';
 import { parseModeOverrides } from '@core/knowledge-base/modes.ts';
 import turboJson from '../../data/modes/turbo.json';
+import dangerModelJson from '../../data/danger-model.json';
+import { parseDangerModel } from '@core/coach/danger-model.ts';
 import { BAD_ADVICE_SCHEMA, BAD_ADVICE_WINDOW_MS, SnapshotRing, badAdviceSnapshot, toBadAdviceHint, type BadAdviceRecord } from '@core/coach/bad-advice.ts';
 
 /** Справочник Турбо (вшит в сборку); неверная форма — null, тогда в Турбо вся механика «не проверено» */
 const TURBO = parseModeOverrides(turboJson);
+/** Модель опасности (обучена на матчах STRATZ, включение по режимам — docs/DANGER_MODEL.md); неверный файл — только правила */
+const DANGER_MODEL = parseDangerModel(dangerModelJson);
 
 /** Как часто сохранять историю идущего матча */
 export const HISTORY_SAVE_MS = 30_000;
@@ -96,6 +100,7 @@ export class CoachService {
       profile: buildPlayerProfile(this.deps.history.recent?.(PROFILE_MATCHES) ?? []),
       kbVerified: kb.meta.verification === 'verified',
       turbo: TURBO,
+      dangerModel: DANGER_MODEL,
     };
     const ai = new CoachAi({ provider: () => this.deps.aiProvider(), now: this.now });
     this.engine = new CoachEngine({ data, ai, now: this.now, settings: coachSettings(this.deps.settings.get()), onAsync: () => this.publish() });

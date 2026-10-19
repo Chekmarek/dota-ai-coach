@@ -69,6 +69,9 @@ export interface SimInput {
   respawnSec?: number;
   pos?: MapPoint;
   night?: boolean;
+  /** Счёт убийств команд; по умолчанию 0:0 */
+  scoreRadiant?: number;
+  scoreDire?: number;
   paused?: boolean;
   phase?: 'pre-game' | 'in-progress' | 'post-game';
   winTeam?: 'radiant' | 'dire' | null;
@@ -160,8 +163,8 @@ export function sim(i: SimInput): { state: MatchState; gsi: GsiReading | null } 
     match: {
       clock: tr(i.clock, w),
       paused: i.paused ?? false,
-      scoreRadiant: tr(0, w),
-      scoreDire: tr(0, w),
+      scoreRadiant: tr(i.scoreRadiant ?? 0, w),
+      scoreDire: tr(i.scoreDire ?? 0, w),
       dayNight: tr(i.night ? 'night' : 'day', w),
       mode: i.mode ?? { ...UNKNOWN_MODE },
     },
@@ -194,8 +197,8 @@ export function sim(i: SimInput): { state: MatchState; gsi: GsiReading | null } 
     gameTime: i.clock + 90,
     paused: i.paused ?? false,
     dayNight: i.night ? 'night' : 'day',
-    scoreRadiant: 0,
-    scoreDire: 0,
+    scoreRadiant: i.scoreRadiant ?? 0,
+    scoreDire: i.scoreDire ?? 0,
     team,
     slot: 0,
     hero: {

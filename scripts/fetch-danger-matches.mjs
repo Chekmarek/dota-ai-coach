@@ -3,14 +3,18 @@
 // Только для разработчика. id матчей — из OpenDota publicMatches (рейтинг, All Pick, средний ранг ≥ Divine),
 // данные — STRATZ match(id). Без ников и id игроков. Продолжает с места обрыва (состояние в state.json).
 // Кладёт в .tmp/danger/<id>.json.gz (не в git).
-//   node scripts/fetch-danger-matches.mjs [сколько матчей нужно, по умолчанию 2000]
+//   node scripts/fetch-danger-matches.mjs [сколько матчей нужно, по умолчанию 2000] [--turbo]
+// --turbo — Турбо (game_mode 23, любой ранг: высоких рангов в Турбо мало) в .tmp/danger-turbo.
 import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync, appendFileSync, renameSync } from 'node:fs';
 import { join } from 'node:path';
 import { gzipSync } from 'node:zlib';
 
 const root = join(import.meta.dirname, '..');
-const want = Number(process.argv[2] ?? 2000);
-const dir = join(root, '.tmp', 'danger');
+const turbo = process.argv.includes('--turbo');
+const want = Number(process.argv.slice(2).find((a) => /^\d+$/.test(a)) ?? 2000);
+const dir = join(root, '.tmp', turbo ? 'danger-turbo' : 'danger');
+/** Рейтинг All Pick (lobby 7, mode 22) или Турбо (lobby 0, mode 23) */
+const LOBBY = turbo ? 0 : 7, MODE = turbo ? 23 : 22, MIN_RANK = turbo ? 0 : 71;
 mkdirSync(dir, { recursive: true });
 const logFile = join(dir, 'fetch.log');
 const log = (s) => {
@@ -37,7 +41,8 @@ const saveState = () => {
 const have = () => new Set(readdirSync(dir).filter((f) => f.endsWith('.json.gz')).map((f) => f.slice(0, -8)));
 
 // --- STRATZ: лимиты 8/с, 150/мин, 1 500/ч, 15 000/сут; идём не чаще раза в 3 с и смотрим остаток в заголовках ---
-const STRATZ_GAP_MS = 3000;
+// DANGER_GAP_MS — реже, если параллельно идёт вторая загрузка (лимит STRATZ общий на токен)
+const STRATZ_GAP_MS = Number(process.env.DANGER_GAP_MS ?? 3000);
 let lastCall = 0;
 async function gql(query) {
   for (let a = 1; ; a++) {
@@ -82,7 +87,7 @@ async function refill() {
     state.patchFrom = { id: v.id, name: v.name, asOf: v.asOfDateTime };
     log(`Патч ${v.name} (id ${v.id}) с ${new Date(v.asOfDateTime * 1000).toISOString().slice(0, 10)}`);
   }
-  const url = `https://api.opendota.com/api/publicMatches?min_rank=71${state.cursor ? `&less_than_match_id=${state.cursor}` : ''}`;
+  const url = `https://api.opendota.com/api/publicMatches?${MIN_RANK ? `min_rank=${MIN_RANK}&` : ''}${state.cursor ? `&less_than_match_id=${state.cursor}` : ''}`;
   let rows;
   for (let a = 1; ; a++) {
     try {
@@ -107,8 +112,8 @@ async function refill() {
   let added = 0;
   for (const r of rows) {
     if (r.start_time < state.patchFrom.asOf) state.exhausted = true;
-    // рейтинг, All Pick, не короче 15 мин, сыгран не меньше 20 ч назад (STRATZ успел разобрать)
-    if (r.lobby_type !== 7 || r.game_mode !== 22 || r.duration < 900 || r.start_time < state.patchFrom.asOf) continue;
+    // режим, не короче 15 мин (Турбо — 10), сыгран не меньше 20 ч назад (STRATZ успел разобрать)
+    if (r.lobby_type !== LOBBY || r.game_mode !== MODE || r.duration < (turbo ? 600 : 900) || r.start_time < state.patchFrom.asOf) continue;
     if (now - r.start_time < 20 * 3600) continue;
     state.queue.push(r.match_id);
     added++;

@@ -1,0 +1,90 @@
+{
+ "schema": "dota-coach.danger-model",
+ "version": 1,
+ "features": [
+  "hp",
+  "lowHp",
+  "mana",
+  "level",
+  "itemStage",
+  "enemiesNear",
+  "enemiesClose",
+  "alliesNear",
+  "outnumbered",
+  "closestEnemy",
+  "enemyHp",
+  "enemyLevelAdv",
+  "missing",
+  "enemySide",
+  "river",
+  "enemyJungle",
+  "night",
+  "scoreLead",
+  "turbo",
+  "lowHpXnear",
+  "closeXhurt"
+ ],
+ "horizonSec": 15,
+ "cooldownSec": 20,
+ "trainedAt": "placeholder",
+ "normal": {
+  "enabled": false,
+  "threshold": 0.5,
+  "weights": {
+   "bias": 0,
+   "w": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ]
+  }
+ },
+ "turbo": {
+  "enabled": false,
+  "threshold": 0.5,
+  "weights": {
+   "bias": 0,
+   "w": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ]
+  }
+ }
+}
