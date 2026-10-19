@@ -51,6 +51,8 @@ export interface HistoryMatch {
   mistakes: HistoryMistake[];
   deathReviews: HistoryDeath[];
   matchReview: HistoryReview | null;
+  /** Отметки «плохой совет» (горячая клавиша, с 0.14.2; в старых файлах поля нет) */
+  badAdvice?: { id: string; markedAt: string; clock: number | null; titles: string[] }[];
 }
 
 export interface HistorySummary {
@@ -64,4 +66,6 @@ export interface HistorySummary {
   hints: number;
   mistakes: number;
   deaths: number;
+  /** Отметок «плохой совет» */
+  badAdvice: number;
 }

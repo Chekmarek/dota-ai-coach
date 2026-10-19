@@ -101,6 +101,7 @@ test('безопасность: в интерфейсе нет доступа к
     expect(exposure.process).toBe('undefined');
     expect(exposure.api).toEqual([
       'askAi',
+      'badAdviceShortcutStatus',
       'cancelAi',
       'cancelLocalAiDownload',
       'checkForUpdates',
@@ -127,6 +128,7 @@ test('безопасность: в интерфейсе нет доступа к
       'onAiState',
       'onCoachState',
       'onGsiState',
+      'onHistoryChanged',
       'onUpdateState',
       'pickDotaFolder',
       'pickReplayFolder',
@@ -621,6 +623,34 @@ test('GSI: настоящая запись Hero Demo → Anti-Mage «из игр
     expect(texts.some((t) => t.includes('Наступил день') || t.includes('Наступила ночь'))).toBe(false);
     await expect(ui.locator('[data-testid="sidebar-gsi"]')).toHaveText('Данные из игры');
     await ui.screenshot({ path: join(ROOT, 'test-results/gsi-recorded.png') });
+  } finally {
+    await app.close();
+  }
+});
+
+test('«Плохой совет»: глобальная клавиша занята, отмеченные матчи — в «Истории советов»', async () => {
+  const dir = tmp();
+  mkdirSync(join(dir, 'history'), { recursive: true });
+  const base = { matchId: '9051474634', heroName: 'Ogre Magi', result: null, durationSec: 1166, entries: [{ wallMs: 0, clock: 600, kind: 'hint', id: 'h', text: 'Отходите', source: 'template' }], mistakes: [], deathReviews: [], matchReview: null };
+  writeFileSync(join(dir, 'history', '2026-10-18T21-00-00-000Z-9051474634.json'), JSON.stringify({ ...base, id: '2026-10-18T21-00-00-000Z-9051474634', startedAt: '2026-10-18T21:00:00.000Z', badAdvice: [{ id: 'm1', markedAt: '2026-10-18T21:10:00.000Z', clock: 605, titles: ['Отходите: 3 врага рядом'] }] }));
+  // старый файл без поля badAdvice читается как раньше
+  writeFileSync(join(dir, 'history', '2026-10-17T21-00-00-000Z-1.json'), JSON.stringify({ ...base, matchId: '1', id: '2026-10-17T21-00-00-000Z-1', startedAt: '2026-10-17T21:00:00.000Z' }));
+  const { app, ui } = await launch(dir);
+  try {
+    expect(await app.evaluate(({ globalShortcut }) => globalShortcut.isRegistered('Ctrl+Shift+F8'))).toBe(true);
+    await ui.click('[data-testid="nav-history"]');
+    await expect(ui.locator('[data-testid="bad-advice-shortcut"]')).toContainText('Ctrl+Shift+F8');
+    await expect(ui.locator('[data-testid="history-marked-count"]')).toHaveCount(1);
+    await expect(ui.locator('[data-testid="history-bad-advice"]')).toContainText('10:05');
+    await expect(ui.locator('[data-testid="history-bad-advice"]')).toContainText('Отходите: 3 врага рядом');
+    await ui.screenshot({ path: join(ROOT, '.tmp/e2e-bad-advice.png') });
+    await ui.click('[data-testid="history-only-marked"]');
+    await expect(ui.locator('[data-testid="history-list"] li')).toHaveCount(1);
+    // выключили в настройках — клавиша освобождена
+    await ui.evaluate(() => window.dotacoach.updateSettings({ hints: { badAdviceShortcut: '' } }));
+    await expect.poll(() => app.evaluate(({ globalShortcut }) => globalShortcut.isRegistered('Ctrl+Shift+F8'))).toBe(false);
+    // небезопасное сочетание не принимается
+    await expect(ui.evaluate(() => window.dotacoach.updateSettings({ hints: { badAdviceShortcut: 'Shift+A' } }))).rejects.toThrow();
   } finally {
     await app.close();
   }

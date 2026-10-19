@@ -2,7 +2,7 @@
 // подробность, категории, ИИ во время матча, лента в окне коуча. Одни и те же — в «Настройках» и на «Живой игре»;
 // сохраняются сразу в settings.hints. Вид подсказок поверх игры — на странице «Подсказки в игре».
 import { useEffect, useState } from 'react';
-import type { HintCategories, HintDetail, Settings, SettingsPatch } from '@shared/schemas/settings';
+import { BAD_ADVICE_SHORTCUT_DEFAULT, acceleratorOf, isSafeBadAdviceShortcut, type HintCategories, type HintDetail, type Settings, type SettingsPatch } from '@shared/schemas/settings';
 import type { CoachStateMessage } from '@shared/ipc';
 import type { GameModeOverride } from '@core/gsi/mode.ts';
 import { GameModeBadge, currentGameMode } from './gsi';
@@ -115,10 +115,51 @@ export function HintsToggles({ settings, update, testIdPrefix = 'setting-hints' 
         <input type="checkbox" checked={h.inApp} disabled={!h.enabled} onChange={(e) => void update({ hints: { inApp: e.target.checked } })} data-testid={`${testIdPrefix}-inapp`} />
         Дублировать подсказки в окне коуча (страница «Живая игра»)
       </label>
+      <BadAdviceShortcutField value={h.badAdviceShortcut} update={update} testId={`${testIdPrefix}-bad-advice-shortcut`} />
       <label className="check">
         <input type="checkbox" checked={settings.hud.enabled} disabled={!h.enabled} onChange={(e) => void update({ hud: { enabled: e.target.checked } })} data-testid={`${testIdPrefix}-hud`} />
         Показывать подсказки поверх игры (вид — раздел «Подсказки в игре»)
       </label>
+    </>
+  );
+}
+
+/**
+ * Клавиша «плохой совет»: фокус на поле и нажать сочетание. Принимаются только безопасные (isSafeBadAdviceShortcut):
+ * клавиша глобальная — пока коуч запущен, это сочетание не дойдёт ни до Доты, ни до других программ.
+ */
+function BadAdviceShortcutField({ value, update, testId }: { value: string; update: (p: SettingsPatch) => Promise<void>; testId: string }) {
+  const [hint, setHint] = useState<string | null>(null);
+  return (
+    <>
+      <label>
+        Клавиша «плохой совет»
+        <input
+          readOnly
+          value={value || 'выключена'}
+          data-testid={testId}
+          onKeyDown={(e) => {
+            if (e.key === 'Tab') return;
+            e.preventDefault();
+            const acc = acceleratorOf(e);
+            if (!acc) return setHint('Нажмите сочетание: Ctrl/Alt + F1…F12, или два модификатора + буква/цифра.');
+            if (!isSafeBadAdviceShortcut(acc)) return setHint(`${acc} не подходит: нужен Ctrl или Alt, а с буквой или цифрой — два модификатора.`);
+            setHint(null);
+            void update({ hints: { badAdviceShortcut: acc } });
+          }}
+        />
+      </label>
+      <p className="muted small">
+        Подсказка не к месту — нажмите в игре: коуч сохранит подсказки на экране и последние 15 с матча (видны в «Истории советов»). Чтобы
+        сменить — щёлкните по полю и нажмите сочетание.{' '}
+        <button className="link" onClick={() => void update({ hints: { badAdviceShortcut: BAD_ADVICE_SHORTCUT_DEFAULT } })}>
+          По умолчанию ({BAD_ADVICE_SHORTCUT_DEFAULT})
+        </button>{' '}
+        <button className="link" onClick={() => void update({ hints: { badAdviceShortcut: '' } })} data-testid={`${testId}-off`}>
+          Выключить
+        </button>
+      </p>
+      {hint && <p className="warn small">{hint}</p>}
     </>
   );
 }

@@ -18,19 +18,34 @@ export function History() {
   const modeKind = (m: HistorySummary): 'turbo' | 'normal' | 'other' => (m.gameMode?.mode === 'turbo' ? 'turbo' : m.gameMode?.mode === 'all-pick' ? 'normal' : 'other');
   const shown = (list ?? []).filter((m) => modeFilter === 'all' || modeKind(m) === modeFilter);
 
+  const [onlyMarked, setOnlyMarked] = useState(false);
+  const [key, setKey] = useState<{ key: string; bound: boolean } | null>(null);
+  const [rev, setRev] = useState(0);
+  const listed = shown.filter((m) => !onlyMarked || (m.badAdvice ?? 0) > 0);
+
   useEffect(() => {
     void window.dotacoach.listHistory().then((l) => {
       setList(l);
-      if (l[0]) setSelected(l[0].id);
+      setSelected((cur) => cur ?? l[0]?.id ?? null);
     });
+  }, [rev]);
+  // Новая отметка «плохой совет» (горячая клавиша) — перечитать список и открытый матч
+  useEffect(() => window.dotacoach.onHistoryChanged(() => setRev((r) => r + 1)), []);
+  useEffect(() => {
+    void window.dotacoach.badAdviceShortcutStatus().then(setKey);
   }, []);
   useEffect(() => {
     if (selected) void window.dotacoach.getHistory(selected).then(setCurrent);
-  }, [selected]);
+  }, [selected, rev]);
 
   return (
     <>
       <PageHeader title="История советов" subtitle="Подсказки, ошибки и разборы прошлых матчей. Хранится только на этом ПК (последние 50 матчей)." />
+      <p className="muted small" data-testid="bad-advice-shortcut">
+        {key && key.key
+          ? `Плохой совет в игре — нажмите ${key.key}: коуч сохранит подсказки на экране и последние 15 с матча для разбора.${key.bound ? '' : ' Сейчас клавиша не работает: её заняла другая программа — выберите другую в настройках подсказок.'}`
+          : 'Клавиша «плохой совет» выключена (настройки подсказок).'}
+      </p>
       {list && list.length === 0 && (
         <Card>
           <p className="muted" data-testid="history-empty">
@@ -50,15 +65,20 @@ export function History() {
                 <option value="other">другие и неизвестные</option>
               </select>
             </label>
-            {shown.length === 0 && <p className="muted small">Матчей этого режима нет.</p>}
+            <label className="small">
+              {' '}
+              <input type="checkbox" checked={onlyMarked} onChange={(e) => setOnlyMarked(e.target.checked)} data-testid="history-only-marked" /> только с отметками «плохой совет»
+            </label>
+            {listed.length === 0 && <p className="muted small">{onlyMarked ? 'Отмеченных матчей нет.' : 'Матчей этого режима нет.'}</p>}
             <ul className="history-list" data-testid="history-list">
-              {shown.map((m) => (
+              {listed.map((m) => (
                 <li key={m.id}>
                   <button className={m.id === selected ? 'active' : ''} onClick={() => setSelected(m.id)}>
                     {new Date(m.startedAt).toLocaleString('ru-RU', { dateStyle: 'short', timeStyle: 'short' })} · {m.heroName ?? 'герой ?'} · {m.gameMode ? gameModeRu(m.gameMode) : 'режим не записан'}
                     <br />
                     <span className="muted small">
                       {m.result ? RESULT_RU[m.result] : 'без итога'} · {mmss(m.durationSec)} · советов {m.hints} · ошибок {m.mistakes} · смертей {m.deaths}
+                      {(m.badAdvice ?? 0) > 0 && <b data-testid="history-marked-count"> · плохих советов {m.badAdvice}</b>}
                     </span>
                   </button>
                 </li>
@@ -70,6 +90,18 @@ export function History() {
               <p className="muted small" data-testid="history-game-mode">
                 Режим игры: {current.gameMode ? gameModeRu(current.gameMode) : 'не записан (матч до 0.13.3)'}
               </p>
+              {(current.badAdvice?.length ?? 0) > 0 && (
+                <Card title={`Отмечено как плохой совет (${current.badAdvice!.length})`}>
+                  <ul className="history-entries" data-testid="history-bad-advice">
+                    {current.badAdvice!.map((b) => (
+                      <li key={b.id}>
+                        <span className="clock">{mmss(b.clock)}</span> {b.titles.length ? b.titles.join(' · ') : <span className="muted">на экране подсказок не было</span>}
+                      </li>
+                    ))}
+                  </ul>
+                  <p className="muted small">Собрать все отметки сессии в один файл для разбора: npm run bad-advice (docs/BAD_ADVICE.md).</p>
+                </Card>
+              )}
               {current.matchReview && (
                 <Card title={`Разбор матча: ${current.matchReview.result ? RESULT_RU[current.matchReview.result] : 'итог неизвестен'}`}>
                   {current.matchReview.aiText && <p>{current.matchReview.aiText}</p>}

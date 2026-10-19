@@ -16,6 +16,7 @@ import { liveHeroes } from './draft';
 import { asGameModeInfo, modeBannerText, resolveGameMode, type GameModeInfo } from '@core/gsi/mode.ts';
 import { parseModeOverrides } from '@core/knowledge-base/modes.ts';
 import turboJson from '../../data/modes/turbo.json';
+import { BAD_ADVICE_SCHEMA, BAD_ADVICE_WINDOW_MS, SnapshotRing, badAdviceSnapshot, toBadAdviceHint, type BadAdviceRecord } from '@core/coach/bad-advice.ts';
 
 /** Справочник Турбо (вшит в сборку); неверная форма — null, тогда в Турбо вся механика «не проверено» */
 const TURBO = parseModeOverrides(turboJson);
@@ -34,6 +35,9 @@ export interface CoachDeps {
   onHints: (hints: HudHint[], inMatch: boolean) => void;
   /** Показать индикатор режима игры: начало матча или смена режима (из игры или в настройках) */
   onModeBanner?: (banner: ModeBanner) => void;
+  /** Отметки «плохой совет» (горячая клавиша); нет — отметки не сохраняются */
+  badAdvice?: { readonly sessionId: string; save(r: BadAdviceRecord): void };
+  appVersion?: string | null;
   log?: (...parts: unknown[]) => void;
   now?: () => number;
 }
@@ -63,6 +67,10 @@ export class CoachService {
   private modeShown: { matchId: string; sig: string } | null = null;
   private modePending: { sig: string; since: number } | null = null;
   private modeSeq = 0;
+  /** Состояние матча за последние 15 с и показанные за это время подсказки — для отметки «плохой совет» */
+  private readonly snapshots = new SnapshotRing();
+  private shownHints: { at: number; hint: HudHint }[] = [];
+  private onScreen: HudHint[] = [];
 
   constructor(private readonly deps: CoachDeps) {
     this.now = deps.now ?? (() => Date.now());
@@ -132,6 +140,9 @@ export class CoachService {
       this.deps.log?.('coach подсказки', { shown: u.shown.map((h) => h.id).slice(0, 6), visible: u.visible.length, rulesMs: Math.round(u.rulesMs) });
     }
     const mode = resolveGameMode(asGameModeInfo(input.state.match.mode), s.hints.gameMode);
+    const view = e.currentView;
+    if (e.inGame && view) this.snapshots.push(badAdviceSnapshot(view, e.game));
+    else if (!e.inGame) this.snapshots.clear();
     this.trackHistory(u, mode);
     this.announceMode(e, mode);
     this.publish();
@@ -171,7 +182,53 @@ export class CoachService {
   }
 
   private emit(hints: HudHint[], inMatch: boolean): void {
+    const now = this.now();
+    this.onScreen = hints;
+    for (const h of hints) if (!this.shownHints.some((x) => x.hint.seq === h.seq)) this.shownHints.push({ at: now, hint: h });
+    this.shownHints = this.shownHints.filter((x) => now - x.at <= BAD_ADVICE_WINDOW_MS || hints.some((h) => h.seq === x.hint.seq));
     this.deps.onHints(hints, inMatch);
+  }
+
+  // ---------- «Плохой совет» ----------
+
+  /**
+   * Горячая клавиша «плохой совет»: сохранить подсказки на экране, игровое время и снимки матча за 15 с.
+   * Вне матча (или без истории матча) ничего не пишет и возвращает null.
+   */
+  markBadAdvice(): BadAdviceRecord | null {
+    const e = this.engine;
+    const store = this.deps.badAdvice;
+    const m = this.match;
+    if (!store || !e || !e.inGame || !m || !this.deps.settings.get().hints.enabled) {
+      this.deps.log?.('coach плохой совет: не матч — не сохранено');
+      return null;
+    }
+    const now = this.now();
+    const snapshots = this.snapshots.window(now);
+    const clock = e.currentView?.clock.value ?? snapshots.at(-1)?.clock ?? null;
+    const markedAt = new Date(now).toISOString();
+    const r: BadAdviceRecord = {
+      schema: BAD_ADVICE_SCHEMA,
+      version: 1,
+      id: safeId(`${markedAt.replace(/[:.]/g, '-')}-${m.matchId ?? 'match'}`),
+      sessionId: store.sessionId,
+      markedAt,
+      appVersion: this.deps.appVersion ?? null,
+      matchId: m.matchId,
+      historyId: m.id,
+      hero: e.game?.hero.key ?? e.currentView?.me.hero.value?.key ?? null,
+      gameMode: m.gameMode?.mode ?? null,
+      clock: clock === null ? null : Math.round(clock),
+      onScreen: this.onScreen.map(toBadAdviceHint),
+      recent: this.shownHints.filter((x) => now - x.at <= BAD_ADVICE_WINDOW_MS || this.onScreen.some((h) => h.seq === x.hint.seq)).map((x) => toBadAdviceHint(x.hint)),
+      snapshots,
+    };
+    store.save(r);
+    (m.badAdvice ??= []).push({ id: r.id, markedAt, clock: r.clock, titles: r.onScreen.map((h) => h.title) });
+    this.deps.history.save(m);
+    this.lastSaveMs = now;
+    this.deps.log?.('coach плохой совет: сохранено', { id: r.id, clock: r.clock, hints: r.onScreen.length, snapshots: snapshots.length });
+    return r;
   }
 
   // ---------- Индикатор режима ----------

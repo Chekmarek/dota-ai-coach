@@ -56,6 +56,10 @@ export const IPC = {
   draftLive: 'draft:live',
   historyList: 'history:list',
   historyGet: 'history:get',
+  /** событие main → UI: в «Истории советов» новая отметка «плохой совет» */
+  historyChanged: 'history:changed',
+  /** Клавиша «плохой совет»: какая и удалось ли её занять */
+  badAdviceShortcutStatus: 'coach:bad-advice-shortcut',
 } as const;
 
 /**
@@ -176,6 +180,10 @@ export interface DotaCoachApi {
   draftLive(): Promise<import('./types/draft').DraftLiveHeroes>;
   listHistory(): Promise<import('./types/history').HistorySummary[]>;
   getHistory(id: string): Promise<import('./types/history').HistoryMatch | null>;
+  /** Новая отметка «плохой совет» — обновить «Историю советов» */
+  onHistoryChanged(fn: () => void): () => void;
+  /** Клавиша «плохой совет»: из настроек и занята ли (false — занята другой программой или выключена) */
+  badAdviceShortcutStatus(): Promise<{ key: string; bound: boolean }>;
   /** Показать примеры подсказок поверх игры на 12 с */
   showHudDemo(scene: 'alive' | 'dead' | 'match'): Promise<void>;
   getSettings(): Promise<Settings>;

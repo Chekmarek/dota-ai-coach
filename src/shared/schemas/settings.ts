@@ -17,6 +17,39 @@ export const SETTINGS_SCHEMA_VERSION = 1;
 /** Порт приёмника GSI по умолчанию */
 export const GSI_DEFAULT_PORT = 53790;
 
+/**
+ * Клавиша «плохой совет» по умолчанию. Глобальная клавиша перехватывается у всех программ, в том числе у Доты,
+ * поэтому нужно сочетание, которого нет в раскладке Доты по умолчанию: Ctrl+Shift+F8 (F-клавиши Дота использует
+ * без модификаторов — выбор героя, курьер, магазин; Ctrl/Alt с буквами — способности и метки).
+ */
+export const BAD_ADVICE_SHORTCUT_DEFAULT = 'Ctrl+Shift+F8';
+const BAD_ADVICE_SHORTCUT_RE = /^((Ctrl|Alt|Shift)\+){1,3}(F([1-9]|1[0-2])|[A-Z0-9])$/;
+
+/**
+ * Сочетание безопасно для глобальной клавиши: с Ctrl или Alt (иначе Shift+буква съест заглавные буквы в чате),
+ * буква или цифра — минимум с двумя модификаторами (Ctrl+C, Alt+1 нужны другим программам и Доте), без Alt+F4,
+ * модификаторы не повторяются.
+ */
+export function isSafeBadAdviceShortcut(key: string): boolean {
+  if (!BAD_ADVICE_SHORTCUT_RE.test(key)) return false;
+  const parts = key.split('+');
+  const mods = parts.slice(0, -1);
+  const last = parts[parts.length - 1]!;
+  if (new Set(mods).size !== mods.length) return false;
+  if (!mods.includes('Ctrl') && !mods.includes('Alt')) return false;
+  if (!/^F\d+$/.test(last) && mods.length < 2) return false;
+  if (last === 'F4' && mods.includes('Alt')) return false;
+  return true;
+}
+
+/** Нажатое сочетание → строка для Electron (Ctrl+Shift+F8); null — одни модификаторы или неподходящая клавиша */
+export function acceleratorOf(e: { ctrlKey: boolean; altKey: boolean; shiftKey: boolean; code: string }): string | null {
+  const m = /^(?:Key([A-Z])|Digit([0-9])|(F(?:[1-9]|1[0-2])))$/.exec(e.code);
+  if (!m) return null;
+  const mods = [e.ctrlKey && 'Ctrl', e.altKey && 'Alt', e.shiftKey && 'Shift'].filter(Boolean);
+  return [...mods, m[1] ?? m[2] ?? m[3]].join('+');
+}
+
 const DEFAULTS = {
   capture: { targetFps: 2, maxWidth: 1920, processingFpsCap: 10, previewFps: 2 },
   replay: { loop: false },
@@ -36,6 +69,8 @@ const DEFAULTS = {
     gameMode: 'auto' as GameModeOverride,
     // Позиция 1–5 (0.13.8): auto — коуч определяет по герою и линии; в старых settings.json поля нет — auto
     position: 'auto' as PositionOverride,
+    // «Плохой совет» (0.14.2): глобальная клавиша сохраняет отметку для разбора; '' — выключено
+    badAdviceShortcut: BAD_ADVICE_SHORTCUT_DEFAULT as string,
   },
   // Подсказки поверх игры (этап 3): тема, раскладка, анимации, прозрачность, размер
   hud: { enabled: true, theme: 'runes' as HudThemeId, reduceMotion: false, opacity: 1, scale: 1, zones: null as ZoneOverrides | null, hiddenZones: [] as HudZoneId[] },
@@ -160,6 +195,8 @@ const fields = {
     gameMode: z.enum(GAME_MODE_OVERRIDES),
     /** Моя позиция для советов: auto — по герою и линии, '1'…'5' — выбрана вручную */
     position: z.enum(POSITION_OVERRIDES),
+    /** Горячая клавиша «плохой совет» (Electron accelerator, только безопасные сочетания); '' — выключена */
+    badAdviceShortcut: z.union([z.literal(''), z.string().max(40).refine(isSafeBadAdviceShortcut)]),
   },
   hud: {
     /** Показывать подсказки поверх окна игры */

@@ -1,6 +1,6 @@
 // Подсказки во время матча (этап 4): IPC движка подсказок и «Истории советов».
 // Снимки матча принимаются только от окна движка, вызовы интерфейса — только от окна интерфейса; всё проверяется zod.
-import { ipcMain, type BrowserWindow, type IpcMainInvokeEvent } from 'electron';
+import { app, globalShortcut, ipcMain, type BrowserWindow, type IpcMainInvokeEvent } from 'electron';
 import { z } from 'zod';
 import { IPC, LIVE_IPC, type CoachStateMessage } from '@shared/ipc';
 import { parseCoachInput } from '@shared/types/coach-input';
@@ -13,6 +13,10 @@ import { CoachService } from './service';
 import { HistoryStore } from './history';
 import { DraftService } from './draft';
 import { draftRequestSchema } from '@shared/types/draft';
+import { BadAdviceStore, sessionIdOf } from './bad-advice-store';
+
+/** Сколько на экране подтверждение «Отмечено: плохой совет» */
+const BAD_ADVICE_ACK_MS = 2500;
 
 /** Снимок больше этого (символов JSON) — отбрасываем: защита от мусора */
 const MAX_INPUT_CHARS = 1_000_000;
@@ -44,15 +48,29 @@ export function setupCoach(deps: {
     const ui = deps.getUi();
     if (ui && !ui.isDestroyed()) ui.webContents.send(IPC.coachState, msg);
   };
+  const badAdvice = new BadAdviceStore(deps.dataDir, sessionIdOf(Date.now()));
+  let ack: { until: number; seq: number; timer: ReturnType<typeof setTimeout> | null } | null = null;
+  /** Номера карточек-подтверждений — вне номеров подсказок движка (окно поверх игры различает карточки по seq) */
+  let ackSeq = 1e12;
+  /** Окно поверх игры: подсказки движка и, пока свежее, подтверждение отметки */
+  const pushHud = () => {
+    const extra: HudHint[] =
+      ack && Date.now() < ack.until
+        ? [{ seq: ack.seq, zone: 'review', priority: 'info', category: 'review', title: 'Отмечено: плохой совет', text: 'Сохранено для разбора («История советов»)', percent: null, icon: null, source: 'template', ttlMs: BAD_ADVICE_ACK_MS, review: null }]
+        : [];
+    setHudHints([...lastHints.hints, ...extra], lastHints.inMatch);
+  };
   const service = new CoachService({
     settings: deps.settings,
     kb: deps.kb,
     aiProvider: deps.aiProvider,
     history,
+    badAdvice,
+    appVersion: app.getVersion(),
     log: liveLog,
     onHints: (hints: HudHint[], inMatch: boolean) => {
-      setHudHints(hints, inMatch);
       lastHints = { hints, inMatch };
+      pushHud();
       sendUi();
     },
     onModeBanner: (b: ModeBanner) => {
@@ -85,9 +103,43 @@ export function setupCoach(deps: {
   handle(IPC.historyList, () => history.list());
   handle(IPC.historyGet, (arg) => history.get(z.string().max(80).parse(arg)));
 
+  // Горячая клавиша «плохой совет»: глобальная (Electron), в игру ничего не вводится; вне матча ничего не пишет
+  let boundKey = '';
+  const onBadAdvice = () => {
+    const r = service.markBadAdvice();
+    if (!r) return;
+    if (ack?.timer) clearTimeout(ack.timer);
+    ack = { until: Date.now() + BAD_ADVICE_ACK_MS, seq: ++ackSeq, timer: setTimeout(() => ((ack = null), pushHud()), BAD_ADVICE_ACK_MS) };
+    pushHud();
+    const ui = deps.getUi();
+    if (ui && !ui.isDestroyed()) ui.webContents.send(IPC.historyChanged);
+  };
+  const bindKey = () => {
+    const key = deps.settings.get().hints.badAdviceShortcut;
+    if (key === boundKey) return;
+    if (boundKey) globalShortcut.unregister(boundKey);
+    boundKey = '';
+    if (!key) return;
+    try {
+      if (globalShortcut.register(key, onBadAdvice)) boundKey = key;
+      else liveLog('coach плохой совет: клавиша занята другой программой', key);
+    } catch (err) {
+      liveLog('coach плохой совет: клавиша не принята', key, String(err));
+    }
+  };
+  bindKey();
+  handle(IPC.badAdviceShortcutStatus, () => ({ key: deps.settings.get().hints.badAdviceShortcut, bound: boundKey !== '' && boundKey === deps.settings.get().hints.badAdviceShortcut }));
+
   return {
-    onSettingsChanged: () => service.onSettingsChanged(),
-    dispose: () => service.flush(),
+    onSettingsChanged: () => {
+      service.onSettingsChanged();
+      bindKey();
+    },
+    dispose: () => {
+      if (boundKey) globalShortcut.unregister(boundKey);
+      boundKey = '';
+      service.flush();
+    },
   };
 }
 
