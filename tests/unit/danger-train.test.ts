@@ -30,6 +30,10 @@ const WRITE = process.env.DANGER_WRITE === '1';
 /** Полезное предупреждение — за 2…15 с до смерти (позже уже не успеть отойти) */
 const WARN_FROM = 15, WARN_TO = 2;
 const COOLDOWN = 20;
+/** Длинное окно: ранние предупреждения (враги пропали, ганкер) звучат за 20–40 с до ганка */
+const LONG_FROM = 40;
+/** Ранние правила о риске: в гибриде остаются рядом с моделью */
+const EARLY_RULES = ['danger.missing', 'danger.ganker', 'danger.deep'] as const;
 
 type Ev<T> = ({ time: number } & T)[];
 interface DPlayer {
@@ -210,8 +214,12 @@ function harness() {
     matchId: string;
     heroKey: string | null;
     rules: number[];
+    /** Предупреждения каждого правила о риске отдельно — для гибрида «модель + ранние правила» */
+    byRule: Record<string, number[]>;
     probs: [number, number[]][];
     deaths: number[];
+    /** Уровень героя в момент каждой смерти — для разбивки по стадии игры */
+    deathLevels: number[];
     aliveSec: number;
   }
   /** Движок коуча посекундно: предупреждения правил о риске и признаки модели из того же снимка */
@@ -224,7 +232,7 @@ function harness() {
         let now = 1_000_000;
         const e = new CoachEngine({ data, now: () => now, settings: { ...defaultCoachSettings(), position: /^[1-5]$/.test(pos) ? (pos as '1') : 'auto', aiLive: false } });
         const lastSeen = new Map<DPlayer, number>();
-        const rec: Rec = { matchId: String(m.id), heroKey: look.heroById.get(me.heroId)?.key ?? null, rules: [], probs: [], deaths: me.playbackData.deathEvents.map((d) => d.time), aliveSec: 0 };
+        const rec: Rec = { matchId: String(m.id), heroKey: look.heroById.get(me.heroId)?.key ?? null, rules: [], byRule: {}, probs: [], deaths: me.playbackData.deathEvents.map((d) => d.time), deathLevels: me.playbackData.deathEvents.map((d) => at(me.playbackData.playerUpdateLevelEvents, d.time)?.level ?? 1), aliveSec: 0 };
         for (let t = 0; t <= m.durationSeconds; t++) {
           now = 1_000_000 + t * 1000;
           const snap = snapshot(m, me, t, lastSeen, turbo);
@@ -234,7 +242,9 @@ function harness() {
           const u = e.tick(s.state, s.gsi, now);
           if (deadAt(me, t)) continue;
           rec.aliveSec++;
-          if (u.shown.some((h) => (RISK_RULES as readonly string[]).includes(h.id.split(':')[0]!))) rec.rules.push(t);
+          const risk = u.shown.map((h) => h.id.split(':')[0]!).filter((id) => (RISK_RULES as readonly string[]).includes(id));
+          if (risk.length) rec.rules.push(t);
+          for (const id of new Set(risk)) (rec.byRule[id] ??= []).push(t);
           const v = e.currentView;
           const x = v ? dangerFeatures(v, { itemValue, turbo }) : null;
           if (x) rec.probs.push([t, x]);
@@ -244,7 +254,33 @@ function harness() {
     }
     return out;
   }
-  return { rows, engineRun };
+  /**
+   * Стадия игры по минутам и в момент смерти — All Pick против Турбо: средний уровень и стоимость собранных
+   * предметов. Показывает, почему признаки — по стадии, а не по минутам (в Турбо та же стадия наступает раньше).
+   */
+  function stageStats(files: string[]) {
+    const acc = { m10: { n: 0, lvl: 0, items: 0 }, m20: { n: 0, lvl: 0, items: 0 }, death: { n: 0, lvl: 0, items: 0 } };
+    const add = (k: keyof typeof acc, me: DPlayer, t: number) => {
+      const a = acc[k];
+      a.n++;
+      a.lvl += at(me.playbackData.playerUpdateLevelEvents, t)?.level ?? 1;
+      for (const e of me.playbackData.purchaseEvents) {
+        if (e.time > t) break;
+        const key = itemKey.get(e.itemId);
+        if (key && !DANGER_CONSUMABLES.has(key)) a.items += look.itemCost(key) ?? 0;
+      }
+    };
+    for (const f of files) {
+      const m = readMatch(f);
+      for (const me of m.players) {
+        if (m.durationSeconds > 600) add('m10', me, 600);
+        if (m.durationSeconds > 1200) add('m20', me, 1200);
+        for (const d of me.playbackData.deathEvents) add('death', me, d.time);
+      }
+    }
+    return Object.fromEntries(Object.entries(acc).map(([k, a]) => [k, { n: a.n, level: Math.round((a.lvl / Math.max(1, a.n)) * 10) / 10, items: Math.round(a.items / Math.max(1, a.n)) }]));
+  }
+  return { rows, engineRun, stageStats };
 }
 
 // --- Логистическая регрессия (Adam, L2) ---
@@ -301,7 +337,7 @@ const logloss = (p: number[], y: number[]) => -p.reduce((s, q, i) => s + (y[i] ?
 
 type Score = { deaths: number; warned: number; recall: number; alerts: number; perMin: number; precision: number };
 /** Доля смертей с предупреждением за 2–15 с; предупреждений в минуту; доля предупреждений, после которых смерть ≤ 15 с */
-function score(recs: { deaths: number[]; aliveSec: number }[], alertsOf: (r: never) => number[]): Score {
+function score(recs: { deaths: number[]; aliveSec: number }[], alertsOf: (r: never) => number[], from = WARN_FROM): Score {
   let deaths = 0, warned = 0, alerts = 0, hits = 0, aliveSec = 0;
   for (const r of recs) {
     const a = alertsOf(r as never);
@@ -310,10 +346,72 @@ function score(recs: { deaths: number[]; aliveSec: number }[], alertsOf: (r: nev
     hits += a.filter((t) => r.deaths.some((d) => d > t && d <= t + DANGER_HORIZON_SEC)).length;
     for (const d of r.deaths) {
       deaths++;
-      if (a.some((t) => t >= d - WARN_FROM && t <= d - WARN_TO)) warned++;
+      if (a.some((t) => t >= d - from && t <= d - WARN_TO)) warned++;
     }
   }
   return { deaths, warned, recall: deaths ? warned / deaths : 0, alerts, perMin: alerts / Math.max(1, aliveSec / 60), precision: alerts ? hits / alerts : 0 };
+}
+/** Стадия по уровню героя: лайнинг 1–6, середина 7–15, поздняя 16+ (не по минутам — так же в Турбо) */
+const STAGES = [['1–6', 1, 6], ['7–15', 7, 15], ['16+', 16, 99]] as const;
+type StageRec = { deaths: number[]; deathLevels: number[]; aliveSec: number };
+/** Доля предупреждённых смертей по стадиям */
+function byStage(recs: StageRec[], alertsOf: (r: never) => number[]) {
+  return Object.fromEntries(
+    STAGES.map(([name, lo, hi]) => {
+      let deaths = 0, warned = 0;
+      for (const r of recs) {
+        const a = alertsOf(r as never);
+        r.deaths.forEach((d, i) => {
+          const l = r.deathLevels[i]!;
+          if (l < lo || l > hi) return;
+          deaths++;
+          if (a.some((t) => t >= d - WARN_FROM && t <= d - WARN_TO)) warned++;
+        });
+      }
+      return [name, { deaths, warned, recall: deaths ? warned / deaths : 0 }];
+    }),
+  );
+}
+/** 95% интервал разницы «модель − правила» в доле предупреждённых смертей: бутстреп по матчам (1000 повторов) */
+function bootstrapRecallDiff(recs: { matchId: string; deaths: number[]; aliveSec: number }[], rulesOf: (r: never) => number[], modelOf: (r: never) => number[], from = WARN_FROM) {
+  const byMatch = new Map<string, { d: number; r: number; m: number }>();
+  for (const r of recs) {
+    const a = byMatch.get(r.matchId) ?? { d: 0, r: 0, m: 0 };
+    const ra = rulesOf(r as never), ma = modelOf(r as never);
+    for (const d of r.deaths) {
+      a.d++;
+      if (ra.some((t) => t >= d - from && t <= d - WARN_TO)) a.r++;
+      if (ma.some((t) => t >= d - from && t <= d - WARN_TO)) a.m++;
+    }
+    byMatch.set(r.matchId, a);
+  }
+  const ms = [...byMatch.values()];
+  let seed = 11;
+  const rnd = () => ((seed = (seed * 1103515245 + 12345) % 2 ** 31) / 2 ** 31);
+  const diffs: number[] = [];
+  for (let b = 0; b < 1000; b++) {
+    let d = 0, r = 0, m = 0;
+    for (let k = 0; k < ms.length; k++) {
+      const x = ms[Math.floor(rnd() * ms.length)]!;
+      d += x.d;
+      r += x.r;
+      m += x.m;
+    }
+    diffs.push(d ? (m - r) / d : 0);
+  }
+  diffs.sort((a, b) => a - b);
+  return { lo: diffs[25]!, hi: diffs[974]!, matches: ms.length };
+}
+/** Калибровка: средняя предсказанная вероятность и частота смерти по десяткам */
+function calibration(p: number[], y: number[]) {
+  const bins = Array.from({ length: 10 }, () => ({ n: 0, p: 0, y: 0 }));
+  p.forEach((q, i) => {
+    const b = bins[Math.min(9, Math.floor(q * 10))]!;
+    b.n++;
+    b.p += q;
+    b.y += y[i]!;
+  });
+  return bins.filter((b) => b.n > 0).map((b, i) => ({ bin: i, n: b.n, predicted: Math.round((b.p / b.n) * 1000) / 1000, actual: Math.round((b.y / b.n) * 1000) / 1000 }));
 }
 const modelAlerts = (w: W, thr: number) => (r: { probs: [number, number[]][] }) => {
   const out: number[] = [];
@@ -328,31 +426,35 @@ const modelAlerts = (w: W, thr: number) => (r: { probs: [number, number[]][] }) 
 
 describe.runIf(process.env.DOTACOACH_DANGER_TRAIN)('модель опасности: обучение и проверка по режимам', () => {
   it('обучение (All Pick → Турбо), порог, сравнение с правилами на отложенных матчах', () => {
-    const { rows, engineRun } = harness();
+    const { rows, engineRun, stageStats } = harness();
     // Свои Турбо-матчи владельца (gsi-sessions, разобраны STRATZ) — только для проверки, не для обучения
     const own = load(join(root, '.tmp/danger-own'));
     const ownIds = new Set(own.map((f) => f.split(/[\/]/).pop()));
     const ap = load(join(root, '.tmp/danger')), tb = load(join(root, '.tmp/danger-turbo')).filter((f) => !ownIds.has(f.split(/[\/]/).pop()));
     const by = (files: string[], sp: string) => files.filter((f) => split(f) === sp);
     console.log(`Матчей: All Pick ${ap.length} (${by(ap, 'train').length}/${by(ap, 'val').length}/${by(ap, 'test').length}); Турбо ${tb.length} (${by(tb, 'train').length}/${by(tb, 'val').length}/${by(tb, 'test').length})`);
+    const stageAP = stageStats(by(ap, 'train').slice(0, 300)), stageTB = stageStats(by(tb, 'train'));
+    const fmtStage = (x: Record<string, { level: number; items: number }>) => `10 мин: ур. ${x.m10!.level}, предметы ${x.m10!.items}; 20 мин: ур. ${x.m20!.level}, ${x.m20!.items}; при смерти: ур. ${x.death!.level}, ${x.death!.items}`;
+    console.log(`Стадия — All Pick: ${fmtStage(stageAP)}
+Стадия — Турбо:    ${fmtStage(stageTB)}`);
     const t0 = Date.now();
     const apTrain = rows(by(ap, 'train').slice(0, TRAIN_MAX), false);
     console.log(`Строк All Pick: ${apTrain.X.length}, смерть в горизонте: ${((100 * apTrain.Y.reduce((a, b) => a + b, 0)) / apTrain.X.length).toFixed(2)}% (${Math.round((Date.now() - t0) / 1000)} с)`);
     const wAP = train(apTrain.X, apTrain.Y);
     let wTB = wAP;
-    const report: Record<string, unknown> = { trainedAt: new Date().toISOString(), matches: { ap: ap.length, turbo: tb.length }, trainRows: { ap: apTrain.X.length } };
+    const report: Record<string, unknown> = { stage: { ap: stageAP, turbo: stageTB }, trainedAt: new Date().toISOString(), matches: { ap: ap.length, turbo: tb.length }, trainRows: { ap: apTrain.X.length } };
     if (tb.length) {
       const tbTrain = rows(by(tb, 'train'), true);
       (report.trainRows as Record<string, number>).turbo = tbTrain.X.length;
       // дообучение: с весов All Pick, меньше шагов и сильнее держимся за них (L2)
       wTB = train(tbTrain.X, tbTrain.Y, wAP, 20, 3e-4, 0.02);
     }
-    const result: Record<string, { enabled: boolean; threshold: number; weights: W }> = {};
+    const result: Record<string, { enabled: boolean; threshold: number; replaces: string[]; weights: W }> = {};
     const modes: Record<string, unknown> = {};
     for (const [mode, files, w, turbo] of [['normal', ap, wAP, false], ['turbo', tb, wTB, true]] as const) {
       const rounded = { bias: Math.round(w.bias * 1e4) / 1e4, w: w.w.map((x) => Math.round(x * 1e4) / 1e4) };
       if (!by(files, 'test').length || !by(files, 'val').length) {
-        result[mode] = { enabled: false, threshold: 0.5, weights: rounded };
+        result[mode] = { enabled: false, threshold: 0.5, replaces: [...RISK_RULES], weights: rounded };
         modes[mode] = { enabled: false, why: 'нет разобранных матчей этого режима для проверки' };
         console.log(`\n${mode}: нет отложенных матчей — остаются правила`);
         continue;
@@ -362,31 +464,58 @@ describe.runIf(process.env.DOTACOACH_DANGER_TRAIN)('модель опаснос�
       const p = tr.X.map((x) => dangerProbability(w, x));
       const pAP = turbo ? tr.X.map((x) => dangerProbability(wAP, x)) : null;
       const val = engineRun(by(files, 'val').slice(0, Math.ceil(EVAL_MAX / 2)), turbo);
-      const rulesVal = score(val, (r: { rules: number[] }) => r.rules);
-      // Порог: не больше предупреждений, чем у правил, — лучший по доле предупреждённых смертей
-      let pick = { thr: 0.99, s: score(val, modelAlerts(w, 0.99)) };
-      for (let thr = 0.02; thr < 0.95; thr += 0.01) {
-        const s = score(val, modelAlerts(w, thr));
-        if (s.perMin <= rulesVal.perMin && s.recall > pick.s.recall) pick = { thr: Math.round(thr * 100) / 100, s };
-      }
       const test = engineRun(testFiles, turbo);
+      type R = { rules: number[]; byRule: Record<string, number[]>; probs: [number, number[]][] };
+      const rulesOf = (r: R) => r.rules;
+      // Гибрид: модель заменяет только «мало здоровья», ранние правила (враги пропали, ганкер, чужой лес) остаются —
+      // они предупреждают за 20–40 с, а модель — о том, что уже рядом (горизонт 15 с)
+      const hybridOf = (thr: number) => (r: R) => [...new Set([...modelAlerts(w, thr)(r), ...EARLY_RULES.flatMap((id) => r.byRule[id] ?? [])])].sort((x, y) => x - y);
+      const variants = { model: (thr: number) => modelAlerts(w, thr), hybrid: hybridOf };
+      const rulesVal = score(val, rulesOf as never);
+      const evals: Record<string, { stages: Record<string, { recall: number }> } & Record<string, unknown>> = {};
+      const rules15 = score(test, rulesOf as never), rules40 = score(test, rulesOf as never, LONG_FROM);
+      const rulesStages = byStage(test, rulesOf as never);
+      let chosen: { name: 'model' | 'hybrid'; thr: number; s15: Score; s40: Score } | null = null;
+      const fmt = (s: Score) => `${s.warned}/${s.deaths} (${(100 * s.recall).toFixed(1)}%)`;
+      console.log(`\n${mode}: AUC ${auc(p, tr.Y)?.toFixed(3)}${pAP ? ` (веса All Pick: ${auc(pAP, tr.Y)?.toFixed(3)})` : ''}, logloss ${logloss(p, tr.Y).toFixed(4)}; матчей проверки ${testFiles.length}`);
+      console.log(`  правила: 2–15 с ${fmt(rules15)}, 2–40 с ${fmt(rules40)}; ${rules15.perMin.toFixed(2)} предупр./мин, точность ${(100 * rules15.precision).toFixed(1)}%`);
+      for (const name of ['model', 'hybrid'] as const) {
+        // Порог: не больше предупреждений, чем у правил (на матчах подбора порога), — лучший по доле предупреждённых
+        let pick = { thr: 0.99, s: score(val, variants[name](0.99) as never) };
+        for (let thr = 0.02; thr < 0.95; thr += 0.01) {
+          const sv = score(val, variants[name](thr) as never);
+          if (sv.perMin <= rulesVal.perMin && sv.recall > pick.s.recall) pick = { thr: Math.round(thr * 100) / 100, s: sv };
+        }
+        const f = variants[name](pick.thr) as never;
+        const s15 = score(test, f), s40 = score(test, f, LONG_FROM);
+        const ci15 = bootstrapRecallDiff(test, rulesOf as never, f), ci40 = bootstrapRecallDiff(test, rulesOf as never, f, LONG_FROM);
+        // Лучше правил: больше предупреждённых смертей за 2–15 с (весь 95% интервал выше нуля), за 2–40 с — не меньше
+        // (интервал не ниже −2 п.п.), предупреждений не больше (±5%), они не менее точны
+        const passes = s15.recall > rules15.recall && ci15.lo > 0 && s40.recall >= rules40.recall && ci40.lo > -0.02 && s15.perMin <= rules15.perMin * 1.05 && s15.precision >= rules15.precision;
+        evals[name] = { threshold: pick.thr, val: pick.s, test15: s15, test40: s40, ci15, ci40, passes, stages: byStage(test, f) };
+        console.log(`  ${name === 'model' ? 'модель' : 'гибрид'}: 2–15 с ${fmt(s15)} [${(100 * ci15.lo).toFixed(1)}…${(100 * ci15.hi).toFixed(1)}], 2–40 с ${fmt(s40)} [${(100 * ci40.lo).toFixed(1)}…${(100 * ci40.hi).toFixed(1)}]; ${s15.perMin.toFixed(2)}/мин, точность ${(100 * s15.precision).toFixed(1)}%, порог ${pick.thr} → ${passes ? 'проходит' : 'не проходит'}`);
+        if (passes && (!chosen || s40.recall > chosen.s40.recall + 0.005 || (Math.abs(s40.recall - chosen.s40.recall) <= 0.005 && name === 'hybrid'))) chosen = { name, thr: pick.thr, s15, s40 };
+      }
+      const ch = chosen as { name: 'model' | 'hybrid'; thr: number } | null;
+      console.log(`  по стадиям (2–15 с): ${STAGES.map(([n]) => `${n}: правила ${(100 * rulesStages[n]!.recall).toFixed(0)}%${ch ? ` / ${ch.name} ${(100 * evals[ch.name]!.stages[n]!.recall).toFixed(0)}%` : ''}`).join('; ')}`);
+      console.log(`  → ${ch ? `включается: ${ch.name === 'hybrid' ? 'гибрид (модель вместо «мало здоровья», ранние правила остаются)' : 'модель вместо всех четырёх правил о риске'}` : 'ни один вариант не лучше правил — остаются правила'}`);
+      const replaces = ch?.name === 'hybrid' ? RISK_RULES.filter((id) => !(EARLY_RULES as readonly string[]).includes(id)) : [...RISK_RULES];
+      modes[mode] = { rows: tr.X.length, auc: auc(p, tr.Y), aucApWeights: pAP ? auc(pAP, tr.Y) : undefined, logloss: logloss(p, tr.Y), calibration: calibration(p, tr.Y), test: { matches: testFiles.length, rules15, rules40, rulesStages }, val: { rules: rulesVal }, variants: evals, chosen: ch?.name ?? null };
+      result[mode] = { enabled: ch !== null, threshold: ch?.thr ?? 0.5, replaces, weights: rounded };
       if (turbo && own.length) {
         // Отдельно — свои матчи владельца: все 10 героев и только свой герой (по записи GSI)
         const ownRecs = test.slice(test.length - own.length * 10);
         const mine = ownRecs.filter((r) => r.heroKey !== null && OWN_HEROES[r.matchId] === r.heroKey);
-        const o = { matches: own.length, all: { rules: score(ownRecs, (r: { rules: number[] }) => r.rules), model: score(ownRecs, modelAlerts(w, pick.thr)) }, mine: { players: mine.length, rules: score(mine, (r: { rules: number[] }) => r.rules), model: score(mine, modelAlerts(w, pick.thr)) } };
+        const f = (ch ? variants[ch.name](ch.thr) : rulesOf) as never;
+        const o = {
+          matches: own.length,
+          variant: ch?.name ?? 'rules',
+          all: { rules15: score(ownRecs, rulesOf as never), chosen15: score(ownRecs, f), rules40: score(ownRecs, rulesOf as never, LONG_FROM), chosen40: score(ownRecs, f, LONG_FROM) },
+          mine: { players: mine.length, rules15: score(mine, rulesOf as never), chosen15: score(mine, f), rules40: score(mine, rulesOf as never, LONG_FROM), chosen40: score(mine, f, LONG_FROM) },
+        };
         (report as Record<string, unknown>).own = o;
-        console.log(`  свои матчи (${own.length}): все герои — правила ${(100 * o.all.rules.recall).toFixed(1)}% / модель ${(100 * o.all.model.recall).toFixed(1)}%; свой герой (${mine.length}) — правила ${o.mine.rules.warned}/${o.mine.rules.deaths}, модель ${o.mine.model.warned}/${o.mine.model.deaths}`);
+        console.log(`  свои матчи (${own.length}), свой герой (${mine.length}): 2–15 с правила ${o.mine.rules15.warned}/${o.mine.rules15.deaths}, ${o.variant} ${o.mine.chosen15.warned}/${o.mine.chosen15.deaths}; 2–40 с правила ${o.mine.rules40.warned}, ${o.variant} ${o.mine.chosen40.warned}`);
       }
-      const rulesTest = score(test, (r: { rules: number[] }) => r.rules);
-      const modelTest = score(test, modelAlerts(w, pick.thr));
-      // Лучше правил: больше предупреждённых смертей, предупреждений не больше (±5%) и они не менее точны
-      const better = modelTest.recall > rulesTest.recall && modelTest.perMin <= rulesTest.perMin * 1.05 && modelTest.precision >= rulesTest.precision;
-      modes[mode] = { rows: tr.X.length, auc: auc(p, tr.Y), aucApWeights: pAP ? auc(pAP, tr.Y) : undefined, logloss: logloss(p, tr.Y), threshold: pick.thr, val: { rules: rulesVal, model: pick.s }, test: { matches: testFiles.length, rules: rulesTest, model: modelTest }, enabled: better };
-      result[mode] = { enabled: better, threshold: pick.thr, weights: rounded };
-      const fmt = (s: Score) => `смертей ${s.deaths}, предупреждено ${s.warned} (${(100 * s.recall).toFixed(1)}%), предупреждений ${s.alerts} (${s.perMin.toFixed(2)}/мин), после них смерть ≤15 с: ${(100 * s.precision).toFixed(1)}%`;
-      console.log(`\n${mode}: AUC ${auc(p, tr.Y)?.toFixed(3)}${pAP ? ` (веса All Pick: ${auc(pAP, tr.Y)?.toFixed(3)})` : ''}, logloss ${logloss(p, tr.Y).toFixed(4)}, порог ${pick.thr}`);
-      console.log(`  правила: ${fmt(rulesTest)}\n  модель:  ${fmt(modelTest)}\n  → ${better ? 'модель ЛУЧШЕ — включается' : 'модель не лучше — остаются правила'}`);
     }
     report.modes = modes;
     console.log('\nВеса All Pick:', DANGER_FEATURES.map((f, i) => `${f}=${wAP.w[i]!.toFixed(2)}`).join(' '), `bias=${wAP.bias.toFixed(2)}`);

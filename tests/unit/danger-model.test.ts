@@ -21,7 +21,7 @@ function testModel(normal: boolean, turbo: boolean): DangerModel {
   const w = DANGER_FEATURES.map(() => 0);
   w[idx('enemiesClose')] = 6;
   w[idx('lowHp')] = 4;
-  return { schema: 'dota-coach.danger-model', version: 1, features: [...DANGER_FEATURES], horizonSec: 15, cooldownSec: 20, trainedAt: 'test', normal: { enabled: normal, threshold: 0.5, weights: { bias: -3, w } }, turbo: { enabled: turbo, threshold: 0.5, weights: { bias: -3, w } } };
+  return { schema: 'dota-coach.danger-model', version: 1, features: [...DANGER_FEATURES], horizonSec: 15, cooldownSec: 20, trainedAt: 'test', normal: { enabled: normal, threshold: 0.5, replaces: [...RISK_RULES], weights: { bias: -3, w } }, turbo: { enabled: turbo, threshold: 0.5, replaces: [...RISK_RULES], weights: { bias: -3, w } } };
 }
 
 function ctx(i: Partial<SimInput>, model: DangerModel | null, turbo = false) {
@@ -105,6 +105,19 @@ describe('модель опасности', () => {
     const m = testModel(false, true);
     expect(ids(ctx(caught, m, true).c)).toContain('danger.model');
     expect(ids(ctx(caught, m, false).c)).not.toContain('danger.model');
+  });
+
+  it('гибрид: модель заменяет только «мало здоровья» — ранние правила (враги пропали, ганкер, чужой лес) остаются', () => {
+    const m = testModel(true, true);
+    m.normal.replaces = ['danger.low-hp'];
+    const shown = ids(ctx(caught, m).c);
+    expect(shown).toContain('danger.model');
+    expect(shown).not.toContain('danger.low-hp');
+    // трое врагов пропали на чужой стороне: «враги пропали» звучит, как без модели
+    const missing3 = { ...caught, enemies: [5, 6, 7].map((slot) => ({ slot, hero: 'axe', pos: null, missingForSec: 20 })) };
+    expect(ids(ctx(missing3, m).c)).toContain('danger.missing');
+    // старый файл модели без поля replaces — заменяются все четыре
+    expect(parseDangerModel({ ...modelJson, normal: { ...modelJson.normal, replaces: undefined } })!.normal.replaces).toEqual([...RISK_RULES]);
   });
 
   it('текст предупреждения: риск в процентах и причины', () => {

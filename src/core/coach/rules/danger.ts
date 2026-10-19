@@ -8,7 +8,7 @@ import { BUILDING_RU, NEAR_UNITS, buildingLane, dist, isEnemyJungle, mapSide } f
 import { derivedFact, fact, kbFact, poolPct } from '../view.ts';
 import { draft, game, playing, plural, zoneRu, type Rule } from './context.ts';
 import type { HintDraft } from '../types.ts';
-import { dangerFeatures, dangerProbability, dangerReasons, itemValueOf, type DangerFeature } from '../danger-model.ts';
+import { dangerFeatures, dangerProbability, dangerReasons, itemValueOf, RISK_RULES, type DangerFeature } from '../danger-model.ts';
 
 const alliesNear = (c: Parameters<Rule>[0]): number => {
   const me = c.v.me.pos.value;
@@ -287,7 +287,10 @@ export const modelRule: Rule = (c) => {
   });
 };
 
-/** Правило о риске уступает модели в режиме, где она включена */
-const unlessModel = (r: Rule): Rule => (c) => (dangerModelFor(c) ? null : r(c));
+/** Правило о риске уступает модели в режиме, где она включена и заменяет именно его */
+const unlessModel =
+  (id: (typeof RISK_RULES)[number], r: Rule): Rule =>
+  (c) =>
+    dangerModelFor(c)?.mode.replaces.includes(id) ? null : r(c);
 
-export const DANGER_RULES: Rule[] = [smokeRule, modelRule, unlessModel(lowHpRule), unlessModel(missingRule), buildingRule, unlessModel(deepRule), unlessModel(gankerRule), roshanRule, invisRule];
+export const DANGER_RULES: Rule[] = [smokeRule, modelRule, unlessModel('danger.low-hp', lowHpRule), unlessModel('danger.missing', missingRule), buildingRule, unlessModel('danger.deep', deepRule), unlessModel('danger.ganker', gankerRule), roshanRule, invisRule];

@@ -30,7 +30,14 @@ function make(settings: Settings, history = { saved: [] as HistoryMatch[], save(
   return { svc, out, feed, history };
 }
 
-const danger = (t: number): Partial<SimInput> => ({ pos: { x: 3000, y: 2500 }, hp: 200, items: [{ slot: 'inv1', key: 'boots' }], enemies: [5, 6, 7].map((slot) => ({ slot, hero: 'axe', pos: null, missingForSec: 10 + t })) });
+// Опасность, о которой предупреждает и модель опасности (она заменила правила о риске): мало здоровья, двое врагов
+// вплотную, третий пропал. Раньше было «трое пропали» — на такой обстановке модель риска смерти за 15 с не видит
+const danger = (t: number): Partial<SimInput> => ({
+  pos: { x: 3000, y: 2500 },
+  hp: 200,
+  items: [{ slot: 'inv1', key: 'boots' }],
+  enemies: [...[5, 6].map((slot) => ({ slot, hero: 'axe', pos: { x: 3400, y: 2600 } })), { slot: 7, hero: 'axe', pos: null, missingForSec: 10 + t }],
+});
 
 describe('CoachService', () => {
   it('подсказки → карточки окна поверх игры (проходят схему), матч идёт', () => {

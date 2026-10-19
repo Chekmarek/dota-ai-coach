@@ -114,6 +114,11 @@ const modeSchema = z.object({
   enabled: z.boolean(),
   /** Предупреждать при вероятности не ниже */
   threshold: z.number().min(0).max(1),
+  /**
+   * Какие правила о риске модель заменяет в этом режиме: все четыре или только «мало здоровья» (гибрид — ранние
+   * правила остаются: они предупреждают за 20–40 с, модель — о том, что уже рядом). В старом файле поля нет — все.
+   */
+  replaces: z.array(z.enum(RISK_RULES)).default([...RISK_RULES]),
   weights: weightsSchema,
 });
 export const dangerModelSchema = z.object({
