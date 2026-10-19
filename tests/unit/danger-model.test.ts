@@ -6,7 +6,7 @@ import { CoachLookup, type CoachData } from '../../src/core/coach/data.ts';
 import { CoachMemory } from '../../src/core/coach/memory.ts';
 import { defaultCoachSettings } from '../../src/core/coach/index.ts';
 import { DANGER_RULES, modelRule } from '../../src/core/coach/rules/danger.ts';
-import { DANGER_FEATURES, dangerFeatures, dangerProbability, itemValueOf, parseDangerModel, RISK_RULES, type DangerModel } from '../../src/core/coach/danger-model.ts';
+import { DANGER_FEATURES, dangerFeatures, dangerProbability, dangerRisk, itemValueOf, parseDangerModel, RISK_RULES, treesProbability, type DangerModel } from '../../src/core/coach/danger-model.ts';
 import type { GameModeInfo } from '../../src/core/gsi/mode.ts';
 import type { HintDraft } from '../../src/core/coach/types.ts';
 import modelJson from '../../src/data/danger-model.json';
@@ -118,6 +118,23 @@ describe('модель опасности', () => {
     expect(ids(ctx(missing3, m).c)).toContain('danger.missing');
     // старый файл модели без поля replaces — заменяются все четыре
     expect(parseDangerModel({ ...modelJson, normal: { ...modelJson.normal, replaces: undefined } })!.normal.replaces).toEqual([...RISK_RULES]);
+  });
+
+  it('деревья решений: обход по порогам, сумма листьев, σ; при деревьях риск считают они, а не веса', () => {
+    const f = DANGER_FEATURES.map(() => 0);
+    const close = idx('enemiesClose');
+    // глубина 2: корень — «враги вплотную ≤ 0,1», дальше — «мало здоровья ≤ 0,5»
+    const trees = { depth: 2, bias: -2, trees: [{ f: [close, idx('lowHp'), idx('lowHp')], t: [0.1, 0.5, 0.5], v: [-1, 0, 1, 3] }] };
+    expect(treesProbability(trees, f)).toBeCloseTo(1 / (1 + Math.exp(3)));
+    f[close] = 0.4;
+    f[idx('lowHp')] = 0.8;
+    expect(treesProbability(trees, f)).toBeCloseTo(1 / (1 + Math.exp(-1)));
+    const w = { bias: -10, w: DANGER_FEATURES.map(() => 0) };
+    expect(dangerRisk({ weights: w, trees }, f)).toBeCloseTo(treesProbability(trees, f));
+    expect(dangerRisk({ weights: w }, f)).toBeCloseTo(dangerProbability(w, f));
+    // в файле модели деревья с неверным номером признака не принимаются
+    const bad = { ...modelJson, normal: { ...modelJson.normal, trees: { depth: 1, bias: 0, trees: [{ f: [999], t: [0], v: [0, 0] }] } } };
+    expect(parseDangerModel(bad)).toBeNull();
   });
 
   it('текст предупреждения: риск в процентах и причины', () => {

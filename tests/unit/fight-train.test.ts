@@ -9,7 +9,7 @@ import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { buildView } from '../../src/core/coach/view.ts';
 import { FIGHT_FEATURES, fightFeatures } from '../../src/core/coach/fight-model.ts';
-import { dangerFeatures, dangerProbability, itemValueOf, parseDangerModel } from '../../src/core/coach/danger-model.ts';
+import { dangerFeatures, dangerProbability, dangerRisk, itemValueOf, parseDangerModel } from '../../src/core/coach/danger-model.ts';
 import dangerJson from '../../src/data/danger-model.json';
 import { fightsOf, GamePipeline, readXMatch } from './exam-lib.ts';
 import { auc, calibrationTable, sigmoid, trainLR, type W } from './lr.ts';
@@ -49,7 +49,7 @@ describe.runIf(process.env.DOTACOACH_FIGHT_TRAIN)('прогноз драк: об
             const v = buildView(input!.state, input!.gsi, input!.gsiWallMs);
             const itemValue = v.me.itemsKnown ? itemValueOf(v.me.items.map((i) => i.key), (k) => cost.get(k) ?? null) : null;
             const df = dm ? dangerFeatures(v, { itemValue, turbo }) : null;
-            const risk = dm && df ? dangerProbability((turbo ? dm.turbo : dm.normal).weights, df) : null;
+            const risk = dm && df ? dangerRisk(turbo ? dm.turbo : dm.normal, df) : null;
             const x = fightFeatures(v, { itemValue, turbo, risk });
             if (!x) continue;
             X.push(x);

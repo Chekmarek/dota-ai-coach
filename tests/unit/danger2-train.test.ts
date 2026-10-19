@@ -15,7 +15,9 @@ import { DANGER_FEATURES, RISK_RULES, dangerFeatures, itemValueOf } from '../../
 import { parseStatsRanked } from '../../src/shared/types/stats-ranked.ts';
 import type { CoachData } from '../../src/core/coach/data.ts';
 import { deadAt, GamePipeline, readXMatch, rng, type XMatch } from './exam-lib.ts';
-import { auc, sigmoid, trainLR, type W } from './lr.ts';
+import { auc, sigmoid, trainLR, seededShuffle, type W } from './lr.ts';
+import { trainGBDT } from './gbdt.ts';
+import { dangerRisk, type DangerTrees } from '../../src/core/coach/danger-model.ts';
 import { realData } from './coach-sim.ts';
 
 const root = join(import.meta.dirname, '../..');
@@ -92,11 +94,13 @@ describe.runIf(process.env.DOTACOACH_DANGER2)('модель опасности v
       });
     }
     type V = ReturnType<typeof valSet>[number];
-    const alertsOf = (h: V, w: W, thr: number, cd: number) => {
+    type M = { weights: W; trees?: DangerTrees };
+    const prob = (m: M, x: number[]) => dangerRisk(m, x);
+    const alertsOf = (h: V, w: M, thr: number, cd: number) => {
       const out: number[] = [];
       let last = -Infinity;
       for (const [t, x] of h.rows)
-        if (t - last >= cd && sigmoid(w, x) >= thr) {
+        if (t - last >= cd && prob(w, x) >= thr) {
           out.push(t);
           last = t;
         }
@@ -123,22 +127,40 @@ describe.runIf(process.env.DOTACOACH_DANGER2)('модель опасности v
     const tb = trainSet(pick('danger-turbo', 'train'), true);
     console.log(`Турбо: строк ${tb.X.length}`);
     const wTB = trainLR(tb.X, tb.Y, DANGER_FEATURES.length, wAP, 20, 3e-4, 0.02);
-    const result: Record<string, { enabled: boolean; threshold: number; cooldown: number; w: W }> = {};
+    // Деревья решений: All Pick (до 600 тыс. строк), затем дообучение на Турбо — продолжение бустинга
+    const sub = (s: { X: number[][]; Y: number[] }, k: number) => {
+      const idx = seededShuffle([...s.X.keys()], 5).slice(0, k);
+      return { X: idx.map((i) => s.X[i]!), Y: idx.map((i) => s.Y[i]!) };
+    };
+    const t1 = Date.now();
+    const apSub = sub(ap, 600_000);
+    const trAP = trainGBDT(apSub.X, apSub.Y, { trees: 150, depth: 3, lr: 0.1 });
+    const trTB = trainGBDT(tb.X, tb.Y, { trees: 60, depth: 3, lr: 0.05, init: trAP });
+    console.log(`Деревья: ${trAP.trees.length} (All Pick) + ${trTB.trees.length - trAP.trees.length} (Турбо), ${Math.round((Date.now() - t1) / 1000)} с`);
+    const result: Record<string, { enabled: boolean; threshold: number; cooldown: number; w: W; trees?: DangerTrees }> = {};
     const COOLDOWNS = [8, 10, 15, 20, 30];
-    for (const [mode, dir, w, turbo] of [['normal', 'danger', wAP, false], ['turbo', 'danger-turbo', wTB, true]] as const) {
+    for (const [mode, dir, wl, tr, turbo] of [['normal', 'danger', wAP, trAP, false], ['turbo', 'danger-turbo', wTB, trTB, true]] as const) {
       const val = valSet(pick(dir, 'val').slice(0, VAL_MAX), turbo);
       const rules = score(val, (h) => h.rules);
-      const p = val.flatMap((h) => h.rows.map(([, x]) => sigmoid(w, x))), y = val.flatMap((h) => h.rows.map(([t]) => (soon(h.deaths, t) ? 1 : 0)));
-      let best = { thr: 0.99, cd: 20, s: score(val, (h) => alertsOf(h, w, 0.99, 20)) };
-      for (const cd of COOLDOWNS)
-        for (let thr = 0.02; thr < 0.9; thr += 0.01) {
-          const s = score(val, (h) => alertsOf(h, w, thr, cd));
-          if (s.alerts <= rules.alerts && s.recall > best.s.recall) best = { thr: Math.round(thr * 100) / 100, cd, s };
-        }
-      result[mode] = { enabled: best.s.recall > rules.recall, threshold: best.thr, cooldown: best.cd, w };
-      console.log(`\n${mode}: AUC ${auc(p, y)?.toFixed(3)} (героев проверки ${val.length}, смертей ${rules.deaths})`);
-      console.log(`  старые правила: предупреждено за 10–20 с ${(100 * rules.recall).toFixed(1)}%, тревог ${rules.alerts} (${rules.perMin.toFixed(2)}/мин)`);
-      console.log(`  модель v2:      ${(100 * best.s.recall).toFixed(1)}%, тревог ${best.s.alerts} (${best.s.perMin.toFixed(2)}/мин), порог ${best.thr}, пауза ${best.cd} с`);
+      const y = val.flatMap((h) => h.rows.map(([t]) => (soon(h.deaths, t) ? 1 : 0)));
+      console.log(`\n${mode}: героев проверки ${val.length}, смертей ${rules.deaths}; старые правила: предупреждено за 10–20 с ${(100 * rules.recall).toFixed(1)}%, тревог ${rules.alerts} (${rules.perMin.toFixed(2)}/мин)`);
+      let chosen: { name: string; m: M; thr: number; cd: number; s: ReturnType<typeof score> } | null = null;
+      const variants: [string, M][] = [['регрессия', { weights: wl }], ['деревья', { weights: wl, trees: tr }]];
+      for (const [name, m] of variants) {
+        const p = val.flatMap((h) => h.rows.map(([, x]) => prob(m, x)));
+        let b = { thr: 0.99, cd: 20, s: score(val, (h) => alertsOf(h, m, 0.99, 20)) };
+        for (const cd of COOLDOWNS)
+          for (let thr = 0.02; thr < 0.9; thr += 0.01) {
+            const s = score(val, (h) => alertsOf(h, m, thr, cd));
+            if (s.alerts <= rules.alerts && s.recall > b.s.recall) b = { thr: Math.round(thr * 100) / 100, cd, s };
+          }
+        console.log(`  ${name}: AUC ${auc(p, y)?.toFixed(3)}; ${(100 * b.s.recall).toFixed(1)}%, тревог ${b.s.alerts} (${b.s.perMin.toFixed(2)}/мин), порог ${b.thr}, пауза ${b.cd} с`);
+        if (!chosen || b.s.recall > chosen.s.recall) chosen = { name, m, thr: b.thr, cd: b.cd, s: b.s };
+      }
+      const best = chosen!;
+      const w = best.m;
+      result[mode] = { enabled: best.s.recall > rules.recall, threshold: best.thr, cooldown: best.cd, w: wl, ...(w.trees ? { trees: w.trees } : {}) };
+      console.log(`  → ${best.name}`);
       for (const cd of COOLDOWNS) {
         // Сколько можно предупредить, если тревог можно в 2 и 3 раза больше (для понимания запаса)
         const lim = (k: number) => {
@@ -157,7 +179,7 @@ describe.runIf(process.env.DOTACOACH_DANGER2)('модель опасности v
       const r = (w: W) => ({ bias: Math.round(w.bias * 1e4) / 1e4, w: w.w.map((x) => Math.round(x * 1e4) / 1e4) });
       // Пауза — одна на файл: берём наибольшую из выбранных (не чаще, чем в обоих режимах)
       const cooldownSec = Math.max(result.normal!.cooldown, result.turbo!.cooldown);
-      const mode = (k: string) => ({ enabled: result[k]!.enabled, threshold: result[k]!.threshold, replaces: [...RISK_RULES], weights: r(result[k]!.w) });
+      const mode = (k: string) => ({ enabled: result[k]!.enabled, threshold: result[k]!.threshold, replaces: [...RISK_RULES], weights: r(result[k]!.w), ...(result[k]!.trees ? { trees: result[k]!.trees } : {}) });
       writeFileSync(join(root, 'src/data/danger-model.json'), JSON.stringify({ schema: 'dota-coach.danger-model', version: 1, features: [...DANGER_FEATURES], horizonSec: HOR, leadSec: LEAD, cooldownSec, trainedAt: new Date().toISOString(), normal: mode('normal'), turbo: mode('turbo') }, null, 1) + '\n');
     }
     expect(ap.X.length).toBeGreaterThan(0);

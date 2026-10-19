@@ -9,7 +9,7 @@ import { HintQueue, DEFAULT_QUEUE_CONFIG, type QueueConfig } from './queue.ts';
 import { MistakeDetector, MISTAKE_RU, type Mistake } from './mistakes.ts';
 import { deathReview, matchReview, type DeathReview, type MatchReview } from './reviews.ts';
 import { ACTION_RU, actionChoice, engagePercent, type ActionChoice } from './prob.ts';
-import { dangerFeatures, dangerProbability, itemValueOf } from './danger-model.ts';
+import { dangerFeatures, dangerProbability, dangerRisk, itemValueOf } from './danger-model.ts';
 import { fightFeatures, fightProbability } from './fight-model.ts';
 import { buildView, poolPct, type CoachView } from './view.ts';
 import { draft, game, knowledge, mmss, type Rule, type RuleContext } from './rules/context.ts';
@@ -364,7 +364,7 @@ export class CoachEngine {
     const itemValue = v.me.itemsKnown ? itemValueOf(v.me.items.map((i) => i.key), (k) => this.look.itemCost(k)) : null;
     const dm = this.look.data.dangerModel;
     const df = dm ? dangerFeatures(v, { itemValue, turbo, history: this.mem.samples }) : null;
-    const risk = dm && df ? dangerProbability((turbo ? dm.turbo : dm.normal).weights, df) : null;
+    const risk = dm && df ? dangerRisk(turbo ? dm.turbo : dm.normal, df) : null;
     const fm = this.look.data.fightModel;
     const ff = fm ? fightFeatures(v, { itemValue, turbo, risk }) : null;
     const fightWin = fm && ff ? fightProbability((turbo ? fm.turbo : fm.normal).weights, ff) : null;

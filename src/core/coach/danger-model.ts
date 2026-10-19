@@ -53,6 +53,10 @@ export const DANGER_FEATURES = [
   'hpDrop5',
   'nearRise5',
   'missingRise10',
+  // Запас здоровья героя (хрупкий герой умирает быстрее) и что творилось рядом в последние 10 с
+  'hpMax',
+  'alliesDied10',
+  'nearDrop10',
 ] as const;
 export type DangerFeature = (typeof DANGER_FEATURES)[number];
 
@@ -124,7 +128,18 @@ export function dangerFeatures(v: CoachView, x: DangerExtra): number[] | null {
     lowHp * near,
     (Math.min(5, close) / 5) * (1 - hp),
     ...dynamics(v, x.history, hp, nearCount, missing),
+    Math.min(1, hpPool.max / 4000),
+    ...recent(v, x.history, nearCount),
   ];
+}
+
+/** Союзников умерло за 10 с; врагов рядом было больше в последние 10 с, чем сейчас (ушли в туман рядом) */
+function recent(v: CoachView, h: readonly Sample[] | undefined, near: number): number[] {
+  const s10 = sampleAgo(h, v.wallMs, 10);
+  const deadNow = v.allies.filter((a) => a.alive.value === false).length;
+  const window = h ? h.filter((s) => s.wallMs > v.wallMs - 10_000) : [];
+  const maxNear = window.length ? Math.max(...window.map((s) => s.enemiesNear)) : near;
+  return [s10 ? clamp((deadNow - s10.alliesDead) / 2, 0, 1) : 0, clamp((maxNear - near) / 3, 0, 1)];
 }
 
 /** Здоровье упало за 5 с; врагов рядом прибавилось за 5 с; врагов пропало с карты за 10 с */
@@ -138,6 +153,16 @@ function dynamics(v: CoachView, h: readonly Sample[] | undefined, hp: number, ne
 }
 
 const weightsSchema = z.object({ bias: z.number(), w: z.array(z.number()).length(DANGER_FEATURES.length) });
+/**
+ * Деревья решений (градиентный бустинг): у каждого дерева глубины depth — признаки и пороги узлов по уровням
+ * (полное двоичное дерево: 2^depth − 1 узлов) и значения листьев (2^depth). Риск = σ(bias + сумма листьев).
+ */
+const treesSchema = z.object({
+  depth: z.number().int().min(1).max(6),
+  bias: z.number(),
+  trees: z.array(z.object({ f: z.array(z.number().int().min(0).max(DANGER_FEATURES.length - 1)), t: z.array(z.number()), v: z.array(z.number()) })),
+});
+export type DangerTrees = z.infer<typeof treesSchema>;
 const modeSchema = z.object({
   /** Модель включена в этом режиме: на отложенных матчах она была лучше правил */
   enabled: z.boolean(),
@@ -148,7 +173,10 @@ const modeSchema = z.object({
    * правила остаются: они предупреждают за 20–40 с, модель — о том, что уже рядом). В старом файле поля нет — все.
    */
   replaces: z.array(z.enum(RISK_RULES)).default([...RISK_RULES]),
+  /** Логистическая регрессия: веса признаков (для причин «почему» — всегда есть) */
   weights: weightsSchema,
+  /** Деревья решений; есть — риск считается ими, веса — только для причин */
+  trees: treesSchema.optional(),
 });
 export const dangerModelSchema = z.object({
   schema: z.literal('dota-coach.danger-model'),
@@ -177,6 +205,22 @@ export function dangerProbability(w: { bias: number; w: readonly number[] }, f: 
   let z = w.bias;
   for (let i = 0; i < f.length; i++) z += w.w[i]! * f[i]!;
   return 1 / (1 + Math.exp(-z));
+}
+
+/** Риск по деревьям решений */
+export function treesProbability(m: DangerTrees, f: readonly number[]): number {
+  let z = m.bias;
+  for (const tr of m.trees) {
+    let node = 0;
+    for (let d = 0; d < m.depth; d++) node = 2 * node + (f[tr.f[node]!]! <= tr.t[node]! ? 1 : 2);
+    z += tr.v[node - (2 ** m.depth - 1)]!;
+  }
+  return 1 / (1 + Math.exp(-z));
+}
+
+/** Риск режима: деревьями, если есть, иначе логистической регрессией */
+export function dangerRisk(mode: { weights: { bias: number; w: readonly number[] }; trees?: DangerTrees | undefined }, f: readonly number[]): number {
+  return mode.trees ? treesProbability(mode.trees, f) : dangerProbability(mode.weights, f);
 }
 
 /** Самые сильные вклады в риск (признак × вес) — для текста «почему» */

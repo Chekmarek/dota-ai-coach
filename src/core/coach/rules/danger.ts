@@ -8,7 +8,7 @@ import { BUILDING_RU, NEAR_UNITS, buildingLane, dist, isEnemyJungle, mapSide } f
 import { derivedFact, fact, kbFact, poolPct } from '../view.ts';
 import { draft, game, playing, plural, zoneRu, type Rule } from './context.ts';
 import type { HintDraft } from '../types.ts';
-import { dangerFeatures, dangerProbability, dangerReasons, itemValueOf, RISK_RULES, type DangerFeature } from '../danger-model.ts';
+import { dangerFeatures, dangerProbability, dangerRisk, dangerReasons, itemValueOf, RISK_RULES, type DangerFeature } from '../danger-model.ts';
 
 const alliesNear = (c: Parameters<Rule>[0]): number => {
   const me = c.v.me.pos.value;
@@ -272,7 +272,7 @@ export const modelRule: Rule = (c) => {
   const f = dangerFeatures(c.v, { itemValue, turbo: c.look.isTurbo, history: c.mem.samples });
   if (!f) return null;
   // «hp» в модели с отрицательным весом: малое здоровье — это (1 − hp); показываем как причину отдельно
-  const p = dangerProbability(sel.mode.weights, f);
+  const p = dangerRisk(sel.mode, f);
   if (p < sel.mode.threshold) return null;
   const hp = poolPct(c.v.me.hp.value);
   const reasons = [...new Set([...(hp !== null && hp < 40 ? ['мало здоровья'] : []), ...dangerReasons(sel.mode.weights, f, 4).map((r) => REASON_RU[r.feature]).filter((x): x is string => !!x)])].slice(0, 3);
