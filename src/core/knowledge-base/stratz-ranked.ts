@@ -73,7 +73,8 @@ export function toRankedHero(hero: { id: number; key: string }, d: StratzHeroSta
     const total = matches[pos] ?? curves[pos]?.n ?? 0;
     if (total < MIN_MATCHES) continue;
     items[pos] = Object.entries(list)
-      .map(([key, b]) => ({ key, share: Math.round((b.n / total) * 1000) / 1000, medianMin: weightedMedian(b.times) ?? -1, winrate: Math.round((b.w / b.n) * 1000) / 1000 }))
+      // покупок бывает больше, чем матчей (предмет купили дважды) — доля матчей не больше 1
+      .map(([key, b]) => ({ key, share: Math.min(1, Math.round((b.n / total) * 1000) / 1000), medianMin: weightedMedian(b.times) ?? -1, winrate: Math.round((b.w / b.n) * 1000) / 1000 }))
       .filter((x) => x.share >= ITEM_MIN_SHARE && x.medianMin >= 0)
       .sort((a, b) => a.medianMin - b.medianMin)
       .slice(0, ITEMS_KEEP);

@@ -6,6 +6,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { StratzSync, readStratzCache, STRATZ_CACHE_FILE } from '../../src/main/knowledge/stratz-sync';
 import { stratzRankedQuery, toRankedHero } from '../../src/core/knowledge-base/stratz-ranked';
+import { parseStatsRanked } from '../../src/shared/types/stats-ranked';
 import { CoachLookup } from '../../src/core/coach/data';
 import { CoachEngine, defaultCoachSettings } from '../../src/core/coach/index';
 import { realData, sim } from './coach-sim';
@@ -111,5 +112,18 @@ describe('нет интернета → коуч работает из кэша'
     } finally {
       globalThis.fetch = fetchBefore;
     }
+  });
+});
+
+describe('доля покупки — не больше 100% матчей', () => {
+  it('вшитые данные: предмет, купленный в матче дважды (Aghanim\'s Scepter у Alchemist), — доля 1, а не 1,55', () => {
+    const raw = JSON.parse(readFileSync(join(import.meta.dirname, '../../resources/data/kb/7.41f/stats-ranked.json'), 'utf8'));
+    // в самом файле STRATZ покупок больше, чем матчей
+    expect(raw.heroes.find((h: { key: string }) => h.key === 'alchemist').items['4'].find((x: { key: string }) => x.key === 'ultimate_scepter').share).toBeGreaterThan(1);
+    const s = parseStatsRanked(raw, '7.41f')!;
+    const all = s.heroes.flatMap((h) => Object.values(h.items).flat());
+    expect(all.length).toBeGreaterThan(3000);
+    expect(Math.max(...all.map((x) => x.share))).toBeLessThanOrEqual(1);
+    expect(s.heroes.find((h) => h.key === 'alchemist')!.items['4']!.find((x) => x.key === 'ultimate_scepter')!.share).toBe(1);
   });
 });

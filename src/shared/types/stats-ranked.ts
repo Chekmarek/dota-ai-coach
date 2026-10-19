@@ -6,7 +6,9 @@ import { z } from 'zod';
 export const RANKED_FIELDS = ['lh', 'networth', 'xp', 'level'] as const;
 
 const curve = z.object({ n: z.number(), at: z.record(z.string(), z.array(z.number()).length(RANKED_FIELDS.length)) });
-const item = z.object({ key: z.string(), share: z.number(), medianMin: z.number(), winrate: z.number() });
+// Доля матчей, где предмет купили, не больше 1: STRATZ считает покупки, а предмет бывает куплен в матче дважды
+// (Alchemist дарит Aghanim's Scepter, два Null Talisman) — иначе подсказка писала бы «в 155% матчей»
+const item = z.object({ key: z.string(), share: z.number().transform((s) => Math.min(1, s)), medianMin: z.number(), winrate: z.number() });
 
 export const rankedHeroSchema = z.object({
   id: z.number().int(),
