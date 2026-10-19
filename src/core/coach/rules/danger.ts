@@ -258,6 +258,9 @@ const REASON_RU: Partial<Record<DangerFeature, string>> = {
   enemyHp: 'враги рядом здоровы',
   lowHpXnear: 'мало здоровья при врагах рядом',
   alliesNear: 'драка рядом',
+  hpDrop5: 'здоровье быстро падает',
+  nearRise5: 'врагов рядом прибавилось',
+  missingRise10: 'враги только что пропали с карты',
 };
 
 /** Предупреждение модели опасности: вероятность смерти в ближайшие 15 с не ниже порога режима */
@@ -266,7 +269,7 @@ export const modelRule: Rule = (c) => {
   const sel = dangerModelFor(c);
   if (!sel) return null;
   const itemValue = c.v.me.itemsKnown ? itemValueOf(c.v.me.items.map((i) => i.key), (k) => c.look.itemCost(k)) : null;
-  const f = dangerFeatures(c.v, { itemValue, turbo: c.look.isTurbo });
+  const f = dangerFeatures(c.v, { itemValue, turbo: c.look.isTurbo, history: c.mem.samples });
   if (!f) return null;
   // «hp» в модели с отрицательным весом: малое здоровье — это (1 − hp); показываем как причину отдельно
   const p = dangerProbability(sel.mode.weights, f);
@@ -280,8 +283,8 @@ export const modelRule: Rule = (c) => {
     priority: 'critical',
     confidence: 0.7,
     short: 'Высокий риск смерти — отходите',
-    normal: `Так обычно умирают в ближайшие ${sel.model.horizonSec} с${reasons.length ? `: ${reasons.join(', ')}` : ''}. Отойдите к своим.`,
-    facts: [derivedFact('risk', `Риск смерти за ${sel.model.horizonSec} с, %`, pct, 0.7), derivedFact('near', 'Врагов рядом', nearEnemyCount(c.v), 0.75), ...(hp !== null ? [derivedFact('hp', 'Здоровье, %', Math.round(hp), 0.9)] : [])],
+    normal: `Так обычно умирают ${sel.model.leadSec > 0 ? `через ${sel.model.leadSec}–${sel.model.horizonSec}` : `в ближайшие ${sel.model.horizonSec}`} с${reasons.length ? `: ${reasons.join(', ')}` : ''}. Отойдите к своим.`,
+    facts: [derivedFact('risk', `Риск смерти ${sel.model.leadSec > 0 ? `через ${sel.model.leadSec}–${sel.model.horizonSec}` : `за ${sel.model.horizonSec}`} с, %`, pct, 0.7), derivedFact('near', 'Врагов рядом', nearEnemyCount(c.v), 0.75), ...(hp !== null ? [derivedFact('hp', 'Здоровье, %', Math.round(hp), 0.9)] : [])],
     ttlSec: 6,
     cooldownSec: sel.model.cooldownSec,
   });

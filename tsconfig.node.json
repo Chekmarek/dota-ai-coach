@@ -15,6 +15,7 @@
     "src/core/**/*",
     "src/engine/capture/rate.ts",
     "src/engine/capture/live-state.ts",
+    "src/engine/gsi.ts",
     "tests/**/*"
   ]
 }

@@ -5,6 +5,9 @@
 // Кладёт в .tmp/danger/<id>.json.gz (не в git).
 //   node scripts/fetch-danger-matches.mjs [сколько матчей нужно, по умолчанию 2000] [--turbo]
 // --turbo — Турбо (game_mode 23, любой ранг: высоких рангов в Турбо мало) в .tmp/danger-turbo.
+// Экзамен (docs/EXAM.md): --dir exam1-ap — своя папка в .tmp; --exclude danger,danger-turbo,… — пропускать матчи,
+// которые уже есть в этих папках (обучение, прошлые проверки); --cursor-from <папка> — начать список OpenDota с места,
+// где закончила другая загрузка (не перебирать те же матчи); --inventory — сразу и инвентарь по секундам.
 import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync, appendFileSync, renameSync } from 'node:fs';
 import { join } from 'node:path';
 import { gzipSync } from 'node:zlib';
@@ -12,7 +15,16 @@ import { gzipSync } from 'node:zlib';
 const root = join(import.meta.dirname, '..');
 const turbo = process.argv.includes('--turbo');
 const want = Number(process.argv.slice(2).find((a) => /^\d+$/.test(a)) ?? 2000);
-const dir = join(root, '.tmp', turbo ? 'danger-turbo' : 'danger');
+const argOf = (k) => (process.argv.includes(k) ? process.argv[process.argv.indexOf(k) + 1] : null);
+const dir = join(root, '.tmp', argOf('--dir') ?? (turbo ? 'danger-turbo' : 'danger'));
+const withInventory = process.argv.includes('--inventory');
+/** Матчи, которые уже где-то использованы (обучение, проверки, прошлые экзамены) — не скачивать */
+const excluded = new Set(
+  (argOf('--exclude') ?? '')
+    .split(',')
+    .filter(Boolean)
+    .flatMap((d) => (existsSync(join(root, '.tmp', d)) ? readdirSync(join(root, '.tmp', d)).filter((f) => f.endsWith('.json.gz')).map((f) => f.slice(0, -8)) : [])),
+);
 /** Рейтинг All Pick (lobby 7, mode 22) или Турбо (lobby 0, mode 23) */
 const LOBBY = turbo ? 0 : 7, MODE = turbo ? 23 : 22, MIN_RANK = turbo ? 0 : 71;
 mkdirSync(dir, { recursive: true });
@@ -34,6 +46,10 @@ const stateFile = join(dir, 'state.json');
 const state = existsSync(stateFile)
   ? JSON.parse(readFileSync(stateFile, 'utf8'))
   : { cursor: null, queue: [], rejected: {}, patchFrom: null, exhausted: false };
+if (!existsSync(stateFile) && argOf('--cursor-from')) {
+  const other = join(root, '.tmp', argOf('--cursor-from'), 'state.json');
+  if (existsSync(other)) state.cursor = JSON.parse(readFileSync(other, 'utf8')).cursor;
+}
 const saveState = () => {
   writeFileSync(stateFile + '.tmp', JSON.stringify(state));
   renameSync(stateFile + '.tmp', stateFile);
@@ -137,7 +153,8 @@ const PB = `playbackData {
   playerUpdateGoldEvents { time gold networth }
   purchaseEvents { time itemId }
   deathEvents { time timeDead isBurst isEngagedOnDeath hasHealAvailable isAttemptTpOut isDieBack positionX positionY }
-  killEvents { time }
+  killEvents { time }${withInventory ? `
+  inventoryEvents { time ${['item0', 'item1', 'item2', 'item3', 'item4', 'item5', 'backPack0', 'backPack1', 'backPack2', 'teleport0', 'neutral0'].map((x) => `${x} { itemId charges }`).join(' ')} }` : ''}
 }`;
 const Q = (id) => `{ match(id: ${id}) { id didRadiantWin durationSeconds gameVersionId startDateTime parsedDateTime lobbyType gameMode rank bracket averageRank
   players { heroId isRadiant isVictory position lane role kills deaths assists numLastHits goldPerMinute experiencePerMinute ${PB} } } }`;
@@ -156,7 +173,7 @@ while (got < want) {
   }
   const id = state.queue.shift();
   const files = have();
-  if (files.has(String(id)) || state.rejected[id]) {
+  if (files.has(String(id)) || state.rejected[id] || excluded.has(String(id))) {
     saveState();
     continue;
   }

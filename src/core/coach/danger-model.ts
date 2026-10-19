@@ -5,7 +5,7 @@
 // scripts/danger-train.mjs на матчах STRATZ; веса и включение по режимам — src/data/danger-model.json.
 import { z } from 'zod';
 import type { CoachView } from './view.ts';
-import { nearEnemyCount } from './memory.ts';
+import { nearEnemyCount, type Sample } from './memory.ts';
 import { dist, isEnemyJungle, mapSide, NEAR_UNITS } from './geo.ts';
 
 /**
@@ -49,6 +49,10 @@ export const DANGER_FEATURES = [
   'turbo',
   'lowHpXnear',
   'closeXhurt',
+  // Динамика за последние секунды (память коуча): так смерть видна заранее, а не когда враги уже вплотную
+  'hpDrop5',
+  'nearRise5',
+  'missingRise10',
 ] as const;
 export type DangerFeature = (typeof DANGER_FEATURES)[number];
 
@@ -56,6 +60,15 @@ export interface DangerExtra {
   /** Стоимость собранных предметов своего героя (без расходников); null — не известна */
   itemValue: number | null;
   turbo: boolean;
+  /** Снимки последних секунд из памяти коуча (CoachMemory.samples); нет — динамика 0 */
+  history?: readonly Sample[];
+}
+
+/** Последний снимок памяти не позже wallMs − sec (null — истории столько нет) */
+function sampleAgo(h: readonly Sample[] | undefined, wallMs: number, sec: number): Sample | null {
+  if (!h) return null;
+  for (let i = h.length - 1; i >= 0; i--) if (h[i]!.wallMs <= wallMs - sec * 1000) return h[i]!;
+  return null;
 }
 
 const clamp = (x: number, a: number, b: number) => Math.max(a, Math.min(b, x));
@@ -75,8 +88,13 @@ export function dangerFeatures(v: CoachView, x: DangerExtra): number[] | null {
   const allies = v.allies.filter((a) => fresh(a) && dist(a.pos.value!, me) <= NEAR_UNITS).length;
   const nearVis = visible.filter((q) => q.d <= NEAR_UNITS);
   const minD = visible.length ? Math.min(...visible.map((q) => q.d)) : Infinity;
-  const ehp = nearVis.map((q) => q.e.hpPercent.value).filter((h): h is number => h !== null);
-  const elv = nearVis.map((q) => q.e.barLevel).filter((l): l is number => l !== null);
+  // Здоровье и уровень врагов рядом: полоски врагов к героям не привязываются (только своя — по уровню из GSI),
+  // поэтому — с привязанных, иначе со всех вражеских полосок на экране рядом с героем (как в оценке «Вступать»)
+  const linkedHp = nearVis.map((q) => q.e.hpPercent.value).filter((h): h is number => h !== null);
+  const linkedLvl = nearVis.map((q) => q.e.barLevel).filter((l): l is number => l !== null);
+  const screen = v.screen.meOnScreen ? v.screen.enemyBars : [];
+  const ehp = linkedHp.length ? linkedHp : screen.map((b) => b.hpPercent);
+  const elv = linkedLvl.length ? linkedLvl : screen.map((b) => b.level).filter((l): l is number => l !== null);
   const missing = v.enemies.filter((e) => e.missing === true).length;
   const side = mapSide(me, v.team);
   const own = v.team === 'radiant' ? v.score.radiant.value : v.score.dire.value;
@@ -105,6 +123,17 @@ export function dangerFeatures(v: CoachView, x: DangerExtra): number[] | null {
     x.turbo ? 1 : 0,
     lowHp * near,
     (Math.min(5, close) / 5) * (1 - hp),
+    ...dynamics(v, x.history, hp, nearCount, missing),
+  ];
+}
+
+/** Здоровье упало за 5 с; врагов рядом прибавилось за 5 с; врагов пропало с карты за 10 с */
+function dynamics(v: CoachView, h: readonly Sample[] | undefined, hp: number, near: number, missing: number): number[] {
+  const s5 = sampleAgo(h, v.wallMs, 5), s10 = sampleAgo(h, v.wallMs, 10);
+  return [
+    s5 && s5.hpPct !== null ? clamp((s5.hpPct / 100 - hp) / 0.5, 0, 1) : 0,
+    s5 ? clamp((near - s5.enemiesNear) / 3, -1, 1) : 0,
+    s10 ? clamp((missing - s10.enemiesMissing) / 3, -1, 1) : 0,
   ];
 }
 
@@ -128,6 +157,8 @@ export const dangerModelSchema = z.object({
   horizonSec: z.number(),
   /** Не чаще одного предупреждения модели за столько секунд */
   cooldownSec: z.number().min(0),
+  /** Модель предупреждает о смерти через leadSec…horizonSec секунд (0 — в ближайшие horizonSec) */
+  leadSec: z.number().min(0).default(0),
   trainedAt: z.string(),
   normal: modeSchema,
   turbo: modeSchema,

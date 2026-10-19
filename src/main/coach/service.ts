@@ -17,13 +17,17 @@ import { asGameModeInfo, modeBannerText, resolveGameMode, type GameModeInfo } fr
 import { parseModeOverrides } from '@core/knowledge-base/modes.ts';
 import turboJson from '../../data/modes/turbo.json';
 import dangerModelJson from '../../data/danger-model.json';
-import { parseDangerModel } from '@core/coach/danger-model.ts';
+import { parseDangerModel, type DangerModel } from '@core/coach/danger-model.ts';
+import fightModelJson from '../../data/fight-model.json';
+import { parseFightModel } from '@core/coach/fight-model.ts';
 import { BAD_ADVICE_SCHEMA, BAD_ADVICE_WINDOW_MS, SnapshotRing, badAdviceSnapshot, toBadAdviceHint, type BadAdviceRecord } from '@core/coach/bad-advice.ts';
 
 /** Справочник Турбо (вшит в сборку); неверная форма — null, тогда в Турбо вся механика «не проверено» */
 const TURBO = parseModeOverrides(turboJson);
 /** Модель опасности (обучена на матчах STRATZ, включение по режимам — docs/DANGER_MODEL.md); неверный файл — только правила */
 const DANGER_MODEL = parseDangerModel(dangerModelJson);
+/** Прогноз драк (docs/EXAM.md); неверный файл — только прежняя оценка правил */
+const FIGHT_MODEL = parseFightModel(fightModelJson);
 
 /** Как часто сохранять историю идущего матча */
 export const HISTORY_SAVE_MS = 30_000;
@@ -42,6 +46,8 @@ export interface CoachDeps {
   /** Отметки «плохой совет» (горячая клавиша); нет — отметки не сохраняются */
   badAdvice?: { readonly sessionId: string; save(r: BadAdviceRecord): void };
   appVersion?: string | null;
+  /** Только для экзамена (docs/EXAM.md): другая модель опасности; null — без неё (прежние правила) */
+  dangerModel?: DangerModel | null;
   log?: (...parts: unknown[]) => void;
   now?: () => number;
 }
@@ -100,7 +106,8 @@ export class CoachService {
       profile: buildPlayerProfile(this.deps.history.recent?.(PROFILE_MATCHES) ?? []),
       kbVerified: kb.meta.verification === 'verified',
       turbo: TURBO,
-      dangerModel: DANGER_MODEL,
+      dangerModel: this.deps.dangerModel === undefined ? DANGER_MODEL : this.deps.dangerModel,
+      fightModel: FIGHT_MODEL,
     };
     const ai = new CoachAi({ provider: () => this.deps.aiProvider(), now: this.now });
     this.engine = new CoachEngine({ data, ai, now: this.now, settings: coachSettings(this.deps.settings.get()), onAsync: () => this.publish() });
@@ -152,6 +159,11 @@ export class CoachService {
     this.announceMode(e, mode);
     this.publish();
     return u;
+  }
+
+  /** Прогнозы коуча по последнему снимку: риск смерти и исход драки рядом (экзамен, docs/EXAM.md) */
+  forecast(): ReturnType<CoachEngine['forecast']> | null {
+    return this.engine?.forecast() ?? null;
   }
 
   /** Герои текущего матча (страница «Драфт», кнопка «Взять из матча») */

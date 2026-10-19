@@ -8,7 +8,9 @@ import { CoachMemory } from './memory.ts';
 import { HintQueue, DEFAULT_QUEUE_CONFIG, type QueueConfig } from './queue.ts';
 import { MistakeDetector, MISTAKE_RU, type Mistake } from './mistakes.ts';
 import { deathReview, matchReview, type DeathReview, type MatchReview } from './reviews.ts';
-import { ACTION_RU, actionChoice, type ActionChoice } from './prob.ts';
+import { ACTION_RU, actionChoice, engagePercent, type ActionChoice } from './prob.ts';
+import { dangerFeatures, dangerProbability, itemValueOf } from './danger-model.ts';
+import { fightFeatures, fightProbability } from './fight-model.ts';
 import { buildView, poolPct, type CoachView } from './view.ts';
 import { draft, game, knowledge, mmss, type Rule, type RuleContext } from './rules/context.ts';
 import type { MatchKnowledge } from './knowledge.ts';
@@ -347,6 +349,27 @@ export class CoachEngine {
   /** Последний снимок матча (для страницы «Драфт»: какие герои уже известны); null — снимков ещё не было */
   get currentView(): CoachView | null {
     return this.lastView;
+  }
+
+  /**
+   * Прогнозы коуча по последнему снимку (для экзамена, docs/EXAM.md; подсказки не меняет):
+   * risk — вероятность умереть за 15 с по модели опасности режима (null — модели нет или нечего оценивать);
+   * fightWin — вероятность, что ваша команда выиграет драку рядом, по модели драк;
+   * fightWinRules — то же по прежней оценке правил («Вступать в драку», engagePercent).
+   */
+  forecast(): { risk: number | null; fightWin: number | null; fightWinRules: number | null } {
+    const v = this.lastView;
+    if (!v || !v.inGame) return { risk: null, fightWin: null, fightWinRules: null };
+    const turbo = this.look.isTurbo;
+    const itemValue = v.me.itemsKnown ? itemValueOf(v.me.items.map((i) => i.key), (k) => this.look.itemCost(k)) : null;
+    const dm = this.look.data.dangerModel;
+    const df = dm ? dangerFeatures(v, { itemValue, turbo, history: this.mem.samples }) : null;
+    const risk = dm && df ? dangerProbability((turbo ? dm.turbo : dm.normal).weights, df) : null;
+    const fm = this.look.data.fightModel;
+    const ff = fm ? fightFeatures(v, { itemValue, turbo, risk }) : null;
+    const fightWin = fm && ff ? fightProbability((turbo ? fm.turbo : fm.normal).weights, ff) : null;
+    const e = engagePercent(v, this.mem, this.look, this.settings.minPercentConfidence);
+    return { risk, fightWin, fightWinRules: e.value === null ? null : e.value / 100 };
   }
 
   /** Матчапы против всех известных врагов (кнопка в интерфейсе) */

@@ -7,6 +7,7 @@ import type { RankedHero, StatsRanked } from '../../shared/types/stats-ranked.ts
 import type { PlayerProfile } from './profile.ts';
 import { modeRule, turboMechanics, type ModeOverrides } from '../knowledge-base/modes.ts';
 import type { DangerModel } from './danger-model.ts';
+import type { FightModel } from './fight-model.ts';
 import { UNKNOWN_MODE, type GameModeInfo } from '../gsi/mode.ts';
 
 export interface CoachData {
@@ -27,6 +28,8 @@ export interface CoachData {
   profile?: PlayerProfile | null;
   /** Модель опасности (src/data/danger-model.json, danger-model.ts); нет — предупреждения о риске только по правилам */
   dangerModel?: DangerModel | null;
+  /** Прогноз драк (src/data/fight-model.json, fight-model.ts); нет — только прежняя оценка правил (engagePercent) */
+  fightModel?: FightModel | null;
 }
 
 /** Сильные игроки рейтинга к минуте (средние): добивания, ценность героя, опыт, уровень */

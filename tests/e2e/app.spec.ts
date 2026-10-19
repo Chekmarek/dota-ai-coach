@@ -635,11 +635,13 @@ test('«Плохой совет»: глобальная клавиша заня�
   writeFileSync(join(dir, 'history', '2026-10-18T21-00-00-000Z-9051474634.json'), JSON.stringify({ ...base, id: '2026-10-18T21-00-00-000Z-9051474634', startedAt: '2026-10-18T21:00:00.000Z', badAdvice: [{ id: 'm1', markedAt: '2026-10-18T21:10:00.000Z', clock: 605, titles: ['Отходите: 3 врага рядом'] }] }));
   // старый файл без поля badAdvice читается как раньше
   writeFileSync(join(dir, 'history', '2026-10-17T21-00-00-000Z-1.json'), JSON.stringify({ ...base, matchId: '1', id: '2026-10-17T21-00-00-000Z-1', startedAt: '2026-10-17T21:00:00.000Z' }));
+  // Своё сочетание: Ctrl+Shift+F8 может держать установленный коуч, запущенный на этом же ПК
+  writeFileSync(join(dir, 'settings.json'), JSON.stringify({ live: { autoStart: false }, gsi: { dotaDir: noDota(dir) }, hints: { badAdviceShortcut: 'Ctrl+Alt+F9' } }));
   const { app, ui } = await launch(dir);
   try {
-    expect(await app.evaluate(({ globalShortcut }) => globalShortcut.isRegistered('Ctrl+Shift+F8'))).toBe(true);
+    expect(await app.evaluate(({ globalShortcut }) => globalShortcut.isRegistered('Ctrl+Alt+F9'))).toBe(true);
     await ui.click('[data-testid="nav-history"]');
-    await expect(ui.locator('[data-testid="bad-advice-shortcut"]')).toContainText('Ctrl+Shift+F8');
+    await expect(ui.locator('[data-testid="bad-advice-shortcut"]')).toContainText('Ctrl+Alt+F9');
     await expect(ui.locator('[data-testid="history-marked-count"]')).toHaveCount(1);
     await expect(ui.locator('[data-testid="history-bad-advice"]')).toContainText('10:05');
     await expect(ui.locator('[data-testid="history-bad-advice"]')).toContainText('Отходите: 3 врага рядом');
@@ -648,7 +650,7 @@ test('«Плохой совет»: глобальная клавиша заня�
     await expect(ui.locator('[data-testid="history-list"] li')).toHaveCount(1);
     // выключили в настройках — клавиша освобождена
     await ui.evaluate(() => window.dotacoach.updateSettings({ hints: { badAdviceShortcut: '' } }));
-    await expect.poll(() => app.evaluate(({ globalShortcut }) => globalShortcut.isRegistered('Ctrl+Shift+F8'))).toBe(false);
+    await expect.poll(() => app.evaluate(({ globalShortcut }) => globalShortcut.isRegistered('Ctrl+Alt+F9'))).toBe(false);
     // небезопасное сочетание не принимается
     await expect(ui.evaluate(() => window.dotacoach.updateSettings({ hints: { badAdviceShortcut: 'Shift+A' } }))).rejects.toThrow();
   } finally {
