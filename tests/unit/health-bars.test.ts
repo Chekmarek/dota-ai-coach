@@ -3,7 +3,7 @@ import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { decodePng } from '../../scripts/png.mjs';
 import { crop, type FrameAccess, type RgbaImage } from '../../src/core/vision/image.ts';
-import { barTeam, readHealthBars } from '../../src/core/vision/health-bars.ts';
+import { barTeam, levelSquare, readHealthBars } from '../../src/core/vision/health-bars.ts';
 import type { HudLayout } from '../../src/core/vision/hud-layout.ts';
 import type { GlyphModel } from '../../src/core/ocr/glyph-ocr.ts';
 
@@ -55,6 +55,29 @@ describe('полоски здоровья героев', () => {
     }
     expect(Math.abs(r.bars[0]!.hpPercent - 79)).toBeLessThanOrEqual(5);
     expect(Math.abs(r.bars[1]!.hpPercent - 91)).toBeLessThanOrEqual(5);
+  });
+
+  it('однозначный уровень: квадрат уже окна, справа светлый фон — уровень всё равно читается (GSI: 1; STRATZ: 7)', () => {
+    // В 0.14.1 в окно цифр попадала земля справа от квадрата («символ у края») — уровень отбрасывался
+    const own = readHealthBars(frameWith('level-narrow-green.png', 940, 372), layout, model);
+    expect(own.bars.map((b) => [b.color, b.level])).toEqual([['green', 1]]);
+    const enemy = readHealthBars(frameWith('level-narrow-red.png', 770, 596), layout, model);
+    expect(enemy.bars.map((b) => [b.color, b.level])).toEqual([['red', 7]]);
+    expect(Math.abs(enemy.bars[0]!.hpPercent - 51)).toBeLessThanOrEqual(5);
+  });
+
+  it('квадрат уровня: окно сужается до квадрата и никогда не расширяется', () => {
+    // Синтетика: тёмно-зелёный квадрат 14×22 в окне 29×22, справа светлая земля
+    const img: RgbaImage = { width: 29, height: 22, data: new Uint8ClampedArray(29 * 22 * 4) };
+    for (let y = 0; y < 22; y++)
+      for (let x = 0; x < 29; x++) img.data.set(x < 14 ? [50, 110, 50, 255] : [150, 160, 120, 255], (y * 29 + x) * 4);
+    const box = { x: 0, y: 0, w: 29, h: 22 };
+    expect(levelSquare(img, box, 1)).toEqual({ x: 0, y: 0, w: 14, h: 22 });
+    // Квадрат не узнан (цвет другой команды) — окно как есть
+    expect(levelSquare(img, box, 2)).toEqual(box);
+    // Квадрат во всё окно — окно как есть
+    const full: RgbaImage = { width: 29, height: 22, data: new Uint8ClampedArray(29 * 22 * 4).map((_, i) => [90, 45, 45, 255][i % 4]!) };
+    expect(levelSquare(full, box, 2)).toEqual(box);
   });
 
   it('пустой кадр — полосок нет; не 16:9 или нет раскладки — «не поддерживается»', () => {

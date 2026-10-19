@@ -249,15 +249,22 @@ export function readHealthBars(frame: FrameAccess, layout: HudLayout, model: Gly
       const [dx, dy, lw, lh] = hb.level;
       const box = { x: x1 + Math.round(dx * k), y: yTop + Math.round(dy * k), w: Math.round(lw * k), h: Math.round(lh * k) };
       if (box.x >= 0 && box.y >= 0 && box.x + box.w <= img.width && box.y + box.h <= img.height) {
-        const seg = segment(cropImg(img, box.x, box.y, box.w, box.h), { mode: 'white' });
-        if (seg.hasText && !seg.truncated && seg.glyphs.length <= 2) {
+        // Сначала прежнее окно; не прочиталось — окно по ширине квадрата, затем и по высоте (см. levelSquare).
+        // Уровень, прочитанный в прежнем окне, не меняется
+        const narrow = levelSquare(img, box, g.color, false);
+        const tight = levelSquare(img, box, g.color);
+        const windows = [box, narrow, tight].filter((b, i, a) => a.findIndex((o) => o.y === b.y && o.w === b.w && o.h === b.h) === i);
+        for (const sq of windows) {
+          const seg = segment(cropImg(img, sq.x, sq.y, sq.w, sq.h), { mode: 'white' });
+          if (!seg.hasText || seg.truncated || seg.glyphs.length > 2) continue;
           const gl = seg.glyphs.map((q) => classify(model, q));
           const text = gl.map((q) => q.ch).join('');
           const c = Math.min(...gl.map((q) => q.score));
           const n = /^\d{1,2}$/.test(text) ? Number(text) : NaN;
-          if (n >= 1 && n <= 30 && c >= MIN_LEVEL_CONFIDENCE) {
+          if (n >= 1 && n <= 30 && c >= (sq === box ? MIN_LEVEL_CONFIDENCE : NARROW_LEVEL_CONFIDENCE)) {
             level = n;
             levelConfidence = c;
+            break;
           }
         }
       }
@@ -265,6 +272,60 @@ export function readHealthBars(frame: FrameAccess, layout: HudLayout, model: Gly
     bars.push({ color: g.color === 1 ? 'green' : 'red', hpPercent, level, levelConfidence, x: ox + x0, y: oy + yTop, length, confidence });
   }
   return { supported: true, bars, durationMs: now() - t0 };
+}
+
+/** Насколько канал цвета команды (зелёный у своих, красный у врагов) ярче двух других — квадрат уровня тонирован */
+const SQUARE_TINT = 15;
+/**
+ * Уровень из суженного окна (levelSquare) — только при такой уверенности. Цифры уровня в модели символов не
+ * обучены (шрифт часов): «1» бывает похожа на «7». На своём матче 2026-10-18 против STRATZ: при ≥ 0,6 из суженного
+ * окна ~96% верных, как из прежнего окна при MIN_LEVEL_CONFIDENCE; при 0,35 — 89%.
+ */
+const NARROW_LEVEL_CONFIDENCE = 0.6;
+/** Квадрат уровня тёмный (самый яркий канал ≤ ~128): светлее — размытая граница квадрата или фон того же оттенка */
+const SQUARE_MAX = 135;
+/** Столбец — часть квадрата уровня, если в нём не меньше этой доли пикселей цвета команды */
+const SQUARE_MIN_SHARE = 0.2;
+
+/**
+ * Квадрат уровня внутри окна box. Окно рассчитано на двузначный уровень, а квадрат однозначного уже: справа в окно
+ * попадает фон (светлая земля, небо), сегментатор видит в нём «символ у края» — и уровень не читался (на своём матче
+ * 2026-10-18 не прочитана половина уровней). Квадрат бывает и выше или ниже окна — тогда «у края» полоса фона сверху
+ * или снизу. Столбец (строка) — часть квадрата по доле пикселей цвета команды: цифры с обводкой занимают меньше.
+ * Край справа — два столбца подряд без цвета команды; сверху и снизу (trimRows) — не больше четверти окна.
+ * Окно только сужается; квадрат не узнан (у левого края нет цвета команды) — окно как есть.
+ */
+export function levelSquare(img: RgbaImage, box: { x: number; y: number; w: number; h: number }, color: 1 | 2, trimRows = true): { x: number; y: number; w: number; h: number } {
+  const { width: w, data: d } = img;
+  const tinted = (x: number, y: number) => {
+    const k = ((box.y + y) * w + box.x + x) * 4;
+    const r = d[k]!, g = d[k + 1]!, b = d[k + 2]!;
+    if (Math.max(r, g, b) > SQUARE_MAX) return false;
+    return color === 1 ? g - Math.max(r, b) >= SQUARE_TINT : r - Math.max(g, b) >= SQUARE_TINT;
+  };
+  const col = (x: number) => {
+    let n = 0;
+    for (let y = 0; y < box.h; y++) if (tinted(x, y)) n++;
+    return n / box.h;
+  };
+  if (Math.max(col(0), col(1)) < SQUARE_MIN_SHARE * 2) return box;
+  let width = box.w;
+  for (let x = Math.ceil(box.w / 3); x + 1 < box.w; x++)
+    if (col(x) < SQUARE_MIN_SHARE && col(x + 1) < SQUARE_MIN_SHARE) {
+      width = x;
+      break;
+    }
+  const row = (y: number) => {
+    let n = 0;
+    for (let x = 0; x < width; x++) if (tinted(x, y)) n++;
+    return n / width;
+  };
+  if (!trimRows) return { ...box, w: width };
+  const maxCut = Math.floor(box.h / 4);
+  let top = 0, bottom = box.h;
+  while (top < maxCut && row(top) < SQUARE_MIN_SHARE) top++;
+  while (box.h - bottom < maxCut && row(bottom - 1) < SQUARE_MIN_SHARE) bottom--;
+  return { x: box.x, y: box.y + top, w: width, h: bottom - top };
 }
 
 function cropImg(img: RgbaImage, x: number, y: number, w: number, h: number): RgbaImage {
