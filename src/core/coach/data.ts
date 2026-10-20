@@ -139,7 +139,8 @@ export class CoachLookup {
     return this.itemByKey.get(key)?.name ?? key;
   }
   itemCost(key: string): number | null {
-    return this.itemByKey.get(key)?.cost ?? null;
+    // Ключ с префиксом GSI (item_blink) и без (blink) — одна и та же цена
+    return this.itemByKey.get(key.startsWith('item_') ? key.slice(5) : key)?.cost ?? null;
   }
   /** Режим игры сейчас; неизвестен и не Турбо — правила обычной игры */
   setMode(mode: GameModeInfo): void {

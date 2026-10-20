@@ -1,13 +1,16 @@
 // Инвентарь по секундам (STRATZ inventoryEvents) для матчей подбора порога и проверки модели опасности
 // (docs/DANGER_MODEL.md): без него правила коуча не знают про реген и Town Portal Scroll и сравнение с моделью
 // было бы нечестным. Делит матчи так же, как tests/unit/danger-train.test.ts (по id). Только для разработчика.
-//   node scripts/fetch-danger-inventory.mjs [--turbo]  → .tmp/danger[-turbo]/inv/<id>.json.gz
+//   node scripts/fetch-danger-inventory.mjs [--turbo] [--all] [--dir <папка>]  → .tmp/<папка>/inv/<id>.json.gz
+// --all — и для обучающей части (без инвентаря стенд не знает предметов, и признак «стадия по предметам» не учится).
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { gzipSync } from 'node:zlib';
 
 const root = join(import.meta.dirname, '..');
-const dir = join(root, '.tmp', process.argv.includes('--turbo') ? 'danger-turbo' : 'danger');
+const argOf = (k) => (process.argv.includes(k) ? process.argv[process.argv.indexOf(k) + 1] : null);
+const dir = join(root, '.tmp', argOf('--dir') ?? (process.argv.includes('--turbo') ? 'danger-turbo' : 'danger'));
+const all = process.argv.includes('--all');
 const out = join(dir, 'inv');
 mkdirSync(out, { recursive: true });
 const home = process.env.USERPROFILE ?? process.env.HOME ?? '';
@@ -24,7 +27,7 @@ const split = (id) => {
 const SLOT = (s) => `${s} { itemId charges }`;
 const Q = (id) => `{ match(id: ${id}) { id players { heroId playbackData { inventoryEvents { time ${['item0', 'item1', 'item2', 'item3', 'item4', 'item5', 'backPack0', 'backPack1', 'backPack2', 'teleport0', 'neutral0'].map(SLOT).join(' ')} } } } } }`;
 
-const ids = readdirSync(dir).filter((f) => f.endsWith('.json.gz')).map((f) => Number(f.slice(0, -8))).filter((id) => split(id) !== 'train');
+const ids = readdirSync(dir).filter((f) => f.endsWith('.json.gz')).map((f) => Number(f.slice(0, -8))).filter((id) => all || split(id) !== 'train');
 let got = 0, fail = 0;
 for (const id of ids) {
   if (existsSync(join(out, `${id}.json.gz`))) {

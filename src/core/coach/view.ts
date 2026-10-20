@@ -125,7 +125,7 @@ export interface CoachView {
    * Полоски здоровья на экране (последний кадр). Вражеские считаются «рядом», только если на том же кадре видна
    * своя полоска (камера у героя): так видно 2 врага, даже когда на мини-карте их значки слились в один.
    */
-  screen: { meOnScreen: boolean; enemyBars: { hpPercent: number; level: number | null }[] };
+  screen: { meOnScreen: boolean; enemyBars: { hpPercent: number; level: number | null }[]; allyBars: { hpPercent: number; level: number | null }[] };
   buildings: GsiBuilding[] | null;
   events: GsiEvent[] | null;
 }
@@ -264,6 +264,8 @@ export function buildView(s: MatchState, gsi: GsiReading | null, gsiWallMs: numb
     screen: {
       meOnScreen: g?.slot !== null && g?.slot !== undefined && s.healthBars.some((b) => b.slot === g.slot),
       enemyBars: s.healthBars.filter((b) => b.side === 'enemy' && b.confidence >= ENEMY_BAR_MIN_CONFIDENCE).map((b) => ({ hpPercent: b.hpPercent, level: b.level })),
+      // Зелёные полоски союзников на экране (кроме своей): к героям они не привязываются — уровень знаем только свой
+      allyBars: s.healthBars.filter((b) => b.side === 'ally' && b.confidence >= ENEMY_BAR_MIN_CONFIDENCE && (g?.slot === null || g?.slot === undefined || b.slot !== g.slot)).map((b) => ({ hpPercent: b.hpPercent, level: b.level })),
     },
     buildings: x?.buildings ?? null,
     events: x?.events ?? null,

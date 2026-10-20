@@ -292,7 +292,9 @@ export class GamePipeline {
         smoked: false,
         has_debuff: false,
       },
-      items,
+      // Нет инвентаря в данных STRATZ — предметов в теле нет (коуч честно «не знает» их), а не пустые слоты:
+      // пустые слоты значили бы «предметов нет», и признак «стадия по предметам» учился бы на неправде
+      ...(me.playbackData.inventoryEvents?.length ? { items } : {}),
     };
   }
 

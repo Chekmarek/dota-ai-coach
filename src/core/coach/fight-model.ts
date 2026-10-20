@@ -54,7 +54,10 @@ export function fightFeatures(v: CoachView, x: FightExtra): number[] | null {
   const enemies = nearEnemyCount(v);
   const aClose = allies.filter((a) => dist(a.pos.value!, me) <= CLOSE_UNITS).length;
   const eClose = enemiesVis.filter((e) => dist(e.pos.value!, me) <= CLOSE_UNITS).length;
-  const allyHp = avg(allies.map((a) => a.hpPercent.value).filter((h): h is number => h !== null));
+  // Здоровье союзников: с привязанных полосок, иначе — с зелёных полосок на экране рядом с героем (к союзникам полоски
+  // не привязываются: без этого признак всегда был «неизвестен»)
+  const allyLinked = allies.map((a) => a.hpPercent.value).filter((h): h is number => h !== null);
+  const allyHp = avg(allyLinked.length ? allyLinked : v.screen.meOnScreen ? v.screen.allyBars.map((b) => b.hpPercent) : []);
   // Здоровье врагов: с привязанных к героям полосок, иначе — со всех вражеских полосок на экране рядом с героем
   const linked = enemiesVis.map((e) => e.hpPercent.value).filter((h): h is number => h !== null);
   const enemyHp = avg(linked.length ? linked : v.screen.meOnScreen ? v.screen.enemyBars.map((b) => b.hpPercent) : []);
