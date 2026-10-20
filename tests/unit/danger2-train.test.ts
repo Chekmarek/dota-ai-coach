@@ -130,6 +130,11 @@ describe.runIf(process.env.DOTACOACH_DANGER2)('модель опасности v
     const t0 = Date.now();
     const ap = trainSet(pick('danger', 'train').slice(0, TRAIN_MAX), false);
     console.log(`All Pick: строк ${ap.X.length}, смерть через ${LEAD}–${HOR} с: ${((100 * ap.Y.reduce((a, b) => a + b, 0)) / ap.X.length).toFixed(2)}% (${Math.round((Date.now() - t0) / 1000)} с)`);
+    // DANGER2_WARM_ONLY=1 — только заполнить кэш признаков All Pick (обучение и проверка), пока докачивается Турбо
+    if (process.env.DANGER2_WARM_ONLY) {
+      valSet(pick('danger', 'val').slice(0, VAL_MAX), false);
+      return;
+    }
     const wAP = trainLR(ap.X, ap.Y, DANGER_FEATURES.length);
     const tb = trainSet(pick('danger-turbo', 'train'), true);
     console.log(`Турбо: строк ${tb.X.length}`);
