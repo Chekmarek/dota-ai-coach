@@ -29,7 +29,7 @@ const split = (id: number) => {
 };
 const files = (dir: string) => (existsSync(join(root, '.tmp', dir)) ? readdirSync(join(root, '.tmp', dir)).filter((f) => f.endsWith('.json.gz')).map((f) => join(root, '.tmp', dir, f)) : []);
 /** Номера экзаменационных матчей — в обучение не попадают никогда */
-const examIds = new Set(readdirSync(join(root, '.tmp'), { withFileTypes: true }).filter((d) => d.isDirectory() && d.name.startsWith('exam')).map((d) => d.name).flatMap((d) => files(d).map((f) => f.split(/[\\/]/).pop()!)));
+const examIds = new Set((existsSync(join(root, '.tmp')) ? readdirSync(join(root, '.tmp'), { withFileTypes: true }) : []).filter((d) => d.isDirectory() && d.name.startsWith('exam')).map((d) => d.name).flatMap((d) => files(d).map((f) => f.split(/[\\/]/).pop()!)));
 
 describe.runIf(process.env.DOTACOACH_FIGHT_TRAIN)('прогноз драк: обучение', () => {
   it('All Pick → Турбо, проверка на отложенной части обучающих матчей', () => {

@@ -30,7 +30,7 @@ const split = (id: number) => {
   return h < 70 ? 'train' : h < 80 ? 'val' : 'test';
 };
 const files = (dir: string) => (existsSync(join(root, '.tmp', dir)) ? readdirSync(join(root, '.tmp', dir)).filter((f) => f.endsWith('.json.gz')).map((f) => join(root, '.tmp', dir, f)) : []);
-const examIds = new Set(readdirSync(join(root, '.tmp'), { withFileTypes: true }).filter((d) => d.isDirectory() && d.name.startsWith('exam')).flatMap((d) => files(d.name).map((f) => f.split(/[\\/]/).pop()!)));
+const examIds = new Set((existsSync(join(root, '.tmp')) ? readdirSync(join(root, '.tmp'), { withFileTypes: true }) : []).filter((d) => d.isDirectory() && d.name.startsWith('exam')).flatMap((d) => files(d.name).map((f) => f.split(/[\\/]/).pop()!)));
 const idOf = (f: string) => Number(/(\d+)\.json\.gz$/.exec(f)![1]);
 
 describe.runIf(process.env.DOTACOACH_DANGER_CAL)('модель опасности: порог через настоящий коуч', () => {

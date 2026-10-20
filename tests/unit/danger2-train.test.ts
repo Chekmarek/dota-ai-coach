@@ -31,7 +31,7 @@ const split = (id: number) => {
   return h < 70 ? 'train' : h < 80 ? 'val' : 'test';
 };
 const files = (dir: string) => (existsSync(join(root, '.tmp', dir)) ? readdirSync(join(root, '.tmp', dir)).filter((f) => f.endsWith('.json.gz')).map((f) => join(root, '.tmp', dir, f)) : []);
-const examIds = new Set(readdirSync(join(root, '.tmp'), { withFileTypes: true }).filter((d) => d.isDirectory() && d.name.startsWith('exam')).flatMap((d) => files(d.name).map((f) => f.split(/[\\/]/).pop()!)));
+const examIds = new Set((existsSync(join(root, '.tmp')) ? readdirSync(join(root, '.tmp'), { withFileTypes: true }) : []).filter((d) => d.isDirectory() && d.name.startsWith('exam')).flatMap((d) => files(d.name).map((f) => f.split(/[\\/]/).pop()!)));
 const idOf = (f: string) => Number(/(\d+)\.json\.gz$/.exec(f)![1]);
 const pick = (dir: string, sp: string) => files(dir).filter((f) => !examIds.has(f.split(/[\\/]/).pop()!) && split(idOf(f)) === sp);
 const deathsOf = (m: XMatch, i: number) => m.players[i]!.playbackData.deathEvents.map((d) => d.time).filter((t) => t > 0);
