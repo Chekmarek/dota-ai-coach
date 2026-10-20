@@ -14,7 +14,8 @@ import { CoachService } from '../../src/main/coach/service';
 import { KbStore } from '../../src/main/knowledge/kb-store';
 import { defaultSettings } from '../../src/shared/schemas/settings';
 import { RISK_RULES, parseDangerModel, type DangerModel } from '../../src/core/coach/danger-model.ts';
-import { GamePipeline, readXMatch, rng, type XMatch } from './exam-lib.ts';
+import { deadAt, GamePipeline, readXMatch, rng, type XMatch } from './exam-lib.ts';
+import { warnValue } from './warn-value.ts';
 
 const root = join(import.meta.dirname, '../..');
 const MODEL_FILE = join(root, 'src/data/danger-model.json');
@@ -66,6 +67,38 @@ describe.runIf(process.env.DOTACOACH_DANGER_CAL)('модель опасност�
     }
 
     const result: Record<string, { threshold: number; cooldownSec: number }> = {};
+    const curve: Record<string, ReturnType<typeof usefulness>> = {};
+    /**
+     * Кривая «польза ↔ тревог в минуту» (DECISIONS.md п. 74): для порогов при выбранной паузе — тревог в минуту живого
+     * времени, доля ложных (своей смерти за 20 с после тревоги нет), предупреждено за 8–20 с, польза (доля смертей,
+     * которых могла бы избежать подсказка при реакции 2 с) и «польза минус штраф»: спасённых смертей на 10 мин минус
+     * 0,1 × ложных тревог на 10 мин (10 ложных тревог стоят одной спасённой смерти — чтобы новичок не перестал слушать).
+     */
+    function usefulness(mode: 'normal' | 'turbo', turbo: boolean, heroes: { m: XMatch; meIdx: number; deaths: number[] }[], cd: number) {
+      const alive = heroes.reduce((s, h) => s + Array.from({ length: h.m.durationSeconds + 1 }, (_, t) => t).filter((t) => !deadAt(h.m.players[h.meIdx]!, t)).length, 0) / 60;
+      const deaths = heroes.reduce((s, h) => s + h.deaths.length, 0);
+      const rows = [];
+      for (let thr = 0.06; thr <= 0.401; thr += 0.02) {
+        const t = Math.round(thr * 100) / 100;
+        const dm: DangerModel = { ...model!, [mode]: { ...model![mode], threshold: t, cooldownSec: cd } };
+        let alerts = 0, falseA = 0, warned = 0, saved = 0;
+        for (const h of heroes) {
+          const a = alertsOf(h.m, h.meIdx, turbo, dm);
+          const all = h.m.players[h.meIdx]!.playbackData.deathEvents.map((d) => d.time);
+          alerts += a.length;
+          falseA += a.filter((x) => !all.some((d) => d > x && d <= x + 20)).length;
+          for (const d of h.deaths) {
+            const leads = a.filter((x) => x >= d - 30 && x <= d - 1).map((x) => d - x);
+            if (leads.some((l) => l >= WARN_TO && l <= WARN_FROM)) warned++;
+            saved += Math.max(0, ...leads.map((l) => warnValue(mode, l)));
+          }
+        }
+        const row = { threshold: t, perMin: alerts / alive, falseShare: alerts ? falseA / alerts : 0, recall: warned / Math.max(1, deaths), value: saved / Math.max(1, deaths), net: (10 * (saved - 0.1 * falseA)) / alive };
+        console.log(`  кривая ${mode}, пауза ${cd} с, порог ${t}: ${row.perMin.toFixed(2)} тревог/мин, ложных ${(100 * row.falseShare).toFixed(0)}%, за 8–20 с ${(100 * row.recall).toFixed(1)}%, польза ${(100 * row.value).toFixed(1)}%, польза − штраф ${row.net.toFixed(3)} на 10 мин`);
+        rows.push(row);
+      }
+      return { cooldownSec: cd, aliveMin: alive, deaths, rows };
+    }
     for (const [mode, dir] of [['normal', 'danger'], ['turbo', 'danger-turbo']] as const) {
       const turbo = mode === 'turbo';
       const heroes = files(dir)
@@ -93,7 +126,8 @@ describe.runIf(process.env.DOTACOACH_DANGER_CAL)('модель опасност�
       console.log(`${mode}: героев ${heroes.length}, смертей ${deaths}; старые правила ${(100 * rules.recall).toFixed(1)}%, тревог ${rules.alerts}; модель как есть (порог ${cur.threshold}, пауза ${cur.cooldownSec ?? model.cooldownSec}) ${(100 * was.recall).toFixed(1)}%, тревог ${was.alerts} (${Math.round((Date.now() - t0) / 1000)} с)`);
       let best = { threshold: cur.threshold, cooldownSec: cur.cooldownSec ?? model.cooldownSec, ...was, ok: was.alerts <= rules.alerts };
       const grid = Array.from({ length: 50 }, (_, i) => Math.round((0.03 + i * 0.01) * 100) / 100);
-      for (const cd of COOLDOWNS) {
+      // DANGER_CAL_CURVE_ONLY=1 — без подбора, только кривая пользы для порогов около нынешнего
+      for (const cd of process.env.DANGER_CAL_CURVE_ONLY ? [] : COOLDOWNS) {
         // Тревог тем меньше, чем выше порог: двоичный поиск самого низкого порога, при котором их не больше, чем у правил
         let lo = 0, hi = grid.length - 1, found: (typeof best) | null = null;
         while (lo <= hi) {
@@ -110,7 +144,9 @@ describe.runIf(process.env.DOTACOACH_DANGER_CAL)('модель опасност�
       }
       console.log(`  → порог ${best.threshold}, пауза ${best.cooldownSec} с: ${(100 * best.recall).toFixed(1)}%, тревог ${best.alerts} против ${rules.alerts} (${Math.round((Date.now() - t0) / 1000)} с)`);
       result[mode] = { threshold: best.threshold, cooldownSec: best.cooldownSec };
+      if (process.env.DANGER_CAL_CURVE) curve[mode] = usefulness(mode, turbo, heroes, best.cooldownSec);
     }
+    if (process.env.DANGER_CAL_CURVE) writeFileSync(join(root, '.tmp/danger-curve.json'), JSON.stringify(curve, null, 1));
     if (process.env.DANGER_CAL_WRITE) {
       for (const mode of ['normal', 'turbo'] as const) Object.assign(raw[mode], result[mode]);
       writeFileSync(MODEL_FILE, JSON.stringify(raw, null, 1) + '\n');
