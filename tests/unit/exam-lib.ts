@@ -341,6 +341,9 @@ export class GamePipeline {
   tick(t: number): CoachInput {
     const w = this.wallMs(t);
     const body = this.gsiBody(t);
+    // Как в настоящей игре: перед подготовкой Dota присылает выбор героев — по переходу и часам −1:00 коуч узнаёт
+    // Турбо (без него Турбо оставался «неизвестным», и экзамены кругов 1–2 шли в Турбо с моделью All Pick)
+    if (t === this.startClock) this.modeTracker.feed({ ...body, map: { ...(body.map as object), game_state: 'DOTA_GAMERULES_STATE_STRATEGY_TIME' } }, w - 1000);
     const mode = this.modeTracker.feed(body, w);
     const raw = readGsi(body);
     const reading = raw ? { ...raw, gameMode: mode } : null;

@@ -8,6 +8,8 @@ import { describe, expect, it } from 'vitest';
 import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { buildView } from '../../src/core/coach/view.ts';
+import { CoachMemory } from '../../src/core/coach/memory.ts';
+import { GOLD_HIGH } from '../../src/core/coach/rules/economy.ts';
 import { FIGHT_FEATURES, fightFeatures } from '../../src/core/coach/fight-model.ts';
 import { dangerFeatures, dangerProbability, dangerRisk, itemValueOf, parseDangerModel } from '../../src/core/coach/danger-model.ts';
 import dangerJson from '../../src/data/danger-model.json';
@@ -44,11 +46,17 @@ describe.runIf(process.env.DOTACOACH_FIGHT_TRAIN)('прогноз драк: об
           if (!fight.winner || fight.tp < 30) continue;
           for (const pi of [...fight.radiant, ...fight.dire]) {
             const pipe = new GamePipeline(m, pi, turbo, itemKey, idOf(f) + pi);
-            let input = null;
-            for (let t = fight.tp - WARMUP; t <= fight.tp; t++) input = pipe.tick(t);
-            const v = buildView(input!.state, input!.gsi, input!.gsiWallMs);
+            // Память коуча за разгон — для динамики в риске (как engine.forecast в приложении)
+            const mem = new CoachMemory();
+            let v: ReturnType<typeof buildView> | null = null;
+            for (let t = fight.tp - WARMUP; t <= fight.tp; t++) {
+              const input = pipe.tick(t);
+              v = buildView(input.state, input.gsi, input.gsiWallMs);
+              mem.ingest(v, GOLD_HIGH);
+            }
+            if (!v) continue;
             const itemValue = v.me.itemsKnown ? itemValueOf(v.me.items.map((i) => i.key), (k) => cost.get(k) ?? null) : null;
-            const df = dm ? dangerFeatures(v, { itemValue, turbo }) : null;
+            const df = dm ? dangerFeatures(v, { itemValue, turbo, history: mem.samples }) : null;
             const risk = dm && df ? dangerRisk(turbo ? dm.turbo : dm.normal, df) : null;
             const x = fightFeatures(v, { itemValue, turbo, risk });
             if (!x) continue;

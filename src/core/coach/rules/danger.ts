@@ -286,7 +286,7 @@ export const modelRule: Rule = (c) => {
     normal: `Так обычно умирают ${sel.model.leadSec > 0 ? `через ${sel.model.leadSec}–${sel.model.horizonSec}` : `в ближайшие ${sel.model.horizonSec}`} с${reasons.length ? `: ${reasons.join(', ')}` : ''}. Отойдите к своим.`,
     facts: [derivedFact('risk', `Риск смерти ${sel.model.leadSec > 0 ? `через ${sel.model.leadSec}–${sel.model.horizonSec}` : `за ${sel.model.horizonSec}`} с, %`, pct, 0.7), derivedFact('near', 'Врагов рядом', nearEnemyCount(c.v), 0.75), ...(hp !== null ? [derivedFact('hp', 'Здоровье, %', Math.round(hp), 0.9)] : [])],
     ttlSec: 6,
-    cooldownSec: sel.model.cooldownSec,
+    cooldownSec: sel.mode.cooldownSec ?? sel.model.cooldownSec,
   });
 };
 
