@@ -5,7 +5,7 @@
 // --all — и для обучающей части (без инвентаря стенд не знает предметов, и признак «стадия по предметам» не учится).
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { gzipSync } from 'node:zlib';
+import { gunzipSync, gzipSync } from 'node:zlib';
 
 const root = join(import.meta.dirname, '..');
 const argOf = (k) => (process.argv.includes(k) ? process.argv[process.argv.indexOf(k) + 1] : null);
@@ -30,7 +30,8 @@ const Q = (id) => `{ match(id: ${id}) { id players { heroId playbackData { inven
 const ids = readdirSync(dir).filter((f) => f.endsWith('.json.gz')).map((f) => Number(f.slice(0, -8))).filter((id) => all || split(id) !== 'train');
 let got = 0, fail = 0;
 for (const id of ids) {
-  if (existsSync(join(out, `${id}.json.gz`))) {
+  // Уже есть: отдельным файлом или прямо в матче (загрузка с инвентарём, fetch-danger-matches.mjs)
+  if (existsSync(join(out, `${id}.json.gz`)) || gunzipSync(readFileSync(join(dir, `${id}.json.gz`))).includes('"inventoryEvents"')) {
     got++;
     continue;
   }
