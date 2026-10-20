@@ -12,6 +12,7 @@ import { CoachMemory } from '../../src/core/coach/memory.ts';
 import { GOLD_HIGH } from '../../src/core/coach/rules/economy.ts';
 import { CoachEngine, defaultCoachSettings } from '../../src/core/coach/index.ts';
 import { DANGER_FEATURES, RISK_RULES, dangerFeatures, itemValueOf } from '../../src/core/coach/danger-model.ts';
+import { FeatureCache, featureVersion } from './feature-cache.ts';
 import { parseStatsRanked } from '../../src/shared/types/stats-ranked.ts';
 import type { CoachData } from '../../src/core/coach/data.ts';
 import { deadAt, GamePipeline, readXMatch, rng, type XMatch } from './exam-lib.ts';
@@ -44,8 +45,13 @@ describe.runIf(process.env.DOTACOACH_DANGER2)('модель опасности v
     const itemKey = new Map(base.items.map((i) => [i.id, i.key]));
     const cost = new Map(base.items.map((i) => [i.key, i.cost]));
 
+    // Кэш прогонов героев: повторное обучение не гоняет стенд заново (feature-cache.ts)
+    const cache = new FeatureCache('danger', featureVersion(DANGER_FEATURES, ['resources/data/kb/7.41f/stats-ranked.json']));
     /** Прогон героя: признаки (каждые STEP с или каждую секунду) и, для проверки, тревоги старых правил */
     function runHero(m: XMatch, i: number, turbo: boolean, every: number, withRules: boolean) {
+      return cache.get(`${m.id}-${i}-${turbo ? 1 : 0}-${every}-${withRules ? 1 : 0}`, () => runHeroRaw(m, i, turbo, every, withRules));
+    }
+    function runHeroRaw(m: XMatch, i: number, turbo: boolean, every: number, withRules: boolean) {
       const pipe = new GamePipeline(m, i, turbo, itemKey, m.id * 13 + i);
       const mem = new CoachMemory();
       let now = 0;

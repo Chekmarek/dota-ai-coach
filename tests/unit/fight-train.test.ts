@@ -16,6 +16,7 @@ import dangerJson from '../../src/data/danger-model.json';
 import { fightsOf, GamePipeline, readXMatch } from './exam-lib.ts';
 import { auc, calibrationTable, sigmoid, trainLR, type W } from './lr.ts';
 import { realData } from './coach-sim.ts';
+import { FeatureCache, featureVersion } from './feature-cache.ts';
 
 const root = join(import.meta.dirname, '../..');
 const MAX = process.env.FIGHT_TRAIN_MAX ? Number(process.env.FIGHT_TRAIN_MAX) : 600;
@@ -38,9 +39,20 @@ describe.runIf(process.env.DOTACOACH_FIGHT_TRAIN)('прогноз драк: об
     const idOf = (f: string) => Number(/(\d+)\.json\.gz$/.exec(f)![1]);
     const pick = (dir: string, sp: string) => files(dir).filter((f) => !examIds.has(f.split(/[\\/]/).pop()!) && split(idOf(f)) === sp);
 
+    // Кэш признаков драк по матчам (feature-cache.ts): риск в признаках — по модели опасности, она входит в версию
+    const cache = new FeatureCache('fight', featureVersion(FIGHT_FEATURES, ['src/data/danger-model.json']));
     function samples(list: string[], turbo: boolean) {
       const X: number[][] = [], Y: number[] = [];
       for (const f of list) {
+        const s = cache.get(`${idOf(f)}-${turbo ? 1 : 0}`, () => matchSamples(f, turbo));
+        X.push(...s.X);
+        Y.push(...s.Y);
+      }
+      return { X, Y };
+    }
+    function matchSamples(f: string, turbo: boolean) {
+      const X: number[][] = [], Y: number[] = [];
+      {
         const m = readXMatch(f);
         for (const fight of fightsOf(m)) {
           if (!fight.winner || fight.tp < 30) continue;
