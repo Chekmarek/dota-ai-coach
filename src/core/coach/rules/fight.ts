@@ -6,7 +6,7 @@ import { derivedFact, fact, kbFact, poolPct } from '../view.ts';
 import { draft, game, playing, plural, type Rule } from './context.ts';
 import { NEAR_UNITS, dist } from '../geo.ts';
 import type { HintDraft, PercentEstimate } from '../types.ts';
-import { fightCounts, fightFactors, fightFeatures, fightProbability, type FIGHT_FEATURES } from '../fight-model.ts';
+import { engageLabel, fightCounts, fightFactors, fightFeatures, fightProbability, type EngageLabel, type FIGHT_FEATURES } from '../fight-model.ts';
 import { dangerFeatures, dangerRisk, itemValueOf } from '../danger-model.ts';
 
 type FightFeature = (typeof FIGHT_FEATURES)[number];
@@ -73,9 +73,17 @@ export const engageRule: Rule = (c) => {
   const enemies = `${n} ${plural(n, 'враг', 'врага', 'врагов')} рядом`;
   // Только что сказали «Отходи» — «Вступать» сразу после него противоречит; ждём DISENGAGE_HOLD_MS
   const disengagedAt = c.mem.marks.get('disengage@');
-  if (e.value >= 60 && disengagedAt !== undefined && c.now - disengagedAt < DISENGAGE_HOLD_MS) return null;
-  const go = e.value >= 60;
-  const no = e.value <= 40;
+  // Заголовок с гистерезисом ±3 п.п. (только с моделью: она обновляет шанс каждую секунду); прошлый — в памяти
+  // коуча, пока подсказка жива (не старше её ttl)
+  const LABELS: EngageLabel[] = ['no', 'even', 'go'];
+  const prevAt = c.mem.marks.get('engage-label@');
+  const prev = m && prevAt !== undefined && c.now - prevAt <= 4000 ? (LABELS[c.mem.marks.get('engage-label') ?? -1] ?? null) : null;
+  const label = m ? engageLabel(e.value, prev) : e.value >= 60 ? 'go' : e.value <= 40 ? 'no' : 'even';
+  const go = label === 'go';
+  const no = label === 'no';
+  if (go && disengagedAt !== undefined && c.now - disengagedAt < DISENGAGE_HOLD_MS) return null;
+  c.mem.marks.set('engage-label', LABELS.indexOf(label));
+  c.mem.marks.set('engage-label@', c.now);
   // С моделью — кто рядом: «2 на 2 (+1 рядом)»: враги на мини-карте рядом, но не вплотную (не на экране) — тоже в шансе
   const who = m ? ` · ${m.counts.ours} на ${m.counts.close}${m.counts.near > m.counts.close ? ` (+${m.counts.near - m.counts.close} рядом)` : ''}` : '';
   const short = (go ? `Вступать: шанс ${e.value}%` : no ? `Не вступать: шанс ${e.value}%` : `Драка на равных: ${e.value}%`) + who;

@@ -6,7 +6,8 @@ import { CoachLookup } from '../../src/core/coach/data.ts';
 import { CoachMemory } from '../../src/core/coach/memory.ts';
 import { defaultCoachSettings } from '../../src/core/coach/index.ts';
 import { engageRule } from '../../src/core/coach/rules/fight.ts';
-import { parseFightModel } from '../../src/core/coach/fight-model.ts';
+import { engageLabel, fightCounts, fightFeatures, FIGHT_FEATURES, parseFightModel } from '../../src/core/coach/fight-model.ts';
+import { HintQueue } from '../../src/core/coach/queue.ts';
 import { parseDangerModel } from '../../src/core/coach/danger-model.ts';
 import type { HintDraft } from '../../src/core/coach/types.ts';
 import fightJson from '../../src/data/fight-model.json';
@@ -70,5 +71,63 @@ describe('шанс в драке по модели', () => {
     const h = engage({ enemies: enemies(2), allies: allies(1) }, { ...realData(), fightModel: null, dangerModel: null });
     expect(h?.short ?? '').not.toMatch(/ на /);
     if (h) expect(h.cooldownMs).toBe(30_000);
+  });
+
+  it('заголовок с гистерезисом ±3 п.п.: около 60% и 40% не дёргается', () => {
+    expect(engageLabel(61, null)).toBe('go');
+    expect(engageLabel(58, 'go')).toBe('go');
+    expect(engageLabel(56, 'go')).toBe('even');
+    expect(engageLabel(61, 'even')).toBe('even');
+    expect(engageLabel(63, 'even')).toBe('go');
+    expect(engageLabel(42, 'no')).toBe('no');
+    expect(engageLabel(38, 'even')).toBe('even');
+    expect(engageLabel(37, 'even')).toBe('no');
+    // шанс скачет 58–62% каждую секунду — заголовок меняется не больше одного раза
+    let prev: ReturnType<typeof engageLabel> | null = null, changes = 0;
+    for (const v of [61, 58, 62, 59, 58, 61, 60, 57, 62, 59]) {
+      const l = engageLabel(v, prev);
+      if (prev && l !== prev) changes++;
+      prev = l;
+    }
+    expect(changes).toBeLessThanOrEqual(1);
+  });
+
+  it('подпись «кто рядом» и признаки модели считаются одним подсчётом', () => {
+    for (const [e, far, a] of [[2, 0, 1], [2, 1, 1], [3, 0, 0], [1, 2, 3], [4, 1, 3]] as const) {
+      const s = sim({ wallMs: T0, clock: 1500, level: 14, pos: { x: 0, y: 0 }, enemies: enemies(e, far), allies: allies(a) });
+      const v = buildView(s.state, s.gsi, T0);
+      const c = fightCounts(v)!;
+      const f = fightFeatures(v, { itemValue: null, turbo: false, risk: 0 })!;
+      expect(c.ours - 1).toBe(Math.round(f[FIGHT_FEATURES.indexOf('allies')]! * 4));
+      expect(c.close).toBe(Math.round(f[FIGHT_FEATURES.indexOf('enemiesClose')]! * 5));
+      expect(c.near).toBe(Math.round(f[FIGHT_FEATURES.indexOf('enemies')]! * 5));
+    }
+  });
+
+  it('в очереди: шанс держится на экране каждую секунду без мигания, не вытесняет «Отходи» и не противоречит ему', () => {
+    const S = defaultCoachSettings();
+    const ctx = (now: number) => ({ now, clock: 1500, inFight: false, settings: S });
+    const q = new HintQueue();
+    const base = engage({ enemies: enemies(2), allies: allies(1) })!;
+    const as = (short: string, priority: 'advice' | 'critical' = 'advice') => ({ ...base, short, priority });
+    // 20 с подряд правило подтверждает шанс раз в секунду — на экране без перерыва
+    for (let t = 0; t <= 20_000; t += 1000) {
+      q.push(as(`Драка на равных: ${50 + (t % 3000) / 1000}% · 2 на 2`), ctx(t));
+      q.tick(t);
+      expect(q.visible('decision').some((h) => h.id === 'fight.engage')).toBe(true);
+    }
+    // «Отходи» (опасность) + ещё одна подсказка: экран полон; критичное «Не вступать» не вытесняет «Отходи»
+    const q2 = new HintQueue();
+    q2.push({ ...base, id: 'danger.low-hp', ruleId: 'danger.low-hp', category: 'danger', priority: 'critical', short: 'Отходи', zone: 'alert' }, ctx(0));
+    q2.push({ ...base, id: 'macro.x', ruleId: 'macro.x', category: 'macro', priority: 'advice', short: 'Совет' }, ctx(100));
+    q2.push(as('Не вступать: шанс 30% · 1 на 3', 'critical'), ctx(9000));
+    expect(q2.visible('alert').map((h) => h.id)).toEqual(['danger.low-hp']);
+    // «Не вступать» на экране вместе с «Отходи»; шанс вырос — «Вступать» на месте не появляется, пока висит «Отходи»
+    const q3 = new HintQueue();
+    q3.push(as('Не вступать: шанс 35% · 2 на 3'), ctx(0));
+    q3.push({ ...base, id: 'danger.low-hp', ruleId: 'danger.low-hp', category: 'danger', priority: 'critical', short: 'Отходи', zone: 'alert' }, ctx(500));
+    const r = q3.push(as('Вступать: шанс 65% · 3 на 2'), ctx(1500));
+    expect(r.reason).toBe('conflict');
+    expect(q3.visible('decision').find((h) => h.id === 'fight.engage')?.short).toMatch(/^Не вступать/);
   });
 });

@@ -43,17 +43,28 @@ export interface FightExtra {
 const clamp = (x: number, a: number, b: number) => Math.max(a, Math.min(b, x));
 const avg = (a: number[]) => (a.length ? a.reduce((s, x) => s + x, 0) / a.length : null);
 
-/** Признаки (порядок — FIGHT_FEATURES); null — нет своего места или здоровья */
-export function fightFeatures(v: CoachView, x: FightExtra): number[] | null {
+/**
+ * Кто рядом — один подсчёт и для признаков модели, и для подписи шанса («2 на 2 (+1 рядом)»). allies, enemiesVis —
+ * свежие (≤ 3 с) живые герои на мини-карте ≤ 2 500 ед.; enemies — все враги рядом (мини-карта и полоски на экране);
+ * aClose, eClose — вплотную (≤ 1 200, обычно это те, кто на экране). null — своё место неизвестно.
+ */
+export function fightCrowd(v: CoachView) {
   const me = v.me.pos.value;
-  const hpPool = v.me.hp.value;
-  if (!me || !hpPool || hpPool.max <= 0 || !v.team) return null;
+  if (!me) return null;
   const fresh = (p: CoachView['enemies'][number]) => p.alive.value !== false && p.pos.value !== null && p.pos.ageSec !== null && p.pos.ageSec <= FRESH_SEC;
   const allies = v.allies.filter((a) => fresh(a) && dist(a.pos.value!, me) <= NEAR_UNITS);
   const enemiesVis = v.enemies.filter((e) => fresh(e) && dist(e.pos.value!, me) <= NEAR_UNITS);
-  const enemies = nearEnemyCount(v);
   const aClose = allies.filter((a) => dist(a.pos.value!, me) <= CLOSE_UNITS).length;
   const eClose = enemiesVis.filter((e) => dist(e.pos.value!, me) <= CLOSE_UNITS).length;
+  return { me, allies, enemiesVis, enemies: nearEnemyCount(v), aClose, eClose };
+}
+
+/** Признаки (порядок — FIGHT_FEATURES); null — нет своего места или здоровья */
+export function fightFeatures(v: CoachView, x: FightExtra): number[] | null {
+  const hpPool = v.me.hp.value;
+  const crowd = fightCrowd(v);
+  if (!crowd || !hpPool || hpPool.max <= 0 || !v.team) return null;
+  const { me, allies, enemiesVis, enemies, aClose, eClose } = crowd;
   // Здоровье союзников: с привязанных полосок, иначе — с зелёных полосок на экране рядом с героем (к союзникам полоски
   // не привязываются: без этого признак всегда был «неизвестен»)
   const allyLinked = allies.map((a) => a.hpPercent.value).filter((h): h is number => h !== null);
@@ -121,13 +132,24 @@ export function fightProbability(w: { bias: number; w: readonly number[] }, f: r
  * close — враги вплотную (≤ 1 200, обычно это те, кто на экране), near — все враги рядом (мини-карта и полоски).
  */
 export function fightCounts(v: CoachView): { ours: number; close: number; near: number } | null {
-  const me = v.me.pos.value;
-  if (!me) return null;
-  const fresh = (p: CoachView['enemies'][number]) => p.alive.value !== false && p.pos.value !== null && p.pos.ageSec !== null && p.pos.ageSec <= FRESH_SEC;
-  const ours = v.allies.filter((a) => fresh(a) && dist(a.pos.value!, me) <= NEAR_UNITS).length + 1;
-  const close = v.enemies.filter((e) => fresh(e) && dist(e.pos.value!, me) <= CLOSE_UNITS).length;
-  const near = Math.max(close, nearEnemyCount(v));
-  return { ours, close, near };
+  const c = fightCrowd(v);
+  return c ? { ours: c.allies.length + 1, close: c.eClose, near: Math.max(c.eClose, c.enemies) } : null;
+}
+
+/**
+ * Заголовок шанса с гистерезисом ±3 п.п.: около 60% и 40% заголовок не дёргается каждую секунду между «Вступать»
+ * и «Драка на равных» («Не вступать»). prev — прошлый заголовок этой драки (null — первый показ).
+ */
+export const ENGAGE_GO = 60;
+export const ENGAGE_NO = 40;
+export const ENGAGE_HYSTERESIS = 3;
+export type EngageLabel = 'go' | 'even' | 'no';
+export function engageLabel(value: number, prev: EngageLabel | null): EngageLabel {
+  const h = ENGAGE_HYSTERESIS;
+  if (prev === 'go' && value >= ENGAGE_GO - h) return 'go';
+  if (prev === 'no' && value <= ENGAGE_NO + h) return 'no';
+  if (prev === 'even' && value > ENGAGE_NO - h && value < ENGAGE_GO + h) return 'even';
+  return value >= ENGAGE_GO ? 'go' : value <= ENGAGE_NO ? 'no' : 'even';
 }
 
 /** Вклад признаков в шанс, п.п. (по наклону сигмоиды в точке), самые сильные первыми */

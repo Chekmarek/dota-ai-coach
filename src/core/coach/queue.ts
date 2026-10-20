@@ -156,6 +156,8 @@ export class HintQueue {
     const zone = d.zone ?? DEFAULT_ZONE[d.category];
     const same = this.visibleHints.find((h) => h.id === d.id);
     if (same) {
+      // Обновление на месте не должно создавать противоречие: «Не вступать» → «Вступать», пока на экране «Отходи»
+      if (stanceOf(d) === 'go' && this.visibleHints.some((h) => h !== same && stanceOf(h) === 'back')) return drop('conflict');
       // Повтор: обновляем содержимое и продлеваем, номер показа сохраняем; текст ИИ не затираем шаблоном
       const keepDetail = same.textSource === 'ai' ? same.detail : d.detail;
       // Продлевается только подсказка «по ситуации» (пока опасность есть — она на экране). Совет экономики
@@ -209,7 +211,10 @@ export class HintQueue {
     if (this.visibleHints.length >= this.config.maxVisible) {
       // самая слабая: ниже важность → повторяющаяся (придёт снова) раньше одноразовой → старше
       const oneShot = (h: { cooldownMs: number }) => (h.cooldownMs === 0 ? 1 : 0);
-      const weakest = [...this.visibleHints].sort((a, b) => PRIORITY_RANK[a.priority] - PRIORITY_RANK[b.priority] || oneShot(a) - oneShot(b) || a.createdWallMs - b.createdWallMs)[0]!;
+      // Шанс в драке (висит постоянно, пока враги рядом) предупреждение об опасности не вытесняет никогда
+      const candidates = d.ruleId === 'fight.engage' ? this.visibleHints.filter((h) => h.category !== 'danger') : this.visibleHints;
+      if (!candidates.length) return drop('full');
+      const weakest = [...candidates].sort((a, b) => PRIORITY_RANK[a.priority] - PRIORITY_RANK[b.priority] || oneShot(a) - oneShot(b) || a.createdWallMs - b.createdWallMs)[0]!;
       // равная по важности сменяет ту, что уже провисела ROTATE_MS: подсказки чередуются, а не теряются
       // одноразовое событие (без кулдауна: «Рошан убит») при равной важности сразу вытесняет повторяющуюся подсказку —
       // та придёт снова, а событие — нет
