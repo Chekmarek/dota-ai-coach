@@ -16,7 +16,7 @@ import { defaultSettings } from '../../src/shared/schemas/settings';
 import { buildView } from '../../src/core/coach/view.ts';
 import { nearEnemyCount } from '../../src/core/coach/memory.ts';
 import { RISK_RULES } from '../../src/core/coach/danger-model.ts';
-import { dist, fightsOf, GamePipeline, levelAt, networthAt, posAt, readXMatch, rng, type Fight, type XMatch } from './exam-lib.ts';
+import { deadAt, dist, fightsOf, GamePipeline, levelAt, networthAt, posAt, readXMatch, rng, visionRange, type Fight, type P, type XMatch } from './exam-lib.ts';
 import { calibrationTable } from './lr.ts';
 
 const root = join(import.meta.dirname, '../..');
@@ -25,7 +25,9 @@ const OUT = process.env.EXAM_OUT ?? '.tmp/exam-result.json';
 const MAX = process.env.EXAM_MAX ? Number(process.env.EXAM_MAX) : 10_000;
 const KB_CACHE = join(process.env.APPDATA ?? '', 'Dota AI Coach', 'kb-cache');
 /** Предупреждение о смерти засчитывается, если было за 10–20 с до неё */
-const WARN_FROM = 20, WARN_TO = 10;
+// Окно 4–20 с (решение владельца 2026-10-20): человеку нужно ~1–1,5 с заметить подсказку и ещё 2–3 с на Blink, Force
+// Staff или побег; раньше 20 с тревога уже не читается как «отходи». Окно прошлых кругов 10–20 с — для сравнения.
+const WARN_FROM = 20, WARN_TO = 4, WARN_TO_OLD = 10;
 const DANGER_IDS = new Set<string>([...RISK_RULES, 'danger.model']);
 
 interface FightRec {
@@ -58,6 +60,11 @@ interface DeathRec {
   level: number;
   warnedModel: boolean;
   warnedRules: boolean;
+  /** То же в окне прошлых кругов 10–20 с */
+  warnedModel10: boolean;
+  warnedRules10: boolean;
+  /** В окне враг рядом (≤ 2 500) был хоть раз в обзоре своей команды — коуч мог его увидеть */
+  visible: boolean;
   maxRisk: number | null;
 }
 
@@ -122,10 +129,17 @@ describe.runIf(process.env.DOTACOACH_EXAM)('экзамен коуча на св�
       st.falseModel += a.alerts.filter((t) => !myDeaths.some((d) => d > t && d <= t + WARN_FROM)).length;
       st.falseRules += b.alerts.filter((t) => !myDeaths.some((d) => d > t && d <= t + WARN_FROM)).length;
       for (const d of myDeaths) {
-        const win = (al: number[]) => al.some((t) => t >= d - WARN_FROM && t <= d - WARN_TO);
+        const win = (al: number[], to = WARN_TO) => al.some((t) => t >= d - WARN_FROM && t <= d - to);
+        let visible = false;
+        for (let t = d - WARN_FROM; t <= d - WARN_TO && !visible; t++) {
+          const my = posAt(me, t);
+          if (!my) continue;
+          const watchers = m.players.filter((p) => p.isRadiant === me.isRadiant && !deadAt(p, t)).map((p) => posAt(p, t)).filter((q): q is P => q !== null);
+          visible = m.players.some((e) => e.isRadiant !== me.isRadiant && !deadAt(e, t) && posAt(e, t) !== null && dist(posAt(e, t)!, my) <= 2500 && watchers.some((w) => dist(w, posAt(e, t)!) <= visionRange(t)));
+        }
         let maxRisk: number | null = null;
         for (let t = d - WARN_FROM; t <= d - WARN_TO; t++) if (a.risk.has(t)) maxRisk = Math.max(maxRisk ?? 0, a.risk.get(t)!);
-        deaths.push({ match: m.id, mode, t: d, hero, level: levelAt(me, d), warnedModel: win(a.alerts), warnedRules: win(b.alerts), maxRisk });
+        deaths.push({ match: m.id, mode, t: d, hero, level: levelAt(me, d), warnedModel: win(a.alerts), warnedRules: win(b.alerts), warnedModel10: win(a.alerts, WARN_TO_OLD), warnedRules10: win(b.alerts, WARN_TO_OLD), visible, maxRisk });
       }
       for (const x of myFights) {
         if (!x.winner) continue;
@@ -217,6 +231,18 @@ describe.runIf(process.env.DOTACOACH_EXAM)('экзамен коуча на св�
       const ciEq = Object.fromEntries(SAME_INFO.map((n) => [n, diffCI(eq, predictors[n]!)]));
       const bestEq = Math.max(...SAME_INFO.map((n) => table[n]!.equal ?? 0));
       const dangerModel = D.filter((d) => d.warnedModel).length / Math.max(1, D.length), dangerRules = D.filter((d) => d.warnedRules).length / Math.max(1, D.length);
+      const share = (xs: DeathRec[], f: (d: DeathRec) => boolean) => xs.filter(f).length / Math.max(1, xs.length);
+      const V = D.filter((d) => d.visible);
+      const extra = {
+        window: `${WARN_TO}–${WARN_FROM}`,
+        visibleShare: share(D, (d) => d.visible),
+        warnedVisibleModel: share(V, (d) => d.warnedModel),
+        warnedVisibleRules: share(V, (d) => d.warnedRules),
+        warnedModel10: share(D, (d) => d.warnedModel10),
+        warnedRules10: share(D, (d) => d.warnedRules10),
+        falseShareModel: A.falseModel / Math.max(1, A.model),
+        falseShareRules: A.falseRules / Math.max(1, A.rules),
+      };
       const pass = {
         equalFights: (table['коуч (модель драк)']!.equal ?? 0) >= bestEq + 5 && SAME_INFO.every((n) => ciEq[n]!.lo > 0),
         calibration: cal.ece <= 5,
@@ -235,7 +261,7 @@ describe.runIf(process.env.DOTACOACH_EXAM)('экзамен коуча на св�
         bySize: groups((r) => sizeOf(r.size)),
         calibration: cal,
         calibrationRules: calRules,
-        danger: { deaths: D.length, warnedModel: dangerModel, warnedRules: dangerRules, alertsModel: A.model, alertsRules: A.rules, perMinModel: A.model / (A.aliveSec / 60), perMinRules: A.rules / (A.aliveSec / 60), falseModel: A.falseModel, falseRules: A.falseRules },
+        danger: { deaths: D.length, warnedModel: dangerModel, warnedRules: dangerRules, alertsModel: A.model, alertsRules: A.rules, perMinModel: A.model / (A.aliveSec / 60), perMinRules: A.rules / (A.aliveSec / 60), falseModel: A.falseModel, falseRules: A.falseRules, ...extra },
         pass,
         gross,
         missed,
@@ -243,7 +269,7 @@ describe.runIf(process.env.DOTACOACH_EXAM)('экзамен коуча на св�
       console.log(`\n${mode}: драк ${F.length} (равных ${eq.length}); смертей ${D.length}`);
       for (const [n, v] of Object.entries(table)) console.log(`  ${n.padEnd(38)} все ${v.all?.toFixed(1)}%  равные ${v.equal?.toFixed(1)}%`);
       console.log(`  честность процентов: отклонение ${cal.ece.toFixed(1)} п.п. (старые правила ${calRules.ece.toFixed(1)})`);
-      console.log(`  опасность: предупреждено за 10–20 с — модель ${(100 * dangerModel).toFixed(1)}%, старые правила ${(100 * dangerRules).toFixed(1)}%; тревог ${A.model} против ${A.rules}; ложных ${A.falseModel} против ${A.falseRules}`);
+      console.log(`  опасность: предупреждено за ${extra.window} с — модель ${(100 * dangerModel).toFixed(1)}%, старые правила ${(100 * dangerRules).toFixed(1)}%; тревог ${A.model} против ${A.rules}; ложных ${A.falseModel} против ${A.falseRules}; из видимых смертей ${(100 * extra.warnedVisibleModel).toFixed(1)}% (видимых ${(100 * extra.visibleShare).toFixed(1)}%)`);
       console.log(`  проходной балл: равные драки ${pass.equalFights ? 'да' : 'НЕТ'}, проценты ${pass.calibration ? 'да' : 'НЕТ'}, опасность ${pass.danger ? 'да' : 'НЕТ'}`);
     }
     writeFileSync(join(root, OUT), JSON.stringify({ report, fights, deaths }, null, 1));
