@@ -33,6 +33,8 @@ const FIGHT_MODEL = parseFightModel(fightModelJson);
 export const HISTORY_SAVE_MS = 30_000;
 /** Смена режима посреди матча объявляется, если новый режим держится столько (без мигания) */
 export const MODE_STABLE_MS = 1500;
+/** Режим не узнан столько — подсказать выбрать его вручную (коуч подключился посреди матча, темп ещё не решил) */
+export const MODE_UNKNOWN_HINT_MS = 120_000;
 
 export interface CoachDeps {
   settings: { get(): Settings };
@@ -76,6 +78,7 @@ export class CoachService {
   /** Индикатор режима: для какого матча и какого режима уже показан; кандидат на смену и с какого момента */
   private modeShown: { matchId: string; sig: string } | null = null;
   private modePending: { sig: string; since: number } | null = null;
+  private modeUnknown: { matchId: string; since: number; hinted: boolean } | null = null;
   private modeSeq = 0;
   /** Состояние матча за последние 15 с и показанные за это время подсказки — для отметки «плохой совет» */
   private readonly snapshots = new SnapshotRing();
@@ -255,6 +258,16 @@ export class CoachService {
     if (!e.inGame || !this.match) return;
     const sig = `${mode.mode}|${mode.source}|${mode.raw ?? ''}`;
     const now = this.now();
+    if (mode.mode === 'unknown') {
+      if (this.modeUnknown?.matchId !== this.match.id) this.modeUnknown = { matchId: this.match.id, since: now, hinted: false };
+      else if (!this.modeUnknown.hinted && now - this.modeUnknown.since >= MODE_UNKNOWN_HINT_MS && this.modeShown?.matchId === this.match.id) {
+        this.modeUnknown.hinted = true;
+        const banner: ModeBanner = { seq: ++this.modeSeq, mode: 'unknown', source: mode.source, title: 'Режим не определён', text: 'Уже 2 минуты режим не узнать — если это Турбо, выберите его в настройках коуча («Режим игры»). Пока подсказки как в обычной игре' };
+        this.deps.log?.('coach режим не определён 2 мин', {});
+        this.deps.onModeBanner?.(banner);
+        return;
+      }
+    } else if (this.modeUnknown?.matchId === this.match.id) this.modeUnknown.since = now;
     const newMatch = this.modeShown?.matchId !== this.match.id;
     if (!newMatch) {
       if (sig === this.modeShown!.sig) {

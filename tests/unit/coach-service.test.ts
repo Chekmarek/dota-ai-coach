@@ -172,6 +172,20 @@ describe('CoachService', () => {
     expect(banners).toEqual(['Режим не определён']);
   });
 
+  it('режим не определён 2 минуты — подсказка выбрать его вручную (один раз за матч)', () => {
+    const banners: { title: string; text: string }[] = [];
+    let now = 0;
+    const svc = new CoachService({ settings: { get: () => defaultSettings() }, kb, aiProvider: () => null, history: { save() {} }, onHints: () => {}, onModeBanner: (b) => banners.push(b), now: () => now });
+    for (let t = 0; t <= 260; t += 2) {
+      now = 1_000_000 + t * 1000;
+      const s = sim({ wallMs: now, clock: 300 + t, level: 5 });
+      svc.ingest({ state: s.state, gsi: s.gsi, gsiWallMs: now });
+      if (t === 100) expect(banners.length).toBe(1);
+    }
+    expect(banners.length).toBe(2);
+    expect(banners[1]!.text).toMatch(/настройках коуча/);
+  });
+
   it('вход движка: мусор и чужая форма отклоняются', () => {
     expect(parseCoachInput(null)).toBeNull();
     expect(parseCoachInput({ state: { wallMs: 'x' } })).toBeNull();
