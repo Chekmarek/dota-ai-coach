@@ -25,9 +25,9 @@ const OUT = process.env.EXAM_OUT ?? '.tmp/exam-result.json';
 const MAX = process.env.EXAM_MAX ? Number(process.env.EXAM_MAX) : 10_000;
 const KB_CACHE = join(process.env.APPDATA ?? '', 'Dota AI Coach', 'kb-cache');
 /** Предупреждение о смерти засчитывается, если было за 10–20 с до неё */
-// Окно 4–20 с (решение владельца 2026-10-20): человеку нужно ~1–1,5 с заметить подсказку и ещё 2–3 с на Blink, Force
-// Staff или побег; раньше 20 с тревога уже не читается как «отходи». Окно прошлых кругов 10–20 с — для сравнения.
-const WARN_FROM = 20, WARN_TO = 4, WARN_TO_OLD = 10;
+// Окно 8–20 с (docs/WARNING_WINDOW.md): игроку нужно ~2 с заметить подсказку и решить; за 8 с до смерти уйти ещё можно
+// примерно в четверти случаев, позже 20 с польза почти не растёт, а ложных тревог больше. Окно 10–20 с — для сравнения.
+const WARN_FROM = 20, WARN_TO = 8, WARN_TO_OLD = 10;
 const DANGER_IDS = new Set<string>([...RISK_RULES, 'danger.model']);
 
 interface FightRec {
@@ -65,6 +65,9 @@ interface DeathRec {
   warnedRules10: boolean;
   /** В окне враг рядом (≤ 2 500) был хоть раз в обзоре своей команды — коуч мог его увидеть */
   visible: boolean;
+  /** За сколько секунд до смерти были тревоги (1–30 с) — для подбора окна (docs/WARNING_WINDOW.md) */
+  leadsModel: number[];
+  leadsRules: number[];
   maxRisk: number | null;
 }
 
@@ -130,6 +133,7 @@ describe.runIf(process.env.DOTACOACH_EXAM)('экзамен коуча на св�
       st.falseRules += b.alerts.filter((t) => !myDeaths.some((d) => d > t && d <= t + WARN_FROM)).length;
       for (const d of myDeaths) {
         const win = (al: number[], to = WARN_TO) => al.some((t) => t >= d - WARN_FROM && t <= d - to);
+        const leadsOf = (al: number[]) => al.filter((t) => t >= d - 30 && t <= d - 1).map((t) => d - t);
         let visible = false;
         for (let t = d - WARN_FROM; t <= d - WARN_TO && !visible; t++) {
           const my = posAt(me, t);
@@ -139,7 +143,7 @@ describe.runIf(process.env.DOTACOACH_EXAM)('экзамен коуча на св�
         }
         let maxRisk: number | null = null;
         for (let t = d - WARN_FROM; t <= d - WARN_TO; t++) if (a.risk.has(t)) maxRisk = Math.max(maxRisk ?? 0, a.risk.get(t)!);
-        deaths.push({ match: m.id, mode, t: d, hero, level: levelAt(me, d), warnedModel: win(a.alerts), warnedRules: win(b.alerts), warnedModel10: win(a.alerts, WARN_TO_OLD), warnedRules10: win(b.alerts, WARN_TO_OLD), visible, maxRisk });
+        deaths.push({ match: m.id, mode, t: d, hero, level: levelAt(me, d), warnedModel: win(a.alerts), warnedRules: win(b.alerts), warnedModel10: win(a.alerts, WARN_TO_OLD), warnedRules10: win(b.alerts, WARN_TO_OLD), visible, leadsModel: leadsOf(a.alerts), leadsRules: leadsOf(b.alerts), maxRisk });
       }
       for (const x of myFights) {
         if (!x.winner) continue;

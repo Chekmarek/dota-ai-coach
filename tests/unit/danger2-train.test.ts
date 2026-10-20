@@ -21,7 +21,8 @@ import { dangerRisk, type DangerTrees } from '../../src/core/coach/danger-model.
 import { realData } from './coach-sim.ts';
 
 const root = join(import.meta.dirname, '../..');
-const LEAD = 10, HOR = 20, STEP = 3;
+// Метка «смерть через 8–20 с» — окно, в котором предупреждение успевает помочь (docs/WARNING_WINDOW.md)
+const LEAD = 8, HOR = 20, STEP = 3;
 const TRAIN_MAX = process.env.DANGER2_TRAIN_MAX ? Number(process.env.DANGER2_TRAIN_MAX) : 800;
 const VAL_MAX = process.env.DANGER2_VAL_MAX ? Number(process.env.DANGER2_VAL_MAX) : 120;
 const split = (id: number) => {

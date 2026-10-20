@@ -20,7 +20,8 @@ const root = join(import.meta.dirname, '../..');
 const MODEL_FILE = join(root, 'src/data/danger-model.json');
 const MAX = process.env.DANGER_CAL_MAX ? Number(process.env.DANGER_CAL_MAX) : 100;
 const KB_CACHE = join(process.env.APPDATA ?? '', 'Dota AI Coach', 'kb-cache');
-const WARN_FROM = 20, WARN_TO = 10;
+// Окно 8–20 с — docs/WARNING_WINDOW.md
+const WARN_FROM = 20, WARN_TO = 8;
 const DANGER_IDS = new Set<string>([...RISK_RULES, 'danger.model']);
 const COOLDOWNS = [10, 15, 20, 30];
 const split = (id: number) => {
