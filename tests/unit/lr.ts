@@ -83,3 +83,28 @@ export function seededShuffle<T>(a: T[], seed: number): T[] {
   }
   return out;
 }
+
+/**
+ * Изотоническая калибровка (pool adjacent violators) по корзинам: прогнозы сортируются и делятся на bins равных
+ * корзин, доли «выиграно на деле» выравниваются в неубывающие. Точки [средний прогноз, доля на деле] — для
+ * fight-model.calibration (между точками линейно, за краями — крайние).
+ */
+export function isotonic(p: number[], y: number[], bins = 20): [number, number][] {
+  const idx = p.map((_, i) => i).sort((a, b) => p[a]! - p[b]!);
+  const groups: { sp: number; sy: number; n: number }[] = [];
+  for (let b = 0; b < bins; b++) {
+    const part = idx.slice(Math.floor((b * idx.length) / bins), Math.floor(((b + 1) * idx.length) / bins));
+    if (part.length) groups.push({ sp: part.reduce((s, i) => s + p[i]!, 0), sy: part.reduce((s, i) => s + y[i]!, 0), n: part.length });
+  }
+  const st: { sp: number; sy: number; n: number }[] = [];
+  for (const g of groups) {
+    st.push({ ...g });
+    while (st.length > 1 && st.at(-2)!.sy / st.at(-2)!.n > st.at(-1)!.sy / st.at(-1)!.n) {
+      const b = st.pop()!, a = st.pop()!;
+      st.push({ sp: a.sp + b.sp, sy: a.sy + b.sy, n: a.n + b.n });
+    }
+  }
+  const r4 = (x: number) => Math.round(x * 1e4) / 1e4;
+  const pts = st.map((g) => [r4(g.sp / g.n), r4(g.sy / g.n)] as [number, number]);
+  return pts.length >= 2 ? pts : [[0, 0], [1, 1]];
+}

@@ -10,11 +10,12 @@ import { join } from 'node:path';
 import { buildView } from '../../src/core/coach/view.ts';
 import { CoachMemory } from '../../src/core/coach/memory.ts';
 import { GOLD_HIGH } from '../../src/core/coach/rules/economy.ts';
-import { FIGHT_FEATURES, fightFeatures } from '../../src/core/coach/fight-model.ts';
+import { FIGHT_FEATURES, fightChance, fightFeatures, parseFightModel, type FightModel } from '../../src/core/coach/fight-model.ts';
+import fightJson from '../../src/data/fight-model.json';
 import { dangerFeatures, dangerProbability, dangerRisk, itemValueOf, parseDangerModel } from '../../src/core/coach/danger-model.ts';
 import dangerJson from '../../src/data/danger-model.json';
 import { fightsOf, GamePipeline, readXMatch } from './exam-lib.ts';
-import { auc, calibrationTable, sigmoid, trainLR, type W } from './lr.ts';
+import { auc, calibrationTable, isotonic, sigmoid, trainLR, type W } from './lr.ts';
 import { realData } from './coach-sim.ts';
 import { FeatureCache, featureVersion } from './feature-cache.ts';
 
@@ -41,17 +42,19 @@ describe.runIf(process.env.DOTACOACH_FIGHT_TRAIN)('прогноз драк: об
 
     // Кэш признаков драк по матчам (feature-cache.ts): риск в признаках — по модели опасности, она входит в версию
     const cache = new FeatureCache('fight', featureVersion(FIGHT_FEATURES, ['src/data/danger-model.json']));
-    function samples(list: string[], turbo: boolean) {
-      const X: number[][] = [], Y: number[] = [];
+    type S = { X: number[][]; Y: number[]; eq: boolean[] };
+    function samples(list: string[], turbo: boolean): S {
+      const out: S = { X: [], Y: [], eq: [] };
       for (const f of list) {
         const s = cache.get(`${idOf(f)}-${turbo ? 1 : 0}`, () => matchSamples(f, turbo));
-        X.push(...s.X);
-        Y.push(...s.Y);
+        out.X.push(...s.X);
+        out.Y.push(...s.Y);
+        out.eq.push(...s.eq);
       }
-      return { X, Y };
+      return out;
     }
-    function matchSamples(f: string, turbo: boolean) {
-      const X: number[][] = [], Y: number[] = [];
+    function matchSamples(f: string, turbo: boolean): S {
+      const X: number[][] = [], Y: number[] = [], eq: boolean[] = [];
       {
         const m = readXMatch(f);
         for (const fight of fightsOf(m)) {
@@ -74,34 +77,63 @@ describe.runIf(process.env.DOTACOACH_FIGHT_TRAIN)('прогноз драк: об
             if (!x) continue;
             X.push(x);
             Y.push(fight.winner === (m.players[pi]!.isRadiant ? 'radiant' : 'dire') ? 1 : 0);
+            // Равная драка — поровну участников (как на экзамене)
+            eq.push(fight.radiant.length === fight.dire.length);
           }
         }
       }
-      return { X, Y };
+      return { X, Y, eq };
     }
 
+    // Части (DECISIONS.md п. 72): train — обучение весов; val делится по матчам пополам: val-calib — калибровка
+    // процентов, val-check — проверка и сравнение с прежней моделью. Экзаменационные матчи не трогаются
+    const half = (f: string) => ((idOf(f) * 2654435761) % 100 < 75 ? 'calib' : 'check');
     const t0 = Date.now();
     const apTrain = samples(pick('danger', 'train').slice(0, MAX), false);
-    const apVal = samples(pick('danger', 'val').slice(0, Math.ceil(MAX / 5)), false);
-    console.log(`All Pick: обучение ${apTrain.X.length} прогнозов, проверка ${apVal.X.length} (${Math.round((Date.now() - t0) / 1000)} с)`);
+    const apVal = pick('danger', 'val');
+    const apCalib = samples(apVal.filter((f) => half(f) === 'calib'), false);
+    const apCheck = samples(apVal.filter((f) => half(f) === 'check'), false);
+    console.log(`All Pick: обучение ${apTrain.X.length} прогнозов, val-calib ${apCalib.X.length}, val-check ${apCheck.X.length} (${Math.round((Date.now() - t0) / 1000)} с)`);
     const wAP = trainLR(apTrain.X, apTrain.Y, FIGHT_FEATURES.length);
     const tbTrain = samples(pick('danger-turbo', 'train'), true);
-    const tbVal = samples(pick('danger-turbo', 'val'), true);
-    console.log(`Турбо: обучение ${tbTrain.X.length}, проверка ${tbVal.X.length}`);
+    const tbVal = pick('danger-turbo', 'val');
+    const tbCalib = samples(tbVal.filter((f) => half(f) === 'calib'), true);
+    const tbCheck = samples(tbVal.filter((f) => half(f) === 'check'), true);
+    console.log(`Турбо: обучение ${tbTrain.X.length}, val-calib ${tbCalib.X.length}, val-check ${tbCheck.X.length}`);
     const wTB = tbTrain.X.length ? trainLR(tbTrain.X, tbTrain.Y, FIGHT_FEATURES.length, wAP, 25, 3e-4, 0.02) : wAP;
-    const rep = (name: string, w: W, s: { X: number[][]; Y: number[] }) => {
-      const p = s.X.map((x) => sigmoid(w, x));
-      const acc = p.filter((q, i) => (q >= 0.5 ? 1 : 0) === s.Y[i]).length / Math.max(1, p.length);
+    const calAP = isotonic(apCalib.X.map((x) => sigmoid(wAP, x)), apCalib.Y);
+    const calTB = isotonic(tbCalib.X.map((x) => sigmoid(wTB, x)), tbCalib.Y);
+    const r4 = (x: number) => Math.round(x * 1e4) / 1e4;
+    const rw = (w: W) => ({ bias: r4(w.bias), w: w.w.map(r4) });
+    const next = parseFightModel({ schema: 'dota-coach.fight-model', version: 1, features: [...FIGHT_FEATURES], trainedAt: new Date().toISOString(), normal: { weights: rw(wAP), calibration: { points: calAP } }, turbo: { weights: rw(wTB), calibration: { points: calTB } } })!;
+    const prev = parseFightModel(fightJson);
+    const lvl = (x: number[]) => Math.round(x[FIGHT_FEATURES.indexOf('level')]! * 30);
+    const size = (x: number[]) => Math.round(x[FIGHT_FEATURES.indexOf('allies')]! * 4) + 1 + Math.round(x[FIGHT_FEATURES.indexOf('enemies')]! * 5);
+    const report = (name: string, m: FightModel, turbo: boolean, s: S) => {
+      const p = s.X.map((x) => fightChance(m, turbo, x));
+      const acc = (keep: (i: number) => boolean) => {
+        const idx = p.map((_, i) => i).filter(keep);
+        return idx.length ? (100 * idx.filter((i) => (p[i]! >= 0.5 ? 1 : 0) === s.Y[i]).length) / idx.length : NaN;
+      };
       const cal = calibrationTable(p, s.Y);
-      console.log(`${name}: AUC ${auc(p, s.Y)?.toFixed(3)}, угадано ${(100 * acc).toFixed(1)}%, отклонение процентов ${cal.ece.toFixed(1)} п.п. (${p.length})`);
+      const badBins = cal.rows.filter((r) => r.n >= 100 && Math.abs(r.predicted! - r.actual!) > 5).map((r) => r.range);
+      const out = { auc: auc(p, s.Y) ?? NaN, all: acc(() => true), equal: acc((i) => s.eq[i]!), lane: acc((i) => lvl(s.X[i]!) <= 6), mid: acc((i) => lvl(s.X[i]!) >= 7), small: acc((i) => size(s.X[i]!) <= 4), ece: cal.ece, badBins };
+      console.log(`${name}: AUC ${out.auc.toFixed(3)}, угадано ${out.all.toFixed(1)}%, равные ${out.equal.toFixed(1)}%, уровни 1–6 ${out.lane.toFixed(1)}%, 7+ ${out.mid.toFixed(1)}%, драки 2–4 ${out.small.toFixed(1)}%, отклонение ${out.ece.toFixed(1)} п.п., корзин ≥100 с расхождением > 5 п.п.: ${badBins.join(', ') || 'нет'} (${p.length})`);
+      return out;
     };
-    rep('All Pick (отложенная часть обучения)', wAP, apVal);
-    rep('Турбо (отложенная часть обучения)', wTB, tbVal);
-    rep('Турбо с весами All Pick', wAP, tbVal);
+    const res: Record<string, ReturnType<typeof report>> = {};
+    for (const [mode, turbo, chk] of [['normal', false, apCheck], ['turbo', true, tbCheck]] as const) {
+      if (prev) res[`${mode}-prev`] = report(`${mode}, прежняя модель (val-check)`, prev, turbo, chk);
+      res[`${mode}-raw`] = report(`${mode}, новая без калибровки (val-check)`, { ...next, [mode]: { weights: next[mode].weights } }, turbo, chk);
+      res[`${mode}-new`] = report(`${mode}, новая с калибровкой (val-check)`, next, turbo, chk);
+    }
     console.log('Веса All Pick:', FIGHT_FEATURES.map((f, i) => `${f}=${wAP.w[i]!.toFixed(2)}`).join(' '), `bias=${wAP.bias.toFixed(2)}`);
+    console.log('Калибровка All Pick:', JSON.stringify(calAP));
+    writeFileSync(join(root, '.tmp/fight-train-result.json'), JSON.stringify(res, null, 1));
     if (process.env.FIGHT_WRITE === '1') {
-      const r = (w: W) => ({ bias: Math.round(w.bias * 1e4) / 1e4, w: w.w.map((x) => Math.round(x * 1e4) / 1e4) });
-      writeFileSync(join(root, 'src/data/fight-model.json'), JSON.stringify({ schema: 'dota-coach.fight-model', version: 1, features: [...FIGHT_FEATURES], trainedAt: new Date().toISOString(), normal: { weights: r(wAP) }, turbo: { weights: r(wTB) } }, null, 1) + '\n');
+      const { idx: _idx, ...json } = next;
+      void _idx;
+      writeFileSync(join(root, 'src/data/fight-model.json'), JSON.stringify(json, null, 1) + '\n');
     }
     void readFileSync;
     expect(apTrain.X.length).toBeGreaterThan(0);

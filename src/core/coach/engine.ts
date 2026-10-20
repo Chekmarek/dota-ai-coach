@@ -10,7 +10,7 @@ import { MistakeDetector, MISTAKE_RU, type Mistake } from './mistakes.ts';
 import { deathReview, matchReview, type DeathReview, type MatchReview } from './reviews.ts';
 import { ACTION_RU, actionChoice, engagePercent, type ActionChoice } from './prob.ts';
 import { dangerFeatures, dangerProbability, dangerRisk, itemValueOf } from './danger-model.ts';
-import { fightFeatures, fightProbability } from './fight-model.ts';
+import { fightChance, fightFeatures } from './fight-model.ts';
 import { buildView, poolPct, type CoachView } from './view.ts';
 import { draft, game, knowledge, mmss, type Rule, type RuleContext } from './rules/context.ts';
 import type { MatchKnowledge } from './knowledge.ts';
@@ -367,7 +367,7 @@ export class CoachEngine {
     const risk = dm && df ? dangerRisk(turbo ? dm.turbo : dm.normal, df) : null;
     const fm = this.look.data.fightModel;
     const ff = fm ? fightFeatures(v, { itemValue, turbo, risk }) : null;
-    const fightWin = fm && ff ? fightProbability((turbo ? fm.turbo : fm.normal).weights, ff) : null;
+    const fightWin = fm && ff ? fightChance(fm, turbo, ff) : null;
     const e = engagePercent(v, this.mem, this.look, this.settings.minPercentConfidence);
     return { risk, fightWin, fightWinRules: e.value === null ? null : e.value / 100 };
   }

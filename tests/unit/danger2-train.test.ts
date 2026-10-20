@@ -143,6 +143,8 @@ describe.runIf(process.env.DOTACOACH_DANGER2)('модель опасности v
     const apSub = sub(ap, 600_000);
     const trAP = trainGBDT(apSub.X, apSub.Y, { trees: 150, depth: 3, lr: 0.1 });
     const trTB = trainGBDT(tb.X, tb.Y, { trees: 60, depth: 3, lr: 0.05, init: trAP });
+    // Турбо с нуля — для сравнения с дообучением от All Pick (DECISIONS.md п. 73): лучшее по val Турбо
+    const trTB0 = trainGBDT(tb.X, tb.Y, { trees: 150, depth: 3, lr: 0.1 });
     console.log(`Деревья: ${trAP.trees.length} (All Pick) + ${trTB.trees.length - trAP.trees.length} (Турбо), ${Math.round((Date.now() - t1) / 1000)} с`);
     const result: Record<string, { enabled: boolean; threshold: number; cooldown: number; w: W; trees?: DangerTrees }> = {};
     const COOLDOWNS = [8, 10, 15, 20, 30];
@@ -152,7 +154,7 @@ describe.runIf(process.env.DOTACOACH_DANGER2)('модель опасности v
       const y = val.flatMap((h) => h.rows.map(([t]) => (soon(h.deaths, t) ? 1 : 0)));
       console.log(`\n${mode}: героев проверки ${val.length}, смертей ${rules.deaths}; старые правила: предупреждено за ${LEAD}–${HOR} с ${(100 * rules.recall).toFixed(1)}%, тревог ${rules.alerts} (${rules.perMin.toFixed(2)}/мин)`);
       let chosen: { name: string; m: M; thr: number; cd: number; s: ReturnType<typeof score> } | null = null;
-      const variants: [string, M][] = [['регрессия', { weights: wl }], ['деревья', { weights: wl, trees: tr }]];
+      const variants: [string, M][] = [['регрессия', { weights: wl }], [turbo ? 'деревья (дообучение от All Pick)' : 'деревья', { weights: wl, trees: tr }], ...(turbo ? [['деревья (Турбо с нуля)', { weights: wl, trees: trTB0 }] as [string, M]] : [])];
       for (const [name, m] of variants) {
         const p = val.flatMap((h) => h.rows.map(([, x]) => prob(m, x)));
         let b = { thr: 0.99, cd: 20, s: score(val, (h) => alertsOf(h, m, 0.99, 20)) };

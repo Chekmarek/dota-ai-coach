@@ -6,6 +6,7 @@ import { z } from 'zod';
 import type { CoachView } from './view.ts';
 import { nearEnemyCount } from './memory.ts';
 import { dist, mapSide, NEAR_UNITS } from './geo.ts';
+import { MAP_POINTS } from './game-context.ts';
 
 const CLOSE_UNITS = 1200;
 const FRESH_SEC = 3;
@@ -31,7 +32,15 @@ export const FIGHT_FEATURES = [
   'night',
   'risk',
   'turbo',
+  // Лайнинг (DECISIONS.md п. 71): своя мана, перевес по здоровью над врагами рядом, близость своей и вражеской
+  // башни (позиции — из файлов карты; стоит ли башня, GSI игрока не сообщает). Готовность ульты и крипов здесь нет:
+  // в данных STRATZ нет ни перезарядок, ни крипов — в стенде признак был бы константой.
+  'mana',
+  'hpAdv',
+  'ownTower',
+  'enemyTower',
 ] as const;
+export type FightFeature = (typeof FIGHT_FEATURES)[number];
 
 export interface FightExtra {
   itemValue: number | null;
@@ -80,6 +89,12 @@ export function fightFeatures(v: CoachView, x: FightExtra): number[] | null {
   const own = v.team === 'radiant' ? v.score.radiant.value : v.score.dire.value;
   const opp = v.team === 'radiant' ? v.score.dire.value : v.score.radiant.value;
   const side = mapSide(me, v.team);
+  const mana = v.me.mana.value && v.me.mana.value.max > 0 ? clamp(v.me.mana.value.current / v.me.mana.value.max, 0, 1) : 0.5;
+  const tower = (team: 'radiant' | 'dire') => {
+    const d = Math.min(...MAP_POINTS.towers.filter((t) => t.team === team && t.tier <= 3).map((t) => dist(t, me)));
+    return clamp(1 - d / TOWER_REACH, 0, 1);
+  };
+  const enemyTeam = v.team === 'radiant' ? 'dire' : 'radiant';
   return [
     Math.min(4, allies.length) / 4,
     Math.min(5, enemies) / 5,
@@ -101,30 +116,66 @@ export function fightFeatures(v: CoachView, x: FightExtra): number[] | null {
     v.dayNight.value === 'night' ? 1 : 0,
     x.risk ?? 0,
     x.turbo ? 1 : 0,
+    mana,
+    enemyHp === null ? 0 : clamp(hpPool.current / hpPool.max - enemyHp / 100, -1, 1),
+    tower(v.team),
+    tower(enemyTeam),
   ];
 }
+/** Башня «рядом»: признак 1 у самой башни, 0 — дальше 2 000 ед. (дальность атаки башни ~700, обзор ~1 900) */
+const TOWER_REACH = 2000;
 
-const weightsSchema = z.object({ bias: z.number(), w: z.array(z.number()).length(FIGHT_FEATURES.length) });
+/**
+ * Калибровка процентов (DECISIONS.md п. 72): изотоническая по части «val-calib» обучающих матчей — точки
+ * [сырой шанс, выиграно на деле], между ними линейно. Нет — сырой шанс регрессии.
+ */
+const calibrationSchema = z.object({ points: z.array(z.tuple([z.number().min(0).max(1), z.number().min(0).max(1)])).min(2) });
+const modeSchema = z.object({ weights: z.object({ bias: z.number(), w: z.array(z.number()) }), calibration: calibrationSchema.optional() });
 export const fightModelSchema = z.object({
   schema: z.literal('dota-coach.fight-model'),
   version: z.literal(1),
   features: z.array(z.string()),
   trainedAt: z.string(),
-  normal: z.object({ weights: weightsSchema }),
-  turbo: z.object({ weights: weightsSchema }),
+  normal: modeSchema,
+  turbo: modeSchema,
 });
-export type FightModel = z.infer<typeof fightModelSchema>;
+/** Модель и номера её признаков в FIGHT_FEATURES: старый файл (меньше признаков) читается и работает как раньше */
+export type FightModel = z.infer<typeof fightModelSchema> & { idx: number[] };
+export type FightModeModel = z.infer<typeof modeSchema>;
 
 export function parseFightModel(raw: unknown): FightModel | null {
   const r = fightModelSchema.safeParse(raw);
-  if (!r.success || r.data.features.join(',') !== FIGHT_FEATURES.join(',')) return null;
-  return r.data;
+  if (!r.success) return null;
+  const idx = r.data.features.map((f) => (FIGHT_FEATURES as readonly string[]).indexOf(f));
+  if (idx.some((i) => i < 0) || new Set(idx).size !== idx.length) return null;
+  if (r.data.normal.weights.w.length !== idx.length || r.data.turbo.weights.w.length !== idx.length) return null;
+  return { ...r.data, idx };
 }
+
+/** Признаки модели из полного набора (порядок — как в файле модели) */
+export const modelFeatures = (m: Pick<FightModel, 'idx'>, f: readonly number[]): number[] => m.idx.map((i) => f[i]!);
 
 export function fightProbability(w: { bias: number; w: readonly number[] }, f: readonly number[]): number {
   let z = w.bias;
-  for (let i = 0; i < f.length; i++) z += w.w[i]! * f[i]!;
+  for (let i = 0; i < w.w.length; i++) z += w.w[i]! * f[i]!;
   return 1 / (1 + Math.exp(-z));
+}
+
+/** Сырой шанс → откалиброванный (линейно между точками, за краями — крайние точки) */
+export function calibrate(points: readonly (readonly [number, number])[] | undefined, p: number): number {
+  if (!points || points.length < 2) return p;
+  if (p <= points[0]![0]) return points[0]![1];
+  for (let i = 1; i < points.length; i++) {
+    const [x1, y1] = points[i]!, [x0, y0] = points[i - 1]!;
+    if (p <= x1) return x1 === x0 ? y1 : y0 + ((p - x0) / (x1 - x0)) * (y1 - y0);
+  }
+  return points.at(-1)![1];
+}
+
+/** Шанс выиграть драку по модели режима: признаки из полного набора fightFeatures, с калибровкой */
+export function fightChance(m: FightModel, turbo: boolean, full: readonly number[]): number {
+  const mode = turbo ? m.turbo : m.normal;
+  return calibrate(mode.calibration?.points, fightProbability(mode.weights, modelFeatures(m, full)));
 }
 
 /**
@@ -153,9 +204,11 @@ export function engageLabel(value: number, prev: EngageLabel | null): EngageLabe
 }
 
 /** Вклад признаков в шанс, п.п. (по наклону сигмоиды в точке), самые сильные первыми */
-export function fightFactors(w: { bias: number; w: readonly number[] }, f: readonly number[]): { feature: (typeof FIGHT_FEATURES)[number]; effect: number }[] {
+export function fightFactors(m: FightModel, turbo: boolean, full: readonly number[]): { feature: FightFeature; effect: number }[] {
+  const w = (turbo ? m.turbo : m.normal).weights;
+  const f = modelFeatures(m, full);
   const p = fightProbability(w, f);
-  return FIGHT_FEATURES.map((feature, i) => ({ feature, effect: w.w[i]! * f[i]! * p * (1 - p) * 100 }))
+  return m.idx.map((k, i) => ({ feature: FIGHT_FEATURES[k]!, effect: w.w[i]! * f[i]! * p * (1 - p) * 100 }))
     .filter((x) => Math.abs(x.effect) >= 1)
     .sort((a, b) => Math.abs(b.effect) - Math.abs(a.effect));
 }

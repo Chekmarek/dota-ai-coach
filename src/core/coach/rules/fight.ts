@@ -6,7 +6,7 @@ import { derivedFact, fact, kbFact, poolPct } from '../view.ts';
 import { draft, game, playing, plural, type Rule } from './context.ts';
 import { NEAR_UNITS, dist } from '../geo.ts';
 import type { HintDraft, PercentEstimate } from '../types.ts';
-import { engageLabel, fightCounts, fightFactors, fightFeatures, fightProbability, type EngageLabel, type FIGHT_FEATURES } from '../fight-model.ts';
+import { engageLabel, fightChance, fightCounts, fightFactors, fightFeatures, type EngageLabel, type FIGHT_FEATURES } from '../fight-model.ts';
 import { dangerFeatures, dangerRisk, itemValueOf } from '../danger-model.ts';
 
 type FightFeature = (typeof FIGHT_FEATURES)[number];
@@ -32,6 +32,10 @@ const FIGHT_REASON_RU: Partial<Record<FightFeature, string>> = {
   ownSide: 'своя сторона',
   night: 'ночь',
   risk: 'риск смерти',
+  mana: 'мана',
+  hpAdv: 'перевес по здоровью',
+  ownTower: 'своя башня рядом',
+  enemyTower: 'вражеская башня рядом',
 };
 
 /**
@@ -49,9 +53,8 @@ function modelEngage(c: Parameters<Rule>[0]): { estimate: PercentEstimate; count
   const f = fightFeatures(c.v, { itemValue, turbo, risk });
   const counts = fightCounts(c.v);
   if (!f || !counts) return null;
-  const w = (turbo ? fm.turbo : fm.normal).weights;
-  const value = Math.round(Math.max(5, Math.min(95, 100 * fightProbability(w, f))));
-  const factors = fightFactors(w, f)
+  const value = Math.round(Math.max(5, Math.min(95, 100 * fightChance(fm, turbo, f))));
+  const factors = fightFactors(fm, turbo, f)
     .filter((x) => FIGHT_REASON_RU[x.feature])
     .slice(0, 6)
     .map((x) => ({ id: x.feature, label: FIGHT_REASON_RU[x.feature]!, effect: Math.round(x.effect), known: true }));
