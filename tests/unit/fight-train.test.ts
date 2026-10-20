@@ -17,7 +17,7 @@ import dangerJson from '../../src/data/danger-model.json';
 import { fightsOf, GamePipeline, readXMatch } from './exam-lib.ts';
 import { auc, calibrationTable, isotonic, sigmoid, trainLR, type W } from './lr.ts';
 import { realData } from './coach-sim.ts';
-import { FeatureCache, featureVersion } from './feature-cache.ts';
+import { dataStamp, FeatureCache, featureVersion } from './feature-cache.ts';
 
 const root = join(import.meta.dirname, '../..');
 const MAX = process.env.FIGHT_TRAIN_MAX ? Number(process.env.FIGHT_TRAIN_MAX) : 600;
@@ -46,7 +46,7 @@ describe.runIf(process.env.DOTACOACH_FIGHT_TRAIN)('прогноз драк: об
     function samples(list: string[], turbo: boolean): S {
       const out: S = { X: [], Y: [], eq: [] };
       for (const f of list) {
-        const s = cache.get(`${idOf(f)}-${turbo ? 1 : 0}`, () => matchSamples(f, turbo));
+        const s = cache.get(`${idOf(f)}-${turbo ? 1 : 0}-${dataStamp(f)}`, () => matchSamples(f, turbo));
         out.X.push(...s.X);
         out.Y.push(...s.Y);
         out.eq.push(...s.eq);

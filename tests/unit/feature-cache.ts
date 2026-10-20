@@ -28,6 +28,15 @@ export function featureVersion(features: readonly string[], extraFiles: readonly
   return h.digest('hex').slice(0, 12);
 }
 
+/**
+ * Отпечаток данных матча для ключа кэша: размер файла матча и файла инвентаря (inv/). Докачали инвентарь — другой
+ * ключ, признаки посчитаются заново.
+ */
+export function dataStamp(matchFile: string): string {
+  const inv = join(matchFile, '..', 'inv', matchFile.split(/[\\/]/).pop()!);
+  return `${statSync(matchFile).size.toString(36)}${existsSync(inv) ? `i${statSync(inv).size.toString(36)}` : ''}`;
+}
+
 export class FeatureCache {
   readonly dir: string;
   hits = 0;
