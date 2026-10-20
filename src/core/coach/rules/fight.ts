@@ -5,17 +5,66 @@ import { nearEnemyCount, ultReady } from '../memory.ts';
 import { derivedFact, fact, kbFact, poolPct } from '../view.ts';
 import { draft, game, playing, plural, type Rule } from './context.ts';
 import { NEAR_UNITS, dist } from '../geo.ts';
-import type { HintDraft } from '../types.ts';
+import type { HintDraft, PercentEstimate } from '../types.ts';
+import { fightCounts, fightFactors, fightFeatures, fightProbability, type FIGHT_FEATURES } from '../fight-model.ts';
+import { dangerFeatures, dangerRisk, itemValueOf } from '../danger-model.ts';
+
+type FightFeature = (typeof FIGHT_FEATURES)[number];
 
 /** Сколько после «Отходи» не советовать «Вступать» */
 export const DISENGAGE_HOLD_MS = 10_000;
+
+const FIGHT_REASON_RU: Partial<Record<FightFeature, string>> = {
+  enemies: 'врагов рядом',
+  countLead: 'кого больше',
+  enemiesClose: 'враги вплотную',
+  alliesClose: 'свои вплотную',
+  allies: 'свои рядом',
+  hp: 'ваше здоровье',
+  allyHp: 'здоровье своих',
+  enemyHp: 'здоровье врагов',
+  enemyHpKnown: 'видно здоровье врагов',
+  enemyLevelAdv: 'уровни врагов',
+  level: 'стадия игры',
+  scoreLead: 'счёт',
+  missing: 'пропавшие с карты',
+  enemySide: 'сторона врага',
+  ownSide: 'своя сторона',
+  night: 'ночь',
+  risk: 'риск смерти',
+};
+
+/**
+ * Шанс выиграть драку рядом по модели драк (docs/EXAM.md: в равных драках 62–63% против ~53% у прежней оценки,
+ * проценты честные). null — модели нет или нет своего места: тогда прежняя оценка правил (engagePercent).
+ */
+function modelEngage(c: Parameters<Rule>[0]): { estimate: PercentEstimate; counts: { ours: number; close: number; near: number } } | null {
+  const fm = c.look.data.fightModel;
+  if (!fm) return null;
+  const turbo = c.look.isTurbo;
+  const itemValue = c.v.me.itemsKnown ? itemValueOf(c.v.me.items.map((i) => i.key), (k) => c.look.itemCost(k)) : null;
+  const dm = c.look.data.dangerModel;
+  const df = dm ? dangerFeatures(c.v, { itemValue, turbo, history: c.mem.samples }) : null;
+  const risk = dm && df ? dangerRisk(turbo ? dm.turbo : dm.normal, df) : null;
+  const f = fightFeatures(c.v, { itemValue, turbo, risk });
+  const counts = fightCounts(c.v);
+  if (!f || !counts) return null;
+  const w = (turbo ? fm.turbo : fm.normal).weights;
+  const value = Math.round(Math.max(5, Math.min(95, 100 * fightProbability(w, f))));
+  const factors = fightFactors(w, f)
+    .filter((x) => FIGHT_REASON_RU[x.feature])
+    .slice(0, 6)
+    .map((x) => ({ id: x.feature, label: FIGHT_REASON_RU[x.feature]!, effect: Math.round(x.effect), known: true }));
+  return { estimate: { value, confidence: 0.8, factors, showable: true }, counts };
+}
 
 export const engageRule: Rule = (c) => {
   if (!playing(c)) return null;
   // Врагов рядом — по мини-карте и полоскам на экране (на мини-карте двое рядом сливаются в один значок)
   const n = nearEnemyCount(c.v);
   if (n === 0) return null;
-  const e = engagePercent(c.v, c.mem, c.look, c.settings.minPercentConfidence);
+  const m = modelEngage(c);
+  const e = m ? m.estimate : engagePercent(c.v, c.mem, c.look, c.settings.minPercentConfidence);
   if (c.mem.inFight && c.mem.engageAtEntry === null) c.mem.engageAtEntry = e.value;
   if (!e.showable) return null;
   // В лайнинге один враг рядом — это обычный размен на линии, а не драка: процент «вступать» каждые 15 с только мешал
@@ -27,7 +76,9 @@ export const engageRule: Rule = (c) => {
   if (e.value >= 60 && disengagedAt !== undefined && c.now - disengagedAt < DISENGAGE_HOLD_MS) return null;
   const go = e.value >= 60;
   const no = e.value <= 40;
-  const short = go ? `Вступать: шанс ${e.value}%` : no ? `Не вступать: шанс ${e.value}%` : `Драка на равных: ${e.value}%`;
+  // С моделью — кто рядом: «2 на 2 (+1 рядом)»: враги на мини-карте рядом, но не вплотную (не на экране) — тоже в шансе
+  const who = m ? ` · ${m.counts.ours} на ${m.counts.close}${m.counts.near > m.counts.close ? ` (+${m.counts.near - m.counts.close} рядом)` : ''}` : '';
+  const short = (go ? `Вступать: шанс ${e.value}%` : no ? `Не вступать: шанс ${e.value}%` : `Драка на равных: ${e.value}%`) + who;
   const facts = [
     derivedFact('enemies-near', 'Врагов рядом', n, 0.8),
     fact('hp', 'Здоровье, %', { ...c.v.me.hp, value: poolPct(c.v.me.hp.value) === null ? null : Math.round(poolPct(c.v.me.hp.value)!) }),
@@ -42,8 +93,10 @@ export const engageRule: Rule = (c) => {
     normal: `${short}. ${enemies}.`,
     detailed: `${short}. ${enemies}. Почему: ${factorsText(e)}.`,
     facts,
-    ttlSec: 8,
-    cooldownSec: 30,
+    // С моделью — на экране постоянно, пока враги рядом: правило подтверждает подсказку каждый тик, очередь обновляет
+    // её на месте; уходят враги — гаснет через 4 с. Без модели — как раньше, не чаще раза в 30 с
+    ttlSec: m ? 4 : 8,
+    cooldownSec: m ? 3 : 30,
     percent: { label: go ? 'Вступать' : no ? 'Не вступать' : 'Драка', estimate: e },
   });
 };

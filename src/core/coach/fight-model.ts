@@ -112,3 +112,25 @@ export function fightProbability(w: { bias: number; w: readonly number[] }, f: r
   for (let i = 0; i < f.length; i++) z += w.w[i]! * f[i]!;
   return 1 / (1 + Math.exp(-z));
 }
+
+/**
+ * Кто рядом — для подписи шанса: «вы 2 на 2 (+1 рядом на карте)». ours — вы и союзники рядом (мини-карта, ≤ 2 500),
+ * close — враги вплотную (≤ 1 200, обычно это те, кто на экране), near — все враги рядом (мини-карта и полоски).
+ */
+export function fightCounts(v: CoachView): { ours: number; close: number; near: number } | null {
+  const me = v.me.pos.value;
+  if (!me) return null;
+  const fresh = (p: CoachView['enemies'][number]) => p.alive.value !== false && p.pos.value !== null && p.pos.ageSec !== null && p.pos.ageSec <= FRESH_SEC;
+  const ours = v.allies.filter((a) => fresh(a) && dist(a.pos.value!, me) <= NEAR_UNITS).length + 1;
+  const close = v.enemies.filter((e) => fresh(e) && dist(e.pos.value!, me) <= CLOSE_UNITS).length;
+  const near = Math.max(close, nearEnemyCount(v));
+  return { ours, close, near };
+}
+
+/** Вклад признаков в шанс, п.п. (по наклону сигмоиды в точке), самые сильные первыми */
+export function fightFactors(w: { bias: number; w: readonly number[] }, f: readonly number[]): { feature: (typeof FIGHT_FEATURES)[number]; effect: number }[] {
+  const p = fightProbability(w, f);
+  return FIGHT_FEATURES.map((feature, i) => ({ feature, effect: w.w[i]! * f[i]! * p * (1 - p) * 100 }))
+    .filter((x) => Math.abs(x.effect) >= 1)
+    .sort((a, b) => Math.abs(b.effect) - Math.abs(a.effect));
+}
