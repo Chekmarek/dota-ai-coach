@@ -36,7 +36,7 @@
  "trainedAt": "2026-10-19T21:44:55.331Z",
  "normal": {
   "enabled": true,
-  "threshold": 0.12,
+  "threshold": 0.1,
   "replaces": [
    "danger.low-hp",
    "danger.missing",
@@ -4580,7 +4580,8 @@
      ]
     }
    ]
-  }
+  },
+  "cooldownSec": 15
  },
  "turbo": {
   "enabled": true,
@@ -4622,6 +4623,7 @@
     0.6394,
     0.4957
    ]
-  }
+  },
+  "cooldownSec": 10
  }
 }

@@ -116,5 +116,5 @@ describe.runIf(process.env.DOTACOACH_DANGER_CAL)('модель опасност�
       console.log('Записано в src/data/danger-model.json');
     }
     expect(Object.keys(result)).toHaveLength(2);
-  });
+  }, 4 * 3600_000);
 });
