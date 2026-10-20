@@ -3,7 +3,7 @@
 // (враг вплотную, здоровье уже сбито), враг рядом есть и виден своей команде, ещё можно уйти.
 //   $env:DOTACOACH_WINDOW_WHY='1'; npx vitest run tests/unit/window-why.test.ts
 import { describe, expect, it } from 'vitest';
-import { existsSync, readdirSync } from 'node:fs';
+import { existsSync, readdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { at, deadAt, dist, posAt, readXMatch, rng, visionRange, type P, type XMatch, type XPlayer } from './exam-lib.ts';
 
@@ -27,6 +27,7 @@ const hpPct = (p: XPlayer, t: number) => {
 
 describe.runIf(process.env.DOTACOACH_WINDOW_WHY)('окно предупреждения: что происходит до смерти', () => {
   it('по обучающим матчам', () => {
+    const esc: Record<string, [number, number][]> = {};
     for (const dir of ['danger', 'danger-turbo']) {
       const list = files(dir).filter((f) => !examIds.has(f.split(/[\\/]/).pop()!) && split(idOf(f)) === 'val').slice(0, MAX);
       const c = Object.fromEntries(LEADS.map((L) => [L, { engaged: 0, hurt: 0, hit: 0, near: 0, visible: 0, escapable: 0 }]));
@@ -69,7 +70,10 @@ describe.runIf(process.env.DOTACOACH_WINDOW_WHY)('окно предупрежд�
         const k = c[L]!;
         console.log(`| ${L} | ${pc(k.engaged)} | ${pc(k.hurt)} | ${pc(k.hit)} | ${pc(k.near)} | ${pc(k.visible)} | ${pc(k.escapable)} |`);
       }
+      // Таблица «ещё можно уйти за L с» для отчёта scripts/window-report.mjs (польза предупреждения)
+      esc[dir === 'danger-turbo' ? 'turbo' : 'normal'] = [[0, 0], ...LEADS.filter((L) => L <= 20).map((L) => [L, Math.round((100 * c[L]!.escapable) / Math.max(1, deaths))] as [number, number])];
     }
+    writeFileSync(join(root, '.tmp/esc.json'), JSON.stringify({ writtenAt: new Date().toISOString(), ...esc }, null, 1) + '\n');
     expect(true).toBe(true);
   }, 3_600_000);
 });

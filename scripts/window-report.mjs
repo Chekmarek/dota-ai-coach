@@ -1,17 +1,27 @@
 // Какое окно предупреждения о смерти выбрать (docs/WARNING_WINDOW.md): доля смертей с предупреждением коуча и старых
 // правил для разных окон «за A–B с до смерти» по результату экзамена (tests/unit/exam.test.ts пишет leadsModel/leadsRules).
 //   node scripts/window-report.mjs .tmp/exam3w2-result.json
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 
 const { deaths } = JSON.parse(readFileSync(process.argv[2], 'utf8'));
 const WINDOWS = [[1, 20], [2, 20], [3, 20], [4, 20], [5, 20], [6, 20], [7, 20], [8, 20], [10, 20], [5, 15], [6, 15], [6, 25], [6, 30]];
 const MODE = { normal: 'All Pick', turbo: 'Турбо' };
 // «Ещё можно уйти» за L с до смерти (tests/unit/window-why.test.ts, обучающие матчи) и время реакции игрока ~2 с:
 // польза предупреждения за L с — доля «ещё можно уйти» на L − 2 с; позже 20 с не прибавляется (docs/WARNING_WINDOW.md)
-const ESC = {
+// Таблицы пишет tests/unit/window-why.test.ts в .tmp/esc.json; нет файла — встроенные (замер 2026-10-20)
+const ESC_BUILTIN = {
   normal: [[0, 0], [1, 3], [2, 6], [3, 10], [4, 16], [5, 22], [6, 27], [7, 34], [8, 39], [10, 49], [12, 54], [15, 64], [20, 73]],
   turbo: [[0, 0], [1, 0], [2, 2], [3, 5], [4, 9], [5, 13], [6, 14], [7, 21], [8, 25], [10, 36], [12, 48], [15, 62], [20, 67]],
 };
+const escFile = new URL('../.tmp/esc.json', import.meta.url);
+const ESC = (() => {
+  try {
+    const j = existsSync(escFile) ? JSON.parse(readFileSync(escFile, 'utf8')) : null;
+    return j?.normal?.length && j?.turbo?.length ? { normal: j.normal, turbo: j.turbo } : ESC_BUILTIN;
+  } catch {
+    return ESC_BUILTIN;
+  }
+})();
 const REACTION = 2;
 function value(mode, lead) {
   const x = Math.min(20, lead) - REACTION;
