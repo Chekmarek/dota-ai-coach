@@ -7,7 +7,11 @@
 // --turbo — Турбо (game_mode 23, любой ранг: высоких рангов в Турбо мало) в .tmp/danger-turbo.
 // Экзамен (docs/EXAM.md): --dir exam1-ap — своя папка в .tmp; --exclude danger,danger-turbo,… — пропускать матчи,
 // которые уже есть в этих папках (обучение, прошлые проверки); --cursor-from <папка> — начать список OpenDota с места,
-// где закончила другая загрузка (не перебирать те же матчи); --inventory — сразу и инвентарь по секундам.
+// где закончила другая загрузка (не перебирать те же матчи); инвентарь по секундам качается сразу (--no-inventory — без него).
+// Отказы «не разобран» (~40%): STRATZ разобрал не все матчи (parsedDateTime пуст). Отсеять их до запроса нельзя:
+// пакетный запрос matches(ids) — только для админов STRATZ («User is not an admin», проверено 2026-10-20), а лёгкая
+// предпроверка по одному матчу — лишний запрос на каждый матч (лимит считается в запросах). Ответ на неразобранный
+// матч и так короткий (без playbackData). Временная ошибка playbackData — повтор до 3 раз.
 import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync, appendFileSync, renameSync } from 'node:fs';
 import { join } from 'node:path';
 import { gzipSync } from 'node:zlib';
@@ -17,7 +21,8 @@ const turbo = process.argv.includes('--turbo');
 const want = Number(process.argv.slice(2).find((a) => /^\d+$/.test(a)) ?? 2000);
 const argOf = (k) => (process.argv.includes(k) ? process.argv[process.argv.indexOf(k) + 1] : null);
 const dir = join(root, '.tmp', argOf('--dir') ?? (turbo ? 'danger-turbo' : 'danger'));
-const withInventory = process.argv.includes('--inventory');
+// Инвентарь по секундам — по умолчанию: без него стенд не знает предметов своего героя (DECISIONS.md п. 67)
+const withInventory = !process.argv.includes('--no-inventory');
 /** Матчи, которые уже где-то использованы (обучение, проверки, прошлые экзамены) — не скачивать */
 const excluded = new Set(
   (argOf('--exclude') ?? '')
@@ -191,6 +196,16 @@ while (got < want) {
   } catch (e) {
     fails++;
     log(`${id}: ${e.message}`);
+    // «Error trying to resolve field 'playbackData'» — временный сбой STRATZ: матч разобран, но данные не отдались.
+    // Повторяем позже (до 3 попыток), а не отбрасываем матч
+    state.retries ??= {};
+    if (/playbackData/.test(e.message) && (state.retries[id] ?? 0) < 3) {
+      state.retries[id] = (state.retries[id] ?? 0) + 1;
+      state.queue.splice(Math.min(state.queue.length, 20), 0, id);
+      saveState();
+      await sleep(30_000);
+      continue;
+    }
     state.rejected[id] = `ошибка: ${e.message.slice(0, 80)}`;
     if (fails >= 10) {
       log('10 ошибок подряд — пауза 15 мин');
