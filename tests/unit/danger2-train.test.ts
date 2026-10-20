@@ -1,8 +1,8 @@
-// Модель опасности, версия 2 (docs/EXAM.md): предупреждать за 10–20 с до смерти. Обучение тем же путём «как в игре»,
+// Модель опасности, версия 2 (docs/EXAM.md): предупреждать за 8–20 с до смерти (окно — docs/WARNING_WINDOW.md). Обучение тем же путём «как в игре»,
 // что на экзамене (exam-lib.ts: GSI + зрение с туманом и ошибками → MatchStateModel → снимок коуча + память коуча
 // для динамики), только на матчах обучения (.tmp/danger, .tmp/danger-turbo, часть «train»), без экзаменационных.
 // Порог и пауза между предупреждениями — на части «val» этих же наборов: не больше тревог, чем у старых правил
-// (они считаются настоящим движком коуча без модели), наибольшая доля смертей с предупреждением за 10–20 с.
+// (они считаются настоящим движком коуча без модели), наибольшая доля смертей с предупреждением за 8–20 с.
 //   $env:DOTACOACH_DANGER2='1'; $env:DANGER2_WRITE='1'; npx vitest run tests/unit/danger2-train.test.ts
 import { describe, expect, it } from 'vitest';
 import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
@@ -36,7 +36,7 @@ const pick = (dir: string, sp: string) => files(dir).filter((f) => !examIds.has(
 const deathsOf = (m: XMatch, i: number) => m.players[i]!.playbackData.deathEvents.map((d) => d.time).filter((t) => t > 0);
 const soon = (deaths: number[], t: number) => deaths.some((d) => d >= t + LEAD && d <= t + HOR);
 
-describe.runIf(process.env.DOTACOACH_DANGER2)('модель опасности v2: обучение (10–20 с)', () => {
+describe.runIf(process.env.DOTACOACH_DANGER2)('модель опасности v2: обучение (8–20 с)', () => {
   it('All Pick → Турбо, порог и пауза на отложенной части', () => {
     const base = realData();
     const ranked = parseStatsRanked(JSON.parse(readFileSync(join(root, 'resources/data/kb/7.41f/stats-ranked.json'), 'utf8')), '7.41f');
@@ -123,7 +123,7 @@ describe.runIf(process.env.DOTACOACH_DANGER2)('модель опасности v
 
     const t0 = Date.now();
     const ap = trainSet(pick('danger', 'train').slice(0, TRAIN_MAX), false);
-    console.log(`All Pick: строк ${ap.X.length}, смерть через 10–20 с: ${((100 * ap.Y.reduce((a, b) => a + b, 0)) / ap.X.length).toFixed(2)}% (${Math.round((Date.now() - t0) / 1000)} с)`);
+    console.log(`All Pick: строк ${ap.X.length}, смерть через ${LEAD}–${HOR} с: ${((100 * ap.Y.reduce((a, b) => a + b, 0)) / ap.X.length).toFixed(2)}% (${Math.round((Date.now() - t0) / 1000)} с)`);
     const wAP = trainLR(ap.X, ap.Y, DANGER_FEATURES.length);
     const tb = trainSet(pick('danger-turbo', 'train'), true);
     console.log(`Турбо: строк ${tb.X.length}`);
@@ -144,7 +144,7 @@ describe.runIf(process.env.DOTACOACH_DANGER2)('модель опасности v
       const val = valSet(pick(dir, 'val').slice(0, VAL_MAX), turbo);
       const rules = score(val, (h) => h.rules);
       const y = val.flatMap((h) => h.rows.map(([t]) => (soon(h.deaths, t) ? 1 : 0)));
-      console.log(`\n${mode}: героев проверки ${val.length}, смертей ${rules.deaths}; старые правила: предупреждено за 10–20 с ${(100 * rules.recall).toFixed(1)}%, тревог ${rules.alerts} (${rules.perMin.toFixed(2)}/мин)`);
+      console.log(`\n${mode}: героев проверки ${val.length}, смертей ${rules.deaths}; старые правила: предупреждено за ${LEAD}–${HOR} с ${(100 * rules.recall).toFixed(1)}%, тревог ${rules.alerts} (${rules.perMin.toFixed(2)}/мин)`);
       let chosen: { name: string; m: M; thr: number; cd: number; s: ReturnType<typeof score> } | null = null;
       const variants: [string, M][] = [['регрессия', { weights: wl }], ['деревья', { weights: wl, trees: tr }]];
       for (const [name, m] of variants) {
