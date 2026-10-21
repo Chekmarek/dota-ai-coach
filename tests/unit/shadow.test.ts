@@ -157,6 +157,8 @@ function runPlayer(m: ShadowMatch, me: ShadowPlayer, data: CoachData, look: Coac
     const teamKills = (radiant: boolean) => m.players.filter((p) => p.isRadiant === radiant).reduce((a, p) => a + countUpTo(p.playbackData.killEvents, t), 0);
     const s = sim({
       wallMs: now,
+      // SHADOW_TURBO=1 — матчи Турбо: режим сообщается коучу, как GSI (map.game_mode)
+      ...(process.env.SHADOW_TURBO ? { mode: { mode: 'turbo' as const, source: 'gsi' as const, raw: 'DOTA_GAMEMODE_TURBO' } } : {}),
       clock: t,
       team: me.isRadiant ? 'radiant' : 'dire',
       heroKey,

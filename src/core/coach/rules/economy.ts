@@ -270,7 +270,8 @@ function turboLate(c: RuleContext, clock: number, owned: Set<string>) {
   const key = heroKeyOf(c);
   const tb = key ? timedBuild(c.look.timings, key, posKey(c)) : null;
   if (!tb) return null;
-  const late = tb.items.find((b) => b.share >= 0.4 && (c.look.itemCost(b.key) ?? 0) >= 1500 && !owned.has(b.key) && clock / 60 > b.p80 && !c.mem.once.has(`late:${b.key}`));
+  const late = tb.items.find((b) => b.share >= 0.4 && (c.look.itemCost(b.key) ?? 0) >= 1500 && !owned.has(b.key) && clock / 60 > b.p80 && Math.floor(clock / 60) >= Math.round(b.p80) && !c.mem.once.has(`late:${b.key}`));
+  // Вторая проверка — чтобы текст не противоречил сам себе («в 8 из 10 — к 12; сейчас 11» при пороге 11,6)
   if (!late) return null;
   c.mem.once.add(`late:${late.key}`);
   const name = c.look.itemName(late.key);
