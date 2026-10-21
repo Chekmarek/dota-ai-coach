@@ -10,7 +10,7 @@ import { join } from 'node:path';
 import { buildView } from '../../src/core/coach/view.ts';
 import { CoachMemory } from '../../src/core/coach/memory.ts';
 import { GOLD_HIGH } from '../../src/core/coach/rules/economy.ts';
-import { FIGHT_FEATURES, fightChance, fightFeatures, parseFightModel, type FightModel } from '../../src/core/coach/fight-model.ts';
+import { calibrate, FIGHT_FEATURES, fightChance, fightFeatures, parseFightModel, type FightModel } from '../../src/core/coach/fight-model.ts';
 import fightJson from '../../src/data/fight-model.json';
 import { dangerFeatures, dangerProbability, dangerRisk, itemValueOf, parseDangerModel } from '../../src/core/coach/danger-model.ts';
 import dangerJson from '../../src/data/danger-model.json';
@@ -126,6 +126,42 @@ describe.runIf(process.env.DOTACOACH_FIGHT_TRAIN)('прогноз драк: об
       if (prev) res[`${mode}-prev`] = report(`${mode}, прежняя модель (val-check)`, prev, turbo, chk);
       res[`${mode}-raw`] = report(`${mode}, новая без калибровки (val-check)`, { ...next, [mode]: { weights: next[mode].weights } }, turbo, chk);
       res[`${mode}-new`] = report(`${mode}, новая с калибровкой (val-check)`, next, turbo, chk);
+    }
+    // Эксперимент (TODO_HOME п. 15): отдельные веса для драк на уровнях 1–6 — лучше ли общей модели на тех же драках
+    // val-check. Только отчёт, модель не записывается. FIGHT_LANE_EXP=1
+    if (process.env.FIGHT_LANE_EXP === '1') {
+      const sub = (s: S, keep: (x: number[]) => boolean): S => {
+        const out: S = { X: [], Y: [], eq: [] };
+        s.X.forEach((x, i) => {
+          if (keep(x)) {
+            out.X.push(x);
+            out.Y.push(s.Y[i]!);
+            out.eq.push(s.eq[i]!);
+          }
+        });
+        return out;
+      };
+      const lane = (x: number[]) => lvl(x) <= 6;
+      for (const [mode, train, calib, chk, wGen] of [['normal', apTrain, apCalib, apCheck, wAP], ['turbo', tbTrain, tbCalib, tbCheck, wTB]] as const) {
+        const tr = sub(train, lane);
+        const cl = sub(calib, lane);
+        const ck = sub(chk, lane);
+        const accOf = (p: number[], y: number[]) => (100 * p.filter((q, i) => (q >= 0.5 ? 1 : 0) === y[i]).length) / Math.max(1, p.length);
+        const gen = ck.X.map((x) => sigmoid(wGen, x));
+        const genCal = isotonic(cl.X.map((x) => sigmoid(wGen, x)), cl.Y);
+        console.log(`${mode}, уровни 1–6: обучение ${tr.X.length}, val-calib ${cl.X.length}, val-check ${ck.X.length}`);
+        console.log(`  общая модель: AUC ${(auc(gen, ck.Y) ?? NaN).toFixed(3)}, угадано ${accOf(gen, ck.Y).toFixed(1)}%, с калибровкой по лайнингу ${accOf(ck.X.map((x) => calibrate(genCal, sigmoid(wGen, x))), ck.Y).toFixed(1)}%`);
+        for (const [name, w] of [
+          ['отдельная с нуля', trainLR(tr.X, tr.Y, FIGHT_FEATURES.length)],
+          ['дообучение от общей', trainLR(tr.X, tr.Y, FIGHT_FEATURES.length, wGen, 25, 3e-4, 0.02)],
+          ['с нуля, сильная регуляризация', trainLR(tr.X, tr.Y, FIGHT_FEATURES.length, null, 40, 3e-3)],
+        ] as const) {
+          const p = ck.X.map((x) => sigmoid(w, x));
+          const cal = isotonic(cl.X.map((x) => sigmoid(w, x)), cl.Y);
+          const pc = ck.X.map((x) => calibrate(cal, sigmoid(w, x)));
+          console.log(`  ${name}: AUC ${(auc(p, ck.Y) ?? NaN).toFixed(3)}, угадано ${accOf(p, ck.Y).toFixed(1)}%, с калибровкой ${accOf(pc, ck.Y).toFixed(1)}%, отклонение ${calibrationTable(pc, ck.Y).ece.toFixed(1)} п.п.`);
+        }
+      }
     }
     console.log('Веса All Pick:', FIGHT_FEATURES.map((f, i) => `${f}=${wAP.w[i]!.toFixed(2)}`).join(' '), `bias=${wAP.bias.toFixed(2)}`);
     console.log('Калибровка All Pick:', JSON.stringify(calAP));
