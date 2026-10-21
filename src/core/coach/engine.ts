@@ -5,7 +5,7 @@ import type { MatchState } from '../match-state/index.ts';
 import type { GsiReading } from '../gsi/map.ts';
 import { CoachLookup, type CoachData } from './data.ts';
 import { CoachMemory } from './memory.ts';
-import { HintQueue, DEFAULT_QUEUE_CONFIG, type QueueConfig } from './queue.ts';
+import { HintQueue, DEFAULT_QUEUE_CONFIG, stanceOf, type QueueConfig } from './queue.ts';
 import { MistakeDetector, MISTAKE_RU, type Mistake } from './mistakes.ts';
 import { deathReview, matchReview, type DeathReview, type MatchReview } from './reviews.ts';
 import { ACTION_RU, actionChoice, engagePercent, type ActionChoice } from './prob.ts';
@@ -213,7 +213,7 @@ export class CoachEngine {
     }
     const g = buildGameContext(v, this.mem, this.look, this.settings.position ?? 'auto');
     // Знания на матч — кэш между тиками: пересобираются, только когда меняется состав (knowledge(c) сверяет подпись)
-    const ctx: RuleContext = { v, mem: this.mem, ev, look: this.look, settings: this.settings, now: v.wallMs, g, k: ev.matchReset ? undefined : (this.knowledgeCache ?? undefined) };
+    const ctx: RuleContext = { v, mem: this.mem, ev, look: this.look, settings: this.settings, now: v.wallMs, g, k: ev.matchReset ? undefined : (this.knowledgeCache ?? undefined), highRisk: this.queue.visible().some((h) => stanceOf(h) === 'back' || h.ruleId === 'danger.model') };
     this.game = g;
     if (v.inGame) this.knowledgeCache = knowledge(ctx);
     this.lastView = v;

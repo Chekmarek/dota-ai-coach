@@ -128,6 +128,8 @@ export interface CoachView {
   screen: { meOnScreen: boolean; enemyBars: { hpPercent: number; level: number | null }[]; allyBars: { hpPercent: number; level: number | null }[] };
   buildings: GsiBuilding[] | null;
   events: GsiEvent[] | null;
+  /** Предметы врагов, увиденные на их панели (игрок выделял героя): id героя, предмет, сколько секунд назад видели */
+  enemyItems?: { heroId: number; key: string; ageSec: number }[];
 }
 
 /** Ниже этой уверенности полоска врага не считается (тени, крипы, обрезанные края) */
@@ -269,6 +271,7 @@ export function buildView(s: MatchState, gsi: GsiReading | null, gsiWallMs: numb
     },
     buildings: x?.buildings ?? null,
     events: x?.events ?? null,
+    enemyItems: (s.enemyItems ?? []).flatMap((e) => e.items.map((i) => ({ heroId: e.heroId, key: i.key, ageSec: Math.max(0, Math.round((s.wallMs - i.lastWallMs) / 1000)) }))),
   };
 }
 

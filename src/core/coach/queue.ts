@@ -53,6 +53,13 @@ export function stanceOf(h: Pick<HintDraft, 'ruleId' | 'id' | 'short'>): 'go' | 
   return null;
 }
 
+/** Плановая покупка: что купить дальше, потратить золото, выкуп, «запаздывает», продать, несрочный предмет против врагов */
+const PLANNED_PURCHASE = new Set(['economy.next', 'economy.gold', 'economy.buyback', 'economy.late', 'economy.sell', 'economy.enemy-item']);
+export function isPlannedPurchase(h: Pick<HintDraft, 'ruleId' | 'id' | 'priority'>): boolean {
+  const r = h.ruleId ?? h.id;
+  return PLANNED_PURCHASE.has(r) || (r === 'draft.item' && h.priority === 'info');
+}
+
 export interface PushResult {
   hint: Hint | null;
   /** merged — та же подсказка уже на экране, обновлена */
@@ -188,6 +195,9 @@ export class HintQueue {
     const evicted: Hint[] = [];
     const stance = stanceOf(d);
     if (stance === 'go' && this.visibleHints.some((h) => stanceOf(h) === 'back')) return drop('conflict');
+    // Высокий риск смерти (на экране «назад» или «Высокий риск смерти») — не время для плановых покупок: они ждут.
+    // Срочное (Town Portal Scroll, пыль против невидимки) — как раньше
+    if (isPlannedPurchase(d) && this.visibleHints.some((h) => stanceOf(h) === 'back' || h.ruleId === 'danger.model')) return drop('conflict');
     if (stance === 'back') {
       const gone = this.visibleHints.filter((h) => stanceOf(h) === 'go');
       if (gone.length) {

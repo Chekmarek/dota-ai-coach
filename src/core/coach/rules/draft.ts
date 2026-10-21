@@ -1,9 +1,9 @@
 // Драфт в матче: угрозы вражеской команды и предметы против них, слабые матчапы, ожидаемые предметы врагов.
 // Герои врагов — из данных игры и экрана (верхняя панель); пока их меньше трёх — молчим.
 import { KEY_ITEMS } from '../data.ts';
-import { counterItems, enemyThreats, itemRole, pctRu, worstMatchups } from '../../draft/index.ts';
-import { derivedFact, kbFact } from '../view.ts';
-import { draft, knowledge, mmss, playing, plural, type Rule, type RuleContext } from './context.ts';
+import { ANSWER_ANY_HERO, counterItems, ENEMY_ITEM_ANSWERS, enemyThreats, itemRole, pctRu, worstMatchups } from '../../draft/index.ts';
+import { derivedFact, fact, kbFact } from '../view.ts';
+import { draft, knowledge, mmss, playing, plural, purchaseWait, type Rule, type RuleContext } from './context.ts';
 import type { HintDraft } from '../types.ts';
 
 const enemyKeys = (c: RuleContext): string[] => [...new Set(c.v.enemies.map((e) => e.hero.value).filter((k): k is string => !!k))];
@@ -77,6 +77,8 @@ export const counterItemRule: Rule = (c) => {
   for (const s of counterItems(enemyThreats(enemies, c.look.invisHeroes), role, have)) {
     if (!s.urgent && !build.has(s.key)) continue;
     if (!s.urgent && clock < 8 * 60) continue;
+    // Несрочный совет в драке или при высоком риске смерти арбитр отложит — разовый показ не тратим
+    if (!s.urgent && purchaseWait(c)) continue;
     const once = `draft:item:${s.key}`;
     if (c.mem.once.has(once)) continue;
     const cost = c.look.itemCost(s.key);
@@ -87,7 +89,7 @@ export const counterItemRule: Rule = (c) => {
     const n = s.heroes.length;
     // Причина с цифрами: сколько врагов с этой угрозой и когда предмет берут сильные игроки на вашем герое
     const b = build.get(s.key);
-    const when = b && c.look.hasNorms ? ` ${b.source === 'ranked' ? 'Сильные игроки рейтинга' : 'Профи'} на вашем герое берут его к ~${Math.round(b.medianMin)} мин${b.source === 'ranked' ? ` (в ${Math.round(b.share * 100)}% матчей)` : ''}.` : '';
+    const when = b && c.look.hasNorms ? ` ${b.source === 'ranked' ? 'Сильные игроки рейтинга' : 'Профи'} на вашем герое берут его к ~${Math.round(b.medianMin)} мин${b.source === 'ranked' ? ` (в ${Math.round(b.share * 100)}% матчей${b.winrate !== undefined ? `, доля побед купивших ${Math.round(b.winrate * 100)}%` : ''})` : ''}.` : '';
     return draft({
       id: `draft.item:${s.key}`,
       ruleId: 'draft.item',
@@ -145,4 +147,52 @@ export const enemySpikeRule: Rule = (c) => {
   return out;
 };
 
-export const DRAFT_RULES: Rule[] = [enemyDraftRule, counterItemRule, enemySpikeRule];
+/** Предмет врага, увиденный дольше этого назад, — не повод для совета (мог продать, разобрать; чтение старое) */
+export const ENEMY_ITEM_MAX_AGE_SEC = 180;
+
+/**
+ * Ответ на предмет врага, который коуч увидел на его панели (игрок выделял героя): у Phantom Assassin Butterfly →
+ * Monkey King Bar. Только предмет вашей роли и только из сборки сильных игроков на вашем герое (кроме пыли и сентри);
+ * уже есть любой из ответов — молчим. Один раз за матч на предмет врага.
+ */
+export const enemyItemRule: Rule = (c) => {
+  if (!playing(c) || purchaseWait(c) || !c.v.me.itemsKnown) return null;
+  const seen = (c.v.enemyItems ?? []).filter((e) => e.ageSec <= ENEMY_ITEM_MAX_AGE_SEC && ENEMY_ITEM_ANSWERS[e.key]);
+  if (!seen.length) return null;
+  const role = myRole(c);
+  if (!role) return null;
+  const have = owned(c);
+  const build = new Map(knowledge(c).me.build.map((b) => [b.key, b]));
+  const gold = c.v.me.gold.value;
+  for (const e of seen) {
+    const once = `enemy-item:${e.key}`;
+    const a = ENEMY_ITEM_ANSWERS[e.key]!;
+    const heroKey = c.look.heroById.get(e.heroId)?.key;
+    if (!heroKey || c.mem.once.has(once) || a.items.some((it) => have.has(it.key))) continue;
+    const fit = a.items.find((it) => (it.role === 'any' || it.role === role) && (ANSWER_ANY_HERO.has(it.key) || build.has(it.key)));
+    if (!fit) continue;
+    c.mem.once.add(once);
+    const b = build.get(fit.key);
+    const name = c.look.itemName(fit.key);
+    const enemyItem = c.look.itemName(e.key);
+    const hero = c.look.heroName(heroKey);
+    const cost = c.look.itemCost(fit.key);
+    const stats = b?.source === 'ranked' ? ` Сильные игроки на вашей позиции берут ${name} в ${Math.round(b.share * 100)}% матчей${b.winrate !== undefined ? `, доля побед купивших ${Math.round(b.winrate * 100)}%` : ''}.` : '';
+    return draft({
+      id: `economy.enemy-item:${fit.key}`,
+      ruleId: 'economy.enemy-item',
+      category: 'economy',
+      priority: 'info',
+      confidence: 0.7,
+      short: `У ${hero} ${enemyItem} — ответ: ${name}`,
+      normal: `У ${hero} увиден ${enemyItem} (${a.whyRu}) ${e.ageSec < 5 ? 'только что' : `${e.ageSec} с назад`}. Ответ — ${name}${cost !== null ? ` (${cost}${gold !== null ? `, у вас ${gold}` : ''})` : ''}.${stats}`,
+      facts: [derivedFact('enemy-item', `Предмет ${hero}`, enemyItem, 0.8), ...(cost !== null ? [kbFact('item-cost', 'Цена', cost, c.look.data.kbVerified)] : []), ...(b ? [kbFact('share', 'Берут в доле матчей, %', Math.round(b.share * 100), false, 'stats')] : []), fact('gold', 'Золото', c.v.me.gold)],
+      ttlSec: 10,
+      cooldownSec: 0,
+      icon: `item:${fit.key}`,
+    });
+  }
+  return null;
+};
+
+export const DRAFT_RULES: Rule[] = [enemyDraftRule, counterItemRule, enemySpikeRule, enemyItemRule];

@@ -31,6 +31,9 @@ import type {
 export const EVENT_LIMIT = 100;
 /** Ниже этой уверенности ячейка способности или предмета не учитывается (как MIN_CONFIDENCE распознавания) */
 export const MIN_SLOT_CONFIDENCE = 0.5;
+/** Предмет врага с его панели засчитывается, если ячейка узнана уверенно и тот же предмет прочитан дважды за 10 с */
+export const ENEMY_ITEM_CONFIDENCE = 0.8;
+export const ENEMY_ITEM_CONFIRM_MS = 10_000;
 
 /** Герой игрока: одно и то же имя (свой юнит выбран) столько раз за окно — это он */
 export const LOCK_READINGS = 8;
@@ -133,6 +136,8 @@ export class MatchStateModel {
   /** Союзники и враги по верхней панели */
   private players = new PlayersTrack();
   private events: MatchEvent[] = [];
+  /** Предметы врагов с их панели: id героя → предмет → когда увиден (подтверждённые) и кандидаты на подтверждение */
+  private enemyItems = new Map<number, { seen: Map<string, { firstWallMs: number; lastWallMs: number; clock: number | null }>; pending: Map<string, number> }>();
   /** Режим игры из GSI; сбрасывается вместе с матчем */
   private gameMode: GameModeInfo = { ...UNKNOWN_MODE };
   private seq = 0;
@@ -196,6 +201,7 @@ export class MatchStateModel {
     // 4. Нижняя панель — только если на ней герой игрока (после GSI герой известен сразу, чужая панель отсекается)
     this.trackIdentity(reading, wallMs);
     if (this.isPlayerReading(reading, wallMs)) this.ingestHero(reading, wallMs);
+    else this.ingestEnemyItems(reading, wallMs);
 
     // 5. Верхняя панель: герои обеих команд, смерть и возрождение (время возрождения — от часов матча)
     if (reading.topBar) this.players.ingest(reading.topBar, this.clock.at(wallMs), wallMs);
@@ -418,6 +424,9 @@ export class MatchStateModel {
       },
       events: [...this.events],
       ...this.players.snapshot(wallMs),
+      ...(this.enemyItems.size
+        ? { enemyItems: [...this.enemyItems].map(([heroId, e]) => ({ heroId, items: [...e.seen].map(([key, s]) => ({ key, ...s })) })).filter((e) => e.items.length) }
+        : {}),
     };
   }
 
@@ -435,6 +444,7 @@ export class MatchStateModel {
     this.hero = new HeroTrack();
     this.players = new PlayersTrack();
     this.events = [];
+    this.enemyItems = new Map();
     this.gameMode = { ...UNKNOWN_MODE };
     this.gate.reset();
   }
@@ -556,6 +566,33 @@ export class MatchStateModel {
     if (ok && slot.state === 'cooldown' && slot.cooldown !== null) t.readyAt.ingest(wallMs + slot.cooldown * 1000, slot.confidence, true, wallMs);
     // Способность готова — перезарядка закончилась
     else if (ok && slot.state === 'ready') t.readyAt.ingest(wallMs, slot.confidence, true, wallMs);
+  }
+
+  /**
+   * Нижняя панель показывает выделенного врага (имя героя прочитано): запоминаем его предметы из 6 основных ячеек.
+   * Ошибка распознавания дороже пропуска — предмет засчитывается после двух уверенных чтений за ENEMY_ITEM_CONFIRM_MS.
+   */
+  private ingestEnemyItems(r: HudReading, wallMs: number): void {
+    if (r.selectedUnit.value !== 'enemy' || !isValid(r.selectedUnit) || !isValid(r.heroName) || !r.items) return;
+    const id = r.heroName.value!.id;
+    const e = this.enemyItems.get(id) ?? { seen: new Map(), pending: new Map() };
+    this.enemyItems.set(id, e);
+    const clock = this.clock.at(wallMs);
+    for (const s of r.items) {
+      if (!/^inv\d$/.test(s.slot) || s.empty || !s.item || s.confidence < ENEMY_ITEM_CONFIDENCE) continue;
+      const key = s.item.key;
+      const known = e.seen.get(key);
+      if (known) {
+        known.lastWallMs = wallMs;
+        known.clock = clock;
+        continue;
+      }
+      const first = e.pending.get(key);
+      if (first !== undefined && wallMs - first <= ENEMY_ITEM_CONFIRM_MS && wallMs > first) {
+        e.pending.delete(key);
+        e.seen.set(key, { firstWallMs: wallMs, lastWallMs: wallMs, clock });
+      } else if (first === undefined || wallMs - first > ENEMY_ITEM_CONFIRM_MS) e.pending.set(key, wallMs);
+    }
   }
 
   private ingestItems(slots: NonNullable<HudReading['items']>, wallMs: number): void {

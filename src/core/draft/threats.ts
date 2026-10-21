@@ -260,3 +260,26 @@ export function counterItems(threats: readonly ThreatReport[], role: 'core' | 's
   }
   return out;
 }
+
+/**
+ * Ответ на предмет врага, который коуч увидел на его панели (игрок выделил героя). Таблица — по свойствам предметов
+ * из базы знаний патча (не статистика): Abyssal Blade пробивает неуязвимость к эффектам, BKB даёт неуязвимость к
+ * возвращённому урону (Blade Mail), Skadi и Spirit Vessel режут восстановление здоровья, Nullifier снимает Ghost Scepter
+ * и Glimmer Cape, Monkey King Bar пробивает уклонение. Blink Dagger здесь нет: прямого ответа-предмета на него нет.
+ * Советуется только предмет роли игрока и только из сборки сильных игроков на его герое; пыль и сентри — всем.
+ */
+export const ENEMY_ITEM_ANSWERS: Record<string, { whyRu: string; items: CounterItem[] }> = {
+  butterfly: { whyRu: 'уклонение от атак', items: [{ key: 'monkey_king_bar', role: 'core' }] },
+  ghost: { whyRu: 'неуязвимость к физическому урону', items: [{ key: 'nullifier', role: 'core' }] },
+  heart: { whyRu: 'сильная регенерация', items: [{ key: 'spirit_vessel', role: 'any' }, { key: 'skadi', role: 'core' }] },
+  satanic: { whyRu: 'вампиризм', items: [{ key: 'spirit_vessel', role: 'any' }, { key: 'skadi', role: 'core' }] },
+  black_king_bar: { whyRu: 'неуязвимость к заклинаниям', items: [{ key: 'abyssal_blade', role: 'core' }] },
+  blade_mail: { whyRu: 'возвращает урон', items: [{ key: 'black_king_bar', role: 'core' }] },
+  radiance: { whyRu: 'магический урон вокруг', items: [{ key: 'pipe', role: 'support' }, { key: 'eternal_shroud', role: 'core' }] },
+  // Пыль против Glimmer Cape — нет: невидимость на 5 с, чаще на союзнике (режим тени: 13 из 28 советов — шум)
+  glimmer_cape: { whyRu: 'невидимость и щит от магии', items: [{ key: 'nullifier', role: 'core' }] },
+  invis_sword: { whyRu: 'невидимость', items: [{ key: 'dust', role: 'any' }, { key: 'ward_sentry', role: 'support' }, { key: 'gem', role: 'core' }] },
+  silver_edge: { whyRu: 'невидимость', items: [{ key: 'dust', role: 'any' }, { key: 'ward_sentry', role: 'support' }, { key: 'gem', role: 'core' }] },
+};
+/** Ответы, которые советуются без проверки сборки героя (дешёвое обнаружение) */
+export const ANSWER_ANY_HERO = new Set(['dust', 'ward_sentry']);

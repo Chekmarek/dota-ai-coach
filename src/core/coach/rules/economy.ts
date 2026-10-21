@@ -7,7 +7,8 @@ import { hasItem, nearEnemyCount, tpReady } from '../memory.ts';
 import { actionChoice, nearEnemies } from '../prob.ts';
 import { isOwnBase } from '../geo.ts';
 import { derivedFact, fact, kbFact, poolPct } from '../view.ts';
-import { draft, game, playing, type Rule, type RuleContext } from './context.ts';
+import { draft, game, playing, purchaseWait, type Rule, type RuleContext } from './context.ts';
+import { leavesAt, timedBuild } from '../item-timings.ts';
 
 
 /** Порог «много золота» по умолчанию */
@@ -43,9 +44,11 @@ export function nextItem(c: RuleContext): NextItem | null {
   if (!hero) return null;
   const owned = new Set([...c.mem.items.keys(), ...c.v.me.items.map((i) => i.key)]);
   const min = (c.v.clock.value ?? 0) / 60;
-  // Минуты сборки — из обычных матчей; в Турбо игра идёт примерно вдвое быстрее (золото и опыт ×2)
+  // Минуты сборки — из обычных матчей; в Турбо — минута по матчам Турбо, если они есть, иначе примерно вдвое раньше
   const scale = c.look.isTurbo ? 0.5 : 1;
-  const passed = (x: { key: string; medianMin: number }) => (c.look.itemCost(x.key) ?? Infinity) < EARLY_ITEM_COST && min > x.medianMin * scale + EARLY_ITEM_LATE_MIN;
+  const turbo = c.look.isTurbo ? timedBuild(c.look.timings, heroKeyOf(c) ?? '', posKey(c)) : null;
+  const minuteOf = (x: { key: string; medianMin: number }) => turbo?.items.find((i) => i.key === x.key)?.p50 ?? x.medianMin * scale;
+  const passed = (x: { key: string; medianMin: number }) => (c.look.itemCost(x.key) ?? Infinity) < EARLY_ITEM_COST && min > minuteOf(x) + EARLY_ITEM_LATE_MIN;
   // Сборка — сильных игроков рейтинга на вашей позиции (STRATZ), если позиция известна и данные есть; иначе — профи
   const build = c.look.buildForPosition(hero.id, hero.key, game(c).position);
   const left = build.filter((x) => !owned.has(x.key) && !passed(x));
@@ -59,6 +62,26 @@ export function nextItem(c: RuleContext): NextItem | null {
     }
   }
   return left[0] ? out(left[0], null) : null;
+}
+
+/** Ключ своего героя: из данных игры, а с экрана — по id */
+export function heroKeyOf(c: RuleContext): string | null {
+  const h = c.v.me.hero.value;
+  if (!h) return null;
+  return h.key ?? (h.id !== null ? (c.look.heroById.get(h.id)?.key ?? null) : null);
+}
+
+/** Позиция '1'…'5' для таблиц по позициям; null — не известна */
+const posKey = (c: RuleContext): string | null => (game(c).position === null ? null : String(game(c).position));
+
+/**
+ * Сколько золота держать на выкуп: в лейте (стадия — с поправкой на Турбо), когда выкуп не на перезарядке и цена
+ * известна; иначе 0 — выкуп ещё не важен.
+ */
+export function buybackReserve(c: RuleContext): number {
+  const cost = c.v.me.buybackCost.value;
+  if (game(c).stage !== 'late' || cost === null || cost <= 0 || (c.v.me.buybackCooldown.value ?? 0) > 0) return 0;
+  return cost;
 }
 
 export const gpmRule: Rule = (c) => {
@@ -106,6 +129,24 @@ export const goldRule: Rule = (c) => {
   if (c.mem.inFight) return null;
   const next = nextItem(c);
   const item = next && next.cost !== null && next.cost <= gold ? next : null;
+  // Лейт: покупка не должна съесть выкуп. Предмет по карману, но после него на выкуп не хватит — предупреждаем
+  const reserve = buybackReserve(c);
+  if (reserve && item && gold - item.cost! < reserve) {
+    return draft({
+      id: 'economy.buyback',
+      category: 'economy',
+      priority: 'advice',
+      confidence: 0.8,
+      short: `${item.name} — потом не хватит на выкуп`,
+      normal: `${item.name} стоит ${item.cost}, у вас ${gold}: останется ${gold - item.cost!}, а выкуп ${reserve}. В поздней игре смерть без выкупа может стоить матча — подкопите до ${item.cost! + reserve}.`,
+      facts: [fact('gold', 'Золото', c.v.me.gold), fact('buyback', 'Цена выкупа', c.v.me.buybackCost), kbFact('item-cost', 'Цена', item.cost, c.look.data.kbVerified)],
+      ttlSec: 10,
+      cooldownSec: 300,
+      icon: `item:${item.key}`,
+    });
+  }
+  // Без предмета: «потратьте» — только если и после выкупа золота много
+  if (!item && reserve && gold - reserve < GOLD_HIGH) return null;
   return draft({
     id: 'economy.gold',
     category: 'economy',
@@ -159,14 +200,65 @@ export const nextItemRule: Rule = (c) => {
   });
 };
 
+/**
+ * Покупка оставила золото ниже цены выкупа (в лейте, выкуп готов): одно предупреждение, перерыв общий с советом
+ * «потом не хватит на выкуп» (тот же id) — не при каждой покупке.
+ */
+export const buybackSpendRule: Rule = (c) => {
+  if (!playing(c) || !c.ev.newItems.length || c.mem.inFight) return null;
+  const reserve = buybackReserve(c);
+  const gold = c.v.me.gold.value;
+  if (!reserve || gold === null || gold >= reserve) return null;
+  // Золото до покупки (последние 4 с истории): уже было меньше выкупа — дело не в покупке
+  const before = Math.max(-1, ...c.mem.last(4, c.now).map((s) => s.gold ?? -1));
+  if (before < reserve) return null;
+  return draft({
+    id: 'economy.buyback',
+    category: 'economy',
+    priority: 'advice',
+    confidence: 0.8,
+    short: `На выкуп не хватает: ${gold} из ${reserve}`,
+    normal: `После покупки осталось ${gold}, а выкуп стоит ${reserve} (было ${before}). До ${reserve} больше не тратьте: в поздней игре смерть без выкупа может стоить матча.`,
+    facts: [fact('gold', 'Золото', c.v.me.gold), fact('buyback', 'Цена выкупа', c.v.me.buybackCost), derivedFact('gold-before', 'Золото до покупки', before, 0.8)],
+    ttlSec: 10,
+    cooldownSec: 300,
+  });
+};
+
+/** Турбо: «запаздывает» по реальным матчам Турбо на этой позиции — позже, чем в 8 из 10 матчей */
+function turboLate(c: RuleContext, clock: number, owned: Set<string>) {
+  const key = heroKeyOf(c);
+  const tb = key ? timedBuild(c.look.timings, key, posKey(c)) : null;
+  if (!tb) return null;
+  const late = tb.items.find((b) => b.share >= 0.4 && (c.look.itemCost(b.key) ?? 0) >= 1500 && !owned.has(b.key) && clock / 60 > b.p80 && !c.mem.once.has(`late:${b.key}`));
+  if (!late) return null;
+  c.mem.once.add(`late:${late.key}`);
+  const name = c.look.itemName(late.key);
+  return draft({
+    id: `economy.late:${late.key}`,
+    ruleId: 'economy.late',
+    category: 'economy',
+    priority: 'info',
+    confidence: 0.7,
+    short: `${name} запаздывает`,
+    normal: `В Турбо на этой позиции ${name} берут к ${Math.round(late.p50)} мин, в 8 из 10 матчей — к ${Math.round(late.p80)}; сейчас ${Math.floor(clock / 60)}. Ускорьте фарм.`,
+    facts: [kbFact('item', 'Предмет', name, false, 'stats'), kbFact('median-min', 'Турбо: обычно к минуте', late.p50, false, 'stats'), kbFact('turbo-games', 'Матчей Турбо на позиции', tb.n, false, 'stats'), fact('clock', 'Игровое время, с', c.v.clock)],
+    ttlSec: 10,
+    cooldownSec: 0,
+    icon: `item:${late.key}`,
+  });
+}
+
 export const itemTimingRule: Rule = (c) => {
   const clock = c.v.clock.value;
   const hero = c.v.me.hero.value;
-  // «Запаздывает» — по минутам профи обычных матчей; в Турбо норм нет
-  if (!playing(c) || clock === null || !hero || !c.v.me.itemsKnown || !c.look.hasNorms) return null;
+  if (!playing(c) || clock === null || !hero || !c.v.me.itemsKnown || purchaseWait(c)) return null;
   // «Запаздывает» — корам: у саппортов тайминги предметов слишком разные (режим тени: «Essence Distiller запаздывает» пятёрке)
   if (game(c).core === false) return null;
   const owned = new Set([...c.mem.items.keys(), ...c.v.me.items.map((i) => i.key)]);
+  // Турбо — только по реальным матчам Турбо (≥ 40 на позиции); нет данных — молчим: минуты обычной игры, делённые
+  // пополам, для «запаздывает» не годятся
+  if (c.look.isTurbo) return turboLate(c, clock, owned);
   // только профи патча: у запасной сборки минута примерная — «запаздывает» по ней не скажешь
   const core = c.look.buildFor(hero.id, hero.key).filter((b) => b.source === 'pro' && b.share >= 0.4 && (c.look.itemCost(b.key) ?? 0) >= 1500);
   const late = core.find((b) => !owned.has(b.key) && clock / 60 > b.medianMin + 6 && !c.mem.once.has(`late:${b.key}`));
@@ -324,23 +416,60 @@ const HP_CONSUMABLES = new Set(['tango', 'flask', 'faerie_fire']);
 /** Совет продать — только когда основной инвентарь почти полон (ячейка нужна) */
 export const SELL_WHEN_FULL = 5;
 
+/**
+ * Ранние предметы, для которых «когда уходят из 6 ячеек» взято из матчей сильных игроков (item-timings.json): их не
+ * улучшают в другой предмет, так что уход — это продажа или рюкзак. Magic Stick, Iron Branch, Ring of Basilius и т. п.
+ * уходят, потому что их собирают дальше, — для них по-прежнему OUTGROWN_ITEMS.
+ */
+export const SELL_DATA_ITEMS = new Set(['bracer', 'wraith_band', 'null_talisman', 'magic_wand', 'soul_ring', 'falcon_blade', 'orb_of_corrosion', 'quelling_blade']);
+/** Предмет из данных устарел настолько (минут после обычной минуты ухода), что советуем и при неполном инвентаре */
+export const SELL_LATE_EXTRA_MIN = 10;
+
 export const sellRule: Rule = (c) => {
   const clock = c.v.clock.value;
   if (!playing(c) || clock === null || !c.v.me.itemsKnown || c.mem.inFight) return null;
   const inv = c.v.me.items.filter((i) => /^inv\d$/.test(i.slot));
-  if (inv.length < SELL_WHEN_FULL) return null;
+  const bp = c.v.me.items.filter((i) => /^bp\d$/.test(i.slot));
+  const min = clock / 60;
   const scale = c.look.isTurbo ? 0.5 : 1;
+  // С какой минуты предмет лишний: по матчам сильных игроков (Турбо — по матчам Турбо), иначе эвристика OUTGROWN_ITEMS.
+  // Данные говорят «больше половины держат до конца» (null) — не советуем
+  const outgrownAt = (key: string): { min: number; data: boolean } | null => {
+    if (SELL_DATA_ITEMS.has(key) && c.look.timings?.leaves[key]) {
+      const at = leavesAt(c.look.timings, key);
+      return at === null ? null : { min: at, data: true };
+    }
+    return OUTGROWN_ITEMS[key] !== undefined ? { min: OUTGROWN_ITEMS[key]! * scale, data: false } : null;
+  };
+  // Не продавать то, из чего собирается следующий предмет сборки (Magic Wand → Holy Locket)
+  const hero = c.v.me.hero.value;
+  const owned = new Set([...c.mem.items.keys(), ...c.v.me.items.map((i) => i.key)]);
+  const upcoming = hero ? c.look.buildForPosition(hero.id, heroKeyOf(c), game(c).position).filter((b) => !owned.has(b.key)).slice(0, COUNTER_LOOKAHEAD) : [];
+  const keep = new Set(upcoming.flatMap((b) => [...c.look.itemParts(b.key)]));
   // Расходник, который сейчас пригодится (мало маны — Clarity, мало здоровья — Tango), не «лишний»: в матче 9051474634
   // коуч сказал «Clarity — продайте», а через 5 с «Мало маны — выпейте Clarity»
   const mana = poolPct(c.v.me.mana.value);
   const hp = poolPct(c.v.me.hp.value);
   const neededNow = (key: string) => (MANA_CONSUMABLES.has(key) && (mana === null || mana < 50)) || (HP_CONSUMABLES.has(key) && (hp === null || hp < 80));
-  const extra = inv.filter((i) => OUTGROWN_ITEMS[i.key] !== undefined && clock / 60 >= OUTGROWN_ITEMS[i.key]! * scale && !neededNow(i.key));
-  if (!extra.length) return null;
-  const names = [...new Set(extra.map((i) => c.look.itemName(i.key)))];
+  const stale = (key: string, extraMin = 0) => {
+    const o = outgrownAt(key);
+    return o !== null && min >= o.min + extraMin && !keep.has(key) && !neededNow(key);
+  };
+  // Основные ячейки: почти полный инвентарь — как раньше; при 4 предметах — только сильно устаревшие по данным
+  const extra = inv.filter((i) => (inv.length >= SELL_WHEN_FULL ? stale(i.key) : inv.length >= SELL_WHEN_FULL - 1 && outgrownAt(i.key)?.data === true && stale(i.key, SELL_LATE_EXTRA_MIN)));
+  // Рюкзак: предмет там ничего не даёт, устаревший — только место и золото
+  const extraBp = bp.filter((i) => stale(i.key));
+  if (!extra.length && !extraBp.length) return null;
+  const all = [...extra, ...extraBp];
+  const names = [...new Set(all.map((i) => c.look.itemName(i.key)))];
   // Расходники выгоднее использовать, чем продать за бесценок
-  const allConsumable = extra.every((i) => MANA_CONSUMABLES.has(i.key) || HP_CONSUMABLES.has(i.key));
+  const allConsumable = all.every((i) => MANA_CONSUMABLES.has(i.key) || HP_CONSUMABLES.has(i.key));
   const verb = allConsumable ? 'используйте или продайте' : 'продайте';
+  // Причина с цифрами: когда предмет убирают сильные игроки (если это из данных)
+  const first = all[0]!;
+  const o = outgrownAt(first.key)!;
+  const why = o.data ? ` Сильные игроки${c.look.isTurbo ? ' в Турбо' : ''} обычно убирают ${c.look.itemName(first.key)} к ${Math.round(o.min)}-й минуте, сейчас ${Math.floor(min)}-я.` : '';
+  const where = !extra.length ? 'Лежит в рюкзаке без пользы.' : inv.length >= SELL_WHEN_FULL ? 'Инвентарь почти полон.' : 'Ячейка нужна под большой предмет.';
   return draft({
     // Один id на правило: перерыв между советами — общий. С id по набору предметов («два Null Talisman», «Null Talisman»,
     // «Null Talisman + Tango») совет звучал 5 раз за 7 минут (матч 9051512826)
@@ -349,12 +478,12 @@ export const sellRule: Rule = (c) => {
     category: 'economy',
     priority: 'info',
     confidence: 0.6,
-    short: `Лишнее: ${names.slice(0, 2).join(', ')} — ${verb}`,
-    normal: `${names.join(', ')} к ${Math.floor(clock / 60)}-й минуте почти ничего не дают, а инвентарь почти полон. ${allConsumable ? 'Используйте или продайте' : 'Продайте'} и освободите ячейку под предмет посильнее.`,
-    facts: [derivedFact('outgrown', 'Лишние предметы', names.join(', '), 0.6), fact('clock', 'Игровое время, с', c.v.clock)],
+    short: `${extra.length ? 'Лишнее' : 'В рюкзаке лишнее'}: ${names.slice(0, 2).join(', ')} — ${verb}`,
+    normal: `${names.join(', ')} к ${Math.floor(min)}-й минуте почти ничего не дают. ${where}${why} ${allConsumable ? 'Используйте или продайте' : 'Продайте'} и освободите место под предмет посильнее.`,
+    facts: [derivedFact('outgrown', 'Лишние предметы', names.join(', '), 0.6), fact('clock', 'Игровое время, с', c.v.clock), ...(o.data ? [kbFact('leaves-at', 'Сильные игроки убирают к минуте', Math.round(o.min), false, 'stats')] : [])],
     ttlSec: 10,
     cooldownSec: 300,
-    icon: `item:${extra[0]!.key}`,
+    icon: `item:${first.key}`,
   });
 };
 
@@ -382,5 +511,5 @@ export const routeRule: Rule = (c) => {
   });
 };
 
-export const ECONOMY_RULES: Rule[] = [goldRule, tpRule, skillRule, idleRule, nextItemRule, itemTimingRule, gpmRule, wardsRule, neutralRule, sellRule, routeRule];
+export const ECONOMY_RULES: Rule[] = [goldRule, buybackSpendRule, tpRule, skillRule, idleRule, nextItemRule, itemTimingRule, gpmRule, wardsRule, neutralRule, sellRule, routeRule];
 

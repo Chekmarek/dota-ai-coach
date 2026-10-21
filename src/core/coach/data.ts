@@ -4,6 +4,7 @@ import type { KbHero, KbItem } from '../../shared/types/kb.ts';
 import type { MechanicsEntry } from '../../shared/types/mechanics.ts';
 import type { HeroStats, KbStats } from '../../shared/types/stats.ts';
 import type { RankedHero, StatsRanked } from '../../shared/types/stats-ranked.ts';
+import type { ItemTimings, TimingsMode } from './item-timings.ts';
 import type { PlayerProfile } from './profile.ts';
 import { modeRule, turboMechanics, type ModeOverrides } from '../knowledge-base/modes.ts';
 import type { DangerModel } from './danger-model.ts';
@@ -30,6 +31,8 @@ export interface CoachData {
   dangerModel?: DangerModel | null;
   /** Прогноз драк (src/data/fight-model.json, fight-model.ts); нет — только прежняя оценка правил (engagePercent) */
   fightModel?: FightModel | null;
+  /** Тайминги предметов по скачанным матчам STRATZ (src/data/item-timings.json): сборки Турбо, когда уходят ранние предметы */
+  itemTimings?: ItemTimings | null;
 }
 
 /** Сильные игроки рейтинга к минуте (средние): добивания, ценность героя, опыт, уровень */
@@ -98,6 +101,8 @@ export interface BuildItem {
   medianMin: number;
   /** pro — профи патча (точная медиана минуты); popular — популярные предметы (минута примерная); ranked — сильные игроки рейтинга на этой позиции (STRATZ) */
   source: 'pro' | 'popular' | 'ranked';
+  /** Доля побед купивших (только ranked, STRATZ) */
+  winrate?: number;
 }
 
 // «Становится невидимым», «оставаясь невидимым», «делает … невидимым», «получает невидимость».
@@ -162,6 +167,24 @@ export class CoachLookup {
    * Нормы из статистики патча (медианы GPM/XPM, добивания и минуты предметов профи) — только для обычной игры:
    * статистики Турбо нет, а умножать нормы «на глаз» нельзя.
    */
+  /** Тайминги предметов режима (Турбо — по матчам Турбо); null — файла нет */
+  get timings(): TimingsMode | null {
+    return (this.isTurbo ? this.data.itemTimings?.turbo : this.data.itemTimings?.normal) ?? null;
+  }
+
+  /** Все составные части предмета (с вложенными: Magic Wand → Magic Stick, Iron Branch) */
+  itemParts(key: string): Set<string> {
+    const out = new Set<string>();
+    const walk = (k: string) => {
+      for (const c of this.itemByKey.get(k)?.components ?? []) if (!out.has(c)) {
+        out.add(c);
+        walk(c);
+      }
+    };
+    walk(key);
+    return out;
+  }
+
   get hasNorms(): boolean {
     return !this.isTurbo;
   }
@@ -275,7 +298,7 @@ export class CoachLookup {
     const list = this.ranked(heroKey)?.items[String(position)] ?? [];
     return list
       .filter((x) => this.itemByKey.has(x.key) && !this.isComponent(x.key) && (this.itemCost(x.key) ?? 0) >= 500 && x.share >= 0.15)
-      .map((x) => ({ key: x.key, share: x.share, medianMin: x.medianMin, source: 'ranked' as const }));
+      .map((x) => ({ key: x.key, share: x.share, medianMin: x.medianMin, source: 'ranked' as const, winrate: x.winrate }));
   }
 
   /** Составная часть другого предмета (её саму в сборке не советуем); дорогие (≥ 2000) — исключение: Blink и т. п. */

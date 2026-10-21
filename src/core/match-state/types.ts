@@ -116,4 +116,14 @@ export interface MatchState {
   enemies: PlayersSnapshot['enemies'];
   /** Полоски здоровья героев на экране (последний кадр); к игроку привязаны только несомненные */
   healthBars: PlayersSnapshot['healthBars'];
+  /**
+   * Предметы врагов, увиденные на нижней панели, когда игрок выделял вражеского героя (только 6 основных ячеек, каждый
+   * предмет — подтверждён двумя чтениями). Нет поля — врагов не выделяли.
+   */
+  enemyItems?: EnemyItemsSeen[];
+}
+
+export interface EnemyItemsSeen {
+  heroId: number;
+  items: { key: string; firstWallMs: number; lastWallMs: number; clock: number | null }[];
 }
