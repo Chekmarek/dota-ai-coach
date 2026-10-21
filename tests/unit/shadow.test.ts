@@ -11,6 +11,7 @@ import { CoachEngine, defaultCoachSettings } from '../../src/core/coach/index.ts
 import { CoachLookup, type CoachData } from '../../src/core/coach/data.ts';
 import { parseStatsRanked } from '../../src/shared/types/stats-ranked.ts';
 import { parseItemTimings } from '../../src/core/coach/item-timings.ts';
+import { parseTargeting } from '../../src/core/coach/targeting.ts';
 import { realData, sim, type SimInput } from './coach-sim.ts';
 
 type Ev<T> = ({ time: number } & T)[];
@@ -41,7 +42,7 @@ interface ShadowMatch {
 const DIR = process.env.SHADOW_DIR ? join(import.meta.dirname, '../..', process.env.SHADOW_DIR) : join(import.meta.dirname, '../../.tmp/shadow');
 const OUT = process.env.SHADOW_OUT ? join(import.meta.dirname, '../..', process.env.SHADOW_OUT) : join(import.meta.dirname, '../../docs/night');
 /** Советы о предметах (для отчёта «было → стало»): что купить, продать, выкуп, против врагов */
-const ITEM_ADVICE = /^(economy\.(next|gold|late|sell|buyback|enemy-item)|draft\.item|fight\.keep-buyback)/;
+const ITEM_ADVICE = /^(economy\.(next|gold|late|sell|buyback|enemy-item)|draft\.item|fight\.keep-buyback|macro\.(enemy-blink|blink-watch|enemy-linken))/;
 
 /** Матч: .json или .json.gz; инвентарь — в самом файле или в соседней папке inv/ (как у загрузчика STRATZ) */
 function readShadow(file: string): ShadowMatch {
@@ -213,7 +214,8 @@ describe.runIf(process.env.DOTACOACH_SHADOW && existsSync(DIR))('режим те
   it('прогон и подсчёт', () => {
     const ranked = parseStatsRanked(JSON.parse(readFileSync(join(import.meta.dirname, '../../resources/data/kb/7.41f/stats-ranked.json'), 'utf8')), '7.41f');
     const itemTimings = parseItemTimings(JSON.parse(readFileSync(join(import.meta.dirname, '../../src/data/item-timings.json'), 'utf8')));
-    const data: CoachData = { ...realData(), statsRanked: ranked, itemTimings };
+    const targeting = parseTargeting(JSON.parse(readFileSync(join(import.meta.dirname, '../../src/data/targeting.json'), 'utf8')));
+    const data: CoachData = { ...realData(), statsRanked: ranked, itemTimings, targeting };
     const look = new CoachLookup(data);
     const itemKey = new Map(data.items.map((i) => [i.id, i.key]));
     const files = readdirSync(DIR).filter((f) => f.endsWith('.json') || f.endsWith('.json.gz'));

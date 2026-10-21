@@ -12,6 +12,8 @@ const modeSchema = z.object({
   leaves: z.record(z.string(), z.object({ n: z.number(), p50: z.number().nullable() })).catch({}),
   /** Герой → позиция '1'…'5' → матчей и первая покупка больших предметов (минуты игрового времени режима) */
   builds: z.record(z.string(), z.record(z.string(), z.object({ n: z.number(), items: z.array(buildItem) }))).catch({}),
+  /** Сборки — по рангу самого игрока (Турбо): с какого seasonRank и подпись («Divine+»); нет — публичные матчи */
+  rank: z.object({ minSeasonRank: z.number(), label: z.string(), matches: z.number() }).optional().catch(undefined),
 });
 export type TimingsMode = z.infer<typeof modeSchema>;
 

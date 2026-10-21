@@ -54,7 +54,7 @@ export function stanceOf(h: Pick<HintDraft, 'ruleId' | 'id' | 'short'>): 'go' | 
 }
 
 /** Плановая покупка: что купить дальше, потратить золото, выкуп, «запаздывает», продать, несрочный предмет против врагов */
-const PLANNED_PURCHASE = new Set(['economy.next', 'economy.gold', 'economy.buyback', 'economy.late', 'economy.sell', 'economy.enemy-item']);
+const PLANNED_PURCHASE = new Set(['economy.next', 'economy.gold', 'economy.buyback', 'economy.late', 'economy.sell', 'economy.enemy-item', 'macro.enemy-blink', 'macro.enemy-linken']);
 export function isPlannedPurchase(h: Pick<HintDraft, 'ruleId' | 'id' | 'priority'>): boolean {
   const r = h.ruleId ?? h.id;
   return PLANNED_PURCHASE.has(r) || (r === 'draft.item' && h.priority === 'info');

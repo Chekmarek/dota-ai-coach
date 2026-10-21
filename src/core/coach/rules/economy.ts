@@ -241,7 +241,7 @@ function turboLate(c: RuleContext, clock: number, owned: Set<string>) {
     priority: 'info',
     confidence: 0.7,
     short: `${name} запаздывает`,
-    normal: `В Турбо на этой позиции ${name} берут к ${Math.round(late.p50)} мин, в 8 из 10 матчей — к ${Math.round(late.p80)}; сейчас ${Math.floor(clock / 60)}. Ускорьте фарм.`,
+    normal: `В Турбо${c.look.timings?.rank ? ` (игроки ${c.look.timings.rank.label})` : ''} на этой позиции ${name} берут к ${Math.round(late.p50)} мин, в 8 из 10 матчей — к ${Math.round(late.p80)}; сейчас ${Math.floor(clock / 60)}. Ускорьте фарм.`,
     facts: [kbFact('item', 'Предмет', name, false, 'stats'), kbFact('median-min', 'Турбо: обычно к минуте', late.p50, false, 'stats'), kbFact('turbo-games', 'Матчей Турбо на позиции', tb.n, false, 'stats'), fact('clock', 'Игровое время, с', c.v.clock)],
     ttlSec: 10,
     cooldownSec: 0,

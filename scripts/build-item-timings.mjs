@@ -10,6 +10,7 @@
 import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { gunzipSync } from 'node:zlib';
+import { forbiddenIds } from './items-data-lib.mjs';
 
 const root = join(import.meta.dirname, '..');
 const kb = join(root, 'resources/data/kb/7.41f');
@@ -121,17 +122,84 @@ function build(dir, withBuilds) {
   };
 }
 
+/**
+ * Сборки Турбо по рангу самого игрока (seasonRank STRATZ; в Турбо ранги в одном матче сильно разные) — по компактным
+ * матчам .tmp/items-turbo (scripts/fetch-items-matches.mjs). Порог — самый высокий ранг, на котором пар «герой —
+ * позиция» с ≥ 40 матчами не меньше, чем у публичных сборок (иначе остаются публичные). DECISIONS.md п. 81.
+ */
+const RANKS = [
+  { min: 71, label: 'Divine+' },
+  { min: 61, label: 'Ancient+' },
+  { min: 51, label: 'Legend+' },
+];
+function rankedTurbo(minPairs) {
+  const d = join(root, '.tmp', 'items-turbo');
+  if (!existsSync(d)) return null;
+  const forbidden = forbiddenIds(root);
+  // герой → позиция → [ранг игрока, первые покупки] (храним только это — файлы читаются по одному)
+  const games = [];
+  let matches = 0;
+  for (const f of readdirSync(d).filter((x) => x.endsWith('.json.gz'))) {
+    if (forbidden.has(f.slice(0, -8))) continue;
+    const m = JSON.parse(gunzipSync(readFileSync(join(d, f))).toString('utf8'));
+    matches++;
+    for (const p of m.players) {
+      const heroKey = heroKeyById.get(p.hero);
+      if (!heroKey || !/^[1-5]$/.test(p.pos ?? '') || p.rank === null) continue;
+      const first = new Map();
+      for (const [t, id] of p.buys) {
+        const it = itemById.get(id);
+        if (major(it) && !first.has(it.key) && t >= 0) first.set(it.key, t / 60);
+      }
+      games.push({ heroKey, pos: p.pos, rank: p.rank, first });
+    }
+  }
+  const tally = (minRank) => {
+    const builds = new Map();
+    for (const g of games) {
+      if (g.rank < minRank) continue;
+      const hb = builds.get(g.heroKey) ?? new Map();
+      builds.set(g.heroKey, hb);
+      const b = hb.get(g.pos) ?? { n: 0, items: new Map() };
+      hb.set(g.pos, b);
+      b.n++;
+      for (const [k, t] of g.first) b.items.set(k, [...(b.items.get(k) ?? []), t]);
+    }
+    const out = Object.fromEntries(
+      [...builds]
+        .map(([h, byPos]) => [h, Object.fromEntries([...byPos].filter(([, b]) => b.n >= 20).map(([p, b]) => [p, { n: b.n, items: [...b.items].map(([key, l]) => ({ key, share: r3(l.length / b.n), p50: r1(quant(l, 0.5)), p80: r1(quant(l, 0.8)) })).filter((x) => x.share >= 0.15).sort((a, b) => a.p50 - b.p50) }]))])
+        .filter(([, v]) => Object.keys(v).length),
+    );
+    const pairs = Object.values(out).flatMap((bp) => Object.values(bp)).filter((b) => b.n >= 40).length;
+    return { builds: out, pairs, games: games.filter((g) => g.rank >= minRank).length };
+  };
+  for (const r of RANKS) {
+    const t = tally(r.min);
+    console.log(`Турбо по рангу игрока ${r.label}: матчей ${matches}, игроков ${t.games}, пар с ≥ 40 матчами ${t.pairs} (нужно ≥ ${minPairs})`);
+    if (t.pairs >= minPairs) return { ...t, rank: { minSeasonRank: r.min, label: r.label, matches } };
+  }
+  return null;
+}
+
 const normal = build('danger', false);
 console.log(`All Pick: матчей ${normal.matches}, ранних предметов ${Object.keys(normal.leaves).length}`);
 const turbo = build('danger-turbo', true);
 const big = Object.values(turbo.builds).flatMap((bp) => Object.values(bp)).filter((b) => b.n >= 40).length;
-console.log(`Турбо: матчей ${turbo.matches}, ранних предметов ${Object.keys(turbo.leaves).length}, сборок героя на позиции ${Object.values(turbo.builds).flatMap((bp) => Object.values(bp)).length} (из них ≥ 40 матчей: ${big})`);
+console.log(`Турбо (публичные): матчей ${turbo.matches}, ранних предметов ${Object.keys(turbo.leaves).length}, сборок героя на позиции ${Object.values(turbo.builds).flatMap((bp) => Object.values(bp)).length} (из них ≥ 40 матчей: ${big})`);
+// Сборки Турбо по рангу игрока заменяют публичные, если их не меньше; продажа (leaves) — по публичным: для неё нужен
+// инвентарь по секундам, а компактные матчи его не хранят
+const ranked = rankedTurbo(big);
+if (ranked) {
+  turbo.builds = ranked.builds;
+  turbo.rank = ranked.rank;
+  console.log(`Сборки Турбо — по рангу игрока ${ranked.rank.label} (${ranked.pairs} пар с ≥ 40 матчами)`);
+} else console.log('Сборки Турбо по рангу: данных пока мало — остаются публичные');
 const out = {
   schema: 'dota-coach.item-timings',
   version: 1,
   patch: '7.41f',
   generatedAt: new Date().toISOString(),
-  note: 'Скачанные матчи STRATZ: All Pick — рейтинг Divine+, Турбо — публичные. Экзаменационные матчи не используются.',
+  note: `Скачанные матчи STRATZ: All Pick — рейтинг Divine+ (средний ранг OpenDota), Турбо — ${turbo.rank ? `сборки по рангу игрока ${turbo.rank.label}, продажа — публичные` : 'публичные'}. Экзаменационные матчи, режим тени и свои матчи не используются.`,
   normal,
   turbo,
 };

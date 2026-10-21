@@ -5,6 +5,7 @@ import type { MechanicsEntry } from '../../shared/types/mechanics.ts';
 import type { HeroStats, KbStats } from '../../shared/types/stats.ts';
 import type { RankedHero, StatsRanked } from '../../shared/types/stats-ranked.ts';
 import type { ItemTimings, TimingsMode } from './item-timings.ts';
+import type { Targeting } from './targeting.ts';
 import type { PlayerProfile } from './profile.ts';
 import { modeRule, turboMechanics, type ModeOverrides } from '../knowledge-base/modes.ts';
 import type { DangerModel } from './danger-model.ts';
@@ -33,6 +34,8 @@ export interface CoachData {
   fightModel?: FightModel | null;
   /** Тайминги предметов по скачанным матчам STRATZ (src/data/item-timings.json): сборки Турбо, когда уходят ранние предметы */
   itemTimings?: ItemTimings | null;
+  /** Тип цели способностей и предметов (src/data/targeting.json, Valve datafeed): советы против Blink и Linken's */
+  targeting?: Targeting | null;
 }
 
 /** Сильные игроки рейтинга к минуте (средние): добивания, ценность героя, опыт, уровень */
@@ -183,6 +186,13 @@ export class CoachLookup {
     };
     walk(key);
     return out;
+  }
+
+  /** Значение атрибута предмета из базы знаний патча (blink_range, block_cooldown…); null — нет */
+  itemAttr(item: string, attr: string): number | null {
+    const v = this.itemByKey.get(item)?.attributes.find((a) => a.key === attr)?.value;
+    const n = v === undefined ? NaN : Number(String(v).split('/')[0]);
+    return Number.isFinite(n) ? n : null;
   }
 
   get hasNorms(): boolean {
