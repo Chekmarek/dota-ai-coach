@@ -24,6 +24,8 @@ import itemTimingsJson from '../../data/item-timings.json';
 import { parseItemTimings } from '@core/coach/item-timings.ts';
 import targetingJson from '../../data/targeting.json';
 import { parseTargeting } from '@core/coach/targeting.ts';
+import itemSituationsJson from '../../data/item-situations.json';
+import { parseItemSituations } from '@core/coach/item-situation.ts';
 import { BAD_ADVICE_SCHEMA, BAD_ADVICE_WINDOW_MS, SnapshotRing, badAdviceSnapshot, toBadAdviceHint, type BadAdviceRecord } from '@core/coach/bad-advice.ts';
 
 /** Справочник Турбо (вшит в сборку); неверная форма — null, тогда в Турбо вся механика «не проверено» */
@@ -36,6 +38,8 @@ const FIGHT_MODEL = parseFightModel(fightModelJson);
 const ITEM_TIMINGS = parseItemTimings(itemTimingsJson);
 /** Тип цели способностей и предметов (Valve datafeed); неверный файл — советов против Blink и Linken's нет */
 const TARGETING = parseTargeting(targetingJson);
+/** Сборка от положения в матче (только подтверждённые на отложенных матчах предметы); неверный файл — сборка одна */
+const ITEM_SITUATIONS = parseItemSituations(itemSituationsJson);
 
 /** Как часто сохранять историю идущего матча */
 export const HISTORY_SAVE_MS = 30_000;
@@ -121,6 +125,7 @@ export class CoachService {
       fightModel: FIGHT_MODEL,
       itemTimings: ITEM_TIMINGS,
       targeting: TARGETING,
+      itemSituations: ITEM_SITUATIONS,
     };
     const ai = new CoachAi({ provider: () => this.deps.aiProvider(), now: this.now });
     this.engine = new CoachEngine({ data, ai, now: this.now, settings: coachSettings(this.deps.settings.get()), onAsync: () => this.publish() });

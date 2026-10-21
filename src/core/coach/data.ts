@@ -6,6 +6,7 @@ import type { HeroStats, KbStats } from '../../shared/types/stats.ts';
 import type { RankedHero, StatsRanked } from '../../shared/types/stats-ranked.ts';
 import type { ItemTimings, TimingsMode } from './item-timings.ts';
 import type { Targeting } from './targeting.ts';
+import type { ItemSituations } from './item-situation.ts';
 import type { PlayerProfile } from './profile.ts';
 import { modeRule, turboMechanics, type ModeOverrides } from '../knowledge-base/modes.ts';
 import type { DangerModel } from './danger-model.ts';
@@ -36,6 +37,8 @@ export interface CoachData {
   itemTimings?: ItemTimings | null;
   /** Тип цели способностей и предметов (src/data/targeting.json, Valve datafeed): советы против Blink и Linken's */
   targeting?: Targeting | null;
+  /** Сборка от положения в матче: подтверждённые предметы (src/data/item-situations.json); нет — сборка одна */
+  itemSituations?: ItemSituations | null;
 }
 
 /** Сильные игроки рейтинга к минуте (средние): добивания, ценность героя, опыт, уровень */

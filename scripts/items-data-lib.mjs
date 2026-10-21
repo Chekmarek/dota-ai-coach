@@ -111,3 +111,51 @@ export async function step(state, io, patchId) {
   for (const p of c.players) if (p.hero) state.heroCounts[p.hero] = (state.heroCounts[p.hero] ?? 0) + 1;
   return 'saved';
 }
+
+// --- Статистика для «сборки от положения» (build-item-situations.mjs) ---
+
+/** z двух долей x1/n1 против x2/n2 (нормальное приближение) и сами доли */
+export function z2(x1, n1, x2, n2) {
+  if (!n1 || !n2) return { z: 0, p1: 0, p2: 0 };
+  const p1 = x1 / n1;
+  const p2 = x2 / n2;
+  const pp = (x1 + x2) / (n1 + n2);
+  const se = Math.sqrt(pp * (1 - pp) * (1 / n1 + 1 / n2));
+  return { z: se ? (p1 - p2) / se : 0, p1, p2 };
+}
+
+function erfc(x) {
+  // Абрамовиц — Стиган 7.1.26
+  const t = 1 / (1 + 0.3275911 * Math.abs(x));
+  const y = t * (0.254829592 + t * (-0.284496736 + t * (1.421413741 + t * (-1.453152027 + t * 1.061405429)))) * Math.exp(-x * x);
+  return x >= 0 ? y : 2 - y;
+}
+/** Односторонний p для z */
+export const pOne = (z) => 0.5 * erfc(z / Math.SQRT2);
+
+/**
+ * Строгий отбор: поправка Бенджамини — Хохберга (доля ложных находок ≤ fdr) по всем проверкам сразу и z ≥ zMin.
+ * tests: [{ z, ... }] → прошедшие.
+ */
+export function bhSelect(tests, fdr = 0.05, zMin = 3) {
+  const withP = tests.map((t) => ({ ...t, p: pOne(t.z) })).sort((a, b) => a.p - b.p);
+  const m = Math.max(1, withP.length);
+  let cut = -1;
+  withP.forEach((x, i) => {
+    if (x.p <= ((i + 1) / m) * fdr) cut = i;
+  });
+  return withP.slice(0, cut + 1).filter((x) => x.z >= zMin);
+}
+
+/**
+ * Подтверждение на отложенных матчах: та же сторона разницы, z ≥ zHold и разница не меньше половины найденной.
+ * found: [{ p1, p2, ... }], hold(x) → { z, p1, p2 } | null. Не подтвердилось — не используется.
+ */
+export function confirmOnHoldout(found, hold, zHold = 1.645) {
+  const out = [];
+  for (const f of found) {
+    const r = hold(f);
+    if (r && r.z >= zHold && r.p1 - r.p2 >= (f.p1 - f.p2) / 2) out.push({ ...f, hold: r });
+  }
+  return out;
+}

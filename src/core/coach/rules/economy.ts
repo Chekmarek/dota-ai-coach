@@ -9,6 +9,7 @@ import { isOwnBase } from '../geo.ts';
 import { derivedFact, fact, kbFact, poolPct } from '../view.ts';
 import { draft, game, playing, purchaseWait, type Rule, type RuleContext } from './context.ts';
 import { leavesAt, timedBuild } from '../item-timings.ts';
+import { killSituation, SITUATION_STABLE_SEC, situationPicks, stableSituation, type MatchSituation, type SituationPick } from '../item-situation.ts';
 
 
 /** Порог «много золота» по умолчанию */
@@ -31,6 +32,8 @@ export interface NextItem {
   source: 'pro' | 'popular' | 'ranked';
   /** Взят вперёд против угрозы врагов: что за угроза и у кого */
   vs: { threatRu: string; heroes: string[] } | null;
+  /** Взят вперёд по положению в матче (подтверждённая разница, item-situations.json) */
+  sit?: { situation: MatchSituation; pick: SituationPick; score: string } | null;
 }
 
 /**
@@ -61,8 +64,41 @@ export function nextItem(c: RuleContext): NextItem | null {
       if (b) return out(b, { threatRu: t.threat.nameRu, heroes: t.heroes });
     }
   }
+  // Положение в матче (устойчивое, ≥ 90 с): подтверждённый предмет для этого положения — вперёд, если он не куплен.
+  // Только обычная игра: данные — рейтинговые матчи All Pick
+  const sit = c.look.isTurbo ? null : currentSituation(c);
+  const key = heroKeyOf(c);
+  if (sit && key) {
+    const pick = situationPicks(c.look.data.itemSituations, key, posKey(c), sit).find((p) => !owned.has(p.key));
+    if (pick) return { key: pick.key, name: c.look.itemName(pick.key), cost: c.look.itemCost(pick.key), medianMin: -1, share: pick.share, source: 'ranked', vs: null, sit: { situation: sit, pick, score: scoreText(c) } };
+  }
   return left[0] ? out(left[0], null) : null;
 }
+
+/** Счёт убийств «наши:их»; пусто — счёт или своя команда неизвестны */
+function scoreText(c: RuleContext): string {
+  const r = c.v.score.radiant.value;
+  const d = c.v.score.dire.value;
+  if (r === null || d === null || !c.v.team) return '';
+  return c.v.team === 'radiant' ? `${r}:${d}` : `${d}:${r}`;
+}
+
+/** Устойчивое положение по счёту убийств (память коуча обновляет situationTrackRule каждый тик) */
+export function currentSituation(c: RuleContext): MatchSituation | null {
+  const at = c.mem.marks.get('sit@');
+  const code = c.mem.marks.get('sit');
+  if (at === undefined || !code || c.now - at < SITUATION_STABLE_SEC * 1000) return null;
+  return code === 1 ? 'behind' : code === 2 ? 'ahead' : 'even';
+}
+
+/** Каждый тик: положение по счёту убийств → память коуча (с какого момента оно держится). Подсказок не даёт */
+export const situationTrackRule: Rule = (c) => {
+  if (!c.v.inGame || !c.v.team) return null;
+  const r = c.v.score.radiant.value;
+  const d = c.v.score.dire.value;
+  stableSituation(c.mem.marks, c.now, c.v.team === 'radiant' ? killSituation(r, d) : killSituation(d, r));
+  return null;
+};
 
 /** Ключ своего героя: из данных игры, а с экрана — по id */
 export function heroKeyOf(c: RuleContext): string | null {
@@ -181,9 +217,11 @@ export const nextItemRule: Rule = (c) => {
     category: 'economy',
     priority: 'info',
     confidence: 0.7,
-    short: next.vs ? `Дальше: ${next.name} — против ${c.look.heroName(next.vs.heroes[0]!)}` : `Дальше: ${next.name}`,
+    short: next.sit ? `Дальше: ${next.name} — команда ${next.sit.situation === 'behind' ? 'отстаёт' : 'ведёт'}` : next.vs ? `Дальше: ${next.name} — против ${c.look.heroName(next.vs.heroes[0]!)}` : `Дальше: ${next.name}`,
     // Минута профи — из обычных матчей; в Турбо её не называем
-    normal: next.vs
+    normal: next.sit
+      ? `Команда ${next.sit.situation === 'behind' ? 'отстаёт' : 'ведёт'}${next.sit.score ? ` (${next.sit.score} по убийствам)` : ''} — ${next.name}: ${next.sit.situation === 'behind' ? 'при отставании' : 'при перевесе'} сильные игроки на этом герое берут его чаще (${Math.round(next.sit.pick.share * 100)}% против ${Math.round(next.sit.pick.other * 100)}%${next.sit.pick.measure === 'purchases' ? ' покупок' : ' матчей'}).`
+      : next.vs
       ? `Следующий предмет: ${next.name} — у врагов ${next.vs.threatRu} (${next.vs.heroes.map((h) => c.look.heroName(h)).join(', ')}); профи на этом герое его тоже собирают.`
       : next.source === 'ranked' && c.look.hasNorms
         ? `Следующий предмет: ${next.name} — сильные игроки рейтинга на этой позиции берут его к ${Math.round(next.medianMin)} мин.`
@@ -192,7 +230,9 @@ export const nextItemRule: Rule = (c) => {
           : next.source === 'pro' && c.look.hasNorms
         ? `Следующий предмет: ${next.name} — профи патча берут его к ${Math.round(next.medianMin)} мин.`
         : `Следующий предмет: ${next.name} — его чаще всего собирают на этом герое.`,
-    facts: [kbFact('next-item', 'Следующий предмет (профи патча)', next.name, false, 'stats'), ...(c.look.hasNorms ? [kbFact('median-min', 'Обычно к минуте', next.medianMin, false, 'stats')] : [])],
+    facts: next.sit
+      ? [kbFact('next-item', 'Следующий предмет (по положению в матче)', next.name, false, 'stats'), derivedFact('situation', 'Положение по убийствам', next.sit.score || next.sit.situation, 0.7), kbFact('sit-share', 'Берут в этом положении / в противоположном, %', `${Math.round(next.sit.pick.share * 100)} / ${Math.round(next.sit.pick.other * 100)}`, false, 'stats')]
+      : [kbFact('next-item', 'Следующий предмет (профи патча)', next.name, false, 'stats'), ...(c.look.hasNorms ? [kbFact('median-min', 'Обычно к минуте', next.medianMin, false, 'stats')] : [])],
     ttlSec: 10,
     // Тот же совет не повторяется: правило держится минуту после покупки
     cooldownSec: 300,
@@ -511,5 +551,5 @@ export const routeRule: Rule = (c) => {
   });
 };
 
-export const ECONOMY_RULES: Rule[] = [goldRule, buybackSpendRule, tpRule, skillRule, idleRule, nextItemRule, itemTimingRule, gpmRule, wardsRule, neutralRule, sellRule, routeRule];
+export const ECONOMY_RULES: Rule[] = [situationTrackRule, goldRule, buybackSpendRule, tpRule, skillRule, idleRule, nextItemRule, itemTimingRule, gpmRule, wardsRule, neutralRule, sellRule, routeRule];
 
