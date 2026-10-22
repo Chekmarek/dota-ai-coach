@@ -48,10 +48,10 @@ const tmp = () => (mkdirSync(TMP_ROOT, { recursive: true }), mkdtempSync(join(TM
 /** Папка «Доты» для тестов — пустая временная: иначе коуч находит настоящую Доту и переписывает её файл GSI своим секретом */
 const noDota = (dataDir: string) => (mkdirSync(join(dataDir, 'no-dota'), { recursive: true }), join(dataDir, 'no-dota'));
 
-test('приложение запускается, все 12 экранов открываются, нереализованное честно помечено', async () => {
+test('приложение запускается, все 13 экранов открываются, нереализованное честно помечено', async () => {
   const { app, ui } = await launch(tmp());
   try {
-    for (const id of ['dashboard', 'live', 'hud', 'replay', 'match', 'draft', 'ai', 'history', 'kb', 'voice', 'updates', 'settings']) {
+    for (const id of ['dashboard', 'live', 'hud', 'replay', 'match', 'draft', 'ai', 'history', 'kb', 'sound', 'voice', 'updates', 'settings']) {
       await ui.click(`[data-testid="nav-${id}"]`);
       await expect(ui.locator(`[data-testid="page-${id}"]`)).toBeVisible();
     }
@@ -129,6 +129,8 @@ test('безопасность: в интерфейсе нет доступа к
       'onCoachState',
       'onGsiState',
       'onHistoryChanged',
+      'onSettingsChanged',
+      'onSoundPlay',
       'onUpdateState',
       'pickDotaFolder',
       'pickReplayFolder',
@@ -137,6 +139,7 @@ test('безопасность: в интерфейсе нет доступа к
       'setAiKey',
       'showHudDemo',
       'showMatchups',
+      'soundShortcutStatus',
       'stopLocalAi',
       'updateSettings',
     ]);
@@ -323,6 +326,40 @@ test('Живая игра: захват включается сам, ищет о
     await ui.click('[data-testid="nav-live"]');
     await expect(ui.locator('[data-testid="live-state"]').first()).toHaveAttribute('data-state', 'off');
     await ui.screenshot({ path: join(ROOT, 'test-results/live-game.png') });
+  } finally {
+    await app.close();
+  }
+});
+
+test('Звуковые сигналы: страница, «Прослушать», сигнал по одному, индикатор и клавиша Ctrl+Alt+S', async () => {
+  const { app, ui } = await launch(tmp());
+  try {
+    // по умолчанию звук включён, клавиша занята коучем
+    await expect(ui.locator('[data-testid="sound-indicator"]')).toHaveAttribute('data-on', '1');
+    await expect.poll(() => app.evaluate(({ globalShortcut }) => globalShortcut.isRegistered('Ctrl+Alt+S'))).toBe(true);
+    await ui.click('[data-testid="nav-sound"]');
+    await expect(ui.locator('[data-testid="sound-shortcut"]')).toHaveValue('Ctrl+Alt+S');
+    for (const id of ['danger', 'ult', 'item', 'rune', 'timing', 'review']) await expect(ui.locator(`[data-testid="sound-try-${id}"]`)).toBeVisible();
+    // «Прослушать» не ломает страницу (звука в тесте не слышно, но ошибок быть не должно)
+    const errors: string[] = [];
+    ui.on('pageerror', (e) => errors.push(String(e)));
+    await ui.click('[data-testid="sound-try-danger"]');
+    await ui.click('[data-testid="sound-try-rune"]');
+    // один сигнал выключается, остальные остаются
+    await ui.click('[data-testid="sound-cue-rune"]');
+    await expect.poll(() => ui.evaluate(() => window.dotacoach.getSettings().then((s) => s.sound.cues))).toMatchObject({ rune: false, danger: true });
+    // индикатор: щелчок — выключено, в настройках тоже
+    await ui.click('[data-testid="sound-indicator"]');
+    await expect(ui.locator('[data-testid="sound-indicator"]')).toHaveAttribute('data-on', '0');
+    await expect(ui.locator('[data-testid="sound-enabled"]')).not.toBeChecked();
+    await ui.evaluate(() => (document.activeElement as HTMLElement | null)?.blur());
+    await ui.mouse.move(700, 300);
+    await ui.waitForTimeout(400); // плавная смена цвета индикатора — 0,15 с
+    await ui.screenshot({ path: join(ROOT, '.tmp/e2e-sound.png') });
+    // клавиша выключена — освобождена
+    await ui.click('[data-testid="sound-shortcut-off"]');
+    await expect.poll(() => app.evaluate(({ globalShortcut }) => globalShortcut.isRegistered('Ctrl+Alt+S'))).toBe(false);
+    expect(errors).toEqual([]);
   } finally {
     await app.close();
   }

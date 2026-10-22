@@ -26,6 +26,8 @@ import targetingJson from '../../data/targeting.json';
 import { parseTargeting } from '@core/coach/targeting.ts';
 import itemSituationsJson from '../../data/item-situations.json';
 import { parseItemSituations } from '@core/coach/item-situation.ts';
+import { SoundDirector, enabledCues, ultStateOf } from '@core/sound/director.ts';
+import type { SoundCueId } from '@core/sound/cues.ts';
 import { BAD_ADVICE_SCHEMA, BAD_ADVICE_WINDOW_MS, SnapshotRing, badAdviceSnapshot, toBadAdviceHint, type BadAdviceRecord } from '@core/coach/bad-advice.ts';
 
 /** Справочник Турбо (вшит в сборку); неверная форма — null, тогда в Турбо вся механика «не проверено» */
@@ -57,6 +59,8 @@ export interface CoachDeps {
   onHints: (hints: HudHint[], inMatch: boolean) => void;
   /** Показать индикатор режима игры: начало матча или смена режима (из игры или в настройках) */
   onModeBanner?: (banner: ModeBanner) => void;
+  /** Звуковой сигнал (src/core/sound): сыграть в окне коуча; atMs — момент события (запоздавший звук там отбрасывается) */
+  onSound?: (cue: SoundCueId, atMs: number) => void;
   /** Отметки «плохой совет» (горячая клавиша); нет — отметки не сохраняются */
   badAdvice?: { readonly sessionId: string; save(r: BadAdviceRecord): void };
   appVersion?: string | null;
@@ -96,6 +100,7 @@ export class CoachService {
   private readonly snapshots = new SnapshotRing();
   private shownHints: { at: number; hint: HudHint }[] = [];
   private onScreen: HudHint[] = [];
+  private readonly sound = new SoundDirector();
 
   constructor(private readonly deps: CoachDeps) {
     this.now = deps.now ?? (() => Date.now());
@@ -175,6 +180,7 @@ export class CoachService {
     else if (!e.inGame) this.snapshots.clear();
     this.trackHistory(u, mode);
     this.announceMode(e, mode);
+    this.playSound(e, u, s);
     this.publish();
     return u;
   }
@@ -222,6 +228,28 @@ export class CoachService {
     for (const h of hints) if (!this.shownHints.some((x) => x.hint.seq === h.seq)) this.shownHints.push({ at: now, hint: h });
     this.shownHints = this.shownHints.filter((x) => now - x.at <= BAD_ADVICE_WINDOW_MS || hints.some((h) => h.seq === x.hint.seq));
     this.deps.onHints(hints, inMatch);
+  }
+
+  /** Звуковой сигнал этого тика: подсказки видимых категорий + «ульта готова» по GSI; сбой звука не ломает подсказки */
+  private playSound(e: CoachEngine, u: CoachUpdate, s: Settings): void {
+    if (!this.deps.onSound) return;
+    try {
+      const enabled = s.sound.enabled ? enabledCues(s.sound.cues) : new Set<SoundCueId>();
+      const cue = this.sound.tick({
+        nowMs: this.now(),
+        shown: u.shown.filter((h) => s.hints.categories[h.category]),
+        ult: ultStateOf(e.currentView),
+        inFight: e.mem.inFight,
+        inGame: e.inGame,
+        enabled,
+      });
+      if (cue) {
+        this.deps.log?.('coach звук', { cue, clock: e.currentView?.clock.value ?? null });
+        this.deps.onSound(cue, this.now());
+      }
+    } catch (err) {
+      this.deps.log?.('coach звук: ошибка', String(err).slice(0, 300));
+    }
   }
 
   // ---------- «Плохой совет» ----------

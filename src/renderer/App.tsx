@@ -1,4 +1,4 @@
-import { useState, type ComponentType } from 'react';
+import { useEffect, useState, type ComponentType } from 'react';
 import { useEngine } from './hooks/useEngine';
 import { useSettings } from './hooks/useSettings';
 import { useUpdate } from './hooks/useUpdate';
@@ -14,6 +14,8 @@ import { UpdateNotice, UpdatesPage, UpdateToast } from './pages/Updates';
 import { ModeToast } from './components/mode-toast';
 import type { PageId, PageProps } from './pages/types';
 import { VoiceSettings } from './pages/VoiceSettings';
+import { SoundPill, SoundSettings } from './pages/SoundSettings';
+import { playMessage } from './sound/player';
 import { AppSettings } from './pages/AppSettings';
 import { ReplayMode } from './pages/ReplayMode';
 import { AiAssistant } from './pages/AiAssistant';
@@ -34,6 +36,7 @@ const PAGES: readonly { id: PageId; label: string; icon: IconName; group: string
   { id: 'history', label: 'История советов', icon: 'history', group: 'Разбор', Component: History },
   { id: 'ai', label: 'ИИ-помощник', icon: 'sparkles', group: 'Разбор', Component: AiAssistant },
   { id: 'kb', label: 'База знаний', icon: 'book', group: 'Разбор', Component: KnowledgeBase },
+  { id: 'sound', label: 'Звуковые сигналы', icon: 'sound', group: 'Система', Component: SoundSettings },
   { id: 'voice', label: 'Голос', icon: 'mic', group: 'Система', Component: VoiceSettings },
   { id: 'updates', label: 'Обновления', icon: 'download', group: 'Система', Component: UpdatesPage },
   { id: 'settings', label: 'Настройки', icon: 'settings', group: 'Система', Component: AppSettings },
@@ -45,6 +48,8 @@ export function App() {
   const { status, connected } = useEngine();
   const { settings } = useSettings();
   useLiveAutoStart(status, connected, settings);
+  // Звуковые сигналы из main: окно коуча играет их всегда, на любой странице
+  useEffect(() => window.dotacoach.onSoundPlay((m) => void playMessage(m)), []);
   const upd = useUpdate();
   const updateAvailable = upd?.status === 'available';
   const liveOn = isLive(status);
@@ -84,6 +89,7 @@ export function App() {
           <UpdateNotice onOpen={() => setPage('updates')} />
           {liveOn ? <LivePill live={status.live} /> : <StatePill state={status?.state ?? null} />}
           <GsiSidebarPill />
+          <SoundPill />
           {status && status.state === 'running' && (
             <div className="muted small">
               {status.measuredFps} к/с · обработка {status.processingFps} к/с

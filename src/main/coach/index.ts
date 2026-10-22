@@ -2,7 +2,9 @@
 // Снимки матча принимаются только от окна движка, вызовы интерфейса — только от окна интерфейса; всё проверяется zod.
 import { app, globalShortcut, ipcMain, type BrowserWindow, type IpcMainInvokeEvent } from 'electron';
 import { z } from 'zod';
-import { IPC, LIVE_IPC, type CoachStateMessage } from '@shared/ipc';
+import { IPC, LIVE_IPC, type CoachStateMessage, type SoundPlayMessage } from '@shared/ipc';
+import type { SoundToneId } from '@core/sound/cues.ts';
+import { forUi } from '../ipc/register';
 import { parseCoachInput } from '@shared/types/coach-input';
 import { MODE_BANNER_MS, type HudHint, type ModeBanner } from '@shared/types/hud';
 import type { AiProvider } from '@core/ai/provider.ts';
@@ -60,6 +62,13 @@ export function setupCoach(deps: {
         : [];
     setHudHints([...lastHints.hints, ...extra], lastHints.inMatch);
   };
+  /** Звук играет окно коуча (Web Audio); нет окна — тишина, остальное работает */
+  const playTone = (tone: SoundToneId, atMs: number) => {
+    const ui = deps.getUi();
+    if (!ui || ui.isDestroyed()) return;
+    const msg: SoundPlayMessage = { tone, volume: deps.settings.get().sound.volume, atMs };
+    ui.webContents.send(IPC.soundPlay, msg);
+  };
   const service = new CoachService({
     settings: deps.settings,
     kb: deps.kb,
@@ -73,6 +82,7 @@ export function setupCoach(deps: {
       pushHud();
       sendUi();
     },
+    onSound: (cue, atMs) => playTone(cue, atMs),
     onModeBanner: (b: ModeBanner) => {
       banner = { b, at: Date.now() };
       setHudModeBanner(b);
@@ -103,7 +113,43 @@ export function setupCoach(deps: {
   handle(IPC.historyList, () => history.list());
   handle(IPC.historyGet, (arg) => history.get(z.string().max(80).parse(arg)));
 
-  // Горячая клавиша «плохой совет»: глобальная (Electron), в игру ничего не вводится; вне матча ничего не пишет
+  // Горячие клавиши — глобальные (Electron), в игру ничего не вводится; занятое сочетание — запись в журнал
+  const bindShortcut = (bound: string, key: string, fn: () => void, what: string): string => {
+    if (key === bound) return bound;
+    if (bound) globalShortcut.unregister(bound);
+    if (!key) return '';
+    try {
+      if (globalShortcut.register(key, fn)) return key;
+      liveLog(`coach ${what}: клавиша занята другой программой`, key);
+    } catch (err) {
+      liveLog(`coach ${what}: клавиша не принята`, key, String(err));
+    }
+    return '';
+  };
+
+  // «Звук вкл/выкл»: переключить, подтвердить коротким звуком (и при выключении), сообщить интерфейсу
+  let soundKey = '';
+  const onSoundToggle = () => {
+    const on = !deps.settings.get().sound.enabled;
+    const next = deps.settings.update({ sound: { enabled: on } });
+    liveLog('coach звук', { enabled: on, by: 'клавиша' });
+    playTone(on ? 'toggle-on' : 'toggle-off', Date.now());
+    const ui = deps.getUi();
+    if (ui && !ui.isDestroyed()) ui.webContents.send(IPC.settingsChanged, forUi(next));
+  };
+  // Клавиша «плохой совет» занимается первой: при совпадении сочетаний звук не переключается
+  const bindSoundKey = () => {
+    const key = deps.settings.get().sound.shortcut;
+    if (key && key === boundKey) {
+      if (soundKey && soundKey !== boundKey) globalShortcut.unregister(soundKey);
+      soundKey = '';
+      return liveLog('coach звук вкл/выкл: то же сочетание, что у «плохой совет», — не занято', key);
+    }
+    soundKey = bindShortcut(soundKey, key, onSoundToggle, 'звук вкл/выкл');
+  };
+  handle(IPC.soundShortcutStatus, () => ({ key: deps.settings.get().sound.shortcut, bound: soundKey !== '' && soundKey === deps.settings.get().sound.shortcut }));
+
+  // Горячая клавиша «плохой совет»: вне матча ничего не пишет
   let boundKey = '';
   const onBadAdvice = () => {
     const r = service.markBadAdvice();
@@ -128,16 +174,20 @@ export function setupCoach(deps: {
     }
   };
   bindKey();
+  bindSoundKey();
   handle(IPC.badAdviceShortcutStatus, () => ({ key: deps.settings.get().hints.badAdviceShortcut, bound: boundKey !== '' && boundKey === deps.settings.get().hints.badAdviceShortcut }));
 
   return {
     onSettingsChanged: () => {
       service.onSettingsChanged();
       bindKey();
+      bindSoundKey();
     },
     dispose: () => {
       if (boundKey) globalShortcut.unregister(boundKey);
       boundKey = '';
+      if (soundKey) globalShortcut.unregister(soundKey);
+      soundKey = '';
       service.flush();
     },
   };

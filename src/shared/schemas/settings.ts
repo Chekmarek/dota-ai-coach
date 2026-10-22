@@ -3,6 +3,7 @@ import { HUD_ZONE_IDS, zoneOverridesSchema, type HudZoneId, type ZoneOverrides }
 import { HUD_THEME_IDS, type HudThemeId } from '../types/hud.ts';
 import { GAME_MODE_OVERRIDES, type GameModeOverride } from '../../core/gsi/mode.ts';
 import { POSITION_OVERRIDES, type PositionOverride } from '../../core/coach/position.ts';
+import { SOUND_CUE_IDS, type SoundCueId } from '../../core/sound/cues.ts';
 
 export type HintDetail = 'min' | 'normal' | 'detailed';
 export type HintCategories = Record<'fight' | 'danger' | 'laning' | 'economy' | 'macro' | 'timing' | 'mistake' | 'review', boolean>;
@@ -42,6 +43,9 @@ export function isSafeBadAdviceShortcut(key: string): boolean {
   return true;
 }
 
+/** Горячая клавиша «звук вкл/выкл» по умолчанию: в раскладке Доты по умолчанию Ctrl+Alt+буква не занято */
+export const SOUND_SHORTCUT_DEFAULT = 'Ctrl+Alt+S';
+
 /** Нажатое сочетание → строка для Electron (Ctrl+Shift+F8); null — одни модификаторы или неподходящая клавиша */
 export function acceleratorOf(e: { ctrlKey: boolean; altKey: boolean; shiftKey: boolean; code: string }): string | null {
   const m = /^(?:Key([A-Z])|Digit([0-9])|(F(?:[1-9]|1[0-2])))$/.exec(e.code);
@@ -76,6 +80,8 @@ const DEFAULTS = {
   hud: { enabled: true, theme: 'runes' as HudThemeId, reduceMotion: false, opacity: 1, scale: 1, zones: null as ZoneOverrides | null, hiddenZones: [] as HudZoneId[] },
   // Valve Game State Integration: локальный приёмник на 127.0.0.1 (этап 2 GSI)
   gsi: { port: GSI_DEFAULT_PORT, token: '', record: true, dotaDir: null as string | null },
+  // Звуковые сигналы (0.17.x): тихо по умолчанию; в старых settings.json раздела нет — значения отсюда
+  sound: { enabled: true, volume: 0.3, cues: Object.fromEntries(SOUND_CUE_IDS.map((c) => [c, true])) as Record<SoundCueId, boolean>, shortcut: SOUND_SHORTCUT_DEFAULT as string },
   // Только для разработчика (DOTACOACH_DEV=1): набор кадров для проверки зрения (docs/VISION_DATASET.md)
   dev: { datasetRecord: false, datasetEveryN: 10 },
 };
@@ -224,6 +230,16 @@ const fields = {
     /** Папка «dota 2 beta», если коуч не нашёл её сам; null — искать через Steam */
     dotaDir: z.string().min(3).max(1000).nullable(),
   },
+  sound: {
+    /** Звуковые сигналы включены (горячая клавиша переключает это же поле) */
+    enabled: z.boolean(),
+    /** Общая громкость сигналов, 0…1 */
+    volume: z.number().min(0).max(1),
+    /** Какие сигналы звучат; в старых файлах части сигналов может не быть — тогда включён */
+    cues: z.object(Object.fromEntries(SOUND_CUE_IDS.map((c) => [c, z.boolean()])) as Record<SoundCueId, z.ZodBoolean>),
+    /** Горячая клавиша «звук вкл/выкл» (только безопасные сочетания); '' — выключена */
+    shortcut: z.union([z.literal(''), z.string().max(40).refine(isSafeBadAdviceShortcut)]),
+  },
   dev: {
     /** Сохранять кадры живого захвата + GSI наблюдателя в <папка данных>/vision-dataset. Работает только при DOTACOACH_DEV=1 */
     datasetRecord: z.boolean(),
@@ -240,8 +256,13 @@ function tolerant<K extends SectionName>(name: K) {
   const shape = Object.fromEntries(
     Object.entries(fields[name]).map(([k, s]) => [k, (s as z.ZodType).catch((DEFAULTS[name] as Record<string, unknown>)[k])]),
   ) as { [F in keyof Sections[K]]: Sections[K][F] };
-  return z.object(shape).catch(() => ({ ...DEFAULTS[name] }) as never);
+  return z.object(shape).catch(() => structuredClone(DEFAULTS[name]) as never);
 }
+
+/** Сигналы по одному: неизвестный или испорченный сигнал — включён, остальные сохраняются */
+const soundCuesTolerant = z
+  .object(Object.fromEntries(SOUND_CUE_IDS.map((c) => [c, z.boolean().catch(true)])) as Record<SoundCueId, z.ZodCatch<z.ZodBoolean>>)
+  .catch(() => ({ ...DEFAULTS.sound.cues }));
 
 export const settingsSchema = z.object({
   schemaVersion: z.literal(SETTINGS_SCHEMA_VERSION).catch(SETTINGS_SCHEMA_VERSION),
@@ -253,6 +274,14 @@ export const settingsSchema = z.object({
   hints: tolerant('hints'),
   hud: tolerant('hud'),
   gsi: tolerant('gsi'),
+  sound: z
+    .object({
+      enabled: fields.sound.enabled.catch(DEFAULTS.sound.enabled),
+      volume: fields.sound.volume.catch(DEFAULTS.sound.volume),
+      cues: soundCuesTolerant,
+      shortcut: fields.sound.shortcut.catch(DEFAULTS.sound.shortcut),
+    })
+    .catch(() => structuredClone(DEFAULTS.sound)),
   dev: tolerant('dev'),
   ai: aiTolerant,
 });
@@ -275,6 +304,7 @@ export const settingsPatchSchema = z
     hud: z.object(fields.hud).partial().strict().optional(),
     // token — только main-процесс (SettingsStore.setGsiToken), dotaDir — через диалог выбора папки
     gsi: z.object({ port: fields.gsi.port, record: fields.gsi.record }).partial().strict().optional(),
+    sound: z.object({ ...fields.sound, cues: fields.sound.cues.partial().strict() }).partial().strict().optional(),
     dev: z.object(fields.dev).partial().strict().optional(),
     // gigachat из интерфейса не выбирается, пока он недоступен
     ai: z
@@ -303,6 +333,7 @@ export function applySettingsPatch(current: Settings, patch: SettingsPatch): Set
     hints: { ...current.hints, ...patch.hints },
     hud: { ...current.hud, ...patch.hud },
     gsi: { ...current.gsi, ...patch.gsi },
+    sound: { ...current.sound, ...patch.sound, cues: { ...current.sound.cues, ...patch.sound?.cues } },
     dev: { ...current.dev, ...patch.dev },
     ai: {
       ...current.ai,

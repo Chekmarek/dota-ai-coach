@@ -21,6 +21,18 @@ const api: DotaCoachApi = {
     return () => ipcRenderer.removeListener(IPC.historyChanged, listener);
   },
   badAdviceShortcutStatus: () => ipcRenderer.invoke(IPC.badAdviceShortcutStatus),
+  // Звуковые сигналы
+  onSoundPlay: (fn) => {
+    const listener = (_e: Electron.IpcRendererEvent, msg: Parameters<typeof fn>[0]) => fn(msg);
+    ipcRenderer.on(IPC.soundPlay, listener);
+    return () => ipcRenderer.removeListener(IPC.soundPlay, listener);
+  },
+  soundShortcutStatus: () => ipcRenderer.invoke(IPC.soundShortcutStatus),
+  onSettingsChanged: (fn) => {
+    const listener = (_e: Electron.IpcRendererEvent, s: Parameters<typeof fn>[0]) => fn(s);
+    ipcRenderer.on(IPC.settingsChanged, listener);
+    return () => ipcRenderer.removeListener(IPC.settingsChanged, listener);
+  },
   getSettings: () => ipcRenderer.invoke(IPC.settingsGet),
   updateSettings: (patch) => ipcRenderer.invoke(IPC.settingsUpdate, patch),
   getAppInfo: () => ipcRenderer.invoke(IPC.appInfo),

@@ -4,12 +4,24 @@ import type { AppInfo } from '@shared/ipc';
 
 let cache: Settings | null = null;
 const subs = new Set<(s: Settings) => void>();
+let pushed = false;
+
+/** Настройки, изменённые не из интерфейса (горячая клавиша «звук вкл/выкл»), — во все открытые страницы */
+function listenPushes(): void {
+  if (pushed) return;
+  pushed = true;
+  window.dotacoach.onSettingsChanged?.((s) => {
+    cache = s;
+    subs.forEach((fn) => fn(s));
+  });
+}
 
 export function useSettings(): { settings: Settings | null; update: (p: SettingsPatch) => Promise<void>; error: string | null } {
   const [settings, setSettings] = useState<Settings | null>(cache);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    listenPushes();
     subs.add(setSettings);
     if (!cache) {
       void window.dotacoach.getSettings().then((s) => {

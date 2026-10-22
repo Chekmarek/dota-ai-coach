@@ -60,7 +60,20 @@ export const IPC = {
   historyChanged: 'history:changed',
   /** Клавиша «плохой совет»: какая и удалось ли её занять */
   badAdviceShortcutStatus: 'coach:bad-advice-shortcut',
+  /** событие main → UI: сыграть звуковой сигнал (src/core/sound) */
+  soundPlay: 'sound:play',
+  /** Клавиша «звук вкл/выкл»: какая и удалось ли её занять */
+  soundShortcutStatus: 'sound:shortcut',
+  /** событие main → UI: настройки изменились не из интерфейса (горячая клавиша «звук вкл/выкл») */
+  settingsChanged: 'settings:changed',
 } as const;
+
+/** Звуковой сигнал из main: что сыграть, громкость и когда случилось событие (старше 2 с — не звучит) */
+export interface SoundPlayMessage {
+  tone: import('../core/sound/cues.ts').SoundToneId;
+  volume: number;
+  atMs: number;
+}
 
 /**
  * Каналы окна движка (живой захват). Строки продублированы в src/preload/engine.ts:
@@ -184,6 +197,12 @@ export interface DotaCoachApi {
   onHistoryChanged(fn: () => void): () => void;
   /** Клавиша «плохой совет»: из настроек и занята ли (false — занята другой программой или выключена) */
   badAdviceShortcutStatus(): Promise<{ key: string; bound: boolean }>;
+  /** Сыграть звуковой сигнал (событие); возвращает отписку */
+  onSoundPlay(fn: (m: SoundPlayMessage) => void): () => void;
+  /** Клавиша «звук вкл/выкл»: из настроек и занята ли */
+  soundShortcutStatus(): Promise<{ key: string; bound: boolean }>;
+  /** Настройки изменились не из интерфейса (горячая клавиша) */
+  onSettingsChanged(fn: (s: Settings) => void): () => void;
   /** Показать примеры подсказок поверх игры на 12 с */
   showHudDemo(scene: 'alive' | 'dead' | 'match'): Promise<void>;
   getSettings(): Promise<Settings>;

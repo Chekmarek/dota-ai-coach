@@ -32,7 +32,7 @@ interface Deps {
 }
 
 /** Секрет GSI интерфейсу не нужен — не отдаём его из main */
-function forUi(s: Settings): Settings {
+export function forUi(s: Settings): Settings {
   return { ...s, gsi: { ...s.gsi, token: '' } };
 }
 
