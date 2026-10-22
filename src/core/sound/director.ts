@@ -1,16 +1,19 @@
 // Когда звучит сигнал (чистая логика, время — снаружи). Правила «не раздражать»:
 // - один момент — один звук: из всего, что случилось сразу, звучит важнейший сигнал;
 // - тот же сигнал — не чаще своего кулдауна, любой сигнал — не чаще раза в 1,5 с;
-// - опасность — первой и в драке; остальные в драке молчат (не копятся до конца драки);
+// - срочные (опасность, «Отходи», «Вступай») — первыми и в драке; остальные в драке молчат (не копятся до конца драки);
 // - сигнал, не прозвучавший за 2 с, выбрасывается — запоздалый звук хуже тишины;
+// - советов и фоновых — не больше 2 в минуту (повторяющиеся напоминания не превращаются в перезвон);
 // - «ульта готова» — только по переходу «перезарядка → готова» после первого снимка: при подключении к идущему
 //   матчу и в начале игры пачки «готово» не бывает.
-import { SOUND_CUES, SOUND_CUE_IDS, cueForHint, type SoundCueId } from './cues.ts';
+import { SOUND_CUES, SOUND_CUE_IDS, cueForHint, cueInFight, cuePriority, type SoundCueId } from './cues.ts';
 
 /** Любой сигнал — не чаще (мс) */
 export const SOUND_MIN_GAP_MS = 1500;
 /** Сигнал старше (мс) не звучит */
 export const SOUND_MAX_AGE_MS = 2000;
+/** Не срочных сигналов (советы и фоновые) — не больше стольких за минуту; срочные — без ограничения (свой кулдаун) */
+export const SOUND_CALM_PER_MIN = 2;
 
 /** Состояние ульты для сигнала: изучена ли, на перезарядке ли, готова ли (null — не известно или пассивная) */
 export type UltState = 'unlearned' | 'cooldown' | 'ready' | 'other' | null;
@@ -18,7 +21,7 @@ export type UltState = 'unlearned' | 'cooldown' | 'ready' | 'other' | null;
 export interface SoundTick {
   nowMs: number;
   /** Подсказки, впервые показанные на этом тике (только видимые пользователю категории) */
-  shown: readonly { ruleId: string; category: string; priority: string; icon?: string | null }[];
+  shown: readonly { id?: string; ruleId: string; category: string; priority: string; icon?: string | null }[];
   ult: UltState;
   /** Идёт драка рядом (враги вплотную) */
   inFight: boolean;
@@ -32,6 +35,8 @@ export class SoundDirector {
   private pending: { cue: SoundCueId; atMs: number }[] = [];
   private lastPlayed = new Map<SoundCueId, number>();
   private lastAnyMs = -Infinity;
+  /** Когда звучали не срочные сигналы (за последнюю минуту) */
+  private calmPlayed: number[] = [];
   private prevUlt: UltState | undefined = undefined;
 
   /** Новый тик: что прозвучит сейчас (не больше одного сигнала) */
@@ -48,19 +53,23 @@ export class SoundDirector {
 
     for (const cue of fresh) {
       if (!t.enabled.has(cue)) continue;
-      if (t.inFight && !SOUND_CUES[cue].inFight) continue;
+      if (t.inFight && !cueInFight(cue)) continue;
       if (this.pending.some((p) => p.cue === cue)) continue;
       this.pending.push({ cue, atMs: t.nowMs });
     }
-    this.pending = this.pending.filter((p) => t.nowMs - p.atMs <= SOUND_MAX_AGE_MS && t.enabled.has(p.cue) && (!t.inFight || SOUND_CUES[p.cue].inFight));
+    this.pending = this.pending.filter((p) => t.nowMs - p.atMs <= SOUND_MAX_AGE_MS && t.enabled.has(p.cue) && (!t.inFight || cueInFight(p.cue)));
     if (!this.pending.length || t.nowMs - this.lastAnyMs < SOUND_MIN_GAP_MS) return null;
     // Кулдаун сигнала: на кулдауне — не звучит и не ждёт
     this.pending = this.pending.filter((p) => t.nowMs - (this.lastPlayed.get(p.cue) ?? -Infinity) >= SOUND_CUES[p.cue].cooldownMs);
-    const next = [...this.pending].sort((a, b) => SOUND_CUES[b.cue].priority - SOUND_CUES[a.cue].priority || a.atMs - b.atMs)[0];
+    // Лимит не срочных за минуту: исчерпан — не срочные выбрасываются (подсказка на экране всё равно есть)
+    this.calmPlayed = this.calmPlayed.filter((ms) => t.nowMs - ms < 60_000);
+    if (this.calmPlayed.length >= SOUND_CALM_PER_MIN) this.pending = this.pending.filter((p) => cueInFight(p.cue));
+    const next = [...this.pending].sort((a, b) => cuePriority(b.cue) - cuePriority(a.cue) || a.atMs - b.atMs)[0];
     if (!next) return null;
     this.pending = this.pending.filter((p) => p !== next);
     this.lastPlayed.set(next.cue, t.nowMs);
     this.lastAnyMs = t.nowMs;
+    if (!cueInFight(next.cue)) this.calmPlayed.push(t.nowMs);
     return next.cue;
   }
 }

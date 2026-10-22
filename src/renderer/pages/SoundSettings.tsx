@@ -2,7 +2,7 @@
 // Сами сигналы — src/core/sound/cues.ts, синтез — src/renderer/sound/player.ts.
 import { useEffect, useState } from 'react';
 import { SOUND_SHORTCUT_DEFAULT, acceleratorOf, isSafeBadAdviceShortcut, type Settings, type SettingsPatch } from '@shared/schemas/settings';
-import { SOUND_CUES, SOUND_CUE_IDS } from '@core/sound/cues.ts';
+import { SOUND_CUES, SOUND_CUE_IDS, SOUND_TIERS, SOUND_TIER_RU } from '@core/sound/cues.ts';
 import { useSettings } from '../hooks/useSettings';
 import { Card, PageHeader } from '../components/ui';
 import { playTone } from '../sound/player';
@@ -13,7 +13,7 @@ export function SoundSettings() {
   const s = settings.sound;
   return (
     <>
-      <PageHeader title="Звуковые сигналы" subtitle="Короткие тихие звуки на важные моменты матча: у каждого смысла — свой звук." />
+      <PageHeader title="Звуковые сигналы" subtitle="У каждого действия свой короткий звук в одном стиле: срочное — ярко, фоновое — тихо." />
       <Card title="Общие">
         <div className="form">
           <label className="check">
@@ -25,34 +25,37 @@ export function SoundSettings() {
             <input type="range" min={0} max={1} step={0.05} value={s.volume} onChange={(e) => void update({ sound: { volume: Number(e.target.value) } })} data-testid="sound-volume" />
           </label>
           <p className="muted small">
-            Не чаще одного сигнала в 1,5 с; в драке звучит только «Опасность»; звук, который не успел прозвучать за 2 с, пропускается.
+            Не чаще одного сигнала в 1,5 с; в драке звучат только срочные; звук, который не успел прозвучать за 2 с, пропускается.
           </p>
           <SoundShortcutField settings={settings} update={update} />
         </div>
       </Card>
-      <Card title="Сигналы">
-        <ul className="sound-cues">
-          {SOUND_CUE_IDS.map((id) => (
-            <li key={id} className="sound-cue">
-              <label className="check">
-                <input type="checkbox" checked={s.cues[id]} disabled={!s.enabled} onChange={(e) => void update({ sound: { cues: { [id]: e.target.checked } } })} data-testid={`sound-cue-${id}`} />
-                <b>{SOUND_CUES[id].nameRu}</b>
-              </label>
-              <span className="muted small">{SOUND_CUES[id].whenRu}</span>
-              <button onClick={() => playTone(id, Math.max(s.volume, 0.05))} data-testid={`sound-try-${id}`}>
-                Прослушать
-              </button>
-            </li>
-          ))}
-        </ul>
-        <p className="muted small">«Прослушать» играет с текущей громкостью (при нуле — чуть слышно), даже если сигналы выключены.</p>
-        {error && <p className="error">{error}</p>}
-      </Card>
+      {SOUND_TIERS.map((tier) => (
+        <Card key={tier} title={SOUND_TIER_RU[tier]}>
+          <ul className="sound-cues" data-testid={`sound-tier-${tier}`}>
+            {SOUND_CUE_IDS.filter((id) => SOUND_CUES[id].tier === tier).map((id) => (
+              <li key={id} className="sound-cue">
+                <label className="check">
+                  <input type="checkbox" checked={s.cues[id]} disabled={!s.enabled} onChange={(e) => void update({ sound: { cues: { [id]: e.target.checked } } })} data-testid={`sound-cue-${id}`} />
+                  <b>{SOUND_CUES[id].nameRu}</b>
+                </label>
+                <span className="muted small">{SOUND_CUES[id].whenRu}</span>
+                <button onClick={() => playTone(id, Math.max(s.volume, 0.05))} data-testid={`sound-try-${id}`}>
+                  Прослушать
+                </button>
+              </li>
+            ))}
+          </ul>
+        </Card>
+      ))}
+      <p className="muted small">«Прослушать» играет с текущей громкостью (при нуле — чуть слышно), даже если сигналы выключены.</p>
+      {error && <p className="error">{error}</p>}
       <Card title="Можно добавить позже">
         <ul className="muted small">
           <li>Ключевая способность (не ульта) готова — в данных игры не отмечено, какая способность ключевая.</li>
           <li>Ключевой предмет снова готов после перезарядки (Black King Bar, Blink) — коуч это видит, но такой подсказки нет.</li>
           <li>Отдельный звук смерти — сейчас в момент смерти звучит «Разбор готов».</li>
+          <li>Отдельная громкость для каждого уровня (срочные, советы, фоновые).</li>
         </ul>
       </Card>
     </>

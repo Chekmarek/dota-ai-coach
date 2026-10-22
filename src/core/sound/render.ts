@@ -6,7 +6,7 @@ const FLOOR = 0.0001;
 
 /** Громкость ноты в момент t (с от начала ноты): как setValueAtTime + exponentialRampToValueAtTime в Web Audio */
 function envelope(n: SoundNote, t: number): number {
-  const attack = SOUND_ATTACK_MS / 1000;
+  const attack = (n.attackMs ?? SOUND_ATTACK_MS) / 1000;
   const end = (n.durMs + SOUND_RELEASE_MS) / 1000;
   const peak = Math.max(0.0002, n.gain);
   if (t < 0 || t > end) return 0;

@@ -2,7 +2,7 @@
 import { describe, expect, it } from 'vitest';
 import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
-import { SOUND_CUES, SOUND_CUE_IDS, SOUND_TOGGLE_NOTES, cueForHint, soundLengthMs, type SoundCueId } from '../../src/core/sound/cues.ts';
+import { SOUND_CUES, SOUND_CUE_IDS, SOUND_TOGGLE_NOTES, cueForHint, cueInFight, cuePriority, soundLengthMs, type SoundCueId, type SoundTier } from '../../src/core/sound/cues.ts';
 import { SOUND_MAX_AGE_MS, SOUND_MIN_GAP_MS, SoundDirector, enabledCues, ultStateOf, type SoundTick, type UltState } from '../../src/core/sound/director.ts';
 import { SOUND_SHORTCUT_DEFAULT, applySettingsPatch, defaultSettings, settingsPatchSchema, settingsSchema, type Settings } from '../../src/shared/schemas/settings.ts';
 import { CoachService } from '../../src/main/coach/service';
@@ -66,25 +66,64 @@ describe('определения сигналов', () => {
       for (const a of f) for (const b of f) expect([0, 3, 4, 5, 7, 8, 9], `${id}: ${a}/${b}`).toContain(semis(a, b));
     }
   });
-  it('опасность важнее всех и звучит в драке; остальные в драке молчат', () => {
-    for (const id of SOUND_CUE_IDS) if (id !== 'danger') expect(SOUND_CUES.danger.priority).toBeGreaterThan(SOUND_CUES[id].priority);
-    expect(SOUND_CUE_IDS.filter((id) => SOUND_CUES[id].inFight)).toEqual(['danger']);
+  it('опасность важнее всех; срочные важнее советов, советы — фоновых; в драке звучат только срочные', () => {
+    for (const id of SOUND_CUE_IDS) if (id !== 'danger') expect(cuePriority('danger')).toBeGreaterThan(cuePriority(id));
+    const rank: Record<SoundTier, number> = { urgent: 3, advice: 2, background: 1 };
+    for (const a of SOUND_CUE_IDS) for (const b of SOUND_CUE_IDS) if (rank[SOUND_CUES[a].tier] > rank[SOUND_CUES[b].tier]) expect(cuePriority(a), `${a} > ${b}`).toBeGreaterThan(cuePriority(b));
+    expect(SOUND_CUE_IDS.filter(cueInFight)).toEqual(['danger', 'retreat', 'engage']);
+  });
+  it('один стиль, громкость по срочности: срочные ярче и громче, фоновые тихие и мягкие', () => {
+    const peak = (id: SoundCueId) => Math.max(...renderTone(id, 1).map(Math.abs));
+    const by = (t: SoundTier) => SOUND_CUE_IDS.filter((id) => SOUND_CUES[id].tier === t);
+    const minUrgent = Math.min(...by('urgent').map(peak));
+    const maxAdvice = Math.max(...by('advice').map(peak));
+    const minAdvice = Math.min(...by('advice').map(peak));
+    const maxBg = Math.max(...by('background').map(peak));
+    expect(minUrgent).toBeGreaterThan(maxAdvice);
+    expect(minAdvice).toBeGreaterThan(maxBg);
+    // фоновые — заметно тише срочных (не меньше чем вдвое)
+    expect(maxBg * 2).toBeLessThan(minUrgent);
+    for (const id of by('urgent')) expect(SOUND_CUES[id].notes.some((n) => n.wave === 'triangle'), id).toBe(true);
+    for (const id of by('background')) for (const n of SOUND_CUES[id].notes) {
+      expect(n.wave, id).toBe('sine');
+      expect(n.attackMs ?? 0, id).toBeGreaterThanOrEqual(20);
+    }
+    // в каждом уровне несколько сигналов, все разные
+    for (const t of ['urgent', 'advice', 'background'] as const) expect(by(t).length).toBeGreaterThanOrEqual(3);
   });
 });
 
 describe('подсказка → сигнал', () => {
   it('по правилу и категории', () => {
     for (const [cue, h] of Object.entries(H)) expect(cueForHint(h), cue).toBe(cue);
-    expect(cueForHint({ ruleId: 'fight.disengage', category: 'fight', priority: 'critical' })).toBe('danger');
+    expect(cueForHint({ ruleId: 'fight.disengage', category: 'fight', priority: 'critical' })).toBe('retreat');
+    expect(cueForHint({ ruleId: 'danger.low-hp', category: 'danger', priority: 'critical' })).toBe('retreat');
+    expect(cueForHint({ ruleId: 'fight.engage', category: 'fight', priority: 'advice' })).toBe('engage');
+    expect(cueForHint({ ruleId: 'economy.tp', category: 'economy', priority: 'advice' })).toBe('buy');
+    expect(cueForHint({ ruleId: 'economy.skill', category: 'economy', priority: 'advice' })).toBe('skill');
+    expect(cueForHint({ ruleId: 'economy.idle', category: 'economy', priority: 'advice' })).toBe('farm');
+    expect(cueForHint({ ruleId: 'macro.push', category: 'macro', priority: 'advice' })).toBe('team');
+    expect(cueForHint({ ruleId: 'danger.building', category: 'danger', priority: 'critical' })).toBe('building');
+    expect(cueForHint({ ruleId: 'economy.next', category: 'economy', priority: 'info', icon: 'item:blink' })).toBe('shop');
+    expect(cueForHint({ ruleId: 'economy.gold', category: 'economy', priority: 'advice', icon: null })).toBe('shop');
+    expect(cueForHint({ ruleId: 'macro.outpost', category: 'macro', priority: 'info' })).toBe('map');
+    expect(cueForHint({ id: 'fight.action:retreat', ruleId: 'fight.action', category: 'fight', priority: 'advice' })).toBe('retreat');
+    expect(cueForHint({ id: 'fight.action:farm', ruleId: 'fight.action', category: 'fight', priority: 'info' })).toBe('map');
     expect(cueForHint({ ruleId: 'timing.rune-bounty', category: 'timing', priority: 'info' })).toBe('rune');
     expect(cueForHint({ ruleId: 'timing.roshan-respawn', category: 'timing', priority: 'info' })).toBe('timing');
     expect(cueForHint({ ruleId: 'review.match', category: 'review', priority: 'advice' })).toBe('review');
   });
-  it('без звука: «потратьте золото» без предмета, советы линии и экономики, опасность уровня «инфо»', () => {
-    expect(cueForHint({ ruleId: 'economy.gold', category: 'economy', priority: 'advice', icon: null })).toBeNull();
-    expect(cueForHint({ ruleId: 'laning.cs', category: 'laning', priority: 'advice' })).toBeNull();
-    expect(cueForHint({ ruleId: 'economy.next', category: 'economy', priority: 'info', icon: 'item:blink' })).toBeNull();
-    expect(cueForHint({ ruleId: 'danger.building', category: 'danger', priority: 'info' })).toBeNull();
+  it('у каждого правила коуча есть свой звук (неизвестное правило — без звука)', () => {
+    const rules = new Set<string>();
+    const dir = join(import.meta.dirname, '../../src/core/coach');
+    for (const f of [...readdirSync(join(dir, 'rules')).map((x) => join(dir, 'rules', x)), join(dir, 'engine.ts')]) {
+      const text = readFileSync(f, 'utf8');
+      for (const m of text.matchAll(/(?:ruleId|id): [`']([a-z]+\.[a-z0-9-]+)/g)) rules.add(m[1]!);
+    }
+    expect(rules.size).toBeGreaterThan(40);
+    const silent = [...rules].filter((r) => !cueForHint({ ruleId: r, category: r.split('.')[0]!, priority: 'advice', icon: 'item:x' }));
+    expect(silent).toEqual([]);
+    expect(cueForHint({ ruleId: 'new.rule', category: 'macro', priority: 'info' })).toBeNull();
   });
 });
 
@@ -99,17 +138,28 @@ describe('когда звучит', () => {
   it('не чаще раза в 1,5 с; сигнал старше 2 с выбрасывается', () => {
     const out = run([{ ms: 0, shown: [H.danger, H.ult, H.item, H.rune, H.timing] }]);
     expect(out.map((x) => x.cue)).toEqual(['danger', 'ult']);
+    // срочный сигнал вперёд советов и фоновых
+    expect(run([{ ms: 0, shown: [H.timing, H.item, { ruleId: 'fight.disengage', category: 'fight', priority: 'critical' }] }])[0]!.cue).toBe('retreat');
     for (let i = 1; i < out.length; i++) expect(out[i]!.ms - out[i - 1]!.ms).toBeGreaterThanOrEqual(SOUND_MIN_GAP_MS);
     expect(Math.max(...out.map((x) => x.ms))).toBeLessThanOrEqual(SOUND_MAX_AGE_MS);
+  });
+  it('не срочных — не больше 2 в минуту; срочные проходят и после лимита', () => {
+    const calm = [H.item, H.rune, H.timing, H.review, { ruleId: 'macro.push', category: 'macro', priority: 'advice' }];
+    const evs = calm.map((h, i) => ({ ms: i * 5000, shown: [h] }));
+    const out = run([...evs, { ms: 30_000, shown: [H.danger] }]);
+    expect(out.map((x) => x.cue)).toEqual(['item', 'rune', 'danger']);
+    // через минуту лимит снова свободен
+    const later = run([...evs, { ms: 61_000, shown: [H.review] }]);
+    expect(later.map((x) => x.cue)).toEqual(['item', 'rune', 'review']);
   });
   it('кулдаун сигнала: опасность каждые 2 с → звучит раз в 8 с', () => {
     const evs = Array.from({ length: 10 }, (_, i) => ({ ms: i * 2000, shown: [H.danger] }));
     const out = run(evs);
     expect(out.map((x) => x.ms)).toEqual([0, 8000, 16000]);
   });
-  it('в драке звучит только опасность, остальное не копится до конца драки', () => {
-    const out = run([{ ms: 0, inFight: true, shown: [H.timing, H.rune] }, { ms: 500, shown: [H.danger] }, { ms: 1000, inFight: false }]);
-    expect(out).toEqual([{ ms: 500, cue: 'danger' }]);
+  it('в драке звучат только срочные, остальное не копится до конца драки', () => {
+    const out = run([{ ms: 0, inFight: true, shown: [H.timing, H.rune, H.ult] }, { ms: 500, shown: [H.danger] }, { ms: 2500, shown: [{ ruleId: 'fight.target', category: 'fight', priority: 'advice' }] }, { ms: 4000, inFight: false }]);
+    expect(out).toEqual([{ ms: 500, cue: 'danger' }, { ms: 2500, cue: 'engage' }]);
   });
   it('выключенный сигнал не звучит и не мешает другим', () => {
     const enabled = new Set<SoundCueId>(['timing']);
@@ -222,10 +272,12 @@ describe('звук в сервисе коуча', () => {
     }
     return hints;
   }
-  it('опасность на экране → сигнал «Опасность» один раз', () => {
+  it('опасность на экране (двое врагов вплотную, мало здоровья) → один срочный сигнал', () => {
     const cues: SoundCueId[] = [];
     make(defaultSettings(), (c) => cues.push(c));
-    expect(cues.filter((c) => c === 'danger')).toHaveLength(1);
+    const urgent = cues.filter(cueInFight);
+    expect(urgent.length).toBeGreaterThanOrEqual(1);
+    expect(new Set(urgent).size).toBe(urgent.length);
   });
   it('звук выключен, сигнал выключен или категория подсказок выключена — тишина', () => {
     const d = defaultSettings();

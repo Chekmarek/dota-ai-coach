@@ -33,7 +33,7 @@ export function playTone(tone: SoundToneId, volume: number): boolean {
     let end = t0;
     for (const n of soundNotes(tone)) {
       const start = t0 + n.startMs / 1000;
-      const attack = SOUND_ATTACK_MS / 1000;
+      const attack = (n.attackMs ?? SOUND_ATTACK_MS) / 1000;
       const stop = start + n.durMs / 1000 + SOUND_RELEASE_MS / 1000;
       const osc = ac.createOscillator();
       osc.type = n.wave;
