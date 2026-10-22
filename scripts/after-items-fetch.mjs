@@ -9,7 +9,7 @@
 //   2. режим тени «до» (All Pick и Турбо); 3. build-item-timings.mjs и build-item-situations.mjs; 4. типы, unit, e2e;
 //   5. режим тени «после»; 6. отчёт .tmp/AFTER_FETCH_REPORT.md и строки в MORNING_REPORT.md ветки; 7. коммит в ветку.
 // Не вливает, не пушит, версию не поднимает, STRATZ не вызывает. Пока запущена Dota 2 — пауза. Низкий приоритет.
-// Один экземпляр (свой lock). ПК не засыпает, только пока идёт пересчёт. Сделано — метка .tmp/after-items-fetch.done.
+// Один экземпляр (свой lock). ПК не засыпает, пока идёт докачка или пересчёт. Сделано — метка .tmp/after-items-fetch.done.
 import { appendFileSync, copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync, rmSync, lstatSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { execFileSync, spawn, spawnSync } from 'node:child_process';
@@ -274,6 +274,8 @@ for (;;) {
   const st = fetchState();
   if (st.status !== lastStatus) log(`докачка: ${st.status} (All Pick ${st.heroes.ap.reached}/${st.heroes.ap.total}, Турбо ${st.heroes.turbo.reached}/${st.heroes.turbo.total})`);
   lastStatus = st.status;
+  // Пока докачка работает, ПК не засыпает (сама она этого не делает, а её код не меняем — DECISIONS п. 86)
+  keepAwake(st.status === 'running');
   if (st.status === 'done') {
     await waitNoDota();
     keepAwake(true);
