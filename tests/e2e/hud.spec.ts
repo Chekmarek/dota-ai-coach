@@ -178,9 +178,11 @@ test('индикатор режима по часам: настоящая зап
     const lobby = parseSession(readFileSync(join(ROOT, 'tests/fixtures/gsi/recorded/lobby-normal.jsonl'), 'utf8'));
     expect((await replaySession(lobby, { url: `http://127.0.0.1:${port}/`, token, speed: 20 })).failed).toBe(0);
     await expect(ui.locator('[data-testid="live-game-mode"]')).toHaveText('Обычный режим', { timeout: 8000 });
-    const banner = (await hudWindow(app)).locator('.hud-mode');
-    await expect(banner).toHaveAttribute('data-mode', 'all-pick', { timeout: 8000 });
-    await expect(banner).toContainText('подготовка с −1:30');
+    const hud = await hudWindow(app);
+    const banner = hud.locator('.hud-mode');
+    // Режим и текст — одним ожиданием: на скорости 20 подготовка длится ~4,5 с, и под нагрузкой полного прогона
+    // индикатор успевал исчезнуть между двумя последовательными проверками
+    await expect(hud.locator('.hud-mode[data-mode="all-pick"]')).toContainText('подготовка с −1:30', { timeout: 8000 });
     // Следующий матч: та же запись, подготовка сдвинута на −1:00 (синтетика: записи настоящего Турбо пока нет)
     const t0 = lobby[lobby.length - 1]!.t + 60_000;
     const turbo = lobby.flatMap((e) => {
