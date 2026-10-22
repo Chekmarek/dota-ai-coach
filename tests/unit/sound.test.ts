@@ -229,6 +229,15 @@ describe('настройки звука', () => {
     expect(s.sound).toEqual(defaultSettings().sound);
     expect(s.hints.detail).toBe('min');
   });
+  it('файл 0.16.4 (6 сигналов): выбор пользователя сохраняется, новые сигналы — включены', () => {
+    const old = { sound: { enabled: false, volume: 0.45, cues: { danger: true, ult: false, item: true, rune: false, timing: true, review: true }, shortcut: 'Ctrl+Alt+F10' } };
+    const s = settingsSchema.parse(old);
+    expect(s.sound.enabled).toBe(false);
+    expect(s.sound.volume).toBe(0.45);
+    expect(s.sound.shortcut).toBe('Ctrl+Alt+F10');
+    expect(s.sound.cues).toMatchObject({ ult: false, rune: false, danger: true });
+    for (const id of SOUND_CUE_IDS) if (!(id in old.sound.cues)) expect(s.sound.cues[id], id).toBe(true);
+  });
   it('испорченные значения → по умолчанию по одному полю; часть сигналов сохраняется', () => {
     const s = settingsSchema.parse({ sound: { enabled: 'да', volume: 7, cues: { danger: false, rune: 'x', unknown: true }, shortcut: 'S' } });
     expect(s.sound.enabled).toBe(true);
