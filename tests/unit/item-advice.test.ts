@@ -213,7 +213,7 @@ describe('5. Турбо: «запаздывает» только по реаль
   it('Турбо с данными: Battle Fury к 12:00 нет, а в 8 из 10 матчей Турбо она уже есть → «запаздывает» с минутами Турбо', () => {
     const h = itemTimingRule(ctxOf(am, { turbo: true, position: '1' }));
     expect(shortOf(h)).toBe('Battle Fury запаздывает');
-    expect(normalOf(h)).toMatch(/В Турбо на этой позиции Battle Fury берут к \d+ мин, в 8 из 10 матчей — к \d+/);
+    expect(normalOf(h)).toMatch(/В Турбо(?: \(игроки [^)]+\))? на этой позиции Battle Fury берут к \d+ мин, в 8 из 10 матчей — к \d+/);
   });
   it('при высоком риске смерти «запаздывает» ждёт и не тратит разовый показ: риск прошёл — совет звучит', () => {
     const mem = new CoachMemory();
