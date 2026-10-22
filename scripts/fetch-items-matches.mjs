@@ -6,8 +6,8 @@
 // STRATZ match(id): герой, сторона, победа, позиция, ранг игрока (seasonRank), покупки и убийства по времени. Без ников
 // и id игроков. Матчи — .tmp/items-ap/<id>.json.gz и .tmp/items-turbo/<id>.json.gz (не в git, не в сборке).
 // Не качаются: уже скачанные (здесь и в .tmp/danger, .tmp/danger-turbo), экзамены, режим тени, свои матчи владельца.
-// Сутки делятся так: All Pick до 7000 запросов, Турбо до 3000; если у токена в сутки осталось меньше 5000 запросов —
-// пауза (запас для коуча и других скриптов). Пока запущена Dota 2 — пауза. Приоритет процесса — низкий.
+// Сутки делятся так: All Pick до 9500 запросов, Турбо до 4000; если у токена в сутки осталось меньше 1500 запросов —
+// пауза (запас для коуча: ему хватает десятков в день). Запрос раз в 3 с (≤ 1200 в час при лимите STRATZ 1500). Пока запущена Dota 2 — пауза. Приоритет процесса — низкий.
 // Прогресс — .tmp/items-progress.txt (раз в 25 матчей и при паузах).
 import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync, appendFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
@@ -39,11 +39,11 @@ if (!token) throw new Error('Нет токена STRATZ (%USERPROFILE%\\.stratz-
 
 /** Режимы: папка, где лежат старые полные матчи (не качать повторно), фильтр OpenDota, суточная квота, цель на героя */
 const MODES = {
-  ap: { dir: 'items-ap', old: 'danger', lobby: 7, mode: 22, minDur: 900, budget: 7000, target: 900 },
-  turbo: { dir: 'items-turbo', old: 'danger-turbo', lobby: 0, mode: 23, minDur: 600, budget: 3000, target: 500 },
+  ap: { dir: 'items-ap', old: 'danger', lobby: 7, mode: 22, minDur: 900, budget: 9500, target: 900 },
+  turbo: { dir: 'items-turbo', old: 'danger-turbo', lobby: 0, mode: 23, minDur: 600, budget: 4000, target: 500 },
 };
-const RESERVE_DAY = 5000;
-const GAP_MS = 4000;
+const RESERVE_DAY = 1500;
+const GAP_MS = 3000;
 
 // Один экземпляр: автозапуск при входе в Windows и ручной запуск не должны качать параллельно (лимит общий)
 const lockFile = join(root, '.tmp', 'items-fetch.lock');
