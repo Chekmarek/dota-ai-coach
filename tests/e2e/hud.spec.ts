@@ -176,13 +176,14 @@ test('индикатор режима по часам: настоящая зап
   try {
     await ui.click('[data-testid="nav-live"]');
     const lobby = parseSession(readFileSync(join(ROOT, 'tests/fixtures/gsi/recorded/lobby-normal.jsonl'), 'utf8'));
-    expect((await replaySession(lobby, { url: `http://127.0.0.1:${port}/`, token, speed: 20 })).failed).toBe(0);
-    await expect(ui.locator('[data-testid="live-game-mode"]')).toHaveText('Обычный режим', { timeout: 8000 });
+    // Индикатор живёт MODE_BANNER_MS (5 с), а запись на скорости 20 идёт ~7,9 с, и подготовка начинается на ~2,6 с.
+    // Поэтому индикатор проверяется, пока запись ещё проигрывается, а не после неё: иначе он мог успеть погаснуть.
+    const replayAp = replaySession(lobby, { url: `http://127.0.0.1:${port}/`, token, speed: 20 });
     const hud = await hudWindow(app);
     const banner = hud.locator('.hud-mode');
-    // Режим и текст — одним ожиданием: на скорости 20 подготовка длится ~4,5 с, и под нагрузкой полного прогона
-    // индикатор успевал исчезнуть между двумя последовательными проверками
     await expect(hud.locator('.hud-mode[data-mode="all-pick"]')).toContainText('подготовка с −1:30', { timeout: 8000 });
+    expect((await replayAp).failed).toBe(0);
+    await expect(ui.locator('[data-testid="live-game-mode"]')).toHaveText('Обычный режим', { timeout: 8000 });
     // Следующий матч: та же запись, подготовка сдвинута на −1:00 (синтетика: записи настоящего Турбо пока нет)
     const t0 = lobby[lobby.length - 1]!.t + 60_000;
     const turbo = lobby.flatMap((e) => {
@@ -192,9 +193,10 @@ test('индикатор режима по часам: настоящая зап
       const c = (m.clock_time as number) + 29;
       return c > 0 ? [] : [{ ...moved, body: { ...e.body, map: { ...m, clock_time: c } } }];
     });
-    expect((await replaySession(turbo, { url: `http://127.0.0.1:${port}/`, token, speed: 20 })).failed).toBe(0);
-    await expect(ui.locator('[data-testid="live-game-mode"]')).toHaveText('Турбо', { timeout: 8000 });
+    const replayTurbo = replaySession(turbo, { url: `http://127.0.0.1:${port}/`, token, speed: 20 });
     await expect(banner).toHaveAttribute('data-mode', 'turbo', { timeout: 8000 });
+    expect((await replayTurbo).failed).toBe(0);
+    await expect(ui.locator('[data-testid="live-game-mode"]')).toHaveText('Турбо', { timeout: 8000 });
   } finally {
     await app.close();
   }
