@@ -111,6 +111,11 @@ export class HudOverlay {
     return hudStateSchema.parse({ hints: (this.demoHints ?? this.hints).slice(0, 12), options: hudOptions(this.deps.settings.get()), mode: live ? this.modeBanner : null });
   }
 
+  /** Последний известный прямоугольник окна Доты (физические пиксели); null — не известен */
+  windowRect(): WindowRect | null {
+    return this.tracker.rect;
+  }
+
   /** Где рисовать: окно Доты или экран, где оно (или основной) */
   private bounds(): Electron.Rectangle {
     const r = this.tracker.rect;

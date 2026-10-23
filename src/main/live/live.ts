@@ -3,7 +3,7 @@
 // захвата только для окна движка, приём статуса от движка и значок поверх игры.
 // Доступ к игре только на чтение: снимок окна средствами Windows, без чтения памяти
 // и без вмешательства в процесс dota2.exe.
-import { HudOverlay } from './hud-window';
+import { HudOverlay, toDip } from './hud-window';
 import type { HudHint, ModeBanner } from '@shared/types/hud';
 import type { SampleScene } from '@shared/hud-samples';
 import { app, BrowserWindow, desktopCapturer, ipcMain, screen, session, webContents, type WebContents } from 'electron';
@@ -358,6 +358,28 @@ export function setupLive(deps: LiveDeps): void {
       .then(({ source }) => callback(source ? { video: source } : {}))
       .catch(() => callback({}));
   });
+}
+
+/**
+ * Для отладочной записи кадров: клиентская область окна Доты (физические пиксели), монитор под ним (размер в DIP,
+ * масштаб Windows) и настройки видео Доты из video.txt. Только чтение, ничего не меняет.
+ */
+export function dotaCaptureInfo(): Record<string, unknown> {
+  const rect = hud?.windowRect() ?? null;
+  const display = rect ? screen.getDisplayMatching(toDip(rect)) : screen.getPrimaryDisplay();
+  return {
+    windowClient: rect ? { x: rect.x, y: rect.y, width: rect.width, height: rect.height, minimized: rect.minimized } : null,
+    display: {
+      matchedBy: rect ? 'window' : 'primary',
+      boundsDip: display.bounds,
+      scaleFactor: display.scaleFactor,
+      sizePx: { width: Math.round(display.size.width * display.scaleFactor), height: Math.round(display.size.height * display.scaleFactor) },
+      rotation: display.rotation,
+      displayFrequency: display.displayFrequency,
+    },
+    displays: screen.getAllDisplays().length,
+    dotaVideo: videoCache ? { mode: videoCache.mode, settings: videoCache.settings ?? null } : null,
+  };
 }
 
 /** Настройки поменялись — пересчитать видимость и угол значка */

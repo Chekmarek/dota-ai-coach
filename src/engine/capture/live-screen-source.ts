@@ -14,6 +14,8 @@ const LIVE_MODE_MS = 3e4;
 const SAMPLE_MS = 500;
 const SAMPLE_W = 64;
 const SAMPLE_H = 36;
+/** Отладочная запись кадров: поток берётся в полном размере окна (до 4K), для зрения кадр уменьшается как обычно */
+const FULL_RES_MAX_W = 3840;
 
 // MediaStreamTrackProcessor есть в Chromium, но не во всех версиях типов DOM
 declare const MediaStreamTrackProcessor: (new (init: { track: MediaStreamTrack }) => { readable: ReadableStream<VideoFrame> }) | undefined;
@@ -58,6 +60,13 @@ export class LiveScreenSource implements FrameSource {
   private errorMessage: string | null = null;
   private videoMode: LiveInfo['videoMode'] = null;
   private modeCheckAt = -Infinity;
+  /** Отладочная запись: раз в snapshotMs — кадр полного размера; 0 — выключено */
+  private snapshotMs = 0;
+  private lastSnapshotAt = -Infinity;
+  /** С каким пределом ширины открыт текущий поток */
+  private openedMaxWidth = 0;
+  /** Что сообщил трек после подключения (getSettings): фактический размер и частота потока */
+  private trackSettings: Record<string, unknown> | null = null;
 
   /** api — из preload движка (window.dotacoachEngine) */
   constructor(private readonly api: DotaCoachEngineApi) {}
@@ -78,6 +87,22 @@ export class LiveScreenSource implements FrameSource {
 
   resume(): void {
     this.paused = false;
+  }
+
+  /**
+   * Отладочная запись кадров. Полный размер окна нужен с самого захвата (getUserMedia уже уменьшает кадр до maxWidth),
+   * поэтому при смене режима поток переподключается.
+   */
+  setSnapshotMs(ms: number): void {
+    const next = Number.isFinite(ms) && ms > 0 ? ms : 0;
+    if (next === this.snapshotMs) return;
+    this.snapshotMs = next;
+    this.lastSnapshotAt = -Infinity;
+    if (this.stream && this.openedMaxWidth !== this.captureMaxWidth()) this.detach();
+  }
+
+  private captureMaxWidth(): number {
+    return this.snapshotMs > 0 ? Math.max(FULL_RES_MAX_W, this.opts?.maxWidth ?? 0) : this.opts.maxWidth;
   }
 
   async stop(): Promise<void> {
@@ -146,6 +171,8 @@ export class LiveScreenSource implements FrameSource {
   }
 
   private async open(sourceId: string): Promise<MediaStream> {
+    const maxWidth = this.captureMaxWidth();
+    this.openedMaxWidth = maxWidth;
     try {
       // Основной путь Electron: захват конкретного окна по id, без системного диалога.
       // Кадр уменьшается уже при захвате (maxWidth) — меньше работы на каждый кадр.
@@ -156,8 +183,8 @@ export class LiveScreenSource implements FrameSource {
             chromeMediaSource: 'desktop',
             chromeMediaSourceId: sourceId,
             maxFrameRate: this.opts.fps,
-            maxWidth: this.opts.maxWidth,
-            maxHeight: Math.ceil(this.opts.maxWidth * 0.75),
+            maxWidth,
+            maxHeight: Math.ceil(maxWidth * 0.75),
           },
         },
       } as unknown as MediaStreamConstraints);
@@ -168,8 +195,8 @@ export class LiveScreenSource implements FrameSource {
           audio: false,
           video: {
             frameRate: { ideal: this.opts.fps, max: this.opts.fps },
-            width: { ideal: this.opts.maxWidth },
-            height: { ideal: Math.ceil(this.opts.maxWidth * 0.75) },
+            width: { ideal: maxWidth },
+            height: { ideal: Math.ceil(maxWidth * 0.75) },
           },
         });
       } catch {
@@ -195,6 +222,13 @@ export class LiveScreenSource implements FrameSource {
     this.lastError = null;
     this.errorMessage = null;
     this.captureStamps = [];
+    try {
+      this.trackSettings = { ...track.getSettings() } as Record<string, unknown>;
+      delete this.trackSettings.deviceId;
+      delete this.trackSettings.groupId;
+    } catch {
+      this.trackSettings = null;
+    }
     track.addEventListener('ended', () => {
       if (this.gen === gen) this.detach();
     });
@@ -273,11 +307,47 @@ export class LiveScreenSource implements FrameSource {
       const took = performance.now() - now;
       this.latencyMs = this.latencyMs === null ? took : this.latencyMs * 0.8 + took * 0.2;
       this.events?.frame({ bitmap, width: bitmap.width, height: bitmap.height, index: this.index++, sourceTimeMs: null, capturedAt: now });
+      if (this.snapshotMs > 0 && this.events?.snapshot && now - this.lastSnapshotAt >= this.snapshotMs) {
+        this.lastSnapshotAt = now;
+        await this.snapshot(src, width, height, size, now);
+      }
     } catch (err) {
       this.events?.error(liveError('live-frame-failed', `Кадр не получен: ${(err as Error)?.message ?? err}`));
     } finally {
       this.busy = false;
     }
+  }
+
+  /** Кадр отладочной записи: без уменьшения, плюс всё, что известно о потоке и кадре */
+  private async snapshot(src: VideoFrame | HTMLVideoElement, width: number, height: number, vision: { width: number; height: number }, now: number): Promise<void> {
+    const diag: Record<string, unknown> = {
+      sourceFrame: { width, height },
+      visionFrame: vision,
+      captureMaxWidth: this.openedMaxWidth,
+      settingsMaxWidth: this.opts.maxWidth,
+      fpsSetting: this.opts.fps,
+      track: this.trackSettings,
+      path: this.reader ? 'MediaStreamTrackProcessor' : 'video',
+      captureFps: this.info().captureFps,
+      latencyMs: this.latencyMs === null ? null : Math.round(this.latencyMs),
+    };
+    if (typeof VideoFrame !== 'undefined' && src instanceof VideoFrame) {
+      diag.videoFrame = {
+        format: src.format,
+        codedWidth: src.codedWidth,
+        codedHeight: src.codedHeight,
+        displayWidth: src.displayWidth,
+        displayHeight: src.displayHeight,
+        visibleRect: src.visibleRect ? { x: src.visibleRect.x, y: src.visibleRect.y, w: src.visibleRect.width, h: src.visibleRect.height } : null,
+        colorSpace: src.colorSpace?.toJSON?.() ?? null,
+      };
+    }
+    const bitmap = await createImageBitmap(src);
+    if (!this.running) {
+      bitmap.close();
+      return;
+    }
+    this.events?.snapshot?.({ bitmap, width: bitmap.width, height: bitmap.height, capturedAt: now, diag });
   }
 
   /** Раз в 0,5 с: средняя яркость (чёрный экран) и хеш (застывшая картинка) по уменьшенному кадру */

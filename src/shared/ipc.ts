@@ -293,6 +293,11 @@ export interface DotaCoachEngineApi {
 export interface DatasetConfig {
   /** Каждый N-й кадр живого захвата; 0 — запись выключена */
   everyN: number;
+  /**
+   * Отладочная запись кадров («Живая игра» → «Записывать кадры»): раз в recordMs кадр в полном разрешении окна
+   * (до 3840 px) и вырезки мини-карты и верхней панели. 0 или нет поля — выключено.
+   */
+  recordMs?: number;
 }
 
 export interface DatasetFrameMessage {
@@ -301,4 +306,11 @@ export interface DatasetFrameMessage {
   height: number;
   /** Время кадра, мс Unix (часы движка) */
   wallMs: number;
+  /** Отладочная запись: вырезки (PNG) и замеры захвата; нет поля — кадр набора разработчика */
+  record?: {
+    minimap: ArrayBuffer | null;
+    topBar: ArrayBuffer | null;
+    /** Что движок знает о захвате и кадре (размеры, формат, частота); main дописывает окно и монитор */
+    diag: Record<string, unknown>;
+  };
 }

@@ -95,6 +95,18 @@ export class VisionStage {
     return hud;
   }
 
+  /**
+   * Для отладочной записи кадров: где на кадре w×h мини-карта, которую сейчас читает зрение (по самокалибровке или по
+   * раскладке), и полоса верхней панели (середина верха, масштаб HUD — по высоте, на узких экранах — по ширине).
+   */
+  debugRects(w: number, h: number): { minimap: Rect | null; topBar: Rect; calibration: string | null } {
+    const cal = this.calibrator?.state() ?? null;
+    const minimap = layout.minimap && cal?.calibration ? minimapRect(cal.calibration, layout.minimap.world, w, h) : null;
+    const k = Math.min(h, (w * 9) / 16) / 1080;
+    const topBar = { x: Math.max(0, Math.round(w / 2 - 420 * k)), y: 0, w: Math.min(w, Math.round(840 * k)), h: Math.min(h, Math.round(64 * k)) };
+    return { minimap, topBar, calibration: cal?.status ?? null };
+  }
+
   private bandsCache: { key: string; bands: Rect[] } | null = null;
 
   /**

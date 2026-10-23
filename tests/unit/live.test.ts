@@ -50,6 +50,6 @@ describe('настройки: старый settings.json без раздела l
     expect(s.capture.targetFps).toBe(7);
     expect(s.capture.maxWidth).toBe(1280);
     expect(s.replay.loop).toBe(true);
-    expect(s.live).toEqual({ autoStart: true, fps: 10, overlay: true, overlayCorner: 'top-right' });
+    expect(s.live).toEqual({ autoStart: true, fps: 10, overlay: true, overlayCorner: 'top-right', recordFrames: false });
   });
 });

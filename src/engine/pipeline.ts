@@ -1,7 +1,9 @@
 import { LIVE_KIND, type CaptureError, type CaptureState, type CaptureStatus, type LiveInfo, type ReplayStartOptions } from '@shared/types/capture';
 import type { EngineToUi } from '@shared/events/engine-protocol';
 import type { DotaCoachEngineApi } from '@shared/ipc';
-import type { Frame, FrameSource } from './capture/frame-source';
+import type { Frame, FrameSource, Snapshot } from './capture/frame-source';
+import type { HudReading } from '@core/vision/recognize-hud.ts';
+import type { Rect } from '@shared/types/observation';
 import { FpsMeter, FrameGate, fitWidth } from './capture/rate';
 import { ImageFolderSource } from './capture/image-folder-source';
 import { VideoFileSource } from './capture/video-file-source';
@@ -86,6 +88,11 @@ export class Pipeline {
   private datasetEveryN = 0;
   private datasetBusy = false;
   private datasetCanvas: OffscreenCanvas | null = null;
+  /** Отладочная запись кадров («Живая игра» → «Записывать кадры»): раз в recordMs; 0 — выключено */
+  private recordMs = 0;
+  private recordBusy = false;
+  /** Последнее чтение зрения — в отладочную запись идёт вместе с кадром (что коуч увидел в этот момент) */
+  private lastVision: { reading: HudReading; frame: { width: number; height: number }; at: number } | null = null;
 
   /** Сейчас идёт живой захват окна Доты */
   isLive(): boolean {
@@ -143,6 +150,12 @@ export class Pipeline {
     this.datasetEveryN = Number.isInteger(n) && n > 0 ? n : 0;
   }
 
+  /** Отладочная запись кадров: main присылает её вместе с настройками набора */
+  setRecordMs(ms: number | undefined): void {
+    this.recordMs = typeof ms === 'number' && Number.isFinite(ms) && ms >= 500 ? ms : 0;
+    if (this.source instanceof LiveScreenSource) this.source.setSnapshotMs(this.recordMs);
+  }
+
   setSender(send: (msg: EngineToUi, transfer?: Transferable[]) => void): void {
     this.send = send;
     this.publishStatus();
@@ -158,7 +171,9 @@ export class Pipeline {
     const spec = o.source;
     if (spec.kind === LIVE_KIND) {
       if (!window.dotacoachEngine) throw new Error('Живой захват недоступен: нет API движка');
-      this.source = new LiveScreenSource(window.dotacoachEngine);
+      const live = new LiveScreenSource(window.dotacoachEngine);
+      live.setSnapshotMs(this.recordMs);
+      this.source = live;
     } else this.source = spec.kind === 'image-folder' ? new ImageFolderSource(spec.frames) : new VideoFileSource(spec.url);
     const src = this.source;
     this.setState('starting');
@@ -180,6 +195,7 @@ export class Pipeline {
           this.live = info;
           if (changed) this.publishStatus();
         },
+        snapshot: (snap) => (this.source === src ? this.saveRecordFrame(snap) : snap.bitmap.close()),
       },
     );
     if (this.source === src && this.state === 'starting') this.setState('running');
@@ -286,6 +302,7 @@ export class Pipeline {
       // Свой герой для самокалибровки мини-карты — только живой захват и только свежий GSI (кадр и координаты одного момента)
       const own = this.isLive() && this.ownHero && Date.now() - this.ownHero.at < 300 ? this.ownHero : null;
       const reading = this.vision.run(f.bitmap, f.sourceTimeMs ?? Date.now(), own);
+      if (this.recordMs > 0) this.lastVision = { reading, frame: { width: f.width, height: f.height }, at: Date.now() };
       this.visionMsAvg = this.visionMsAvg === null ? reading.durationMs : this.visionMsAvg * 0.9 + reading.durationMs * 0.1;
       if (now - this.lastVisionSentAt >= 1000 / VISION_UI_FPS) {
         this.lastVisionSentAt = now;
@@ -334,6 +351,50 @@ export class Pipeline {
       .catch(() => undefined)
       .finally(() => {
         this.datasetBusy = false;
+      });
+  }
+
+  /**
+   * Отладочная запись: кадр полного размера, вырезки мини-карты и верхней панели (PNG) и замеры → main.
+   * Пока предыдущий кадр кодируется, новый пропускается — запись не копит очередь и не тормозит зрение.
+   */
+  private saveRecordFrame(snap: Snapshot): void {
+    const api = window.dotacoachEngine;
+    if (!api || this.recordBusy || this.recordMs <= 0) {
+      snap.bitmap.close();
+      return;
+    }
+    this.recordBusy = true;
+    const wallMs = Date.now();
+    const { width, height } = snap;
+    const rects = this.vision.debugRects(width, height);
+    const encode = (r: Rect | null): Promise<ArrayBuffer | null> => {
+      if (!r || r.w < 8 || r.h < 8) return Promise.resolve(null);
+      const c = new OffscreenCanvas(r.w, r.h);
+      c.getContext('2d')!.drawImage(snap.bitmap, r.x, r.y, r.w, r.h, 0, 0, r.w, r.h);
+      return c.convertToBlob({ type: 'image/png' }).then((b) => b.arrayBuffer());
+    };
+    const full = new OffscreenCanvas(width, height);
+    full.getContext('2d')!.drawImage(snap.bitmap, 0, 0);
+    const minimapP = encode(rects.minimap);
+    const topBarP = encode(rects.topBar);
+    snap.bitmap.close();
+    const diag = {
+      ...snap.diag,
+      engine: {
+        measuredFps: Math.round(this.inMeter.fps(performance.now()) * 10) / 10,
+        processingFps: Math.round(this.procMeter.fps(performance.now()) * 10) / 10,
+        visionMsAvg: this.visionMsAvg === null ? null : Math.round(this.visionMsAvg * 10) / 10,
+        dropped: this.dropped,
+      },
+      crops: { minimap: rects.minimap, topBar: rects.topBar, minimapCalibration: rects.calibration },
+      coachSaw: this.lastVision && wallMs - this.lastVision.at < 1000 ? summarizeReading(this.lastVision.reading, this.lastVision.frame, wallMs - this.lastVision.at) : null,
+    };
+    void Promise.all([full.convertToBlob({ type: 'image/png' }).then((b) => b.arrayBuffer()), minimapP, topBarP])
+      .then(([png, minimap, topBar]) => api.saveDatasetFrame({ png, width, height, wallMs, record: { minimap, topBar, diag } }))
+      .catch(() => undefined)
+      .finally(() => {
+        this.recordBusy = false;
       });
   }
 
@@ -412,4 +473,28 @@ export class Pipeline {
 
 function round(n: number): number {
   return Math.round(n * 10) / 10;
+}
+
+/** Что зрение увидело на кадре — кратко, для сверки с разметкой отладочной записи (координаты — в кадре зрения) */
+function summarizeReading(r: HudReading, frame: { width: number; height: number }, ageMs: number): Record<string, unknown> {
+  return {
+    ageMs,
+    visionFrame: frame,
+    layoutId: r.layoutId,
+    hudSupported: r.supported,
+    topBar: r.topBar
+      ? { supported: r.topBar.supported, slots: r.topBar.slots.map((s) => ({ slot: s.slot, side: s.side, hero: s.heroKey, alive: s.alive, respawn: s.respawnSec })) }
+      : null,
+    minimap: r.minimap
+      ? {
+          supported: r.minimap.supported,
+          rect: r.minimap.rect,
+          calibration: r.minimap.calibration ?? null,
+          heroes: r.minimap.heroes.map((h) => ({ slot: h.slot, team: h.team, x: Math.round(h.x), y: Math.round(h.y), px: h.px, py: h.py, conf: Math.round(h.confidence * 100) / 100, ambiguous: h.ambiguous })),
+        }
+      : null,
+    healthBars: r.healthBars
+      ? { supported: r.healthBars.supported, bars: r.healthBars.bars.map((b) => ({ color: b.color, hp: Math.round(b.hpPercent), level: b.level, x: b.x, y: b.y, length: b.length, conf: Math.round(b.confidence * 100) / 100 })) }
+      : null,
+  };
 }

@@ -59,7 +59,7 @@ const DEFAULTS = {
   replay: { loop: false },
   voice: { enabled: false, voiceId: null as string | null, rate: 1, volume: 0.8 },
   ui: { showRegions: true },
-  live: { autoStart: true, fps: 10, overlay: true, overlayCorner: 'top-right' as OverlayCorner },
+  live: { autoStart: true, fps: 10, overlay: true, overlayCorner: 'top-right' as OverlayCorner, recordFrames: false },
   // Решение владельца 2026-10-13 (docs/POLICY.md): подсказки включены по умолчанию, в рейтинге — тоже; решает пользователь
   hints: {
     enabled: true,
@@ -174,6 +174,8 @@ const fields = {
     /** Показывать значок «Коуч» поверх игры */
     overlay: z.boolean(),
     overlayCorner: z.enum(['top-left', 'top-right', 'bottom-left', 'bottom-right']),
+    /** Отладка зрения: раз в ~2 с сохранять кадр в полном разрешении (PNG) и вырезки мини-карты и верхней панели в <папка данных>/frame-records */
+    recordFrames: z.boolean(),
   },
   hints: {
     /** Live-подсказки во время матча (поверх окна игры — раздел hud) */

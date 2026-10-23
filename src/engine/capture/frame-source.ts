@@ -25,6 +25,18 @@ export interface FrameSourceEvents {
   ended: () => void;
   /** Только живой захват: подробности состояния; changed — состояние или причина поменялись */
   live?: (info: LiveInfo, changed: boolean) => void;
+  /** Только живой захват с отладочной записью: кадр в полном разрешении окна (получатель закрывает bitmap) */
+  snapshot?: (s: Snapshot) => void;
+}
+
+/** Кадр отладочной записи: полный размер окна, без уменьшения до maxWidth */
+export interface Snapshot {
+  bitmap: ImageBitmap;
+  width: number;
+  height: number;
+  capturedAt: number;
+  /** Замеры захвата на момент кадра (размеры потока, формат кадра, цветовое пространство) */
+  diag: Record<string, unknown>;
 }
 
 /**

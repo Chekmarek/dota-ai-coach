@@ -15,6 +15,8 @@ export interface DotaVideo {
   mode: DotaVideoMode;
   raw: { fullscreen?: string | null; nowindowborder?: string | null };
   file: string | null;
+  /** Все строки setting.* из video.txt (разрешение, соотношение сторон и т. п.) — для отладочной записи кадров */
+  settings?: Record<string, string>;
 }
 
 function unescapeVdf(s: string): string {
@@ -140,7 +142,8 @@ export async function detectDotaVideo(deps: DetectDeps = {}): Promise<DotaVideo>
         fullscreen: kv['setting.fullscreen'] ?? null,
         nowindowborder: kv['setting.nowindowborder'] ?? null,
       };
-      return { mode: modeFromVideo(raw.fullscreen, raw.nowindowborder), raw, file };
+      const settings = Object.fromEntries(Object.entries(kv).filter(([k]) => k.startsWith('setting.')).slice(0, 80));
+      return { mode: modeFromVideo(raw.fullscreen, raw.nowindowborder), raw, file, settings };
     }
     return unknown();
   } catch {

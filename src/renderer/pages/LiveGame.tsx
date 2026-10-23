@@ -1,7 +1,7 @@
 // «Живая игра» — из обновления 0.5.0. Карточка-заглушка «Распознавание HUD (этап C)» заменена
 // настоящим распознаванием владельца (бывшая «Диагностика зрения»), рамки — по переключателю ui.showRegions.
 import { useEngine } from '../hooks/useEngine';
-import { useSettings } from '../hooks/useSettings';
+import { useAppInfo, useSettings } from '../hooks/useSettings';
 import { Card, PageHeader, Stat } from '../components/ui';
 import { HudRecognition, RegionOverlay } from '../components/HudRecognition';
 import { LIVE_HINT, LivePill, isLive, startLive } from '../components/live';
@@ -17,6 +17,7 @@ import { Icon } from '../components/icons';
 export function LiveGame({ onNavigate }: PageProps) {
   const { status, preview, vision } = useEngine();
   const { settings, update } = useSettings();
+  const info = useAppInfo();
   const on = isLive(status);
   const live = on ? status.live : null;
   const s = live?.state ?? 'off';
@@ -133,6 +134,23 @@ export function LiveGame({ onNavigate }: PageProps) {
           </div>
         </Card>
       </div>
+
+      {settings && (
+        <Card title="Запись кадров для отладки зрения">
+          <div className="form">
+            <label className="check">
+              <input type="checkbox" checked={settings.live.recordFrames} onChange={(e) => void update({ live: { recordFrames: e.target.checked } })} data-testid="live-record-frames" />
+              Записывать кадры (раз в 2 секунды)
+            </label>
+            <p className="muted small">
+              Сохраняет кадр игры в полном разрешении (PNG без сжатия), вырезки мини-карты и верхней панели и замеры захвата — чтобы
+              разобрать, где зрение ошибается. Около 3–5 МБ на кадр (≈ 5 ГБ за час). На кадрах видны ники: файлы остаются только на
+              этом компьютере. Захват на время записи переподключается в полном разрешении окна.
+            </p>
+            {info && <p className="muted small mono" data-testid="live-record-dir">{`${info.dataDir}${info.dataDir.includes('\\') ? '\\' : '/'}frame-records`}</p>}
+          </div>
+        </Card>
+      )}
 
       {on && <HudRecognition />}
     </>

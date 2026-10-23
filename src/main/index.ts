@@ -62,7 +62,7 @@ if (!app.requestSingleInstanceLock()) {
     const isTrustedSender = (e: Electron.IpcMainInvokeEvent) => !!ui && !ui.isDestroyed() && e.sender.id === ui.webContents.id;
 
     ui = createUiWindow();
-    // Режим разработчика (DOTACOACH_DEV=1): набор кадров + GSI наблюдателя для проверки зрения
+    // Запись кадров для проверки зрения: набор разработчика (DOTACOACH_DEV=1) и отладочная запись «Записывать кадры»
     const dataset = setupDevDataset(dataDir, () => settings.get());
     // Данные из игры (Valve GSI): приёмник на 127.0.0.1, тела — в движок
     const gsi = setupGsi({
