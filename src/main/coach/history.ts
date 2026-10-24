@@ -31,7 +31,7 @@ export class HistoryStore {
     for (const f of readdirSync(this.dir).filter((x) => x.endsWith('.json')).sort().reverse()) {
       try {
         const m = JSON.parse(readFileSync(join(this.dir, f), 'utf8')) as HistoryMatch;
-        out.push({ id: m.id, startedAt: m.startedAt, heroName: m.heroName, gameMode: asGameModeInfo(m.gameMode), result: m.result, durationSec: m.durationSec, hints: m.entries.filter((e) => e.kind === 'hint').length, mistakes: m.mistakes.length, deaths: m.deathReviews.length, badAdvice: Array.isArray(m.badAdvice) ? m.badAdvice.length : 0 });
+        out.push({ id: m.id, startedAt: m.startedAt, heroName: m.heroName, gameMode: asGameModeInfo(m.gameMode), result: m.result, durationSec: m.durationSec, hints: m.entries.filter((e) => e.kind === 'hint').length, mistakes: m.mistakes.length, deaths: m.deathReviews.length, badAdvice: Array.isArray(m.badAdvice) ? m.badAdvice.length : 0, focus: m.focus ? { title: m.focus.title, achieved: m.focus.achieved } : null });
       } catch {
         // испорченный файл пропускаем
       }

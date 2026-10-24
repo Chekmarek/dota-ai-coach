@@ -140,6 +140,22 @@ describe('фильтр внимания: повторы, очевидное, у�
   });
 });
 
+describe('фильтр внимания: фокус матча', () => {
+  it('подсказка фокуса: info → useful, первой в очереди и с вдвое мягким бюджетом', () => {
+    const info = mk({ id: 'economy.wards', priority: 'info', short: 'Нет Observer Ward — купите обзор' });
+    expect(toGateHint(info, { nowMs: 0, focus: true })).toMatchObject({ priority: 'useful', focus: true });
+    // обе пришли сразу — первой фокус
+    const g = new AttentionGate({ budgetMs: 50_000, focusTypes: ['economy.wards'] });
+    expect(run(g, 0, 1000, () => [tp, info])[0]!.type).toBe('economy.wards');
+    // несрочная показана; подсказка фокуса проходит через половину бюджета (25 с), обычная ждала бы 50 с
+    const g2 = new AttentionGate({ budgetMs: 50_000, focusTypes: ['economy.wards'] });
+    const shown = run(g2, 0, 40_000, (t) => (t === 0 ? [tp] : [tp, info]));
+    expect(shown.map((x) => x.type)).toEqual(['economy.tp', 'economy.wards']);
+    expect(shown[1]!.t).toBeGreaterThanOrEqual(25_000);
+    expect(shown[1]!.t).toBeLessThan(50_000);
+  });
+});
+
 describe('фильтр внимания: «не нужно»', () => {
   it('тип молчит до конца матча; три матча — понижен до info', () => {
     const g = new AttentionGate();

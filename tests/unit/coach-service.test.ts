@@ -7,7 +7,7 @@ import { join } from 'node:path';
 import { CoachService } from '../../src/main/coach/service';
 import { HistoryStore, MAX_FILES } from '../../src/main/coach/history';
 import { defaultSettings, applySettingsPatch, type Settings } from '../../src/shared/schemas/settings';
-import { hudHintSchema, type HudHint } from '../../src/shared/types/hud';
+import { hudHintSchema, type HudFocus, type HudHint } from '../../src/shared/types/hud';
 import type { HistoryMatch } from '../../src/shared/types/history';
 import { parseCoachInput } from '../../src/shared/types/coach-input';
 import { realData, sim, type SimInput } from './coach-sim';
@@ -80,6 +80,43 @@ describe('CoachService', () => {
     for (let t = 0; t < 5; t++) feed(t, { enemies: [{ slot: 5, hero: 'axe', pos: { x: -3800, y: -3900 }, hpPercent: 30, barLevel: 6 }] });
     const pct = out.flatMap((o) => o.hints).find((h) => h.percent);
     expect(pct?.percent?.factors.length).toBeGreaterThan(0);
+  });
+
+  it('фокус матча: объявление на выборе героев, счётчик в матче, итог первым в разборе и в истории', () => {
+    let now = 0;
+    const out: HudHint[][] = [];
+    const counters: (HudFocus | null)[] = [];
+    const cues: string[] = [];
+    const history = { saved: [] as HistoryMatch[], save(m: HistoryMatch) { this.saved.push(structuredClone(m)); }, recent: () => [] };
+    const svc = new CoachService({ settings: { get: () => defaultSettings() }, kb, aiProvider: () => null, history, onHints: (h) => out.push(h), onFocus: (f) => counters.push(f), onSound: (c) => cues.push(c), now: () => now });
+    const feed = (t: number, i: Partial<SimInput>) => {
+      now = 1_000_000 + t * 1000;
+      const s = sim({ wallMs: now, clock: 0, ...i });
+      svc.ingest({ state: s.state, gsi: s.gsi, gsiWallMs: now });
+    };
+    for (let t = 0; t < 5; t++) feed(t, { clock: -60 + t, phase: 'pre-game' });
+    expect(out.flat().some((h) => h.title === 'Фокус: меньше смертей до 10 мин')).toBe(true);
+    expect(cues).toContain('focus');
+    for (let t = 5; t < 90; t++) feed(t, { clock: t - 5, level: 3 });
+    expect(counters.at(-1)).toEqual({ label: 'Смерти', progress: '0/1', state: 'pending' });
+    // другой фокус — одной клавишей
+    expect(svc.nextFocus()!.def.id).toBe('last-hits');
+    expect(out.at(-1)!.some((h) => h.title === 'Фокус: добивания к 10:00')).toBe(true);
+    for (let t = 90; t < 95; t++) feed(t, { clock: t - 5, level: 3, phase: 'post-game', winTeam: 'radiant' });
+    const review = out.at(-1)!.find((h) => h.review?.kind === 'match')!;
+    expect(review.review!.focusOnly).toBe(true);
+    expect(review.review!.focus).toMatchObject({ title: 'Фокус: добивания к 10:00', achieved: false });
+    expect(review.review!.why).toEqual([]);
+    // через 10 с — обычный разбор под итогом фокуса
+    now += 11_000;
+    svc.refreshHud();
+    const full = out.at(-1)!.find((h) => h.review?.kind === 'match')!;
+    expect(full.review!.focusOnly).toBe(false);
+    expect(full.review!.why.length).toBeGreaterThan(0);
+    expect(counters.at(-1)).toBeNull();
+    const m = history.saved.at(-1)!;
+    expect(m.focus).toMatchObject({ id: 'last-hits', achieved: false });
+    expect(m.focusMetrics!['deaths-early']).toBe(0);
   });
 
   it('фильтр внимания: срочное — коротко (≤ 3 слов) с причиной; «Минимум» — без строки; «не нужно» убирает тип', () => {

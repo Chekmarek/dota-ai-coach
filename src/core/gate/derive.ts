@@ -192,10 +192,13 @@ export interface ToGateOptions {
   names?: GateNames;
   /** Тип понижен до info после «не нужно» в нескольких матчах */
   demoted?: boolean;
+  /** Подсказка по фокусу матча: info → useful («не нужно» сильнее фокуса) */
+  focus?: boolean;
 }
 
 export function toGateHint(d: HintDraft, o: ToGateOptions): GateHint {
-  const priority: GatePriority = o.demoted ? 'info' : toGatePriority(d.priority);
+  const base = toGatePriority(d.priority);
+  const priority: GatePriority = o.demoted ? 'info' : o.focus && base === 'info' ? 'useful' : base;
   const { short } = deriveShort(d, o.names);
   return {
     key: `${d.id}|${short}`,
@@ -212,6 +215,7 @@ export function toGateHint(d: HintDraft, o: ToGateOptions): GateHint {
     zone: d.zone ?? (priority === 'critical' ? 'alert' : d.category === 'timing' || d.category === 'economy' ? 'timing' : 'decision'),
     icon: d.icon ?? null,
     repeating: d.cooldownMs > 0,
+    focus: o.focus === true && !o.demoted,
     source: d,
   };
 }

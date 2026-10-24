@@ -1,7 +1,7 @@
 // Фильтр внимания на странице «Живая игра»: настройки (бюджет, порог уверенности, клавиша «не нужно») и панель
 // отладки — сколько подсказок пришло от генераторов, сколько показано и почему остальные скрыты.
 import { useEffect, useState } from 'react';
-import { GATE_MUTE_SHORTCUT_DEFAULT, acceleratorOf, isSafeBadAdviceShortcut, type Settings, type SettingsPatch } from '@shared/schemas/settings';
+import { FOCUS_SHORTCUT_DEFAULT, GATE_MUTE_SHORTCUT_DEFAULT, acceleratorOf, isSafeBadAdviceShortcut, type Settings, type SettingsPatch } from '@shared/schemas/settings';
 import { CALM_RU, SUPPRESS_REASONS, SUPPRESS_RU, type GateDebug } from '@core/gate/types.ts';
 
 const OUTCOME_RU = { shown: 'показана', ...SUPPRESS_RU } as const;
@@ -59,6 +59,55 @@ export function GateSettings({ settings, update }: { settings: Settings; update:
         </button>
       </p>
       {hint && <p className="warn small">{hint}</p>}
+    </>
+  );
+}
+
+/** Фокус матча: включить и клавиша «следующий фокус» */
+export function FocusSettings({ settings, update }: { settings: Settings; update: (p: SettingsPatch) => Promise<void> }) {
+  const f = settings.focus;
+  const [hint, setHint] = useState<string | null>(null);
+  const [status, setStatus] = useState<{ key: string; bound: boolean } | null>(null);
+  useEffect(() => {
+    void window.dotacoach.focusShortcutStatus().then(setStatus);
+  }, [f.shortcut]);
+  return (
+    <>
+      <label className="check">
+        <input type="checkbox" checked={f.enabled} onChange={(e) => void update({ focus: { enabled: e.target.checked } })} data-testid="focus-enabled" />
+        Фокус матча: одна цель на матч
+      </label>
+      <p className="muted small">
+        На выборе героев коуч выбирает одну цель по вашим частым ошибкам — например, «меньше смертей до 10 мин». В матче справа сверху —
+        маленький счётчик, подсказки по фокусу звучат своим звуком. После матча — итог: получилось ли и сравнение с вашим средним.
+      </p>
+      <label>
+        Клавиша «другой фокус»
+        <input
+          readOnly
+          value={f.shortcut || 'выключена'}
+          disabled={!f.enabled}
+          data-testid="focus-shortcut"
+          onKeyDown={(e) => {
+            if (e.key === 'Tab') return;
+            e.preventDefault();
+            const acc = acceleratorOf(e);
+            if (!acc) return setHint('Нажмите сочетание: Ctrl/Alt + F1…F12, или два модификатора + буква/цифра.');
+            if (!isSafeBadAdviceShortcut(acc)) return setHint(`${acc} не подходит: нужен Ctrl или Alt, а с буквой или цифрой — два модификатора.`);
+            if ([settings.hints.badAdviceShortcut, settings.sound.shortcut, settings.gate.muteShortcut].includes(acc)) return setHint(`${acc} уже занято другой клавишей коуча.`);
+            setHint(null);
+            void update({ focus: { shortcut: acc } });
+          }}
+        />
+      </label>
+      <p className="muted small">
+        Одно нажатие — следующий фокус из списка.{' '}
+        <button className="link" onClick={() => void update({ focus: { shortcut: FOCUS_SHORTCUT_DEFAULT } })}>
+          По умолчанию ({FOCUS_SHORTCUT_DEFAULT})
+        </button>
+      </p>
+      {hint && <p className="warn small">{hint}</p>}
+      {status && status.key && status.key === f.shortcut && !status.bound && <p className="warn small">Клавиша {status.key} не занята — её перехватила другая программа.</p>}
     </>
   );
 }

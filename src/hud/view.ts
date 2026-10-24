@@ -3,7 +3,7 @@
 // анимации — Web Animations API на transform/opacity (видеокарта). Используется оверлеем и предпросмотром.
 import layoutJson from '../data/hud-overlay-layout.json';
 import { applyOverrides, hudUnit, layoutSchema, resolveLayout, type HudLayout, type HudZoneId, type ResolvedZone } from '../core/hud/layout.ts';
-import type { HudHint, HudOptions, ModeBanner } from '../shared/types/hud.ts';
+import type { HudFocus, HudHint, HudOptions, ModeBanner } from '../shared/types/hud.ts';
 import { themeById, themeVars, type HudTheme } from './theme/index.ts';
 import { MOTION, type Edge } from './theme/motion.ts';
 import { applyTtl, cardContent, contentKey, renderHint } from './components/cards.ts';
@@ -123,6 +123,34 @@ export class HudView {
     const glow = el.querySelector('.hud-glow');
     if (glow) this.animate(glow, MOTION.flash(this.theme, reduced));
   }
+
+  /**
+   * Счётчик фокуса матча: маленькая плашка в постоянном месте — справа сверху, под кнопками Доты (вне зон подсказок).
+   * null — убрать. Смена числа — короткое проявление.
+   */
+  setFocus(f: HudFocus | null): void {
+    if (!f) {
+      this.focusEl?.remove();
+      this.focusEl = null;
+      this.focusKey = '';
+      return;
+    }
+    if (!this.focusEl) {
+      this.focusEl = h('div', 'hud-focus-pill');
+      this.root.append(this.focusEl);
+    }
+    const u = hudUnit(this.width, this.height);
+    Object.assign(this.focusEl.style, { right: `${0.012 * u}px`, top: `${0.056 * u}px` });
+    const key = JSON.stringify(f);
+    if (key === this.focusKey) return;
+    const changed = this.focusKey !== '';
+    this.focusKey = key;
+    this.focusEl.dataset['state'] = f.state;
+    this.focusEl.replaceChildren(h('i', 'hud-focus-dot', null), h('span', null, `Фокус · ${f.label}`), h('b', null, f.progress));
+    if (changed) this.animate(this.focusEl, MOTION.update(this.theme, this.reduced));
+  }
+  private focusEl: HTMLElement | null = null;
+  private focusKey = '';
 
   /** Прямоугольники зон в пикселях (для режима расстановки) */
   zones(): ResolvedZone[] {

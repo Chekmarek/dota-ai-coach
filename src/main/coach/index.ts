@@ -10,7 +10,8 @@ import { MODE_BANNER_MS, type HudHint, type ModeBanner } from '@shared/types/hud
 import type { AiProvider } from '@core/ai/provider.ts';
 import type { SettingsStore } from '../settings/store';
 import type { KbStore } from '../knowledge/kb-store';
-import { isLiveEngine, liveLog, setHudHints, setHudModeBanner } from '../live/live';
+import { isLiveEngine, liveLog, setHudFocus, setHudHints, setHudModeBanner } from '../live/live';
+import { FOCUS_RESULT_MS } from './focus';
 import { CoachService } from './service';
 import { HistoryStore } from './history';
 import { DraftService } from './draft';
@@ -52,6 +53,7 @@ export function setupCoach(deps: {
     if (ui && !ui.isDestroyed()) ui.webContents.send(IPC.coachState, msg);
   };
   const badAdvice = new BadAdviceStore(deps.dataDir, sessionIdOf(Date.now()));
+  let focusTimer: ReturnType<typeof setTimeout> | null = null;
   let ack: { until: number; seq: number; title: string; text: string; timer: ReturnType<typeof setTimeout> | null } | null = null;
   /** Короткое подтверждение поверх игры (отметка «плохой совет», «не нужно») */
   const showAck = (title: string, text: string) => {
@@ -89,7 +91,15 @@ export function setupCoach(deps: {
       lastHints = { hints, inMatch };
       pushHud();
       sendUi();
+      // Итог фокуса (первые 10 с после матча) сменится на полный разбор и без новых данных игры
+      if (hints.some((h) => h.review?.focusOnly) && !focusTimer) {
+        focusTimer = setTimeout(() => {
+          focusTimer = null;
+          service.refreshHud();
+        }, FOCUS_RESULT_MS + 300);
+      }
     },
+    onFocus: (f) => setHudFocus(f),
     onSound: (cue, atMs) => playTone(cue, atMs),
     onModeBanner: (b: ModeBanner) => {
       banner = { b, at: Date.now() };
@@ -195,9 +205,22 @@ export function setupCoach(deps: {
     }
     muteKey = bindShortcut(muteKey, key, onMute, 'не нужно');
   };
+  // «Следующий фокус матча»: одно нажатие — следующий фокус из списка, объявление поверх игры и звук
+  let focusKey = '';
+  const bindFocusKey = () => {
+    const key = deps.settings.get().focus.shortcut;
+    if (key && (key === boundKey || key === soundKey || key === muteKey)) {
+      if (focusKey) globalShortcut.unregister(focusKey);
+      focusKey = '';
+      return liveLog('coach фокус: сочетание уже занято другой клавишей коуча — не занято', key);
+    }
+    focusKey = bindShortcut(focusKey, key, () => void service.nextFocus(), 'следующий фокус');
+  };
   bindKey();
   bindSoundKey();
   bindMuteKey();
+  bindFocusKey();
+  handle(IPC.focusShortcutStatus, () => ({ key: deps.settings.get().focus.shortcut, bound: focusKey !== '' && focusKey === deps.settings.get().focus.shortcut }));
   handle(IPC.gateDebug, () => ({ debug: service.gateDebug(), shortcut: { key: deps.settings.get().gate.muteShortcut, bound: muteKey !== '' && muteKey === deps.settings.get().gate.muteShortcut } }));
   handle(IPC.badAdviceShortcutStatus, () => ({ key: deps.settings.get().hints.badAdviceShortcut, bound: boundKey !== '' && boundKey === deps.settings.get().hints.badAdviceShortcut }));
 
@@ -207,8 +230,12 @@ export function setupCoach(deps: {
       bindKey();
       bindSoundKey();
       bindMuteKey();
+      bindFocusKey();
     },
     dispose: () => {
+      if (focusKey) globalShortcut.unregister(focusKey);
+      focusKey = '';
+      if (focusTimer) clearTimeout(focusTimer);
       if (muteKey) globalShortcut.unregister(muteKey);
       muteKey = '';
       if (boundKey) globalShortcut.unregister(boundKey);

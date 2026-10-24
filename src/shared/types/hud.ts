@@ -40,11 +40,39 @@ export const hudHintSchema = z
         footer: text(200).nullable(),
         stats: z.array(z.object({ label: text(60), value: text(30), ref: text(30).nullable(), verdict: z.enum(['good', 'ok', 'bad']).nullable() })).max(10),
         aiText: text(1500).nullable(),
+        /** Итог фокуса матча — первым в разборе матча (с 0.19; в старом состоянии поля нет) */
+        focus: z
+          .object({
+            title: text(80),
+            /** null — не удалось измерить */
+            achieved: z.boolean().nullable(),
+            value: text(30),
+            target: text(30),
+            /** «в среднем 2,4» — ваше среднее за прошлые матчи; null — мало матчей */
+            avg: text(60).nullable(),
+            keep: text(200),
+          })
+          .nullable()
+          .optional(),
+        /** Первые 10 с — только итог фокуса, потом обычный разбор под ним */
+        focusOnly: z.boolean().optional(),
       })
       .nullable(),
   })
   .strict();
 export type HudHint = z.infer<typeof hudHintSchema>;
+
+/** Счётчик фокуса матча поверх игры: маленькая плашка в постоянном месте */
+export const hudFocusSchema = z
+  .object({
+    /** «Смерти», «Добивания», «С TP» */
+    label: text(40),
+    /** «1/1», «23/45», «96%» */
+    progress: text(20),
+    state: z.enum(['pending', 'achieved', 'failed', 'unknown']),
+  })
+  .strict();
+export type HudFocus = z.infer<typeof hudFocusSchema>;
 
 export const hudOptionsSchema = z.object({
   theme: z.enum(HUD_THEME_IDS),
@@ -80,6 +108,8 @@ export const hudStateSchema = z.object({
   options: hudOptionsSchema,
   /** Индикатор режима; null — не показывать (старое состояние без поля — тоже null) */
   mode: modeBannerSchema.nullable().catch(null).default(null),
+  /** Счётчик фокуса матча; null — нет (старое состояние без поля — тоже null) */
+  focus: hudFocusSchema.nullable().catch(null).default(null),
 });
 export type HudState = z.infer<typeof hudStateSchema>;
 

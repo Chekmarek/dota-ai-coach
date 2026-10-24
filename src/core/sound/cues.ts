@@ -13,7 +13,7 @@ export const SOUND_TIER_RU: Record<SoundTier, string> = { urgent: 'Срочны�
 export const SOUND_TIERS: readonly SoundTier[] = ['urgent', 'advice', 'background'];
 
 /** Сигналы, которые пользователь включает и выключает по одному (порядок — как в настройках и по важности) */
-export const SOUND_CUE_IDS = ['danger', 'retreat', 'engage', 'ult', 'item', 'buy', 'skill', 'regen', 'farm', 'team', 'buyback', 'building', 'aegis', 'review', 'rune', 'timing', 'shop', 'map'] as const;
+export const SOUND_CUE_IDS = ['danger', 'retreat', 'engage', 'ult', 'focus', 'item', 'buy', 'skill', 'regen', 'farm', 'team', 'buyback', 'building', 'aegis', 'review', 'rune', 'timing', 'shop', 'map'] as const;
 export type SoundCueId = (typeof SOUND_CUE_IDS)[number];
 /** Служебные сигналы: подтверждение горячей клавиши «звук вкл/выкл» (в настройках не выключаются) */
 export type SoundToneId = SoundCueId | 'toggle-on' | 'toggle-off';
@@ -96,6 +96,14 @@ export const SOUND_CUES: Record<SoundCueId, SoundCueDef> = {
     cooldownMs: 20_000,
     // яркий «динь»: квинта вверх
     notes: motif('advice', [[N.G5, 0, 100], [N.D6, 80, 220, 1.2]]),
+  },
+  focus: {
+    nameRu: 'Фокус матча',
+    whenRu: 'выбран фокус на матч и подсказки, которые к нему относятся',
+    tier: 'advice',
+    cooldownMs: 20_000,
+    // «колокольчик»: квинта вверх ре — ля, вторая нота длиннее
+    notes: motif('advice', [[N.D5, 0, 110], [N.A5, 100, 200, 1.1]]),
   },
   item: {
     nameRu: 'Хватает на предмет',
@@ -256,6 +264,9 @@ const RULE_CUE: Record<string, SoundCueId> = {
   'fight.engage': 'engage',
   'fight.target': 'engage',
   'fight.ult-ready': 'ult',
+  // Фокус матча: объявление и подсказки по фокусу (service подставляет ruleId focus.hint)
+  'focus.announce': 'focus',
+  'focus.hint': 'focus',
   'economy.tp': 'buy',
   'economy.wards': 'buy',
   'laning.buy-regen': 'buy',

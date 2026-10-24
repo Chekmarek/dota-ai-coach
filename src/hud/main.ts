@@ -25,6 +25,7 @@ window.dotacoachHud?.onState((raw) => {
   view.configure(innerWidth, innerHeight, options);
   view.update(s.data.hints);
   view.setMode(s.data.mode);
+  view.setFocus(s.data.focus);
 });
 
 addEventListener('resize', () => view.configure(innerWidth, innerHeight, options));

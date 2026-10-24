@@ -79,6 +79,12 @@ export function History() {
                     <span className="muted small">
                       {m.result ? RESULT_RU[m.result] : 'без итога'} · {mmss(m.durationSec)} · советов {m.hints} · ошибок {m.mistakes} · смертей {m.deaths}
                       {(m.badAdvice ?? 0) > 0 && <b data-testid="history-marked-count"> · плохих советов {m.badAdvice}</b>}
+                      {m.focus && (
+                        <>
+                          <br />
+                          Фокус: {m.focus.title} — {m.focus.achieved === true ? 'получилось' : m.focus.achieved === false ? 'пока нет' : 'не измерен'}
+                        </>
+                      )}
                     </span>
                   </button>
                 </li>
@@ -90,6 +96,29 @@ export function History() {
               <p className="muted small" data-testid="history-game-mode">
                 Режим игры: {current.gameMode ? gameModeRu(current.gameMode) : 'не записан (матч до 0.13.3)'}
               </p>
+              {current.focus && (
+                <Card title={`Фокус матча: ${current.focus.title}`}>
+                  <p data-testid="history-focus">
+                    <b>{current.focus.achieved === true ? 'Получилось' : current.focus.achieved === false ? 'Пока нет' : 'Не удалось измерить'}</b>
+                    {current.focus.value !== null && (
+                      <>
+                        {' '}
+                        · {current.focus.value}
+                        {current.focus.unit} (цель {current.focus.better === 'lower' ? 'не больше' : 'не меньше'} {current.focus.target}
+                        {current.focus.unit})
+                      </>
+                    )}
+                    {current.focus.prevAvg !== null && (
+                      <>
+                        {' '}
+                        · в среднем раньше {current.focus.prevAvg}
+                        {current.focus.unit}
+                      </>
+                    )}
+                  </p>
+                  <p className="muted small">{current.focus.keep}</p>
+                </Card>
+              )}
               {(current.badAdvice?.length ?? 0) > 0 && (
                 <Card title={`Отмечено как плохой совет (${current.badAdvice!.length})`}>
                   <ul className="history-entries" data-testid="history-bad-advice">

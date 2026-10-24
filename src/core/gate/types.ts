@@ -32,6 +32,8 @@ export interface GateHint {
   icon: string | null;
   /** Повторяющаяся: генератор подтверждает её, пока ситуация есть (cooldownMs > 0); иначе — разовое событие */
   repeating: boolean;
+  /** Относится к фокусу матча: важность выше, бюджет вдвое мягче, свой звук */
+  focus: boolean;
   /** Исходная подсказка генератора */
   source: HintDraft;
 }
@@ -66,6 +68,8 @@ export interface GateConfig {
   maxVisible: number;
   /** Сколько матчей с «не нужно» понижают тип до info */
   demoteAfterMutes: number;
+  /** Типы подсказок фокуса матча (src/core/focus): info → useful, бюджет вдвое мягче, первыми в очереди */
+  focusTypes: readonly string[];
 }
 
 export const DEFAULT_GATE_CONFIG: GateConfig = {
@@ -84,6 +88,7 @@ export const DEFAULT_GATE_CONFIG: GateConfig = {
   stressHoldMs: 5000,
   maxVisible: 2,
   demoteAfterMutes: 3,
+  focusTypes: [],
 };
 
 /**

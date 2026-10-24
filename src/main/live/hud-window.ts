@@ -7,7 +7,7 @@
 import { BrowserWindow, screen, type WebContents } from 'electron';
 import { join } from 'node:path';
 import { LIVE_IPC } from '@shared/ipc';
-import { DEFAULT_HUD_OPTIONS, MODE_BANNER_MS, hudStateSchema, type HudHint, type HudOptions, type HudState, type ModeBanner } from '@shared/types/hud';
+import { DEFAULT_HUD_OPTIONS, MODE_BANNER_MS, hudStateSchema, type HudFocus, type HudHint, type HudOptions, type HudState, type ModeBanner } from '@shared/types/hud';
 import type { Settings } from '@shared/schemas/settings';
 import { sampleHints, type SampleScene } from '@shared/hud-samples';
 import { WindowRectTracker, hudShouldShow, hwndFromSourceId, type WindowRect } from './window-rect';
@@ -94,6 +94,14 @@ export class HudOverlay {
     this.refresh();
   }
 
+  /** Счётчик фокуса матча (null — убрать) */
+  setFocus(focus: HudFocus | null): void {
+    if (JSON.stringify(focus) === JSON.stringify(this.focus)) return;
+    this.focus = focus;
+    this.refresh();
+  }
+  private focus: HudFocus | null = null;
+
   /** Примеры подсказок поверх игры на DEMO_MS (кнопка в «Предпросмотре подсказок») */
   demo(scene: SampleScene): void {
     this.demoHints = sampleHints(scene, 'normal');
@@ -108,7 +116,7 @@ export class HudOverlay {
 
   private state(): HudState {
     const live = this.demoHints === null && (this.seeing || this.inMatch);
-    return hudStateSchema.parse({ hints: (this.demoHints ?? this.hints).slice(0, 12), options: hudOptions(this.deps.settings.get()), mode: live ? this.modeBanner : null });
+    return hudStateSchema.parse({ hints: (this.demoHints ?? this.hints).slice(0, 12), options: hudOptions(this.deps.settings.get()), mode: live ? this.modeBanner : null, focus: live ? this.focus : null });
   }
 
   /** Где рисовать: окно Доты или экран, где оно (или основной) */
@@ -124,7 +132,9 @@ export class HudOverlay {
     const banner = this.demoHints === null && (this.seeing || this.inMatch) && this.modeBanner !== null;
     // Дота свёрнута или активно другое окно (Telegram, браузер) — поверх него подсказки не рисуем;
     // вернулись в игру — показываем то, что ещё актуально (устаревшее очередь подсказок уже убрала)
-    const visible = hudShouldShow({ enabled: s.hud.enabled, hasContent: list.length > 0 || banner, demo: this.demoHints !== null, rect: this.tracker.rect });
+    // счётчик фокуса — тоже содержимое: пока идёт матч, окно с ним видно
+    const focusOn = this.demoHints === null && (this.seeing || this.inMatch) && this.focus !== null;
+    const visible = hudShouldShow({ enabled: s.hud.enabled, hasContent: list.length > 0 || banner || focusOn, demo: this.demoHints !== null, rect: this.tracker.rect });
     // В лог — только смена решения при непустом списке: почему подсказки есть, а на экране их нет
     const blocked = !visible && list.length > 0;
     if (blocked !== this.lastBlocked) {
@@ -135,7 +145,7 @@ export class HudOverlay {
     if (!visible) {
       // отправляем пустой список (карточки и индикатор уходят анимацией), потом прячем окно
       if (this.win && !this.win.isDestroyed() && this.win.isVisible()) {
-        this.win.webContents.send(LIVE_IPC.hudState, { ...this.state(), hints: [], mode: null });
+        this.win.webContents.send(LIVE_IPC.hudState, { ...this.state(), hints: [], mode: null, focus: null });
         this.scheduleHide();
       }
       return;

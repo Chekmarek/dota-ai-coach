@@ -7,7 +7,7 @@ import { HudRecognition, RegionOverlay } from '../components/HudRecognition';
 import { LIVE_HINT, LivePill, isLive, startLive } from '../components/live';
 import { PreviewImage } from '../components/preview';
 import { HintsFeed, HintsToggles } from '../components/hints';
-import { GateDebugPanel, GateSettings } from '../components/gate';
+import { FocusSettings, GateDebugPanel, GateSettings } from '../components/gate';
 import { GameModeBadge, GsiCard } from '../components/gsi';
 import { engine } from '../hooks/useEngine';
 import { AskCoach } from '../components/ask';
@@ -107,6 +107,14 @@ export function LiveGame({ onNavigate }: PageProps) {
             <GateSettings settings={settings} update={update} />
           </div>
           <GateDebugPanel />
+        </Card>
+      )}
+
+      {settings?.hints.enabled && (
+        <Card title="Фокус матча">
+          <div className="form">
+            <FocusSettings settings={settings} update={update} />
+          </div>
         </Card>
       )}
 

@@ -175,7 +175,8 @@ export class AttentionGate {
     // 1. Подсказки генераторов: новые — в очередь, повторы — подтверждение
     for (const d of input.offered) {
       if (d.category === 'review') continue;
-      const h = toGateHint(d, { nowMs: now, names: this.names, demoted: this.isDemoted(d.ruleId || d.id.split(':')[0]!) });
+      const type = d.ruleId || d.id.split(':')[0]!;
+      const h = toGateHint(d, { nowMs: now, names: this.names, demoted: this.isDemoted(type), focus: this.cfg.focusTypes.includes(type) });
       let o = this.offers.get(h.key);
       if (o && !(o.status === 'done' && now - o.lastMs > this.cfg.staleMs)) {
         o.lastMs = now;
@@ -240,7 +241,7 @@ export class AttentionGate {
       else if (moment.calm === null) o.wait = 'busy';
       else if (lastType !== undefined && now - lastType < (this.cfg.typeCooldownMs[h.type] ?? this.cfg.defaultTypeCooldownMs)) o.wait = 'cooldown';
       else if (lastText !== undefined && now - lastText < this.cfg.repeatTextMs) o.wait = 'duplicate';
-      else if (now - this.lastNonCriticalMs < this.cfg.budgetMs) o.wait = 'budget';
+      else if (now - this.lastNonCriticalMs < (h.focus ? this.cfg.budgetMs / 2 : this.cfg.budgetMs)) o.wait = 'budget';
       else calm.push(o);
     }
 
@@ -261,7 +262,7 @@ export class AttentionGate {
       shown.push(this.show(o, now, moment, s));
     }
     if (calm.length && !this.vis.some((v) => v.hint.priority !== 'critical') && this.vis.length < this.cfg.maxVisible) {
-      calm.sort((a, b) => GATE_PRIORITY_RANK[b.hint.priority] - GATE_PRIORITY_RANK[a.hint.priority] || CATEGORY_RANK[b.hint.category] - CATEGORY_RANK[a.hint.category] || b.hint.confidence - a.hint.confidence || a.firstMs - b.firstMs);
+      calm.sort((a, b) => Number(b.hint.focus) - Number(a.hint.focus) || GATE_PRIORITY_RANK[b.hint.priority] - GATE_PRIORITY_RANK[a.hint.priority] || CATEGORY_RANK[b.hint.category] - CATEGORY_RANK[a.hint.category] || b.hint.confidence - a.hint.confidence || a.firstMs - b.firstMs);
       shown.push(this.show(calm[0]!, now, moment, s));
       for (const o of calm.slice(1)) o.wait = 'budget';
     } else for (const o of calm) o.wait = this.vis.length ? 'busy' : 'budget';

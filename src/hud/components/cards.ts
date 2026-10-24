@@ -58,8 +58,23 @@ function percentBlock(p: NonNullable<HudHint['percent']>): HTMLElement {
   return h('div', 'hud-pctbox', h('div', 'hud-pct', h('b', 'hud-pct-num', `${Math.round(p.value)}%`), side), factors);
 }
 
+/** Итог фокуса матча — первым в разборе: получилось или нет, число против цели и вашего среднего, что сохранить */
+function focusBlock(f: NonNullable<NonNullable<HudHint['review']>['focus']>, big: boolean): HTMLElement {
+  const state = f.achieved === true ? 'ok' : f.achieved === false ? 'miss' : 'none';
+  const verdict = f.achieved === true ? 'Получилось' : f.achieved === false ? 'Пока нет' : 'Не удалось измерить';
+  return h(
+    'div',
+    `hud-focus-res hud-focus-${state}${big ? ' hud-focus-big' : ''}`,
+    h('div', 'hud-focus-top', h('span', 'hud-focus-title', f.title), h('b', 'hud-focus-verdict', verdict)),
+    h('div', 'hud-focus-num', h('b', null, f.value), h('span', null, ` · цель ${f.target}`)),
+    f.avg ? h('div', 'hud-focus-avg', f.avg) : null,
+    h('div', 'hud-focus-keep', f.keep),
+  );
+}
+
 function reviewBody(r: NonNullable<HudHint['review']>): HTMLElement[] {
   const out: HTMLElement[] = [];
+  if (r.focus) out.push(focusBlock(r.focus, r.focusOnly === true));
   if (r.aiText) out.push(h('p', 'hud-review-ai', aiMark(), r.aiText));
   if (r.why.length) out.push(h('div', 'hud-review-sec', h('h4', null, r.kind === 'death' ? 'Почему' : 'Итог'), h('ul', null, ...r.why.map((w) => h('li', null, w)))));
   if (r.stats.length)

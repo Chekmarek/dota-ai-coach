@@ -3,6 +3,9 @@
 // Без Electron: зависимости передаются снаружи (проверяется unit-тестами).
 import { CoachAi, CoachEngine, MISTAKE_RU, defaultCoachSettings, gateSignals, gateToHudHint, toHudHint, type CoachData, type CoachSettings, type CoachUpdate, type JournalEntry } from '@core/coach/index.ts';
 import { AttentionGate, fromGatePriority, type GateConfig, type GateDebug, type GateMemoryState, type GateVisible } from '@core/gate/index.ts';
+import type { FocusNow } from '@core/focus/index.ts';
+import { FocusController, focusHistory } from './focus';
+import type { HudFocus } from '@shared/types/hud';
 import type { AiProvider } from '@core/ai/provider.ts';
 import type { Settings } from '@shared/schemas/settings';
 import type { HudHint, ModeBanner } from '@shared/types/hud';
@@ -64,6 +67,8 @@ export interface CoachDeps {
   onSound?: (cue: SoundCueId, atMs: number) => void;
   /** Отметки «плохой совет» (горячая клавиша); нет — отметки не сохраняются */
   badAdvice?: { readonly sessionId: string; save(r: BadAdviceRecord): void };
+  /** Счётчик фокуса матча поверх игры; null — убрать */
+  onFocus?: (f: HudFocus | null) => void;
   /** Память фильтра внимания между матчами («не нужно», метрики); нет — только на время запуска */
   gateStore?: { load(): GateMemoryState | null; save(s: GateMemoryState): void };
   appVersion?: string | null;
@@ -118,9 +123,15 @@ export class CoachService {
   private gateShown: GateVisible[] = [];
   private gateEntries: JournalEntry[] = [];
   private matchupsUntil = 0;
+  /** Фокус матча (src/core/focus): выбор по истории, счётчик, итог */
+  private readonly focus: FocusController;
+  /** Объявлен на этом тике (для звука) */
+  private focusAnnounced: FocusNow | null = null;
+  private lastFocusKey = '';
 
   constructor(private readonly deps: CoachDeps) {
     this.now = deps.now ?? (() => Date.now());
+    this.focus = new FocusController(() => focusHistory(this.deps.history.recent?.(10) ?? []));
   }
 
   private gateOn(s: Settings = this.deps.settings.get()): boolean {
@@ -187,6 +198,7 @@ export class CoachService {
     if (!e) return null;
     e.setSettings(coachSettings(s));
     const u = e.tick(input.state, input.gsi, input.gsiWallMs);
+    this.runFocus(e, s);
     this.runGate(e, u, input, s);
     this.inputs++;
     if (this.inputs === 1) this.deps.log?.('coach первый снимок матча', { gsi: input.gsi !== null, screen: input.state.sources.screen, heroKey: input.gsi?.hero.key ?? null });
@@ -222,7 +234,7 @@ export class CoachService {
     const view = e.currentView;
     if (!g || !s.gate.enabled || !view) return;
     try {
-      g.configure(gateConfig(s));
+      g.configure({ ...gateConfig(s), focusTypes: s.focus.enabled ? (this.focus.current?.def.hintTypes ?? []) : [] });
       const now = this.now();
       const r = g.tick({ signals: gateSignals(view, e.mem, input.gsi, now), offered: u.offered, categories: s.hints.categories });
       this.gateShown = r.shown;
@@ -231,6 +243,49 @@ export class CoachService {
     } catch (err) {
       this.deps.log?.('coach фильтр: ошибка', String((err as Error)?.stack ?? err).slice(0, 400));
     }
+  }
+
+  /** Фокус матча: выбор, счётчик поверх игры; сбой фокуса не ломает подсказки */
+  private runFocus(e: CoachEngine, s: Settings): void {
+    this.focusAnnounced = null;
+    const view = e.currentView;
+    if (!s.focus.enabled || !view) return this.emitFocus(null);
+    try {
+      const t = this.focus.tick({ nowMs: this.now(), view, turbo: e.look.isTurbo, position: e.game?.position ?? null, shortcut: s.focus.shortcut });
+      if (t.announce) {
+        this.focusAnnounced = t.announce;
+        this.deps.log?.('coach фокус', { id: t.announce.def.id, title: t.announce.title, voice: t.announce.voice, manual: t.announce.manual });
+      }
+      this.emitFocus(this.focus.counter(view.inGame));
+    } catch (err) {
+      this.deps.log?.('coach фокус: ошибка', String((err as Error)?.stack ?? err).slice(0, 400));
+    }
+  }
+
+  private emitFocus(f: HudFocus | null): void {
+    const key = JSON.stringify(f);
+    if (key === this.lastFocusKey) return;
+    this.lastFocusKey = key;
+    this.deps.onFocus?.(f);
+  }
+
+  /** Горячая клавиша «следующий фокус»: null — фокуса нет (не матч или матч окончен) */
+  nextFocus(): FocusNow | null {
+    const s = this.deps.settings.get();
+    if (!s.focus.enabled) return null;
+    const f = this.focus.next(this.now(), s.focus.shortcut);
+    if (!f) return null;
+    this.deps.log?.('coach фокус: следующий', { id: f.def.id, voice: f.voice });
+    this.focusAnnounced = f;
+    if (this.deps.onSound && s.sound.enabled && s.sound.cues.focus !== false) this.deps.onSound('focus', this.now());
+    this.emitFocus(this.focus.counter(this.engine?.inGame ?? false));
+    this.publish(true);
+    return f;
+  }
+
+  /** Перерисовать подсказки (итог фокуса сменился на полный разбор по времени) */
+  refreshHud(): void {
+    this.publish(true);
   }
 
   /**
@@ -288,7 +343,8 @@ export class CoachService {
     const e = this.engine;
     const s = this.deps.settings.get();
     if (!e || !s.hints.enabled) return this.emit([], false);
-    const reviews = { death: e.deathReviewNow, match: e.matchReviewNow, deferred: this.gate?.deferredForReview() ?? [] };
+    const focusBlock = s.focus.enabled ? this.focus.reviewBlock(this.now()) : null;
+    const reviews = { death: e.deathReviewNow, match: e.matchReviewNow, deferred: this.gate?.deferredForReview() ?? [], focus: focusBlock?.focus ?? null, focusOnly: focusBlock?.only ?? false };
     const queued = e.queue.visible().filter((h) => s.hints.categories[h.category]);
     // С фильтром: разборы — из очереди движка (момент спокойный по определению), матчапы по кнопке — пока свежие,
     // остальное — только то, что пропустил фильтр
@@ -298,7 +354,10 @@ export class CoachService {
           ...this.gate!.visible().map((v) => gateToHudHint(v, s.hints.detail)),
         ]
       : queued.map((h) => toHudHint(h, s.hints.detail, reviews));
-    const key = JSON.stringify(hints.map((h) => [h.seq, h.title, h.text, h.percent?.value, h.review?.aiText])) + e.inGame;
+    // Объявление фокуса матча — первым (пока свежее)
+    const announce = s.focus.enabled ? this.focus.announceHint(this.now()) : null;
+    if (announce) hints.unshift(s.hints.detail === 'min' ? { ...announce, text: '' } : announce);
+    const key = JSON.stringify(hints.map((h) => [h.seq, h.title, h.text, h.percent?.value, h.review?.aiText, h.review?.focusOnly])) + e.inGame;
     if (!force && key === this.lastHintsKey) return;
     this.lastHintsKey = key;
     this.emit(hints, e.inGame);
@@ -321,9 +380,11 @@ export class CoachService {
       const shown = this.gateOn(s)
         ? [
             ...u.shown.filter((h) => h.category === 'review' && s.hints.categories.review),
-            ...this.gateShown.map((v) => ({ id: v.hint.id, ruleId: v.hint.type, category: v.hint.category, priority: fromGatePriority(v.hint.priority), icon: v.hint.icon })),
+            // подсказка по фокусу матча (не срочная) — свой звук «Фокус»
+            ...this.gateShown.map((v) => ({ id: v.hint.id, ruleId: v.hint.focus && v.hint.priority !== 'critical' ? 'focus.hint' : v.hint.type, category: v.hint.category, priority: fromGatePriority(v.hint.priority), icon: v.hint.icon })),
           ]
         : u.shown.filter((h) => s.hints.categories[h.category]);
+      if (this.focusAnnounced) shown.push({ id: 'focus.announce', ruleId: 'focus.announce', category: 'review', priority: 'advice', icon: null });
       const cue = this.sound.tick({
         nowMs: this.now(),
         shown,
@@ -466,6 +527,15 @@ export class CoachService {
     for (const d of m.deathReviews) if (!d.aiText && e.deathReviewNow && e.deathReviewNow.clock === d.clock) d.aiText = e.deathReviewNow.aiText;
     if (u.matchReview) {
       const r = u.matchReview;
+      // Итог фокуса матча — в историю (и в разбор поверх игры)
+      if (this.deps.settings.get().focus.enabled && !m.focus && this.focus.finish(now)) {
+        const f = this.focus.historyFocus();
+        if (f) {
+          m.focus = f.focus;
+          m.focusMetrics = f.metrics;
+          this.deps.log?.('coach фокус: итог', { id: f.focus.id, value: f.focus.value, target: f.focus.target, achieved: f.focus.achieved, prevAvg: f.focus.prevAvg });
+        }
+      }
       m.result = r.result;
       m.durationSec = r.durationSec;
       m.matchReview = { result: r.result, why: r.why, goodPlays: r.goodPlays, goals: r.goals, stats: r.stats, timeline: r.timeline, aiText: r.aiText };

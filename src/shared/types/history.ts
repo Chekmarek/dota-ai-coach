@@ -53,6 +53,23 @@ export interface HistoryMatch {
   matchReview: HistoryReview | null;
   /** Отметки «плохой совет» (горячая клавиша, с 0.14.2; в старых файлах поля нет) */
   badAdvice?: { id: string; markedAt: string; clock: number | null; titles: string[] }[];
+  /** Фокус матча и его итог (с 0.19; в старых файлах поля нет) */
+  focus?: HistoryFocus | null;
+  /** Значения метрик всех фокусов за матч — из них «ваше среднее» в следующих матчах */
+  focusMetrics?: Record<string, number>;
+}
+
+export interface HistoryFocus {
+  id: string;
+  title: string;
+  value: number | null;
+  target: number;
+  unit: '' | '%';
+  better: 'lower' | 'higher';
+  /** null — не удалось измерить */
+  achieved: boolean | null;
+  prevAvg: number | null;
+  keep: string;
 }
 
 export interface HistorySummary {
@@ -68,4 +85,6 @@ export interface HistorySummary {
   deaths: number;
   /** Отметок «плохой совет» */
   badAdvice: number;
+  /** Фокус матча и получилось ли; null — фокуса не было (матчи до 0.19) */
+  focus?: { title: string; achieved: boolean | null } | null;
 }

@@ -49,6 +49,9 @@ export const SOUND_SHORTCUT_DEFAULT = 'Ctrl+Alt+S';
 /** Горячая клавиша «не нужно» (фильтр внимания): в раскладке Доты по умолчанию Ctrl+Alt+буква не занято */
 export const GATE_MUTE_SHORTCUT_DEFAULT = 'Ctrl+Alt+N';
 
+/** Горячая клавиша «следующий фокус матча»: в раскладке Доты по умолчанию Ctrl+Alt+буква не занято */
+export const FOCUS_SHORTCUT_DEFAULT = 'Ctrl+Alt+F';
+
 /** Нажатое сочетание → строка для Electron (Ctrl+Shift+F8); null — одни модификаторы или неподходящая клавиша */
 export function acceleratorOf(e: { ctrlKey: boolean; altKey: boolean; shiftKey: boolean; code: string }): string | null {
   const m = /^(?:Key([A-Z])|Digit([0-9])|(F(?:[1-9]|1[0-2])))$/.exec(e.code);
@@ -87,6 +90,8 @@ const DEFAULTS = {
   sound: { enabled: true, volume: 0.3, cues: Object.fromEntries(SOUND_CUE_IDS.map((c) => [c, true])) as Record<SoundCueId, boolean>, shortcut: SOUND_SHORTCUT_DEFAULT as string },
   // Фильтр внимания (docs/ATTENTION_GATE.md): меньше подсказок и вовремя; в старых settings.json раздела нет — значения отсюда
   gate: { enabled: true, budgetSec: 50, minConfidence: 0.6, muteShortcut: GATE_MUTE_SHORTCUT_DEFAULT as string },
+  // Фокус матча (docs/MATCH_FOCUS.md): одна цель на матч; в старых settings.json раздела нет — значения отсюда
+  focus: { enabled: true, shortcut: FOCUS_SHORTCUT_DEFAULT as string },
   // Только для разработчика (DOTACOACH_DEV=1): набор кадров для проверки зрения (docs/VISION_DATASET.md)
   dev: { datasetRecord: false, datasetEveryN: 10 },
 };
@@ -255,6 +260,12 @@ const fields = {
     /** Горячая клавиша «не нужно» (только безопасные сочетания); '' — выключена */
     muteShortcut: z.union([z.literal(''), z.string().max(40).refine(isSafeBadAdviceShortcut)]),
   },
+  focus: {
+    /** Фокус матча: одна цель на матч, счётчик поверх игры, итог после матча */
+    enabled: z.boolean(),
+    /** Горячая клавиша «следующий фокус» (только безопасные сочетания); '' — выключена */
+    shortcut: z.union([z.literal(''), z.string().max(40).refine(isSafeBadAdviceShortcut)]),
+  },
   dev: {
     /** Сохранять кадры живого захвата + GSI наблюдателя в <папка данных>/vision-dataset. Работает только при DOTACOACH_DEV=1 */
     datasetRecord: z.boolean(),
@@ -298,6 +309,7 @@ export const settingsSchema = z.object({
     })
     .catch(() => structuredClone(DEFAULTS.sound)),
   gate: tolerant('gate'),
+  focus: tolerant('focus'),
   dev: tolerant('dev'),
   ai: aiTolerant,
 });
@@ -322,6 +334,7 @@ export const settingsPatchSchema = z
     gsi: z.object({ port: fields.gsi.port, record: fields.gsi.record }).partial().strict().optional(),
     sound: z.object({ ...fields.sound, cues: fields.sound.cues.partial().strict() }).partial().strict().optional(),
     gate: z.object(fields.gate).partial().strict().optional(),
+    focus: z.object(fields.focus).partial().strict().optional(),
     dev: z.object(fields.dev).partial().strict().optional(),
     // gigachat из интерфейса не выбирается, пока он недоступен
     ai: z
@@ -352,6 +365,7 @@ export function applySettingsPatch(current: Settings, patch: SettingsPatch): Set
     gsi: { ...current.gsi, ...patch.gsi },
     sound: { ...current.sound, ...patch.sound, cues: { ...current.sound.cues, ...patch.sound?.cues } },
     gate: { ...current.gate, ...patch.gate },
+    focus: { ...current.focus, ...patch.focus },
     dev: { ...current.dev, ...patch.dev },
     ai: {
       ...current.ai,
