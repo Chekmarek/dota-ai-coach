@@ -1,0 +1,103 @@
+{
+  "schemaVersion": 1,
+  "capture": {
+    "targetFps": 2,
+    "maxWidth": 1920,
+    "processingFpsCap": 10,
+    "previewFps": 2
+  },
+  "replay": {
+    "loop": false
+  },
+  "voice": {
+    "enabled": false,
+    "voiceId": null,
+    "rate": 1,
+    "volume": 0.8
+  },
+  "ui": {
+    "showRegions": true
+  },
+  "live": {
+    "autoStart": true,
+    "fps": 10,
+    "overlay": true,
+    "overlayCorner": "top-right"
+  },
+  "hints": {
+    "enabled": true,
+    "ranked": true,
+    "detail": "normal",
+    "categories": {
+      "fight": true,
+      "danger": true,
+      "laning": true,
+      "economy": true,
+      "macro": true,
+      "timing": true,
+      "mistake": true,
+      "review": true
+    },
+    "ai": true,
+    "inApp": true,
+    "gameMode": "auto",
+    "position": "auto",
+    "badAdviceShortcut": "Ctrl+Alt+O"
+  },
+  "hud": {
+    "enabled": true,
+    "theme": "runes",
+    "reduceMotion": false,
+    "opacity": 1,
+    "scale": 1,
+    "zones": null,
+    "hiddenZones": []
+  },
+  "gsi": {
+    "port": 53790,
+    "token": "efefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefef",
+    "record": true,
+    "dotaDir": null
+  },
+  "sound": {
+    "enabled": false,
+    "volume": 0.3,
+    "cues": {
+      "danger": true,
+      "retreat": true,
+      "engage": true,
+      "ult": true,
+      "item": true,
+      "buy": true,
+      "skill": true,
+      "regen": true,
+      "farm": true,
+      "team": true,
+      "buyback": true,
+      "building": true,
+      "aegis": true,
+      "review": true,
+      "rune": true,
+      "timing": true,
+      "shop": true,
+      "map": true
+    },
+    "shortcut": "Ctrl+Alt+S"
+  },
+  "dev": {
+    "datasetRecord": false,
+    "datasetEveryN": 10
+  },
+  "ai": {
+    "provider": "local",
+    "local": {
+      "model": "qwen3-1.7b",
+      "draftModel": null
+    },
+    "cloud": {
+      "baseUrl": "",
+      "model": ""
+    },
+    "sendToCloudConsent": false
+  }
+}

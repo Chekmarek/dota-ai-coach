@@ -98,4 +98,36 @@ describe('настройки после обновления', () => {
     expect(settingsSchema.parse({ ...r, hud: { ...r.hud, hiddenZones: ['timing'] } }).hud.hiddenZones).toEqual(['timing']);
     expect(() => settingsPatchSchema.parse({ hud: { hiddenZones: ['minimap'] } })).toThrow();
   });
+
+  it('файл 0.17.0 (без фильтра внимания и фокуса матча) читается без потерь; новое — по умолчанию', () => {
+    const dir = dataDirWith('settings-0.17.0.json');
+    const store = new SettingsStore(dir);
+    const s = store.get();
+    const old = raw('settings-0.17.0.json');
+    expectKept({ ...old, sound: { ...old.sound, cues: undefined } }, { ...s, sound: { ...s.sound, cues: undefined } });
+    // Сигналы звука: старые на месте, новый «фокус» включён
+    for (const [cue, on] of Object.entries(old.sound.cues)) expect(s.sound.cues[cue as keyof typeof s.sound.cues]).toBe(on);
+    expect(s.sound.cues.focus).toBe(true);
+    expect(s.gate).toEqual(defaultSettings().gate);
+    expect(s.focus).toEqual(defaultSettings().focus);
+    expect(readdirSync(dir)).toEqual(['settings.json']);
+    // Сохранение нового раздела не трогает старые значения
+    store.update({ gate: { budgetSec: 90 } });
+    const saved = new SettingsStore(dir).get();
+    expectKept({ ...old, sound: undefined }, { ...saved, sound: undefined });
+    expect(saved.gate.budgetSec).toBe(90);
+    expect(saved.focus.enabled).toBe(true);
+  });
+
+  it('испорченные разделы фильтра и фокуса не ломают остальные настройки', () => {
+    const r = raw('settings-0.17.0.json');
+    for (const bad of [null, 5, 'on', { budgetSec: 1, minConfidence: 'x', muteShortcut: 7 }]) {
+      const s = settingsSchema.parse({ ...r, gate: bad, focus: bad });
+      expect(s.gate.budgetSec).toBe(defaultSettings().gate.budgetSec);
+      expect(s.gate.minConfidence).toBe(defaultSettings().gate.minConfidence);
+      expect(s.focus.shortcut).toBe(defaultSettings().focus.shortcut);
+      expect(s.hints.ranked).toBe(true);
+      expect(s.live.overlayCorner).toBe('top-right');
+    }
+  });
 });

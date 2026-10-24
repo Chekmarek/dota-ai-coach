@@ -212,7 +212,8 @@ describe('настройки звука', () => {
     expect(s).toEqual({ enabled: true, volume: 0.3, cues: Object.fromEntries(SOUND_CUE_IDS.map((c) => [c, true])), shortcut: SOUND_SHORTCUT_DEFAULT });
   });
   it('старые файлы настроек (0.7.1 … 0.13.2) загружаются: раздел звука — по умолчанию, остальное не тронуто', () => {
-    const files = readdirSync(dir).filter((f) => f.endsWith('.json'));
+    // Файлы со своим разделом звука (0.17.0 и новее) проверяет settings-migration.test.ts
+    const files = readdirSync(dir).filter((f) => f.endsWith('.json') && !JSON.parse(readFileSync(join(dir, f), 'utf8')).sound);
     expect(files.length).toBeGreaterThanOrEqual(4);
     for (const f of files) {
       const raw = JSON.parse(readFileSync(join(dir, f), 'utf8'));
