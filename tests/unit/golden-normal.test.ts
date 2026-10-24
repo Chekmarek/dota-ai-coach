@@ -15,9 +15,9 @@ import { realData, sim } from './coach-sim.ts';
 const ROOT = join(import.meta.dirname, '../..');
 const GOLDEN = join(ROOT, 'tests/fixtures/golden');
 
-/** Тик без времени работы правил (оно зависит от машины) */
+/** Тик без времени работы правил (оно зависит от машины) и без входа фильтра внимания (offered — сырые подсказки) */
 function tickOut(u: CoachUpdate) {
-  const { rulesMs: _ms, visible, ...rest } = u;
+  const { rulesMs: _ms, offered: _offered, visible, ...rest } = u;
   return { ...rest, visible: visible.map((h) => h.id) };
 }
 

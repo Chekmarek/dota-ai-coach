@@ -64,6 +64,8 @@ export const IPC = {
   soundPlay: 'sound:play',
   /** Клавиша «звук вкл/выкл»: какая и удалось ли её занять */
   soundShortcutStatus: 'sound:shortcut',
+  /** Фильтр внимания: сводка для панели отладки и состояние клавиши «не нужно» */
+  gateDebug: 'coach:gate-debug',
   /** событие main → UI: настройки изменились не из интерфейса (горячая клавиша «звук вкл/выкл») */
   settingsChanged: 'settings:changed',
 } as const;
@@ -201,6 +203,8 @@ export interface DotaCoachApi {
   onSoundPlay(fn: (m: SoundPlayMessage) => void): () => void;
   /** Клавиша «звук вкл/выкл»: из настроек и занята ли */
   soundShortcutStatus(): Promise<{ key: string; bound: boolean }>;
+  /** Фильтр внимания: сводка за матч (null — движок подсказок ещё не запущен) и клавиша «не нужно» */
+  gateDebug(): Promise<{ debug: import('../core/gate/types.ts').GateDebug | null; shortcut: { key: string; bound: boolean } }>;
   /** Настройки изменились не из интерфейса (горячая клавиша) */
   onSettingsChanged(fn: (s: Settings) => void): () => void;
   /** Показать примеры подсказок поверх игры на 12 с */

@@ -28,6 +28,8 @@ const api: DotaCoachApi = {
     return () => ipcRenderer.removeListener(IPC.soundPlay, listener);
   },
   soundShortcutStatus: () => ipcRenderer.invoke(IPC.soundShortcutStatus),
+  // Фильтр внимания: панель отладки и клавиша «не нужно»
+  gateDebug: () => ipcRenderer.invoke(IPC.gateDebug),
   onSettingsChanged: (fn) => {
     const listener = (_e: Electron.IpcRendererEvent, s: Parameters<typeof fn>[0]) => fn(s);
     ipcRenderer.on(IPC.settingsChanged, listener);

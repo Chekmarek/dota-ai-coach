@@ -63,8 +63,9 @@ describe('CoachService', () => {
     expect(out.flatMap((o) => o.hints).some((h) => h.category === 'danger')).toBe(false);
   });
 
+  // Подробность в старой подаче (фильтр внимания выключен); с фильтром — тесты ниже
   it('подробность «Минимум» — только короткая фраза, без текста и факторов', () => {
-    const { out, feed } = make(applySettingsPatch(defaultSettings(), { hints: { detail: 'min' } }));
+    const { out, feed } = make(applySettingsPatch(defaultSettings(), { hints: { detail: 'min' }, gate: { enabled: false } }));
     for (let t = 0; t < 5; t++) feed(t, { enemies: [{ slot: 5, hero: 'axe', pos: { x: -3800, y: -3900 }, hpPercent: 30, barLevel: 6 }] });
     const all = out.flatMap((o) => o.hints);
     expect(all.length).toBeGreaterThan(0);
@@ -75,10 +76,27 @@ describe('CoachService', () => {
   });
 
   it('«Подробно» — у процентов есть факторы', () => {
-    const { out, feed } = make(applySettingsPatch(defaultSettings(), { hints: { detail: 'detailed' } }));
+    const { out, feed } = make(applySettingsPatch(defaultSettings(), { hints: { detail: 'detailed' }, gate: { enabled: false } }));
     for (let t = 0; t < 5; t++) feed(t, { enemies: [{ slot: 5, hero: 'axe', pos: { x: -3800, y: -3900 }, hpPercent: 30, barLevel: 6 }] });
     const pct = out.flatMap((o) => o.hints).find((h) => h.percent);
     expect(pct?.percent?.factors.length).toBeGreaterThan(0);
+  });
+
+  it('фильтр внимания: срочное — коротко (≤ 3 слов) с причиной; «Минимум» — без строки; «не нужно» убирает тип', () => {
+    const { svc, out, feed } = make(defaultSettings());
+    for (let t = 0; t < 5; t++) feed(t, danger(t));
+    const last = out[out.length - 1]!.hints;
+    const crit = last.find((h) => h.priority === 'critical')!;
+    expect(crit).toBeTruthy();
+    expect(crit.title.split(/\s+/).length).toBeLessThanOrEqual(3);
+    for (const h of last) expect(hudHintSchema.safeParse(h).success).toBe(true);
+    const r = svc.muteLast();
+    expect(r).not.toBeNull();
+    expect(out[out.length - 1]!.hints.some((h) => h.title === r!.short)).toBe(false);
+    expect(svc.gateDebug()!.muted).toContain(r!.type);
+    const min = make(applySettingsPatch(defaultSettings(), { hints: { detail: 'min' } }));
+    for (let t = 0; t < 5; t++) min.feed(t, danger(t));
+    for (const h of min.out.flatMap((o) => o.hints)) if (!h.review) expect(h.text).toBe('');
   });
 
   it('история: смерть с разбором, ошибки, итог матча — в одном файле матча', () => {

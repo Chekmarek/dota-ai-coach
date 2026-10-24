@@ -7,6 +7,7 @@ import { HudRecognition, RegionOverlay } from '../components/HudRecognition';
 import { LIVE_HINT, LivePill, isLive, startLive } from '../components/live';
 import { PreviewImage } from '../components/preview';
 import { HintsFeed, HintsToggles } from '../components/hints';
+import { GateDebugPanel, GateSettings } from '../components/gate';
 import { GameModeBadge, GsiCard } from '../components/gsi';
 import { engine } from '../hooks/useEngine';
 import { AskCoach } from '../components/ask';
@@ -97,6 +98,15 @@ export function LiveGame({ onNavigate }: PageProps) {
       {settings?.hints.enabled && settings.hints.inApp && (
         <Card title="Подсказки сейчас">
           <HintsFeed />
+        </Card>
+      )}
+
+      {settings?.hints.enabled && (
+        <Card title="Фильтр внимания">
+          <div className="form">
+            <GateSettings settings={settings} update={update} />
+          </div>
+          <GateDebugPanel />
         </Card>
       )}
 

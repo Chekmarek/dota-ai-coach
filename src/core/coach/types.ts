@@ -91,6 +91,11 @@ export interface HintDraft {
   zone?: HintZone;
   /** Ключ иконки: герой (hero:antimage), предмет (item:bkb) или способность */
   icon?: string | null;
+  /**
+   * Поля фильтра внимания (src/core/gate), если генератор задаёт их сам: short — ≤ 3 слов, voice — ≤ 5 слов,
+   * reason — один факт с числом. Нет — фильтр выводит их из подсказки (только из её текста и фактов)
+   */
+  gate?: { short?: string; voice?: string | null; reason?: string | null };
 }
 
 /** Подсказка в очереди */

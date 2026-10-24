@@ -88,6 +88,11 @@ export interface CoachUpdate {
   inFight: boolean;
   /** Время на правила этого тика, мс */
   rulesMs: number;
+  /**
+   * Все подсказки генераторов с прошлого тика — до очереди (правила, ошибки, разборы, совет ИИ): вход фильтра
+   * внимания (src/core/gate). Повторы ситуативных — каждый тик, как их выдают правила
+   */
+  offered: HintDraft[];
 }
 
 export interface CoachEngineOptions {
@@ -167,7 +172,11 @@ export class CoachEngine {
     if (this.journal.length > 1000) this.journal.splice(0, this.journal.length - 1000);
   }
 
+  /** Подсказки генераторов для фильтра внимания (с прошлого тика, включая совет ИИ между тиками) */
+  private offeredBuf: HintDraft[] = [];
+
   private pushDraft(d: HintDraft, ctx: RuleContext, out: Hint[]): Hint | null {
+    this.offeredBuf.push(d);
     const r = this.queue.push(d, { now: ctx.now, clock: ctx.v.clock.value, inFight: this.mem.inFight, settings: this.settings });
     if (r.status === 'shown' && r.hint) {
       out.push(r.hint);
@@ -333,7 +342,10 @@ export class CoachEngine {
     // Устаревшие: правило перестало подтверждать ситуативную подсказку (только пока идёт игра — на паузе правила молчат)
     const stale = v.inGame && !v.paused ? this.queue.expireStale(v.wallMs) : [];
     const expired = [...stale, ...this.queue.tick(v.wallMs)];
+    const offered = this.offeredBuf;
+    this.offeredBuf = [];
     return {
+      offered,
       wallMs: v.wallMs,
       visible: this.queue.visible(),
       shown,
@@ -502,6 +514,7 @@ export class CoachEngine {
       cooldownSec: 0,
       zone: 'decision',
     });
+    this.offeredBuf.push(d);
     const r = this.queue.push(d, { now: this.now(), clock, inFight: this.mem.inFight, settings: this.settings });
     // экран полон — совет ждёт места, пока не устарел (как одноразовые подсказки правил)
     if (r.status === 'dropped' && (r.reason === 'full' || r.reason === 'zone-full' || r.reason === 'rate') && !this.pending.some((p) => p.d.id === d.id)) this.pending.push({ d, until: this.now() + d.ttlMs });

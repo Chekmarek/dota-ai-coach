@@ -1,7 +1,8 @@
 // Движок подсказок в main (этап 4): снимок матча от окна движка + последнее чтение GSI → правила и слой ИИ
 // (src/core/coach) → подсказки в окно поверх игры и в интерфейс → «История советов».
 // Без Electron: зависимости передаются снаружи (проверяется unit-тестами).
-import { CoachAi, CoachEngine, MISTAKE_RU, defaultCoachSettings, toHudHint, type CoachData, type CoachSettings, type CoachUpdate } from '@core/coach/index.ts';
+import { CoachAi, CoachEngine, MISTAKE_RU, defaultCoachSettings, gateSignals, gateToHudHint, toHudHint, type CoachData, type CoachSettings, type CoachUpdate, type JournalEntry } from '@core/coach/index.ts';
+import { AttentionGate, fromGatePriority, type GateConfig, type GateDebug, type GateMemoryState, type GateVisible } from '@core/gate/index.ts';
 import type { AiProvider } from '@core/ai/provider.ts';
 import type { Settings } from '@shared/schemas/settings';
 import type { HudHint, ModeBanner } from '@shared/types/hud';
@@ -63,6 +64,8 @@ export interface CoachDeps {
   onSound?: (cue: SoundCueId, atMs: number) => void;
   /** Отметки «плохой совет» (горячая клавиша); нет — отметки не сохраняются */
   badAdvice?: { readonly sessionId: string; save(r: BadAdviceRecord): void };
+  /** Память фильтра внимания между матчами («не нужно», метрики); нет — только на время запуска */
+  gateStore?: { load(): GateMemoryState | null; save(s: GateMemoryState): void };
   appVersion?: string | null;
   /** Только для экзамена (docs/EXAM.md): другая модель опасности; null — без неё (прежние правила) */
   dangerModel?: DangerModel | null;
@@ -74,6 +77,14 @@ export function coachSettings(s: Settings): CoachSettings {
   const d = defaultCoachSettings();
   return { ...d, detail: s.hints.detail, categories: { ...s.hints.categories }, aiLive: s.hints.ai, gameMode: s.hints.gameMode, position: s.hints.position };
 }
+
+/** Настройки фильтра внимания из настроек приложения */
+export function gateConfig(s: Settings): Partial<GateConfig> {
+  return { budgetMs: s.gate.budgetSec * 1000, minConfidence: s.gate.minConfidence };
+}
+
+/** Матчапы по кнопке — запрос пользователя, мимо фильтра: столько на экране */
+const MATCHUPS_ON_DEMAND_MS = 12_000;
 
 const safeId = (s: string) => s.replace(/[^0-9A-Za-z_-]/g, '-').slice(0, 80);
 
@@ -101,9 +112,19 @@ export class CoachService {
   private shownHints: { at: number; hint: HudHint }[] = [];
   private onScreen: HudHint[] = [];
   private readonly sound = new SoundDirector();
+  /** Фильтр внимания (src/core/gate): создаётся вместе с движком */
+  private gate: AttentionGate | null = null;
+  /** Показаны фильтром на этом тике (для звука) и ещё не записанные в историю */
+  private gateShown: GateVisible[] = [];
+  private gateEntries: JournalEntry[] = [];
+  private matchupsUntil = 0;
 
   constructor(private readonly deps: CoachDeps) {
     this.now = deps.now ?? (() => Date.now());
+  }
+
+  private gateOn(s: Settings = this.deps.settings.get()): boolean {
+    return s.gate.enabled && this.gate !== null;
   }
 
   private ensure(): CoachEngine | null {
@@ -134,6 +155,14 @@ export class CoachService {
     };
     const ai = new CoachAi({ provider: () => this.deps.aiProvider(), now: this.now });
     this.engine = new CoachEngine({ data, ai, now: this.now, settings: coachSettings(this.deps.settings.get()), onAsync: () => this.publish() });
+    const look = this.engine.look;
+    let memory: GateMemoryState | null = null;
+    try {
+      memory = this.deps.gateStore?.load() ?? null;
+    } catch (err) {
+      this.deps.log?.('coach фильтр: память не прочитана', String(err).slice(0, 200));
+    }
+    this.gate = new AttentionGate(gateConfig(this.deps.settings.get()), memory, { item: (k) => look.itemName(k), hero: (k) => look.heroName(k) });
     this.deps.log?.('coach: движок подсказок готов', { patch: data.patch, stats: data.stats ? data.stats.heroes.length : 0, ranked: data.statsRanked ? data.statsRanked.heroes.length : 0 });
     return this.engine;
   }
@@ -158,6 +187,7 @@ export class CoachService {
     if (!e) return null;
     e.setSettings(coachSettings(s));
     const u = e.tick(input.state, input.gsi, input.gsiWallMs);
+    this.runGate(e, u, input, s);
     this.inputs++;
     if (this.inputs === 1) this.deps.log?.('coach первый снимок матча', { gsi: input.gsi !== null, screen: input.state.sources.screen, heroKey: input.gsi?.hero.key ?? null });
     if (e.inGame !== this.loggedInMatch) {
@@ -185,6 +215,52 @@ export class CoachService {
     return u;
   }
 
+  /** Фильтр внимания: все подсказки генераторов за тик → что показать сейчас; сбой фильтра не ломает подсказки */
+  private runGate(e: CoachEngine, u: CoachUpdate, input: CoachInput, s: Settings): void {
+    this.gateShown = [];
+    const g = this.gate;
+    const view = e.currentView;
+    if (!g || !s.gate.enabled || !view) return;
+    try {
+      g.configure(gateConfig(s));
+      const now = this.now();
+      const r = g.tick({ signals: gateSignals(view, e.mem, input.gsi, now), offered: u.offered, categories: s.hints.categories });
+      this.gateShown = r.shown;
+      for (const v of r.shown) this.gateEntries.push({ wallMs: now, clock: view.clock.value, kind: 'hint', id: v.hint.id, text: v.hint.reason ? `${v.hint.short} · ${v.hint.reason}` : v.hint.short, source: v.hint.type === 'ai.advice' ? 'ai' : 'template' });
+      if (this.gateEntries.length > 200) this.gateEntries.splice(0, this.gateEntries.length - 200);
+    } catch (err) {
+      this.deps.log?.('coach фильтр: ошибка', String((err as Error)?.stack ?? err).slice(0, 400));
+    }
+  }
+
+  /**
+   * «Не нужно» (горячая клавиша): тип последней показанной подсказки молчит до конца матча; после трёх матчей —
+   * понижается до «к сведению». null — фильтр выключен или нечего отключать.
+   */
+  muteLast(): { type: string; short: string; demoted: boolean } | null {
+    if (!this.gate || !this.gateOn()) return null;
+    const r = this.gate.mute(this.now());
+    if (!r) return null;
+    this.deps.log?.('coach фильтр: не нужно', r);
+    this.saveGate();
+    this.publish(true);
+    return r;
+  }
+
+  /** Сводка фильтра для панели отладки на «Живой игре»; null — фильтра нет */
+  gateDebug(): GateDebug | null {
+    return this.gate ? this.gate.debug(this.gateOn()) : null;
+  }
+
+  private saveGate(): void {
+    if (!this.gate || !this.deps.gateStore) return;
+    try {
+      this.deps.gateStore.save(this.gate.memory);
+    } catch (err) {
+      this.deps.log?.('coach фильтр: память не сохранена', String(err).slice(0, 200));
+    }
+  }
+
   /** Прогнозы коуча по последнему снимку: риск смерти и исход драки рядом (экзамен, docs/EXAM.md) */
   forecast(): ReturnType<CoachEngine['forecast']> | null {
     return this.engine?.forecast() ?? null;
@@ -198,6 +274,7 @@ export class CoachService {
   /** Матчапы против всех известных врагов (кнопка в интерфейсе) */
   showMatchups(): void {
     this.engine?.showMatchups();
+    this.matchupsUntil = this.now() + MATCHUPS_ON_DEMAND_MS;
     this.publish();
   }
 
@@ -211,11 +288,16 @@ export class CoachService {
     const e = this.engine;
     const s = this.deps.settings.get();
     if (!e || !s.hints.enabled) return this.emit([], false);
-    const reviews = { death: e.deathReviewNow, match: e.matchReviewNow };
-    const hints = e.queue
-      .visible()
-      .filter((h) => s.hints.categories[h.category])
-      .map((h) => toHudHint(h, s.hints.detail, reviews));
+    const reviews = { death: e.deathReviewNow, match: e.matchReviewNow, deferred: this.gate?.deferredForReview() ?? [] };
+    const queued = e.queue.visible().filter((h) => s.hints.categories[h.category]);
+    // С фильтром: разборы — из очереди движка (момент спокойный по определению), матчапы по кнопке — пока свежие,
+    // остальное — только то, что пропустил фильтр
+    const hints = this.gateOn(s)
+      ? [
+          ...queued.filter((h) => h.category === 'review' || (h.ruleId === 'fight.matchup' && this.now() < this.matchupsUntil)).map((h) => toHudHint(h, s.hints.detail, reviews)),
+          ...this.gate!.visible().map((v) => gateToHudHint(v, s.hints.detail)),
+        ]
+      : queued.map((h) => toHudHint(h, s.hints.detail, reviews));
     const key = JSON.stringify(hints.map((h) => [h.seq, h.title, h.text, h.percent?.value, h.review?.aiText])) + e.inGame;
     if (!force && key === this.lastHintsKey) return;
     this.lastHintsKey = key;
@@ -235,9 +317,16 @@ export class CoachService {
     if (!this.deps.onSound) return;
     try {
       const enabled = s.sound.enabled ? enabledCues(s.sound.cues) : new Set<SoundCueId>();
+      // С фильтром звучит только то, что он показал (и разборы из очереди движка)
+      const shown = this.gateOn(s)
+        ? [
+            ...u.shown.filter((h) => h.category === 'review' && s.hints.categories.review),
+            ...this.gateShown.map((v) => ({ id: v.hint.id, ruleId: v.hint.type, category: v.hint.category, priority: fromGatePriority(v.hint.priority), icon: v.hint.icon })),
+          ]
+        : u.shown.filter((h) => s.hints.categories[h.category]);
       const cue = this.sound.tick({
         nowMs: this.now(),
-        shown: u.shown.filter((h) => s.hints.categories[h.category]),
+        shown,
         ult: ultStateOf(e.currentView),
         inFight: e.mem.inFight,
         inGame: e.inGame,
@@ -361,7 +450,11 @@ export class CoachService {
     if (mode.mode !== 'unknown' || !m.gameMode) m.gameMode = mode;
     // новые записи журнала
     const fresh = e.journalTotal - this.seenJournal;
-    if (fresh > 0) m.entries.push(...e.journal.slice(-Math.min(fresh, e.journal.length)));
+    // С фильтром в историю идут подсказки, которые игрок действительно видел (фильтр), а не вся очередь движка
+    const gated = this.gateOn();
+    if (fresh > 0) m.entries.push(...e.journal.slice(-Math.min(fresh, e.journal.length)).filter((x) => !gated || x.kind !== 'hint' || x.id.startsWith('review.')));
+    if (gated) m.entries.push(...this.gateEntries);
+    this.gateEntries = [];
     this.seenJournal = e.journalTotal;
     if (m.entries.length > 1500) m.entries.splice(0, m.entries.length - 1500);
     m.mistakes = e.mistakes.list.map((x) => ({ type: x.type, titleRu: MISTAKE_RU[x.type], clock: x.clock, text: x.text, instead: x.instead, aiText: x.aiText ?? null }));
@@ -387,11 +480,13 @@ export class CoachService {
     if (u.matchReview || late || now - this.lastSaveMs >= HISTORY_SAVE_MS) {
       this.lastSaveMs = now;
       this.deps.history.save(m);
+      this.saveGate();
     }
   }
 
-  /** Выход из приложения: сохранить идущий матч */
+  /** Выход из приложения: сохранить идущий матч и память фильтра */
   flush(): void {
     if (this.match) this.deps.history.save(this.match);
+    this.saveGate();
   }
 }

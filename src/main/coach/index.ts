@@ -16,6 +16,7 @@ import { HistoryStore } from './history';
 import { DraftService } from './draft';
 import { draftRequestSchema } from '@shared/types/draft';
 import { BadAdviceStore, sessionIdOf } from './bad-advice-store';
+import { GateStore } from './gate-store';
 
 /** Сколько на экране подтверждение «Отмечено: плохой совет» */
 const BAD_ADVICE_ACK_MS = 2500;
@@ -51,14 +52,20 @@ export function setupCoach(deps: {
     if (ui && !ui.isDestroyed()) ui.webContents.send(IPC.coachState, msg);
   };
   const badAdvice = new BadAdviceStore(deps.dataDir, sessionIdOf(Date.now()));
-  let ack: { until: number; seq: number; timer: ReturnType<typeof setTimeout> | null } | null = null;
+  let ack: { until: number; seq: number; title: string; text: string; timer: ReturnType<typeof setTimeout> | null } | null = null;
+  /** Короткое подтверждение поверх игры (отметка «плохой совет», «не нужно») */
+  const showAck = (title: string, text: string) => {
+    if (ack?.timer) clearTimeout(ack.timer);
+    ack = { until: Date.now() + BAD_ADVICE_ACK_MS, seq: ++ackSeq, title, text, timer: setTimeout(() => ((ack = null), pushHud()), BAD_ADVICE_ACK_MS) };
+    pushHud();
+  };
   /** Номера карточек-подтверждений — вне номеров подсказок движка (окно поверх игры различает карточки по seq) */
   let ackSeq = 1e12;
   /** Окно поверх игры: подсказки движка и, пока свежее, подтверждение отметки */
   const pushHud = () => {
     const extra: HudHint[] =
       ack && Date.now() < ack.until
-        ? [{ seq: ack.seq, zone: 'review', priority: 'info', category: 'review', title: 'Отмечено: плохой совет', text: 'Сохранено для разбора («История советов»)', percent: null, icon: null, source: 'template', ttlMs: BAD_ADVICE_ACK_MS, review: null }]
+        ? [{ seq: ack.seq, zone: 'review', priority: 'info', category: 'review', title: ack.title, text: ack.text, percent: null, icon: null, source: 'template', ttlMs: BAD_ADVICE_ACK_MS, review: null }]
         : [];
     setHudHints([...lastHints.hints, ...extra], lastHints.inMatch);
   };
@@ -75,6 +82,7 @@ export function setupCoach(deps: {
     aiProvider: deps.aiProvider,
     history,
     badAdvice,
+    gateStore: new GateStore(deps.dataDir),
     appVersion: app.getVersion(),
     log: liveLog,
     onHints: (hints: HudHint[], inMatch: boolean) => {
@@ -154,9 +162,7 @@ export function setupCoach(deps: {
   const onBadAdvice = () => {
     const r = service.markBadAdvice();
     if (!r) return;
-    if (ack?.timer) clearTimeout(ack.timer);
-    ack = { until: Date.now() + BAD_ADVICE_ACK_MS, seq: ++ackSeq, timer: setTimeout(() => ((ack = null), pushHud()), BAD_ADVICE_ACK_MS) };
-    pushHud();
+    showAck('Отмечено: плохой совет', 'Сохранено для разбора («История советов»)');
     const ui = deps.getUi();
     if (ui && !ui.isDestroyed()) ui.webContents.send(IPC.historyChanged);
   };
@@ -173,8 +179,26 @@ export function setupCoach(deps: {
       liveLog('coach плохой совет: клавиша не принята', key, String(err));
     }
   };
+  // «Не нужно» (фильтр внимания): тип последней подсказки молчит до конца матча; сочетание, занятое другой клавишей
+  // коуча, не занимается
+  let muteKey = '';
+  const onMute = () => {
+    const r = service.muteLast();
+    if (r) showAck(`Не нужно: ${r.short}`, r.demoted ? 'Больше не срочно — отключали в 3 матчах' : 'До конца матча не покажу');
+  };
+  const bindMuteKey = () => {
+    const key = deps.settings.get().gate.muteShortcut;
+    if (key && (key === boundKey || key === soundKey)) {
+      if (muteKey) globalShortcut.unregister(muteKey);
+      muteKey = '';
+      return liveLog('coach не нужно: сочетание уже занято другой клавишей коуча — не занято', key);
+    }
+    muteKey = bindShortcut(muteKey, key, onMute, 'не нужно');
+  };
   bindKey();
   bindSoundKey();
+  bindMuteKey();
+  handle(IPC.gateDebug, () => ({ debug: service.gateDebug(), shortcut: { key: deps.settings.get().gate.muteShortcut, bound: muteKey !== '' && muteKey === deps.settings.get().gate.muteShortcut } }));
   handle(IPC.badAdviceShortcutStatus, () => ({ key: deps.settings.get().hints.badAdviceShortcut, bound: boundKey !== '' && boundKey === deps.settings.get().hints.badAdviceShortcut }));
 
   return {
@@ -182,8 +206,11 @@ export function setupCoach(deps: {
       service.onSettingsChanged();
       bindKey();
       bindSoundKey();
+      bindMuteKey();
     },
     dispose: () => {
+      if (muteKey) globalShortcut.unregister(muteKey);
+      muteKey = '';
       if (boundKey) globalShortcut.unregister(boundKey);
       boundKey = '';
       if (soundKey) globalShortcut.unregister(soundKey);

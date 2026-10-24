@@ -46,6 +46,9 @@ export function isSafeBadAdviceShortcut(key: string): boolean {
 /** Горячая клавиша «звук вкл/выкл» по умолчанию: в раскладке Доты по умолчанию Ctrl+Alt+буква не занято */
 export const SOUND_SHORTCUT_DEFAULT = 'Ctrl+Alt+S';
 
+/** Горячая клавиша «не нужно» (фильтр внимания): в раскладке Доты по умолчанию Ctrl+Alt+буква не занято */
+export const GATE_MUTE_SHORTCUT_DEFAULT = 'Ctrl+Alt+N';
+
 /** Нажатое сочетание → строка для Electron (Ctrl+Shift+F8); null — одни модификаторы или неподходящая клавиша */
 export function acceleratorOf(e: { ctrlKey: boolean; altKey: boolean; shiftKey: boolean; code: string }): string | null {
   const m = /^(?:Key([A-Z])|Digit([0-9])|(F(?:[1-9]|1[0-2])))$/.exec(e.code);
@@ -82,6 +85,8 @@ const DEFAULTS = {
   gsi: { port: GSI_DEFAULT_PORT, token: '', record: true, dotaDir: null as string | null },
   // Звуковые сигналы (0.17.x): тихо по умолчанию; в старых settings.json раздела нет — значения отсюда
   sound: { enabled: true, volume: 0.3, cues: Object.fromEntries(SOUND_CUE_IDS.map((c) => [c, true])) as Record<SoundCueId, boolean>, shortcut: SOUND_SHORTCUT_DEFAULT as string },
+  // Фильтр внимания (docs/ATTENTION_GATE.md): меньше подсказок и вовремя; в старых settings.json раздела нет — значения отсюда
+  gate: { enabled: true, budgetSec: 50, minConfidence: 0.6, muteShortcut: GATE_MUTE_SHORTCUT_DEFAULT as string },
   // Только для разработчика (DOTACOACH_DEV=1): набор кадров для проверки зрения (docs/VISION_DATASET.md)
   dev: { datasetRecord: false, datasetEveryN: 10 },
 };
@@ -240,6 +245,16 @@ const fields = {
     /** Горячая клавиша «звук вкл/выкл» (только безопасные сочетания); '' — выключена */
     shortcut: z.union([z.literal(''), z.string().max(40).refine(isSafeBadAdviceShortcut)]),
   },
+  gate: {
+    /** Фильтр внимания включён: подсказки идут через бюджет, паузу в драке и очередь до спокойного момента */
+    enabled: z.boolean(),
+    /** Не больше одной несрочной подсказки за столько секунд */
+    budgetSec: z.number().int().min(20).max(300),
+    /** Ниже этой уверенности подсказка не показывается в игре (уходит в разбор матча) */
+    minConfidence: z.number().min(0.3).max(0.95),
+    /** Горячая клавиша «не нужно» (только безопасные сочетания); '' — выключена */
+    muteShortcut: z.union([z.literal(''), z.string().max(40).refine(isSafeBadAdviceShortcut)]),
+  },
   dev: {
     /** Сохранять кадры живого захвата + GSI наблюдателя в <папка данных>/vision-dataset. Работает только при DOTACOACH_DEV=1 */
     datasetRecord: z.boolean(),
@@ -282,6 +297,7 @@ export const settingsSchema = z.object({
       shortcut: fields.sound.shortcut.catch(DEFAULTS.sound.shortcut),
     })
     .catch(() => structuredClone(DEFAULTS.sound)),
+  gate: tolerant('gate'),
   dev: tolerant('dev'),
   ai: aiTolerant,
 });
@@ -305,6 +321,7 @@ export const settingsPatchSchema = z
     // token — только main-процесс (SettingsStore.setGsiToken), dotaDir — через диалог выбора папки
     gsi: z.object({ port: fields.gsi.port, record: fields.gsi.record }).partial().strict().optional(),
     sound: z.object({ ...fields.sound, cues: fields.sound.cues.partial().strict() }).partial().strict().optional(),
+    gate: z.object(fields.gate).partial().strict().optional(),
     dev: z.object(fields.dev).partial().strict().optional(),
     // gigachat из интерфейса не выбирается, пока он недоступен
     ai: z
@@ -334,6 +351,7 @@ export function applySettingsPatch(current: Settings, patch: SettingsPatch): Set
     hud: { ...current.hud, ...patch.hud },
     gsi: { ...current.gsi, ...patch.gsi },
     sound: { ...current.sound, ...patch.sound, cues: { ...current.sound.cues, ...patch.sound?.cues } },
+    gate: { ...current.gate, ...patch.gate },
     dev: { ...current.dev, ...patch.dev },
     ai: {
       ...current.ai,
