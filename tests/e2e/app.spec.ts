@@ -113,6 +113,7 @@ test('безопасность: в интерфейсе нет доступа к
       'downloadLocalAi',
       'draftLive',
       'draftSuggest',
+      'gateDebug',
       'getAiState',
       'getAppInfo',
       'getGsiSessionMatch',
