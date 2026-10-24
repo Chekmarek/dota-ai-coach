@@ -50,12 +50,13 @@ function deathPanel(r: DeathReview): NonNullable<HudHint['review']> {
 }
 
 type FocusBlock = NonNullable<NonNullable<HudHint['review']>['focus']>;
+type XpBlock = NonNullable<NonNullable<HudHint['review']>['xp']>;
 
-function matchPanel(r: MatchReview, deferred: readonly { short: string; count: number }[] = [], focus: FocusBlock | null = null, focusOnly = false): NonNullable<HudHint['review']> {
-  // Первые 10 с после матча — только итог фокуса (крупно), потом обычный разбор под ним
-  if (focus && focusOnly) {
+function matchPanel(r: MatchReview, deferred: readonly { short: string; count: number }[] = [], focus: FocusBlock | null = null, focusOnly = false, xp: XpBlock | null = null): NonNullable<HudHint['review']> {
+  // Первые 10 с после матча — только итог фокуса (крупно) и опыт, потом обычный разбор под ними
+  if ((focus || xp) && focusOnly) {
     const head = r.result === 'win' ? 'Победа' : r.result === 'loss' ? 'Поражение' : 'Матч окончен';
-    return { kind: 'match', heading: cut(head, 80), why: [], tips: [], footer: null, stats: [], aiText: null, focus, focusOnly: true };
+    return { kind: 'match', heading: cut(head, 80), why: [], tips: [], footer: null, stats: [], aiText: null, focus, focusOnly: true, xp };
   }
   const head = [r.result === 'win' ? 'Победа' : r.result === 'loss' ? 'Поражение' : 'Матч окончен', r.durationSec !== null ? mmss(r.durationSec) : null, r.heroName].filter(Boolean).join(' · ');
   // Советы с низкой уверенностью в игре не показывались (фильтр внимания) — здесь, одной строкой
@@ -68,19 +69,19 @@ function matchPanel(r: MatchReview, deferred: readonly { short: string; count: n
     footer: r.topMistakes.length ? cut(`Ошибки: ${r.topMistakes.map((m) => (m.clock !== null ? `${mmss(m.clock)} ${m.text}` : m.text)).join('; ')}`, 200) : null,
     stats: r.stats.slice(0, 10).map((s) => ({ label: cut(s.label, 60), value: s.value === null ? '—' : cut(String(s.value), 30), ref: s.ref === null ? null : cut(String(s.ref), 30), verdict: s.verdict })),
     aiText: r.aiText ? cut(r.aiText.replace(/\n+/g, ' '), 1500) : null,
-    ...(focus ? { focus, focusOnly: false } : {}),
+    ...(focus || xp ? { focus, focusOnly: false, xp } : {}),
   };
 }
 
 export function toHudHint(
   h: Hint,
   detail: DetailLevel,
-  reviews: { death: DeathReview | null; match: MatchReview | null; deferred?: readonly { short: string; count: number }[]; focus?: FocusBlock | null; focusOnly?: boolean },
+  reviews: { death: DeathReview | null; match: MatchReview | null; deferred?: readonly { short: string; count: number }[]; focus?: FocusBlock | null; focusOnly?: boolean; xp?: XpBlock | null },
 ): HudHint {
   const p = h.percent?.estimate;
   let review: HudHint['review'] = null;
   if (h.ruleId === 'review.death' && reviews.death) review = deathPanel(reviews.death);
-  if (h.ruleId === 'review.match' && reviews.match) review = matchPanel(reviews.match, reviews.deferred, reviews.focus ?? null, reviews.focusOnly ?? false);
+  if (h.ruleId === 'review.match' && reviews.match) review = matchPanel(reviews.match, reviews.deferred, reviews.focus ?? null, reviews.focusOnly ?? false, reviews.xp ?? null);
   return {
     seq: h.seq,
     zone: h.zone,

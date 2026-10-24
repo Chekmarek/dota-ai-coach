@@ -41,6 +41,8 @@ const CATEGORY_RANK: Record<HintCategory, number> = { review: 8, danger: 7, figh
 const ACT_ITEM_MS = 90_000;
 const ACT_RETREAT_MS = 10_000;
 const ACT_RETREAT_UNITS = 700;
+/** «Выжил после совета»: не умер столько мс после показа «Отходи» */
+export const SURVIVE_MS = 15_000;
 const ACT_RUNE_MS = 30_000;
 const ACT_RUNE_UNITS = 900;
 const ACT_GENERIC_MS = 30_000;
@@ -67,6 +69,19 @@ interface Pending {
   rune: boolean;
   generic: boolean;
   startBase: number | null;
+  short: string;
+  /** «Отходи»: игрок отошёл (решается за ACT_RETREAT_MS) */
+  followed?: true;
+}
+
+/** Итог показанной подсказки: выполнил ли игрок; у «Отходи» — ещё и выжил ли за 15 с */
+export interface HintOutcome {
+  shownMs: number;
+  type: string;
+  short: string;
+  result: 'acted' | 'ignored' | 'unclear';
+  /** null — не проверяется (не «Отходи») */
+  survived: boolean | null;
 }
 
 export interface GateTickInput {
@@ -311,6 +326,7 @@ export class AttentionGate {
       rune,
       generic: !itemKey && !retreat && !rune && h.repeating && (h.category === 'economy' || h.category === 'laning' || h.category === 'macro'),
       startBase: s.distToBase,
+      short: h.short,
     });
     return v;
   }
@@ -326,11 +342,15 @@ export class AttentionGate {
     for (const p of this.pending) {
       const age = now - p.shownMs;
       let out: keyof TypeMetrics | null = null;
+      let survived: boolean | null = null;
       if (p.itemKey) out = s.items?.includes(p.itemKey) ? 'acted' : age > ACT_ITEM_MS ? 'ignored' : null;
       else if (p.retreat) {
-        if (s.alive === false) out = 'ignored';
-        else if (p.startBase !== null && s.distToBase !== null && p.startBase - s.distToBase >= ACT_RETREAT_UNITS) out = 'acted';
-        else if (age > ACT_RETREAT_MS) out = 'ignored';
+        // «Отходи»: выполнил — за 10 с стал на 700 ед. ближе к базе; выжил — не умер за 15 с после показа
+        if (p.followed === undefined && age <= ACT_RETREAT_MS && s.alive !== false && p.startBase !== null && s.distToBase !== null && p.startBase - s.distToBase >= ACT_RETREAT_UNITS) p.followed = true;
+        if (s.alive === false || age >= SURVIVE_MS) {
+          survived = s.alive !== false;
+          out = p.followed ? 'acted' : 'ignored';
+        }
       } else if (p.rune) out = s.distToRune !== null && s.distToRune <= ACT_RUNE_UNITS ? 'acted' : age > ACT_RUNE_MS ? 'ignored' : null;
       else if (p.generic) {
         const o = this.offers.get(p.key);
@@ -338,11 +358,21 @@ export class AttentionGate {
         else if (!o || now - o.lastMs > this.cfg.staleMs) out = 'acted';
         else if (age > ACT_GENERIC_MS) out = 'ignored';
       } else out = 'unclear';
-      if (out) this.metric(p.type)[out]++;
-      else keep.push(p);
+      if (out) {
+        this.metric(p.type)[out]++;
+        this.outcomes.push({ shownMs: p.shownMs, type: p.type, short: p.short, result: out === 'acted' || out === 'ignored' ? out : 'unclear', survived });
+      } else keep.push(p);
     }
     this.pending = keep;
   }
+
+  /** Итоги показанных подсказок с прошлого вызова (для истории матча и статистики доверия) */
+  drainOutcomes(): HintOutcome[] {
+    const out = this.outcomes;
+    this.outcomes = [];
+    return out;
+  }
+  private outcomes: HintOutcome[] = [];
 
   /**
    * «Не нужно»: тип последней показанной подсказки молчит до конца матча, карточка уходит; в хранимое — матч.

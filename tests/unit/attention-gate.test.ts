@@ -187,11 +187,17 @@ describe('фильтр внимания: «не нужно»', () => {
 describe('фильтр внимания: метрики', () => {
   it('«Отходи» выполнено — герой стал ближе к базе; не выполнено — умер', () => {
     const g = new AttentionGate();
-    run(g, 0, 8000, (t) => (t < 3000 ? [retreat] : []), (t) => ({ distToBase: 6000 - t / 8 }));
+    run(g, 0, 16_000, (t) => (t < 3000 ? [retreat] : []), (t) => ({ distToBase: Math.max(4000, 6000 - t / 8) }));
     expect(g.memory.metrics['danger.model']).toMatchObject({ shown: 1, acted: 1 });
+    expect(g.drainOutcomes()).toEqual([{ shownMs: 0, type: 'danger.model', short: 'Отходи', result: 'acted', survived: true }]);
     const g2 = new AttentionGate();
     run(g2, 0, 4000, (t) => (t < 2000 ? [retreat] : []), (t) => ({ alive: t < 3000 }));
     expect(g2.memory.metrics['danger.model']).toMatchObject({ shown: 1, ignored: 1 });
+    expect(g2.drainOutcomes()[0]).toMatchObject({ result: 'ignored', survived: false });
+    // отошёл, но всё равно погиб за 15 с — выполнил, не выжил
+    const g3 = new AttentionGate();
+    run(g3, 0, 16_000, (t) => (t < 2000 ? [retreat] : []), (t) => ({ distToBase: Math.max(4000, 6000 - t / 4), alive: t < 12_000 }));
+    expect(g3.drainOutcomes()[0]).toMatchObject({ result: 'acted', survived: false });
   });
 
   it('совет купить — выполнен, когда предмет появился', () => {

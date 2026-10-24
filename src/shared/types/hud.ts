@@ -56,6 +56,18 @@ export const hudHintSchema = z
           .optional(),
         /** Первые 10 с — только итог фокуса, потом обычный разбор под ним */
         focusOnly: z.boolean().optional(),
+        /** Опыт за матч и за что (с 0.20; только за улучшение) */
+        xp: z
+          .object({
+            total: z.number().int().min(0).max(10_000),
+            items: z.array(z.object({ label: text(160), xp: z.number().int().min(0).max(1000) })).max(8),
+            /** Звание после матча: «Рыцарь ★3» */
+            level: text(40),
+            levelUp: z.boolean(),
+            achievements: z.array(text(60)).max(4),
+          })
+          .nullable()
+          .optional(),
       })
       .nullable(),
   })

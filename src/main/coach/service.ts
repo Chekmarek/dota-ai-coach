@@ -6,6 +6,7 @@ import { AttentionGate, fromGatePriority, type GateConfig, type GateDebug, type 
 import type { FocusNow } from '@core/focus/index.ts';
 import { FocusController, focusHistory } from './focus';
 import type { HudFocus } from '@shared/types/hud';
+import type { ProgressAward } from '@core/progress/index.ts';
 import type { AiProvider } from '@core/ai/provider.ts';
 import type { Settings } from '@shared/schemas/settings';
 import type { HudHint, ModeBanner } from '@shared/types/hud';
@@ -69,6 +70,10 @@ export interface CoachDeps {
   badAdvice?: { readonly sessionId: string; save(r: BadAdviceRecord): void };
   /** Счётчик фокуса матча поверх игры; null — убрать */
   onFocus?: (f: HudFocus | null) => void;
+  /** Прогресс игрока (опыт, достижения): законченный матч → награда; нет — без опыта */
+  progress?: { addMatch(m: HistoryMatch): ProgressAward | null };
+  /** Награда за матч (для экрана после матча в окне коуча) */
+  onAward?: (a: ProgressAward) => void;
   /** Память фильтра внимания между матчами («не нужно», метрики); нет — только на время запуска */
   gateStore?: { load(): GateMemoryState | null; save(s: GateMemoryState): void };
   appVersion?: string | null;
@@ -128,6 +133,10 @@ export class CoachService {
   /** Объявлен на этом тике (для звука) */
   private focusAnnounced: FocusNow | null = null;
   private lastFocusKey = '';
+  /** Итоги подсказок (выполнил ли совет, выжил ли), ещё не записанные в историю матча */
+  private outcomeBuf: NonNullable<HistoryMatch['hintOutcomes']> = [];
+  /** Награда за последний законченный матч (для разбора поверх игры) */
+  private award: { matchId: string; a: ProgressAward } | null = null;
 
   constructor(private readonly deps: CoachDeps) {
     this.now = deps.now ?? (() => Date.now());
@@ -238,6 +247,8 @@ export class CoachService {
       const now = this.now();
       const r = g.tick({ signals: gateSignals(view, e.mem, input.gsi, now), offered: u.offered, categories: s.hints.categories });
       this.gateShown = r.shown;
+      for (const o of g.drainOutcomes()) this.outcomeBuf.push({ clock: view.clock.value, type: o.type, short: o.short, result: o.result, survived: o.survived });
+      if (this.outcomeBuf.length > 500) this.outcomeBuf.splice(0, this.outcomeBuf.length - 500);
       for (const v of r.shown) this.gateEntries.push({ wallMs: now, clock: view.clock.value, kind: 'hint', id: v.hint.id, text: v.hint.reason ? `${v.hint.short} · ${v.hint.reason}` : v.hint.short, source: v.hint.type === 'ai.advice' ? 'ai' : 'template' });
       if (this.gateEntries.length > 200) this.gateEntries.splice(0, this.gateEntries.length - 200);
     } catch (err) {
@@ -344,7 +355,9 @@ export class CoachService {
     const s = this.deps.settings.get();
     if (!e || !s.hints.enabled) return this.emit([], false);
     const focusBlock = s.focus.enabled ? this.focus.reviewBlock(this.now()) : null;
-    const reviews = { death: e.deathReviewNow, match: e.matchReviewNow, deferred: this.gate?.deferredForReview() ?? [], focus: focusBlock?.focus ?? null, focusOnly: focusBlock?.only ?? false };
+    const aw = this.award && this.award.matchId === this.match?.id ? this.award.a : null;
+    const xp = aw ? { total: aw.award.total, items: aw.award.items.slice(0, 8).map((i) => ({ label: i.label.slice(0, 160), xp: i.xp })), level: aw.after.name.slice(0, 40), levelUp: aw.after.level > aw.before.level, achievements: aw.achievements.slice(0, 4).map((a) => a.title.slice(0, 60)) } : null;
+    const reviews = { death: e.deathReviewNow, match: e.matchReviewNow, deferred: this.gate?.deferredForReview() ?? [], focus: focusBlock?.focus ?? null, focusOnly: focusBlock?.only ?? false, xp };
     const queued = e.queue.visible().filter((h) => s.hints.categories[h.category]);
     // С фильтром: разборы — из очереди движка (момент спокойный по определению), матчапы по кнопке — пока свежие,
     // остальное — только то, что пропустил фильтр
@@ -357,7 +370,7 @@ export class CoachService {
     // Объявление фокуса матча — первым (пока свежее)
     const announce = s.focus.enabled ? this.focus.announceHint(this.now()) : null;
     if (announce) hints.unshift(s.hints.detail === 'min' ? { ...announce, text: '' } : announce);
-    const key = JSON.stringify(hints.map((h) => [h.seq, h.title, h.text, h.percent?.value, h.review?.aiText, h.review?.focusOnly])) + e.inGame;
+    const key = JSON.stringify(hints.map((h) => [h.seq, h.title, h.text, h.percent?.value, h.review?.aiText, h.review?.focusOnly, h.review?.xp?.total])) + e.inGame;
     if (!force && key === this.lastHintsKey) return;
     this.lastHintsKey = key;
     this.emit(hints, e.inGame);
@@ -516,6 +529,7 @@ export class CoachService {
     if (fresh > 0) m.entries.push(...e.journal.slice(-Math.min(fresh, e.journal.length)).filter((x) => !gated || x.kind !== 'hint' || x.id.startsWith('review.')));
     if (gated) m.entries.push(...this.gateEntries);
     this.gateEntries = [];
+    if (this.outcomeBuf.length) (m.hintOutcomes ??= []).push(...this.outcomeBuf.splice(0));
     this.seenJournal = e.journalTotal;
     if (m.entries.length > 1500) m.entries.splice(0, m.entries.length - 1500);
     m.mistakes = e.mistakes.list.map((x) => ({ type: x.type, titleRu: MISTAKE_RU[x.type], clock: x.clock, text: x.text, instead: x.instead, aiText: x.aiText ?? null }));
@@ -539,6 +553,19 @@ export class CoachService {
       m.result = r.result;
       m.durationSec = r.durationSec;
       m.matchReview = { result: r.result, why: r.why, goodPlays: r.goodPlays, goals: r.goals, stats: r.stats, timeline: r.timeline, aiText: r.aiText };
+      // Опыт и достижения — один раз за матч, только за улучшение (src/core/progress)
+      if (this.deps.progress && this.award?.matchId !== m.id) {
+        try {
+          const a = this.deps.progress.addMatch(m);
+          if (a) {
+            this.award = { matchId: m.id, a };
+            this.deps.log?.('coach прогресс', { xp: a.award.total, items: a.award.items.map((i) => i.label), level: a.after.name, achievements: a.achievements.map((x) => x.id) });
+            this.deps.onAward?.(a);
+          }
+        } catch (err) {
+          this.deps.log?.('coach прогресс: ошибка', String(err).slice(0, 300));
+        }
+      }
     }
     // ИИ дописал разбор матча после конца игры
     let late = false;

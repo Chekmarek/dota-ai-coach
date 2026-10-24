@@ -66,6 +66,10 @@ export const IPC = {
   soundShortcutStatus: 'sound:shortcut',
   /** Фильтр внимания: сводка для панели отладки и состояние клавиши «не нужно» */
   gateDebug: 'coach:gate-debug',
+  /** Страница «Прогресс»: звание, серия, достижения, тренды, доверие */
+  progressGet: 'progress:get',
+  /** событие main → UI: опыт за только что законченный матч */
+  progressAward: 'progress:award',
   /** Клавиша «следующий фокус матча»: какая и удалось ли её занять */
   focusShortcutStatus: 'coach:focus-shortcut',
   /** событие main → UI: настройки изменились не из интерфейса (горячая клавиша «звук вкл/выкл») */
@@ -209,6 +213,10 @@ export interface DotaCoachApi {
   gateDebug(): Promise<{ debug: import('../core/gate/types.ts').GateDebug | null; shortcut: { key: string; bound: boolean } }>;
   /** Клавиша «следующий фокус матча»: из настроек и занята ли */
   focusShortcutStatus(): Promise<{ key: string; bound: boolean }>;
+  /** Страница «Прогресс» */
+  getProgress(): Promise<import('../core/progress/index.ts').ProgressView>;
+  /** Опыт за только что законченный матч (событие); возвращает отписку */
+  onProgressAward(fn: (a: import('../core/progress/index.ts').ProgressAward) => void): () => void;
   /** Настройки изменились не из интерфейса (горячая клавиша) */
   onSettingsChanged(fn: (s: Settings) => void): () => void;
   /** Показать примеры подсказок поверх игры на 12 с */

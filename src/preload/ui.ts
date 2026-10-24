@@ -31,6 +31,13 @@ const api: DotaCoachApi = {
   // Фильтр внимания: панель отладки и клавиша «не нужно»
   gateDebug: () => ipcRenderer.invoke(IPC.gateDebug),
   focusShortcutStatus: () => ipcRenderer.invoke(IPC.focusShortcutStatus),
+  // Прогресс игрока
+  getProgress: () => ipcRenderer.invoke(IPC.progressGet),
+  onProgressAward: (fn) => {
+    const listener = (_e: Electron.IpcRendererEvent, a: Parameters<typeof fn>[0]) => fn(a);
+    ipcRenderer.on(IPC.progressAward, listener);
+    return () => ipcRenderer.removeListener(IPC.progressAward, listener);
+  },
   onSettingsChanged: (fn) => {
     const listener = (_e: Electron.IpcRendererEvent, s: Parameters<typeof fn>[0]) => fn(s);
     ipcRenderer.on(IPC.settingsChanged, listener);

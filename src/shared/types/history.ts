@@ -57,6 +57,8 @@ export interface HistoryMatch {
   focus?: HistoryFocus | null;
   /** Значения метрик всех фокусов за матч — из них «ваше среднее» в следующих матчах */
   focusMetrics?: Record<string, number>;
+  /** Итоги показанных подсказок: выполнил ли игрок, у «Отходи» — выжил ли (с 0.20; в старых файлах поля нет) */
+  hintOutcomes?: { clock: number | null; type: string; short: string; result: 'acted' | 'ignored' | 'unclear'; survived: boolean | null }[];
 }
 
 export interface HistoryFocus {

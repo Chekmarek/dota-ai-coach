@@ -8,6 +8,7 @@ import { GsiSidebarPill } from './components/gsi';
 import { Dashboard } from './pages/Dashboard';
 import { LiveGame } from './pages/LiveGame';
 import { History } from './pages/History';
+import { AwardToast, Progress } from './pages/Progress';
 import { MatchState } from './pages/MatchState';
 import { KnowledgeBase } from './pages/KnowledgeBase';
 import { UpdateNotice, UpdatesPage, UpdateToast } from './pages/Updates';
@@ -33,6 +34,7 @@ const PAGES: readonly { id: PageId; label: string; icon: IconName; group: string
   { id: 'draft', label: 'Драфт', icon: 'draft', group: 'Игра', Component: Draft },
   { id: 'hud', label: 'Подсказки в игре', icon: 'layers', group: 'Игра', Component: HudPreview },
   { id: 'replay', label: 'Разбор записи', icon: 'replay', group: 'Разбор', Component: ReplayMode },
+  { id: 'progress', label: 'Прогресс', icon: 'gauge', group: 'Разбор', Component: Progress },
   { id: 'history', label: 'История советов', icon: 'history', group: 'Разбор', Component: History },
   { id: 'ai', label: 'ИИ-помощник', icon: 'sparkles', group: 'Разбор', Component: AiAssistant },
   { id: 'kb', label: 'База знаний', icon: 'book', group: 'Разбор', Component: KnowledgeBase },
@@ -102,6 +104,7 @@ export function App() {
       </main>
       {page !== 'updates' && <UpdateToast onOpen={() => setPage('updates')} />}
       <ModeToast />
+      <AwardToast onOpen={() => setPage('progress')} />
     </div>
   );
 }

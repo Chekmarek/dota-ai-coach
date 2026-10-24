@@ -72,9 +72,26 @@ function focusBlock(f: NonNullable<NonNullable<HudHint['review']>['focus']>, big
   );
 }
 
+/** Опыт за матч: итог и строки «за что» — появляются по очереди (без движения при «Уменьшить анимации») */
+function xpBlock(x: NonNullable<NonNullable<HudHint['review']>['xp']>): HTMLElement {
+  const rows = x.items.map((i, n) => {
+    const li = h('li', null, h('span', null, i.label), h('b', null, `+${i.xp}`));
+    li.style.setProperty('--i', String(n));
+    return li;
+  });
+  return h(
+    'div',
+    'hud-xp',
+    h('div', 'hud-xp-top', h('b', 'hud-xp-total', x.total ? `+${x.total} опыта` : 'Опыта за матч нет'), h('span', 'hud-xp-level', x.levelUp ? `Новое звание: ${x.level}` : x.level)),
+    rows.length ? h('ul', 'hud-xp-items', ...rows) : h('div', 'hud-xp-none', 'Опыт — только за выполненный фокус, советы и исправленные ошибки'),
+    x.achievements.length ? h('div', 'hud-xp-ach', `Достижение: ${x.achievements.join(', ')}`) : null,
+  );
+}
+
 function reviewBody(r: NonNullable<HudHint['review']>): HTMLElement[] {
   const out: HTMLElement[] = [];
   if (r.focus) out.push(focusBlock(r.focus, r.focusOnly === true));
+  if (r.xp) out.push(xpBlock(r.xp));
   if (r.aiText) out.push(h('p', 'hud-review-ai', aiMark(), r.aiText));
   if (r.why.length) out.push(h('div', 'hud-review-sec', h('h4', null, r.kind === 'death' ? 'Почему' : 'Итог'), h('ul', null, ...r.why.map((w) => h('li', null, w)))));
   if (r.stats.length)

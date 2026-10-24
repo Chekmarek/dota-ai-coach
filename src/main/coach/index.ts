@@ -18,6 +18,7 @@ import { DraftService } from './draft';
 import { draftRequestSchema } from '@shared/types/draft';
 import { BadAdviceStore, sessionIdOf } from './bad-advice-store';
 import { GateStore } from './gate-store';
+import { ProgressStore } from './progress-store';
 
 /** Сколько на экране подтверждение «Отмечено: плохой совет» */
 const BAD_ADVICE_ACK_MS = 2500;
@@ -54,6 +55,14 @@ export function setupCoach(deps: {
   };
   const badAdvice = new BadAdviceStore(deps.dataDir, sessionIdOf(Date.now()));
   let focusTimer: ReturnType<typeof setTimeout> | null = null;
+  // Прогресс игрока: при первом запуске досчитать законченные матчи из «Истории советов»
+  const progress = new ProgressStore(deps.dataDir);
+  try {
+    const n = progress.backfill(history.recent(50));
+    if (n) liveLog('coach прогресс: досчитаны матчи из истории', n);
+  } catch (err) {
+    liveLog('coach прогресс: история не досчитана', String(err).slice(0, 300));
+  }
   let ack: { until: number; seq: number; title: string; text: string; timer: ReturnType<typeof setTimeout> | null } | null = null;
   /** Короткое подтверждение поверх игры (отметка «плохой совет», «не нужно») */
   const showAck = (title: string, text: string) => {
@@ -85,6 +94,11 @@ export function setupCoach(deps: {
     history,
     badAdvice,
     gateStore: new GateStore(deps.dataDir),
+    progress,
+    onAward: (a) => {
+      const ui = deps.getUi();
+      if (ui && !ui.isDestroyed()) ui.webContents.send(IPC.progressAward, a);
+    },
     appVersion: app.getVersion(),
     log: liveLog,
     onHints: (hints: HudHint[], inMatch: boolean) => {
@@ -130,6 +144,7 @@ export function setupCoach(deps: {
   handle(IPC.draftLive, () => service.liveHeroes());
   handle(IPC.historyList, () => history.list());
   handle(IPC.historyGet, (arg) => history.get(z.string().max(80).parse(arg)));
+  handle(IPC.progressGet, () => progress.view());
 
   // Горячие клавиши — глобальные (Electron), в игру ничего не вводится; занятое сочетание — запись в журнал
   const bindShortcut = (bound: string, key: string, fn: () => void, what: string): string => {
