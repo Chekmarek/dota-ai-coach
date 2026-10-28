@@ -1,7 +1,7 @@
 {
   "name": "dota-coach",
   "productName": "Dota AI Coach",
-  "version": "0.21.0",
+  "version": "0.22.0",
   "description": "Анализ записей Dota 2 по изображению и голосовые рекомендации",
   "author": "DotaCoach",
   "license": "UNLICENSED",
