@@ -43,6 +43,8 @@ export interface HudTheme {
     /** Индикатор режима «Турбо»: янтарный огонь (All Pick — цвет рун, неизвестный — info) */
     turbo: string;
     turboGlow: string;
+    /** Цвет знака коуча на плашке; нет — цвет акцента (rune) */
+    mark?: string;
   };
   font: {
     display: string;
