@@ -4,6 +4,7 @@ import type { HeroIdentity } from '../vision/hero-name.ts';
 import type { Farm, Kda, Pool } from '../vision/hud-fields.ts';
 import type { AbilityState } from '../vision/abilities.ts';
 import type { PlayersSnapshot } from './players.ts';
+import type { DraftSnapshot } from './draft.ts';
 import type { GameModeInfo } from '../gsi/mode.ts';
 
 export type { DayNight, HeroIdentity, Farm, Kda, Pool, AbilityState };
@@ -121,6 +122,8 @@ export interface MatchState {
    * предмет — подтверждён двумя чтениями). Нет поля — врагов не выделяли.
    */
   enemyItems?: EnemyItemsSeen[];
+  /** Составы команд с экрана выбора героев (src/core/match-state/draft.ts); нет поля — драфт не видели */
+  draft?: DraftSnapshot;
 }
 
 export interface EnemyItemsSeen {

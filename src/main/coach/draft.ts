@@ -107,6 +107,16 @@ export class DraftService {
 /** Герои текущего матча из последнего снимка движка подсказок */
 export function liveHeroes(v: CoachView | null, look: CoachLookup | null): DraftLiveHeroes {
   if (!v) return { inGame: false, me: null, allies: [], enemies: [] };
+  // До начала игры (и пока верхняя панель матча не прочитана) — составы с экрана выбора героев
+  const d = v.draft;
+  const fromMatch = v.allies.some((p) => p.hero.value) || v.enemies.some((p) => p.hero.value);
+  if (d && d.ourTeam && !fromMatch) {
+    const mine = d.ourTeam === 'radiant' ? d.radiant : d.dire;
+    const theirs = d.ourTeam === 'radiant' ? d.dire : d.radiant;
+    const mh = v.me.hero.value;
+    const me = mh ? (mh.key ?? (mh.id !== null ? (look?.heroById.get(mh.id)?.key ?? null) : null)) : null;
+    return { inGame: v.inGame, me: me && mine.includes(me) ? me : null, allies: mine.filter((k) => k !== me).slice(0, 4), enemies: theirs.slice(0, 5), fromDraft: true };
+  }
   const key = (p: { hero: { value: string | null } }) => p.hero.value;
   const mh = v.me.hero.value;
   const me = mh ? (mh.key ?? (mh.id !== null ? (look?.heroById.get(mh.id)?.key ?? null) : null)) : null;

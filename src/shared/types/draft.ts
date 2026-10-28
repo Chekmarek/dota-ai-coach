@@ -68,4 +68,6 @@ export interface DraftLiveHeroes {
   me: string | null;
   allies: string[];
   enemies: string[];
+  /** Герои взяты с экрана выбора героев (до начала игры) */
+  fromDraft?: boolean;
 }

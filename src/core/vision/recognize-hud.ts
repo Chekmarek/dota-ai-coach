@@ -1,4 +1,5 @@
 import type { TopBarReading } from './top-bar.ts';
+import type { DraftScreenReading } from './draft-screen.ts';
 import type { MinimapReading } from './minimap.ts';
 import type { HealthBarsReading } from './health-bars.ts';
 import type { Observed } from '../../shared/types/observation.ts';
@@ -42,6 +43,8 @@ export interface HudReading {
   heroNameCandidates: { name: string; cost: number }[];
   /** Верхняя панель (src/core/vision/top-bar.ts): добавляет движок; нет поля — не читалась */
   topBar?: TopBarReading;
+  /** Экран выбора героев (src/core/vision/draft-screen.ts): добавляет движок; нет поля — не читался */
+  draft?: DraftScreenReading;
   /** Мини-карта (src/core/vision/minimap.ts): добавляет движок; нет поля — не читалась */
   minimap?: MinimapReading;
   /** Полоски здоровья героев в 3D-виде (src/core/vision/health-bars.ts): добавляет движок; нет поля — не читались */

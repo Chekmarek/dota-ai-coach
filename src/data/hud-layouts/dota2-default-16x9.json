@@ -110,6 +110,14 @@
       "label": "Добивания / невсе"
     }
   },
+  "draftBar": {
+    "radiantX": 214,
+    "direX": 1102,
+    "step": 124.5,
+    "y": 10.5,
+    "w": 104.5,
+    "h": 37
+  },
   "topBar": {
     "radiantX": 545,
     "direX": 1063,

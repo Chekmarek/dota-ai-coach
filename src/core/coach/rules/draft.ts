@@ -1,12 +1,18 @@
 // Драфт в матче: угрозы вражеской команды и предметы против них, слабые матчапы, ожидаемые предметы врагов.
-// Герои врагов — из данных игры и экрана (верхняя панель); пока их меньше трёх — молчим.
+// Герои врагов — из данных игры и экрана (верхняя панель, до неё — экран выбора героев); пока их меньше трёх — молчим.
 import { KEY_ITEMS } from '../data.ts';
 import { ANSWER_ANY_HERO, counterItems, ENEMY_ITEM_ANSWERS, enemyThreats, itemRole, pctRu, worstMatchups } from '../../draft/index.ts';
 import { derivedFact, fact, kbFact } from '../view.ts';
 import { draft, knowledge, mmss, playing, plural, purchaseWait, type Rule, type RuleContext } from './context.ts';
 import type { HintDraft } from '../types.ts';
 
-const enemyKeys = (c: RuleContext): string[] => [...new Set(c.v.enemies.map((e) => e.hero.value).filter((k): k is string => !!k))];
+/** Враги: с верхней панели матча; пока её героев не видно — с экрана выбора героев (если своя команда известна) */
+const enemyKeys = (c: RuleContext): string[] => {
+  const fromBar = [...new Set(c.v.enemies.map((e) => e.hero.value).filter((k): k is string => !!k))];
+  const d = c.v.draft;
+  if (fromBar.length > 0 || !d?.ourTeam) return fromBar;
+  return [...(d.ourTeam === 'radiant' ? d.dire : d.radiant)];
+};
 
 /** Ключ моего героя: из данных игры, а с экрана — по id */
 export function myHeroKey(c: RuleContext): string | null {

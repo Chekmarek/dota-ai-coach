@@ -155,6 +155,22 @@ describe('подсказки драфта в матче', () => {
     expect(run(DRAFT_RULES, c).map((d) => d!.id)).not.toContain('draft.overview');
   });
 
+  it('враги с экрана выбора героев: обзор до того, как их видно на верхней панели', () => {
+    const s = sim({ wallMs: 1_000_000, clock: -80 });
+    s.state.draft = { radiant: ['antimage'], dire: ['riki', 'lion', 'phantom_assassin'], ourTeam: 'radiant', ourTeamSource: 'gsi', lastSeenWallMs: 900_000 };
+    const v = buildView(s.state, s.gsi, 1_000_000);
+    const mem = new CoachMemory();
+    const c: RuleContext = { v, mem, ev: mem.ingest(v, 1800), look: new CoachLookup(data), settings: defaultCoachSettings(), now: 1_000_000 };
+    const ov = run(DRAFT_RULES, c).find((d) => d!.id === 'draft.overview');
+    expect(ov?.detail.normal).toMatch(/Riki/);
+    // своя команда неизвестна — враги из драфта не берутся
+    s.state.draft = { ...s.state.draft, ourTeam: null, ourTeamSource: null };
+    const v2 = buildView(s.state, s.gsi, 1_000_000);
+    const m2 = new CoachMemory();
+    const c2: RuleContext = { v: v2, mem: m2, ev: m2.ingest(v2, 1800), look: new CoachLookup(data), settings: defaultCoachSettings(), now: 1_000_000 };
+    expect(run(DRAFT_RULES, c2).map((d) => d!.id)).not.toContain('draft.overview');
+  });
+
   it('пыль против Рики, когда хватает золота; без врагов — молчит', () => {
     const ids = run(DRAFT_RULES, ctx({ clock: 120, gold: 500, enemies })).map((d) => d!.id);
     expect(ids).toContain('draft.item:dust');

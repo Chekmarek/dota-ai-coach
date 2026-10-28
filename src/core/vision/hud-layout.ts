@@ -32,6 +32,8 @@ export interface HudLayout {
   regions: Record<string, HudRegionDef>;
   /** Верхняя панель с портретами героев (src/core/vision/top-bar.ts); нет — читатель честно «не поддерживается» */
   topBar?: TopBarLayout;
+  /** Большие портреты на экране выбора героев (src/core/vision/draft-screen.ts) */
+  draftBar?: DraftBarLayout;
   /** Мини-карта (src/core/vision/minimap.ts): калибровка по умолчанию, цвета значков игроков */
   minimap?: MinimapLayout;
   /** Полоски здоровья героев в 3D-виде (src/core/vision/health-bars.ts) */
@@ -52,6 +54,19 @@ export interface TopBarLayout {
   roi: [number, number, number, number];
   /** Таймер возрождения под портретом: x от левого края портрета, y от верха кадра, w, h */
   timer: [number, number, number, number];
+}
+
+/**
+ * Экран выбора героев, координаты в эталонном разрешении: левый край области сравнения первого портрета Сил Света
+ * и Сил Тьмы, шаг, верх и размер области (верхняя часть портрета без значков, как roi верхней панели).
+ */
+export interface DraftBarLayout {
+  radiantX: number;
+  direX: number;
+  step: number;
+  y: number;
+  w: number;
+  h: number;
 }
 
 /** Подходит ли раскладка к кадру. Другое соотношение сторон — HUD расположен иначе, гадать не будем. */

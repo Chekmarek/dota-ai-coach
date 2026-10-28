@@ -4,6 +4,7 @@ import type { MatchState, Tracked, Pool, MapPoint } from '../match-state/index.t
 import { mapZone, type MapZone } from '../match-state/map-zones.ts';
 import type { GsiReading, GsiBuilding, GsiEvent } from '../gsi/map.ts';
 import type { FactRef, FactSource } from './types.ts';
+import type { DraftSnapshot } from '../match-state/draft.ts';
 
 /** Значение с источником, возрастом и уверенностью */
 export interface F<T> {
@@ -130,6 +131,8 @@ export interface CoachView {
   events: GsiEvent[] | null;
   /** Предметы врагов, увиденные на их панели (игрок выделял героя): id героя, предмет, сколько секунд назад видели */
   enemyItems?: { heroId: number; key: string; ageSec: number }[];
+  /** Составы команд с экрана выбора героев; null — драфт не видели */
+  draft: DraftSnapshot | null;
 }
 
 /** Ниже этой уверенности полоска врага не считается (тени, крипы, обрезанные края) */
@@ -271,6 +274,7 @@ export function buildView(s: MatchState, gsi: GsiReading | null, gsiWallMs: numb
     },
     buildings: x?.buildings ?? null,
     events: x?.events ?? null,
+    draft: s.draft ?? null,
     enemyItems: (s.enemyItems ?? []).flatMap((e) => e.items.map((i) => ({ heroId: e.heroId, key: i.key, ageSec: Math.max(0, Math.round((s.wallMs - i.lastWallMs) / 1000)) }))),
   };
 }

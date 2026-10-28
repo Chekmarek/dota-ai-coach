@@ -11,6 +11,7 @@ import { ClockTracker } from './clock.ts';
 import { StableField, VISIBLE_MS, unknownTracked, type FieldChange } from './stable-field.ts';
 import { SourceEventGate } from './source-events.ts';
 import { PlayersTrack } from './players.ts';
+import { DraftTrack } from './draft.ts';
 import type {
   AbilityState,
   DayNight,
@@ -135,6 +136,8 @@ export class MatchStateModel {
   private hero = new HeroTrack();
   /** Союзники и враги по верхней панели */
   private players = new PlayersTrack();
+  /** Драфт с экрана выбора героев — вне clear(): начало игры сбрасывает модель, а драфт нужен как раз тогда */
+  private readonly draft = new DraftTrack();
   private events: MatchEvent[] = [];
   /** Предметы врагов с их панели: id героя → предмет → когда увиден (подтверждённые) и кандидаты на подтверждение */
   private enemyItems = new Map<number, { seen: Map<string, { firstWallMs: number; lastWallMs: number; clock: number | null }>; pending: Map<string, number> }>();
@@ -205,6 +208,8 @@ export class MatchStateModel {
 
     // 5. Верхняя панель: герои обеих команд, смерть и возрождение (время возрождения — от часов матча)
     if (reading.topBar) this.players.ingest(reading.topBar, this.clock.at(wallMs), wallMs);
+    // 5а. Экран выбора героев: составы команд до начала игры
+    if (reading.draft) this.draft.ingest(reading.draft, wallMs);
     // 6. Мини-карта: где герои и кто пропал
     if (reading.minimap) this.players.ingestMinimap(reading.minimap, wallMs);
     // 7. Полоски здоровья героев на экране (к игроку — только несомненная привязка по уровню)
@@ -232,6 +237,7 @@ export class MatchStateModel {
     if (reading.gameMode) this.gameMode = reading.gameMode;
     // Своя команда — для союзников и врагов на верхней панели (после возможного сброса матча)
     this.players.setOurTeam(reading.team);
+    this.draft.setOurTeam(reading.team);
     // Уровень своего героя — чтобы узнать его полоску здоровья на экране
     if (reading.slot !== null && reading.hero.level !== null) this.players.setLevel(reading.slot, reading.hero.level, wallMs);
     const sync = !this.gsiLive(wallMs);
@@ -395,6 +401,7 @@ export class MatchStateModel {
       slot,
       ...h.extra.get(slot)!.tracked(wallMs, TTL_MS.items),
     }));
+    const draft = this.draft.snapshot();
     return {
       wallMs,
       sources: {
@@ -424,6 +431,7 @@ export class MatchStateModel {
       },
       events: [...this.events],
       ...this.players.snapshot(wallMs),
+      ...(draft ? { draft } : {}),
       ...(this.enemyItems.size
         ? { enemyItems: [...this.enemyItems].map(([heroId, e]) => ({ heroId, items: [...e.seen].map(([key, s]) => ({ key, ...s })) })).filter((e) => e.items.length) }
         : {}),

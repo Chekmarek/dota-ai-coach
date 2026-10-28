@@ -38,6 +38,9 @@ export function Draft() {
   const [req, setReq] = useState<DraftRequest>({ allies: [], enemies: [], bans: [], position: null, me: null });
   const [res, setRes] = useState<DraftResult | null>(null);
   const [liveNote, setLiveNote] = useState<string | null>(null);
+  // Следить за экраном выбора героев: составы подставляются сами; ручная правка выключает слежение
+  const [follow, setFollow] = useState(true);
+  const [followNote, setFollowNote] = useState<string | null>(null);
   // Чья статистика: по режиму игры (Турбо — статистика Турбо) или выбранная вручную
   const [statsPick, setStatsPick] = useState<'auto' | 'normal' | 'turbo'>('auto');
   const gameTurbo = currentGameMode(useGsi(), Date.now()).mode === 'turbo';
@@ -59,9 +62,37 @@ export function Draft() {
     };
   }, [req, statsMode]);
 
-  const add = (side: Side, key: string) =>
+  useEffect(() => {
+    if (!follow) return;
+    let alive = true;
+    const poll = async () => {
+      const l = await window.dotacoach.draftLive();
+      if (!alive || !l.fromDraft) return;
+      setFollowNote(`С экрана выбора героев: союзников ${l.allies.length + (l.me ? 1 : 0)}, врагов ${l.enemies.length}${l.enemies.length ? '' : ' (их пики откроются на стадии планирования)'}.`);
+      setReq((r) => {
+        const next = { ...r, me: l.me ?? r.me, allies: l.allies.filter((k) => k !== (l.me ?? r.me)).slice(0, 4), enemies: l.enemies.slice(0, 5) };
+        return JSON.stringify(next) === JSON.stringify(r) ? r : next;
+      });
+    };
+    void poll();
+    const t = setInterval(() => void poll(), 2000);
+    return () => {
+      alive = false;
+      clearInterval(t);
+    };
+  }, [follow]);
+
+  const manual = () => {
+    if (follow) setFollow(false);
+  };
+  const add = (side: Side, key: string) => {
+    manual();
     setReq((r) => (r[side].length >= SIDE_LIMIT[side] || taken.has(key) ? r : { ...r, [side]: [...r[side], key] }));
-  const remove = (side: Side, key: string) => setReq((r) => ({ ...r, [side]: r[side].filter((k) => k !== key) }));
+  };
+  const remove = (side: Side, key: string) => {
+    manual();
+    setReq((r) => ({ ...r, [side]: r[side].filter((k) => k !== key) }));
+  };
 
   const fromMatch = async () => {
     const l = await window.dotacoach.draftLive();
@@ -104,12 +135,21 @@ export function Draft() {
             <button onClick={() => void fromMatch()} data-testid="draft-from-match" title="Герои из идущего матча (данные игры и верхняя панель)">
               Взять из матча
             </button>
-            <button onClick={() => setReq({ allies: [], enemies: [], bans: [], position: null, me: null })} data-testid="draft-clear">
+            <button onClick={() => {
+                manual();
+                setReq({ allies: [], enemies: [], bans: [], position: null, me: null });
+              }}
+              data-testid="draft-clear">
               Очистить
             </button>
           </>
         }
       >
+        <label className="row gap small" data-testid="draft-follow">
+          <input type="checkbox" checked={follow} onChange={(e) => setFollow(e.target.checked)} />
+          Следить за выбором героев в игре — союзники видны сразу, враги откроются на стадии планирования
+        </label>
+        {follow && followNote && <p className="muted small" data-testid="draft-follow-note">{followNote}</p>}
         {liveNote && <p className="muted small">{liveNote}</p>}
         <div className="draft-teams">
           {(['allies', 'enemies', 'bans'] as const).map((side) => (
@@ -132,7 +172,11 @@ export function Draft() {
         <div className="row gap">
           <span className="muted">Мой герой:</span>
           {req.me ? (
-            <button className="draft-chip draft-me" onClick={() => setReq((r) => ({ ...r, me: null }))} data-testid="draft-me">
+            <button className="draft-chip draft-me" onClick={() => {
+                manual();
+                setReq((r) => ({ ...r, me: null }));
+              }}
+              data-testid="draft-me">
               {name(req.me)}
               <Icon name="close" size={12} />
             </button>

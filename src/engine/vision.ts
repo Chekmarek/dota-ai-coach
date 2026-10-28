@@ -17,6 +17,7 @@ import { legacyGeometry, type AspectDef, type HudGeometry } from '@core/vision/h
 import aspectsJson from '../data/hud-layouts/aspects.json';
 import { readTopBar, type PortraitTemplates } from '@core/vision/top-bar.ts';
 import portraitsJson from '../data/hero-portraits.json';
+import { draftBarRect, readDraftScreen } from '@core/vision/draft-screen.ts';
 import { decodeMinimapBackground, minimapRect, readMinimap } from '@core/vision/minimap.ts';
 import { MinimapCalibrator } from '@core/vision/minimap-calibration.ts';
 import { MinimapTracker } from '@core/vision/minimap-track.ts';
@@ -80,6 +81,8 @@ export class VisionStage {
     // Верхняя панель (этап 1): герои обеих команд, смерть и таймер возрождения; время — в общем durationMs
     const t0 = performance.now();
     hud.topBar = readTopBar(access, layout, portraits, model);
+    // Экран выбора героев: читаем, только если верхняя панель матча не видна (в игре — лишняя работа и риск ошибки)
+    if (hud.topBar.slots.filter((s) => s.heroKey !== null).length < 3) hud.draft = readDraftScreen(access, layout, portraits);
     // Мини-карта (этап 2): самокалибровка по своему герою (если GSI прислал координаты), затем значки героев
     const now = performance.now();
     if (this.calibrator && own && now - this.lastCalibrationAt >= CALIBRATION_EVERY_MS) {
@@ -114,6 +117,8 @@ export class VisionStage {
       dayNightRect(geo),
       // верхняя панель с портретами — тоже в верхнюю полосу (иначе отдельная копия на каждый кадр); она и мини-карта — только 16:9
       ...(layout.topBar ? [topBarRect(layout.topBar, s, sy)] : []),
+      // полоса портретов экрана выбора героев — тоже в верхнюю полосу
+      ...(layout.draftBar ? [draftBarRect(layout, w, h)!] : []),
       // мини-карта по умолчанию — в нижнюю полосу (своя калибровка в другом месте даст отдельную копию)
       ...(layout.minimap ? [minimapRect(layout.minimap.default, layout.minimap.world, w, h)] : []),
     ];
