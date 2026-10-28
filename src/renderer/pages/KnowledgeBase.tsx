@@ -60,13 +60,13 @@ export function KnowledgeBase() {
           </div>
 
           <div className="row gap">
-            <button className={tab === 'heroes' ? 'primary' : ''} onClick={() => setTab('heroes')} data-testid="kb-tab-heroes">
+            <button className={tab === 'heroes' ? 'selected' : ''} aria-pressed={tab === 'heroes'} onClick={() => setTab('heroes')} data-testid="kb-tab-heroes">
               Герои ({kb.meta.counts.heroes})
             </button>
-            <button className={tab === 'items' ? 'primary' : ''} onClick={() => setTab('items')} data-testid="kb-tab-items">
+            <button className={tab === 'items' ? 'selected' : ''} aria-pressed={tab === 'items'} onClick={() => setTab('items')} data-testid="kb-tab-items">
               Предметы ({visibleItems.length})
             </button>
-            <button className={tab === 'mechanics' ? 'primary' : ''} onClick={() => setTab('mechanics')} data-testid="kb-tab-mechanics">
+            <button className={tab === 'mechanics' ? 'selected' : ''} aria-pressed={tab === 'mechanics'} onClick={() => setTab('mechanics')} data-testid="kb-tab-mechanics">
               Механика ({kb.mechanics.length})
             </button>
             {tab !== 'mechanics' && (

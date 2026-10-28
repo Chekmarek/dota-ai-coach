@@ -265,7 +265,7 @@ export function HudPreview() {
             Показать поверх игры
           </button>
           <button onClick={replay}>Проиграть появление</button>
-          <button className={editing ? 'primary' : ''} onClick={() => setEditing(!editing)} data-testid="hud-edit">
+          <button className={editing ? 'selected' : ''} aria-pressed={editing} onClick={() => setEditing(!editing)} data-testid="hud-edit">
             {editing ? 'Готово' : 'Передвинуть зоны'}
           </button>
           <button onClick={() => void update({ hud: { zones: null } })} disabled={!h.zones}>

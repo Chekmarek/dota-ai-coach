@@ -188,7 +188,7 @@ export function Draft() {
           <div className="row gap" data-testid="draft-position">
             <span className="muted">Позиция:</span>
             {[null, 1, 2, 3, 4, 5].map((p) => (
-              <button key={p ?? 0} className={req.position === p ? 'primary' : ''} onClick={() => setReq((r) => ({ ...r, position: p }))} title={p ? POS_RU[p - 1] : 'любая'}>
+              <button key={p ?? 0} className={req.position === p ? 'selected' : ''} aria-pressed={req.position === p} onClick={() => setReq((r) => ({ ...r, position: p }))} title={p ? POS_RU[p - 1] : 'любая'}>
                 {p ?? 'любая'}
               </button>
             ))}

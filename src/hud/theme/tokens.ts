@@ -47,6 +47,11 @@ export interface HudTheme {
   font: {
     display: string;
     body: string;
+    /** Заголовок плашки прописными с разрядкой (как названия способностей в подсказках Доты); по умолчанию — как есть */
+    titleCase?: 'none' | 'uppercase';
+    /** Разрядка заголовка, em */
+    titleTracking?: number;
+    titleWeight?: number;
   };
   /** Размеры в тысячных u */
   size: {
@@ -97,6 +102,9 @@ export function themeVars(t: HudTheme, unitPx: number, scale: number, opacity: n
   for (const [k, v] of Object.entries(t.color)) vars[`--hud-c-${k}`] = v;
   vars['--hud-font-display'] = t.font.display;
   vars['--hud-font-body'] = t.font.body;
+  vars['--hud-title-case'] = t.font.titleCase ?? 'none';
+  vars['--hud-title-tracking'] = `${t.font.titleTracking ?? 0.005}em`;
+  vars['--hud-title-weight'] = String(t.font.titleWeight ?? 600);
   for (const [k, v] of Object.entries(t.size)) vars[`--hud-s-${k}`] = s(v);
   vars['--hud-shadow-card'] = t.shadow.card;
   vars['--hud-glow-blur'] = s(t.shadow.glowBlur);

@@ -3,6 +3,12 @@
    красной кромкой и подложкой. Без орнаментов — подсказка читается за полсекунды и закрывает как можно меньше игры.
    Состояния: новая (въезд + вспышка кромки), актуальная, срочная, устаревает (последние 30 % срока — блекнет).
    Только CSS-переменные темы (--hud-*): цвета, шрифты, размеры, тени, длительности. */
+/* Ysabeau (OFL, src/renderer/fonts) — свободная замена шрифтов Доты: Office — текст и подписи, Ysabeau — крупные заголовки */
+@font-face { font-family: 'Ysabeau Office'; font-weight: 1 1000; font-display: swap; src: url('../renderer/fonts/ysabeau-office-cyrillic-wght.woff2') format('woff2'); unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
+@font-face { font-family: 'Ysabeau Office'; font-weight: 1 1000; font-display: swap; src: url('../renderer/fonts/ysabeau-office-latin-wght.woff2') format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: 'Ysabeau'; font-weight: 1 1000; font-display: swap; src: url('../renderer/fonts/ysabeau-cyrillic-wght.woff2') format('woff2'); unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
+@font-face { font-family: 'Ysabeau'; font-weight: 1 1000; font-display: swap; src: url('../renderer/fonts/ysabeau-latin-wght.woff2') format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+
 .hud-root {
   --hud-radius: calc(var(--hud-s-bevel) + 1px);
   position: absolute;
@@ -11,7 +17,7 @@
   pointer-events: none;
   font-family: var(--hud-font-body);
   color: var(--hud-c-text);
-  font-variant-numeric: tabular-nums;
+  font-variant-numeric: lining-nums tabular-nums;
   -webkit-font-smoothing: antialiased;
 }
 .hud-zone {
@@ -84,15 +90,17 @@
 .hud-gem { flex: none; width: var(--hud-s-gem); height: var(--hud-s-gem); color: var(--hud-c-rune); }
 .hud-sev { flex: none; margin-left: auto; width: var(--hud-s-icon); height: var(--hud-s-icon); color: var(--sev); }
 .hud-p-info .hud-sev { display: none; }
-.hud-tag { flex: none; margin-left: auto; padding: 1px calc(var(--hud-s-gap) * 0.7); border-radius: 3px; font-size: var(--hud-s-small); font-weight: 700; letter-spacing: 0.04em; color: #fff; background: var(--hud-c-critical); }
+.hud-tag { flex: none; margin-left: auto; padding: 1px calc(var(--hud-s-gap) * 0.7); border-radius: min(3px, var(--hud-radius)); font-size: var(--hud-s-small); font-weight: 700; letter-spacing: 0.06em; text-transform: var(--hud-title-case, none); color: #fff; background: var(--hud-c-critical); }
 .hud-tag + .hud-sev { margin-left: 0; }
 .hud-ai { flex: none; width: calc(var(--hud-s-small) * 0.95); height: calc(var(--hud-s-small) * 0.95); color: var(--hud-c-rune); }
 .hud-title {
   min-width: 0;
+  font-family: var(--hud-font-display);
   font-size: var(--hud-s-title);
-  font-weight: 600;
+  font-weight: var(--hud-title-weight, 600);
   line-height: 1.2;
-  letter-spacing: 0.005em;
+  letter-spacing: var(--hud-title-tracking, 0.005em);
+  text-transform: var(--hud-title-case, none);
   color: var(--hud-c-titleTop);
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
 }

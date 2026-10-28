@@ -2,7 +2,8 @@
 import { z } from 'zod';
 import { HUD_ZONE_IDS, zoneOverridesSchema } from '../../core/hud/layout.ts';
 
-export const HUD_THEME_IDS = ['runes', 'obsidian'] as const;
+// «runes» — тема «Дота» (по умолчанию с 0.22: прежний id, чтобы у всех после обновления включился новый вид)
+export const HUD_THEME_IDS = ['runes', 'teal', 'obsidian'] as const;
 export type HudThemeId = (typeof HUD_THEME_IDS)[number];
 
 const text = (n: number) => z.string().max(n);

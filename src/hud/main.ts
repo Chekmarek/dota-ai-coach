@@ -32,7 +32,8 @@ addEventListener('resize', () => view.configure(innerWidth, innerHeight, options
 
 const demo = new URLSearchParams(location.hash.slice(1));
 if (demo.has('demo')) {
-  const theme = demo.get('theme') === 'obsidian' ? 'obsidian' : 'runes';
+  const asked = demo.get('theme');
+  const theme = asked === 'obsidian' || asked === 'teal' ? asked : 'runes';
   const detail = (demo.get('detail') as 'min' | 'normal' | 'detailed' | null) ?? 'normal';
   options = { ...options, theme, reduceMotion: demo.has('still') };
   if (demo.get('bg') === 'schematic') document.body.prepend(schematic(DEFAULT_LAYOUT, innerWidth, innerHeight));
