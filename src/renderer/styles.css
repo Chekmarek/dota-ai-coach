@@ -1,161 +1,162 @@
-/* Окно коуча в духе интерфейса Dota 2: тёмный сланец с синевой и виньеткой, как меню игры; плоские панели
-   с волосяной рамкой и прямыми углами; заголовки прописными с разрядкой; золото Доты — выбор и фокус; зелёный
-   «ИГРАТЬ» — главное действие; красный Сил Тьмы — опасность и ошибки. Шрифт — Ysabeau (свободная замена шрифтов
-   Доты, src/renderer/fonts). Все цвета — токены ниже; навигация и элементы управления — обычные. */
-@font-face { font-family: 'Ysabeau Office'; font-weight: 1 1000; font-display: swap; src: url('./fonts/ysabeau-office-cyrillic-wght.woff2') format('woff2'); unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
-@font-face { font-family: 'Ysabeau Office'; font-weight: 1 1000; font-display: swap; src: url('./fonts/ysabeau-office-latin-wght.woff2') format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
-@font-face { font-family: 'Ysabeau'; font-weight: 1 1000; font-display: swap; src: url('./fonts/ysabeau-cyrillic-wght.woff2') format('woff2'); unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
-@font-face { font-family: 'Ysabeau'; font-weight: 1 1000; font-display: swap; src: url('./fonts/ysabeau-latin-wght.woff2') format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+/* Окно коуча по концепту владельца (2026-10-29, .impeccable/mocks/concept-user-20261029.png): тёплая почти чёрная
+   основа с красным отсветом, карточки со скруглением 12 px и тонкой тёплой рамкой, заголовки — кремовая антиква
+   (Charis SIL), текст и меню — Segoe UI; медь — кнопки, прогресс и фокус; красный — выбранный пункт меню и опасность;
+   зелёный — победа и «работает». Все цвета — токены ниже; навигация и элементы управления — обычные. */
+@font-face { font-family: 'Charis SIL'; font-weight: 400; font-display: swap; src: url('./fonts/charis-sil-cyrillic-400.woff2') format('woff2'); unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
+@font-face { font-family: 'Charis SIL'; font-weight: 400; font-display: swap; src: url('./fonts/charis-sil-latin-400.woff2') format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: 'Charis SIL'; font-weight: 700; font-display: swap; src: url('./fonts/charis-sil-cyrillic-700.woff2') format('woff2'); unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
+@font-face { font-family: 'Charis SIL'; font-weight: 700; font-display: swap; src: url('./fonts/charis-sil-latin-700.woff2') format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
 
 :root {
-  --bg: #0a0e13;
-  --panel: rgba(17, 23, 30, 0.88);
-  --panel-solid: #121820;
-  --panel-2: #19212b;
-  --panel-3: #222c38;
-  --line: rgba(255, 255, 255, 0.07);
-  --line-strong: #344150;
-  --text: #e7eaed;
-  --muted: #96a3b1;
-  --faint: #7f8c9b;
-  /* Золото Доты: выбранное, фокус, знак коуча */
-  --accent-rgb: 226 188 102;
+  --bg: #070506;
+  --panel: rgba(16, 12, 13, 0.9);
+  --panel-solid: #100c0d;
+  --panel-2: #171213;
+  --panel-3: #211919;
+  --line: rgba(255, 236, 225, 0.08);
+  --line-strong: #3a2d2c;
+  --text: #ece6e2;
+  --muted: #a59a95;
+  --faint: #8a7f7b;
+  --cream: #efe2d2;
+  /* Медь: кнопки, прогресс, фокус, выбранный переключатель */
+  --accent-rgb: 227 150 98;
   --accent: rgb(var(--accent-rgb));
-  --accent-2: #c9a04a;
-  --accent-ink: #1e1505;
-  --accent-soft: rgb(var(--accent-rgb) / 0.11);
-  /* Зелёный «ИГРАТЬ»: главное действие страницы */
-  --go-top: #5f9f3f;
-  --go-bottom: #3a6b27;
-  --go-edge: #79b955;
-  --ok: #7fcb4f;
-  --warn: #e3a93c;
-  --err: #ec5a3f;
-  --radius: 3px;
-  --ring: 0 0 0 1px var(--bg), 0 0 0 3px rgb(var(--accent-rgb) / 0.75);
-  --font-display: 'Ysabeau', 'Ysabeau Office', 'Segoe UI', system-ui, sans-serif;
+  --accent-2: #c9774a;
+  --accent-ink: #1d0d05;
+  --accent-soft: rgb(var(--accent-rgb) / 0.1);
+  --copper-from: #ac6146;
+  --copper-to: #e3ac76;
+  /* Красный: выбранный пункт меню, знак коуча, опасность */
+  --red-rgb: 217 68 77;
+  --red: rgb(var(--red-rgb));
+  --ok: #6cc28a;
+  --warn: #e3ac4c;
+  --err: #ef5b5e;
+  --radius: 12px;
+  --radius-sm: 9px;
+  --ring: 0 0 0 1px var(--bg), 0 0 0 3px rgb(var(--accent-rgb) / 0.7);
+  --font-display: 'Charis SIL', 'PT Serif', Georgia, serif;
   color-scheme: dark;
-  font-family: 'Ysabeau Office', 'Segoe UI', system-ui, sans-serif;
-  font-size: 15px;
-  line-height: 1.45;
-  /* у Ysabeau по умолчанию старостильные цифры — в Доте цифры ровные */
-  font-variant-numeric: lining-nums;
+  font-family: 'Segoe UI Variable Text', 'Segoe UI', system-ui, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
   color: var(--text);
   background: var(--bg);
 }
 
 * { box-sizing: border-box; }
 html, body, #root { margin: 0; height: 100%; }
-/* Фон меню Доты: синеватый сланец, светлее сверху справа, к краям — почти чёрный */
-body { background: radial-gradient(130% 95% at 72% -12%, #1e2a39 0%, #121a24 42%, #0a0e13 78%) fixed, var(--bg); }
-::selection { background: rgb(var(--accent-rgb) / 0.35); color: #fff; }
+/* Основа: почти чёрная, сверху справа — тлеющий красный отсвет (в концепте там арт героя) */
+body {
+  background:
+    radial-gradient(48% 42% at 78% -4%, rgba(150, 28, 24, 0.34), transparent 70%),
+    radial-gradient(30% 30% at 62% 8%, rgba(120, 40, 20, 0.16), transparent 70%),
+    var(--bg);
+  background-attachment: fixed;
+}
+::selection { background: rgb(var(--accent-rgb) / 0.32); color: #fff; }
 :focus-visible { outline: none; box-shadow: var(--ring); }
 ::-webkit-scrollbar { width: 9px; height: 9px; }
-::-webkit-scrollbar-thumb { background: #2a3441; border: 2px solid transparent; background-clip: padding-box; }
-::-webkit-scrollbar-thumb:hover { background: #3a4757; background-clip: padding-box; }
+::-webkit-scrollbar-thumb { background: #2c2324; border: 2px solid transparent; background-clip: padding-box; border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: #3d3132; background-clip: padding-box; }
 ::-webkit-scrollbar-track { background: transparent; }
 
-/* Кнопки — как в клиенте Доты: прямые углы, прописные с разрядкой, сланцевый градиент */
+/* Кнопки — медный контур со скруглением, как «Анализ последней игры» в концепте */
 button {
   font: inherit;
-  font-size: 12.5px;
-  font-weight: 700;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
-  color: #dfe4e9;
-  background: linear-gradient(180deg, #27313d, #1a212a);
-  border: 1px solid #3a4655;
-  border-radius: 2px;
-  padding: 8px 14px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #f1d9c8;
+  background: rgb(var(--accent-rgb) / 0.06);
+  border: 1px solid rgb(var(--accent-rgb) / 0.45);
+  border-radius: var(--radius-sm);
+  padding: 8px 16px;
   cursor: pointer;
   transition: background 0.15s, border-color 0.15s, color 0.15s, filter 0.15s, transform 0.1s;
 }
-button:hover:not(:disabled) { border-color: #556477; background: linear-gradient(180deg, #313d4b, #212a35); color: #fff; }
+button:hover:not(:disabled) { border-color: rgb(var(--accent-rgb) / 0.85); background: rgb(var(--accent-rgb) / 0.13); color: #fff; }
 button:active:not(:disabled) { transform: translateY(1px); }
 button:disabled { opacity: 0.4; cursor: not-allowed; }
+/* Главное действие — залитая медь */
 button.primary {
-  background: linear-gradient(180deg, var(--go-top), var(--go-bottom));
-  border-color: var(--go-edge);
-  color: #fff;
-  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.45);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  background: linear-gradient(180deg, #b8613d, #8a3f24);
+  border-color: #d8865c;
+  color: #fff6ef;
+  box-shadow: 0 6px 18px rgba(150, 60, 25, 0.28), inset 0 1px 0 rgba(255, 220, 190, 0.22);
 }
-button.primary:hover:not(:disabled) { background: linear-gradient(180deg, var(--go-top), var(--go-bottom)); border-color: #93d06c; filter: brightness(1.12); }
-button.primary:disabled { background: var(--panel-3); border-color: var(--line-strong); color: var(--muted); box-shadow: none; text-shadow: none; opacity: 1; }
-/* Кнопки-строки списков и ссылки — обычный текст: прописные только у настоящих кнопок действий */
-.kb-row, .history-list button, .draft-matches button, .update-banner, .update-notice, button.link {
-  font-size: inherit; font-weight: 600; letter-spacing: normal; text-transform: none;
-}
-/* Выбранный переключатель (вкладка, позиция) — золото Доты; зелёный остаётся только у главного действия */
-button.selected, button.selected:hover:not(:disabled) { background: linear-gradient(180deg, rgb(var(--accent-rgb) / 0.24), rgb(var(--accent-rgb) / 0.1)); border-color: var(--accent); color: #fff; }
+button.primary:hover:not(:disabled) { background: linear-gradient(180deg, #b8613d, #8a3f24); border-color: #f0a679; filter: brightness(1.1); }
+button.primary:disabled { background: var(--panel-3); border-color: var(--line-strong); color: var(--muted); box-shadow: none; opacity: 1; }
 
 input, select, textarea {
   font: inherit;
   color: var(--text);
-  background: rgba(5, 8, 11, 0.72);
-  border: 1px solid #2f3b49;
-  border-radius: 2px;
-  padding: 7px 10px;
+  background: rgba(8, 6, 7, 0.8);
+  border: 1px solid #2f2627;
+  border-radius: var(--radius-sm);
+  padding: 8px 11px;
   transition: border-color 0.15s, box-shadow 0.15s;
 }
-input:hover, select:hover, textarea:hover { border-color: #455366; }
-input:focus-visible, select:focus-visible, textarea:focus-visible { border-color: var(--accent); box-shadow: 0 0 0 3px rgb(var(--accent-rgb) / 0.16); }
-input::placeholder { color: #6b7785; }
+input:hover, select:hover, textarea:hover { border-color: #4a3b3a; }
+input:focus-visible, select:focus-visible, textarea:focus-visible { border-color: var(--accent); box-shadow: 0 0 0 3px rgb(var(--accent-rgb) / 0.15); }
+input::placeholder { color: #75696a; }
 select option { background: var(--panel-solid); }
 input[type='range'] { padding: 0; border: none; background: transparent; accent-color: var(--accent); }
 input[type='checkbox'], input[type='radio'] { accent-color: var(--accent); width: 16px; height: 16px; cursor: pointer; }
 input[type='file'] { padding: 5px; }
-input[type='file']::file-selector-button { font: inherit; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text); background: var(--panel-3); border: 1px solid var(--line-strong); border-radius: 2px; padding: 4px 10px; margin-right: 10px; cursor: pointer; }
+input[type='file']::file-selector-button { font: inherit; font-size: 13px; font-weight: 600; color: #f1d9c8; background: rgb(var(--accent-rgb) / 0.08); border: 1px solid rgb(var(--accent-rgb) / 0.45); border-radius: 7px; padding: 4px 12px; margin-right: 10px; cursor: pointer; }
 code { font-family: 'Cascadia Mono', Consolas, monospace; font-size: 12px; }
 
 .icon { flex: none; display: block; }
-button:has(> .icon):not(.nav-item) { display: inline-flex; align-items: center; justify-content: center; gap: 7px; }
+button:has(> .icon):not(.nav-item) { display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
 
-.shell { display: grid; grid-template-columns: 236px 1fr; height: 100%; }
+.shell { display: grid; grid-template-columns: 264px 1fr; height: 100%; }
 
-/* Боковая панель — как список друзей слева в меню Доты: почти чёрная, полупрозрачная */
+/* Боковая панель — почти чёрная, широкие пункты; выбранный — красный отсвет слева и красная полоса у края */
 .sidebar {
-  display: flex; flex-direction: column; gap: 14px; overflow: auto;
-  background: rgba(7, 10, 14, 0.78); border-right: 1px solid rgba(255, 255, 255, 0.06); padding: 16px 10px 14px;
+  display: flex; flex-direction: column; gap: 16px; overflow: auto;
+  background: rgba(6, 6, 9, 0.86); border-right: 1px solid rgba(255, 236, 225, 0.06); padding: 20px 0 14px;
 }
-.brand { display: flex; align-items: center; gap: 10px; padding: 2px 8px 6px; }
-.brand-mark { flex: none; display: block; }
-.brand-name { font-family: var(--font-display); font-weight: 800; font-size: 15px; letter-spacing: 0.06em; text-transform: uppercase; }
+.brand { display: flex; align-items: center; gap: 12px; padding: 2px 22px 10px; }
+.brand-mark { flex: none; display: block; color: var(--red); }
+.brand-name { font-weight: 600; font-size: 15px; letter-spacing: 0.16em; text-transform: uppercase; color: #f3f1f0; }
 .brand-sub { color: var(--muted); font-size: 12.5px; }
 nav { display: flex; flex-direction: column; gap: 14px; }
-.nav-group { display: flex; flex-direction: column; gap: 1px; }
-.nav-group-label { padding: 0 10px 5px; font-size: 11.5px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--faint); }
+.nav-group { display: flex; flex-direction: column; gap: 2px; }
+.nav-group-label { padding: 0 24px 4px; font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--faint); }
 .nav-item {
-  position: relative; display: flex; align-items: center; gap: 10px; text-align: left; padding: 7px 10px;
-  background: transparent; border: 1px solid transparent; color: #a9b4c0;
-  font-size: 15px; font-weight: 600; letter-spacing: 0.01em; text-transform: none; border-radius: 0;
+  position: relative; display: flex; align-items: center; gap: 14px; text-align: left; padding: 10px 24px;
+  background: transparent; border: none; border-radius: 0; color: #c9c0bc; font-size: 14.5px; font-weight: 500;
 }
-.nav-item:hover:not(:disabled) { background: rgba(255, 255, 255, 0.045); color: #fff; border-color: transparent; }
-/* Выбранный пункт — как выбранная строка в списках Доты: светлее слева, гаснет вправо, золотая кромка */
-.nav-item.active { background: linear-gradient(90deg, rgb(var(--accent-rgb) / 0.16), rgb(var(--accent-rgb) / 0.02) 85%); color: #fff; border-color: transparent; }
-.nav-item.active::before { content: ''; position: absolute; left: -10px; top: 0; bottom: 0; width: 2px; background: var(--accent); }
-.nav-icon { color: #6f7c8c; transition: color 0.15s; }
+.nav-item:hover:not(:disabled) { background: rgba(255, 236, 225, 0.035); color: #fff; }
+.nav-item.active { background: linear-gradient(90deg, rgb(var(--red-rgb) / 0.26), rgb(var(--red-rgb) / 0.07) 55%, transparent); color: #fff; }
+.nav-item.active::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--red); }
+.nav-icon { color: #8d8380; transition: color 0.15s; }
 .nav-item:hover .nav-icon { color: var(--text); }
-.nav-item.active .nav-icon { color: var(--accent); }
-.sidebar-foot { margin-top: auto; display: flex; flex-direction: column; align-items: flex-start; gap: 6px; padding: 10px 8px 0; border-top: 1px solid rgba(255, 255, 255, 0.06); }
+.nav-item.active .nav-icon { color: #f3c49c; }
+.sidebar-foot { margin-top: auto; display: flex; flex-direction: column; align-items: flex-start; gap: 8px; padding: 14px 22px 0; border-top: 1px solid rgba(255, 236, 225, 0.06); }
 
-.content { overflow: auto; padding: 30px 34px 44px; display: flex; flex-direction: column; gap: 16px; }
+.content { overflow: auto; padding: 34px 36px 48px; display: flex; flex-direction: column; gap: 18px; }
 .content > * { width: 100%; max-width: 1240px; }
-/* Заголовок страницы — как имя героя в Доте: широкий жирный шрифт прописными, белый с тенью */
-.page-head { margin-bottom: 4px; }
-.page-head h1 { margin: 0 0 6px; font-family: var(--font-display); font-size: 32px; font-weight: 800; line-height: 1.05; letter-spacing: 0.035em; text-transform: uppercase; color: #fff; text-shadow: 0 2px 10px rgba(0, 0, 0, 0.55); text-wrap: balance; }
-.page-head p { margin: 0; color: var(--muted); max-width: 72ch; }
+/* Заголовок страницы — кремовая антиква, как «Привет, Антон» */
+.page-head { margin-bottom: 6px; }
+.page-head h1 { margin: 0 0 6px; font-family: var(--font-display); font-size: 36px; font-weight: 400; line-height: 1.1; letter-spacing: 0; color: var(--cream); text-wrap: balance; }
+.page-head p { margin: 0; font-family: var(--font-display); font-size: 16px; color: #b7aca6; max-width: 72ch; }
 
-/* Панель — плоская, полупрозрачная, волосяная рамка и светлая кромка сверху, как панели меню Доты */
+/* Карточка — тёмная, тонкая тёплая рамка, скругление 12 */
 .card {
-  background: var(--panel);
+  background: linear-gradient(180deg, rgba(255, 236, 225, 0.025), transparent 120px), var(--panel);
   border: 1px solid var(--line);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.045);
-  border-radius: var(--radius); padding: 18px 20px; display: flex; flex-direction: column; gap: 12px;
+  border-radius: var(--radius); padding: 22px 24px; display: flex; flex-direction: column; gap: 14px;
 }
-.card-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 32px; }
-.card-head h3 { margin: 0; font-size: 13.5px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: #e9edf1; }
+.card-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 34px; }
+.card-head h3 { margin: 0; font-family: var(--font-display); font-size: 20px; font-weight: 400; letter-spacing: 0; color: var(--cream); }
 .card-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+/* Выбранный переключатель (вкладка, позиция) — медь; залитая медь остаётся только у главного действия */
+button.selected, button.selected:hover:not(:disabled) { background: rgb(var(--accent-rgb) / 0.2); border-color: var(--accent); color: #fff; }
+/* Кнопки-строки списков и ссылки — обычный текст, без контура кнопки */
+.kb-row, .history-list button, .draft-matches button { font-weight: 500; color: var(--text); }
 
 .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 16px; }
 .grid-preview { display: grid; grid-template-columns: minmax(0, 2fr) minmax(260px, 1fr); gap: 16px; }
@@ -165,17 +166,17 @@ nav { display: flex; flex-direction: column; gap: 14px; }
 .row.gap { gap: 8px; }
 .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; }
 .stats-col { grid-template-columns: 1fr 1fr; }
-.stat { background: var(--panel-2); border: 1px solid var(--line); border-radius: var(--radius); padding: 10px 12px; min-width: 0; }
+.stat { background: var(--panel-2); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; min-width: 0; }
 .stat-label { color: var(--muted); font-size: 12px; }
-.stat-value { font-size: 18px; font-weight: 600; margin-top: 2px; overflow-wrap: anywhere; font-variant-numeric: lining-nums tabular-nums; }
+.stat-value { font-size: 18px; font-weight: 600; margin-top: 2px; overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
 
 .preview {
-  background: #05070a; border: 1px solid var(--line); border-radius: var(--radius);
+  background: #05070a; border: 1px solid var(--line); border-radius: 10px;
   aspect-ratio: 16 / 9; display: grid; place-items: center; overflow: hidden;
 }
 .preview img, .preview canvas { width: 100%; height: 100%; object-fit: contain; }
 
-.pill { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 2px; font-size: 12px; font-weight: 600; border: 1px solid var(--line-strong); background: var(--panel-2); white-space: nowrap; }
+.pill { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; border: 1px solid var(--line-strong); background: var(--panel-2); white-space: nowrap; }
 .pill-running { color: var(--ok); border-color: rgba(76, 201, 107, 0.35); background: rgba(76, 201, 107, 0.08); }
 .pill-paused, .pill-starting { color: var(--warn); border-color: rgba(224, 168, 58, 0.35); background: rgba(224, 168, 58, 0.08); }
 .pill-error { color: var(--err); border-color: rgba(255, 97, 89, 0.35); background: rgba(255, 97, 89, 0.08); }
@@ -187,7 +188,7 @@ nav { display: flex; flex-direction: column; gap: 14px; }
 .sound-cues { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
 .sound-cue { display: grid; grid-template-columns: minmax(180px, auto) 1fr auto; align-items: center; gap: 12px; }
 
-.not-impl { border: 1px dashed rgba(224, 168, 58, 0.4); background: rgba(224, 168, 58, 0.05); border-radius: var(--radius); padding: 12px 14px; }
+.not-impl { border: 1px dashed rgba(224, 168, 58, 0.4); background: rgba(224, 168, 58, 0.05); border-radius: 10px; padding: 12px 14px; }
 .not-impl p { margin: 6px 0 0; color: #cdb88a; }
 .not-impl-badge { font-size: 11px; font-weight: 700; color: var(--warn); text-transform: uppercase; letter-spacing: 0.06em; }
 
@@ -204,7 +205,7 @@ nav { display: flex; flex-direction: column; gap: 14px; }
 .step-bad { border-color: rgba(255, 97, 89, 0.35); }
 .step-head { display: flex; align-items: center; gap: 10px; }
 .step-head h3 { margin: 0; font-size: 15px; font-weight: 600; }
-.step-icon { width: 30px; height: 30px; flex: none; display: grid; place-items: center; border-radius: var(--radius); background: var(--panel-2); border: 1px solid var(--line); color: var(--muted); }
+.step-icon { width: 30px; height: 30px; flex: none; display: grid; place-items: center; border-radius: 8px; background: var(--panel-2); border: 1px solid var(--line); color: var(--muted); }
 .step-ok .step-icon { color: var(--accent); background: var(--accent-soft); border-color: rgb(var(--accent-rgb) / 0.22); }
 .step-tone { margin-left: auto; display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: var(--muted); }
 .step-tone i { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
@@ -243,7 +244,7 @@ p.warn { margin: 0; }
 .table tr:last-child td { border-bottom: none; }
 .strong { font-weight: 700; font-size: 14px; color: var(--text); }
 .ok-text { color: var(--ok); }
-.conf { width: 110px; height: 8px; background: var(--panel-2); border-radius: var(--radius); overflow: hidden; border: 1px solid var(--line); }
+.conf { width: 110px; height: 8px; background: var(--panel-2); border-radius: 4px; overflow: hidden; border: 1px solid var(--line); }
 .conf-bar { height: 100%; }
 .conf-bar.hi { background: var(--ok); }
 .conf-bar.mid { background: var(--warn); }
@@ -257,7 +258,7 @@ p.warn { margin: 0; }
 .attr-str { color: #e5534b; } .attr-agi { color: #57ab5a; } .attr-int { color: #539bf5; } .attr-all { color: #c69026; }
 .kb-h { margin: 6px 0 0; font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
 .kb-abilities { display: flex; flex-direction: column; gap: 10px; }
-.kb-ability { background: var(--panel-2); border: 1px solid var(--line); border-radius: var(--radius); padding: 10px 12px; }
+.kb-ability { background: var(--panel-2); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
 .kb-desc { margin: 6px 0 0; color: #c3ccd7; white-space: pre-line; }
 .kb-talents { margin: 0; padding-left: 18px; color: #c3ccd7; columns: 2; }
 /* База знаний: механика карты */
@@ -276,8 +277,8 @@ p.warn { margin: 0; }
 .ask-form { display: flex; gap: 8px; }
 .ask-form input { flex: 1; min-width: 0; }
 .ask-turn { display: flex; flex-direction: column; gap: 6px; }
-.ask-q { align-self: flex-end; max-width: 85%; background: var(--panel-2); border: 1px solid var(--line); border-radius: var(--radius); padding: 6px 10px; }
-.ai-answer { background: var(--panel-2); border: 1px solid rgb(var(--accent-rgb) / 0.25); border-radius: var(--radius); padding: 8px 12px; white-space: pre-wrap; line-height: 1.45; }
+.ask-q { align-self: flex-end; max-width: 85%; background: var(--panel-2); border: 1px solid var(--line); border-radius: 10px; padding: 6px 10px; }
+.ai-answer { background: var(--panel-2); border: 1px solid rgb(var(--accent-rgb) / 0.25); border-radius: 10px; padding: 8px 12px; white-space: pre-wrap; line-height: 1.45; }
 .ai-answer.streaming { color: var(--muted); }
 .ai-answer.error { border-color: rgba(255, 97, 89, 0.4); color: var(--err); }
 .ai-answer[data-grounded='no'] { border-color: rgba(224, 168, 58, 0.4); }
@@ -294,7 +295,7 @@ progress { width: 100%; height: 8px; accent-color: var(--accent); }
 
 /* Драфт */
 .draft-teams { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
-.draft-side { background: var(--panel-2); border: 1px solid var(--line); border-radius: var(--radius); padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+.draft-side { background: var(--panel-2); border: 1px solid var(--line); border-radius: 10px; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
 .draft-side-head { font-weight: 600; }
 .draft-allies { border-color: #2a5a35; }
 .draft-enemies { border-color: #6a2a2a; }
@@ -303,19 +304,19 @@ progress { width: 100%; height: 8px; accent-color: var(--accent); }
 .draft-me { border-color: var(--accent); }
 .draft-picker { position: relative; }
 .draft-picker input { width: 100%; }
-.draft-matches { position: absolute; z-index: 5; left: 0; right: 0; top: 100%; margin-top: 4px; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); display: flex; flex-direction: column; }
+.draft-matches { position: absolute; z-index: 5; left: 0; right: 0; top: 100%; margin-top: 4px; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; display: flex; flex-direction: column; }
 .draft-matches button { border: none; border-radius: 0; text-align: left; background: transparent; }
 .draft-list { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 10px; }
 .draft-take { margin-left: auto; padding: 2px 10px; font-size: 12px; }
 
 /* «Прогресс» (0.20): звание, серия, достижения, тренды, доверие */
 .pg-top { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
-.pg-level { font-size: 28px; font-weight: 700; color: var(--accent); letter-spacing: 0.02em; }
-.pg-xpbar { height: 8px; margin: 10px 0 6px; border-radius: 2px; background: var(--line); overflow: hidden; }
-.pg-xpbar i { display: block; height: 100%; border-radius: 2px; background: var(--accent); transition: width 600ms ease-out; }
+.pg-level { font-family: var(--font-display); font-size: 30px; font-weight: 400; color: var(--cream); }
+.pg-xpbar { height: 8px; margin: 10px 0 6px; border-radius: 99px; background: #2d2322; overflow: hidden; }
+.pg-xpbar i { display: block; height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--copper-from), var(--copper-to)); transition: width 600ms ease-out; }
 .pg-streak { font-size: 28px; font-weight: 700; margin-bottom: 6px; }
 .pg-ach { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 8px; }
-.pg-ach li { display: flex; flex-direction: column; gap: 2px; padding: 8px 10px; border-radius: var(--radius); border: 1px solid var(--line); }
+.pg-ach li { display: flex; flex-direction: column; gap: 2px; padding: 8px 10px; border-radius: 8px; border: 1px solid var(--line); }
 .pg-ach-on { border-color: var(--accent) !important; background: var(--accent-soft); }
 .pg-ach-off { opacity: 0.6; }
 .pg-trends, .pg-trust, .pg-recent { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }

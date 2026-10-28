@@ -170,9 +170,9 @@ export function Icon({ name, size = 18, className }: { name: IconName; size?: nu
 export function BrandMark({ size = 34 }: { size?: number }) {
   return (
     <svg className="brand-mark" width={size} height={size} viewBox="0 0 24 24" aria-hidden>
-      <path d="M12 1.8 21 7v10l-9 5.2L3 17V7Z" fill="var(--accent-soft)" stroke="var(--accent)" strokeWidth="1.4" strokeLinejoin="round" />
-      <path d="M7.2 12c1.4-1.9 3-2.9 4.8-2.9s3.4 1 4.8 2.9c-1.4 1.9-3 2.9-4.8 2.9s-3.4-1-4.8-2.9Z" fill="none" stroke="var(--accent)" strokeWidth="1.4" />
-      <circle cx="12" cy="12" r="1.6" fill="var(--accent)" />
+      <path d="M12 1.8 21 7v10l-9 5.2L3 17V7Z" fill="rgb(var(--red-rgb, 217 68 77) / 0.82)" stroke="var(--red, #d9444d)" strokeWidth="1.2" strokeLinejoin="round" />
+      <path d="M7.2 12c1.4-1.9 3-2.9 4.8-2.9s3.4 1 4.8 2.9c-1.4 1.9-3 2.9-4.8 2.9s-3.4-1-4.8-2.9Z" fill="none" stroke="var(--cream, #efe2d2)" strokeWidth="1.4" />
+      <circle cx="12" cy="12" r="1.6" fill="var(--cream, #efe2d2)" />
     </svg>
   );
 }
