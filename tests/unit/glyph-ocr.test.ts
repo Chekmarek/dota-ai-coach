@@ -74,6 +74,8 @@ function same(model: GlyphModel, glyphs: Glyph[]): number {
 }
 
 const HUD_DIR = join(ROOT, 'tests/fixtures/hud');
+/** Проверка на кадрах HUD — только при полном наборе кадров владельца (у кого кадров мало, сравнивать не на чем) */
+const HUD_FRAMES = existsSync(HUD_DIR) ? readdirSync(HUD_DIR).filter((f) => f.endsWith('.png')).length : 0;
 
 describe('распознавание символов: ускоренный перебор = полный перебор', () => {
   it('образцы всех моделей, чистые и зашумлённые — тот же символ, score и margin до бита', () => {
@@ -82,7 +84,7 @@ describe('распознавание символов: ускоренный пе
     expect(checked).toBeGreaterThan(2000);
   });
 
-  it.skipIf(!existsSync(HUD_DIR))('символы кадров HUD (локально) — то же до бита', () => {
+  it.skipIf(HUD_FRAMES < 100)('символы кадров HUD (локально) — то же до бита', () => {
     const glyphs = hudGlyphs();
     expect(glyphs.length).toBeGreaterThan(500);
     let checked = 0;
