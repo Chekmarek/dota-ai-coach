@@ -26,6 +26,7 @@ import { LANING_RULES } from './rules/laning.ts';
 import { ECONOMY_RULES, GOLD_HIGH } from './rules/economy.ts';
 import { MACRO_RULES } from './rules/macro.ts';
 import { DRAFT_RULES } from './rules/draft.ts';
+import { pickoffRule } from './rules/pickoff.ts';
 import { ENEMY_ITEM_RULES } from './rules/enemy-items.ts';
 import { TIMING_RULES } from './rules/timings.ts';
 import {
@@ -46,7 +47,7 @@ import { PRIORITY_RANK, defaultCoachSettings, type CoachSettings, type Hint, typ
 import { asGameModeInfo, resolveGameMode } from '../gsi/mode.ts';
 import { buildGameContext, type GameContext } from './game-context.ts';
 
-export const ALL_RULES: Rule[] = [...DANGER_RULES, ...FIGHT_RULES, ...MACRO_RULES, ...TIMING_RULES, ...LANING_RULES, ...ECONOMY_RULES, ...DRAFT_RULES, ...ENEMY_ITEM_RULES];
+export const ALL_RULES: Rule[] = [...DANGER_RULES, ...FIGHT_RULES, ...MACRO_RULES, ...TIMING_RULES, ...LANING_RULES, ...ECONOMY_RULES, ...DRAFT_RULES, ...ENEMY_ITEM_RULES, pickoffRule];
 /**
  * Совет ИИ «что делать и куда идти» — только по событию (см. adviceTrigger), не по таймеру.
  * Не чаще раза в ADVICE_MIN_GAP_MS; та же обстановка (подпись) не спрашивается повторно ADVICE_SAME_MS;

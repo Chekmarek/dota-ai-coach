@@ -48,7 +48,7 @@ export function stanceOf(h: Pick<HintDraft, 'ruleId' | 'id' | 'short'>): 'go' | 
   if (r === 'fight.disengage' || r === 'danger.low-hp' || r === 'danger.deep' || r === 'danger.smoke' || r === 'danger.missing') return 'back';
   if (r === 'fight.engage') return /^Не вступать/.test(h.short) ? 'back' : /^Вступать/.test(h.short) ? 'go' : null;
   if (r === 'ai.advice') return /^Отходить/.test(h.short) ? 'back' : /^(Драться|Пушить)/.test(h.short) ? 'go' : null;
-  if (r === 'macro.push' || r === 'macro.help' || r === 'macro.group' || r === 'macro.outpost' || r === 'fight.ult-ready') return 'go';
+  if (r === 'macro.push' || r === 'macro.help' || r === 'macro.pickoff' || r === 'macro.group' || r === 'macro.outpost' || r === 'fight.ult-ready') return 'go';
   if (r === 'timing.rune-power' || r === 'timing.rune-bounty' || r === 'timing.rune-water' || r === 'timing.lotus' || r === 'timing.stack') return 'go';
   return null;
 }

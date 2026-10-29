@@ -279,6 +279,7 @@ const RULE_CUE: Record<string, SoundCueId> = {
   'economy.route': 'farm',
   'macro.push': 'team',
   'macro.help': 'team',
+  'macro.pickoff': 'team',
   'macro.group': 'team',
   'economy.buyback': 'buyback',
   'fight.no-buyback': 'buyback',

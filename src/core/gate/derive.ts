@@ -80,6 +80,7 @@ const SHORT_BY_TYPE: Record<string, string | ShortFn> = {
   'macro.push': 'Пушь башню',
   'macro.group': 'Иди к команде',
   'macro.help': (d) => (/телепорт/.test(d.short) ? 'Телепорт к бою' : 'Помоги команде'),
+  'macro.pickoff': (d) => `Охота на ${d.short.split(' один')[0]}`,
   'macro.outpost': 'Возьми аванпост',
   'macro.roshan-killed': 'Рошан убит',
   'macro.personal': 'Помни ошибку',
