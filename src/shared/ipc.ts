@@ -54,6 +54,11 @@ export const IPC = {
   coachMatchups: 'coach:matchups',
   draftSuggest: 'draft:suggest',
   draftLive: 'draft:live',
+  metaGet: 'meta:get',
+  metaHero: 'meta:hero',
+  metaRefresh: 'meta:refresh',
+  /** событие main → UI: мета патча обновилась (или началось/закончилось обновление) */
+  metaChanged: 'meta:changed',
   historyList: 'history:list',
   historyGet: 'history:get',
   /** событие main → UI: в «Истории советов» новая отметка «плохой совет» */
@@ -199,6 +204,13 @@ export interface DotaCoachApi {
   draftSuggest(req: import('./types/draft').DraftRequest): Promise<import('./types/draft').DraftResult>;
   /** Герои текущего матча (для кнопки «Взять из матча») */
   draftLive(): Promise<import('./types/draft').DraftLiveHeroes>;
+  /** Мета патча: сильные герои по позициям */
+  metaGet(bracket: import('./types/meta').MetaBracket): Promise<import('./types/meta').MetaState>;
+  /** Изменения героя в патчах и его сила */
+  metaHero(hero: string, bracket: import('./types/meta').MetaBracket): Promise<import('./types/meta').MetaHeroChanges | null>;
+  /** Обновить мету сейчас (вне матча) */
+  metaRefresh(): Promise<string>;
+  onMetaChanged(fn: () => void): () => void;
   listHistory(): Promise<import('./types/history').HistorySummary[]>;
   getHistory(id: string): Promise<import('./types/history').HistoryMatch | null>;
   /** Новая отметка «плохой совет» — обновить «Историю советов» */

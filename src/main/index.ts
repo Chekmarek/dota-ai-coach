@@ -1,4 +1,5 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, ipcMain } from 'electron';
+import { IPC } from '@shared/ipc';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { resolveDataDir } from './application/paths';
@@ -6,6 +7,8 @@ import { createUiWindow, harden, pageUrl, preloadDir } from './application/windo
 import { SettingsStore } from './settings/store';
 import { KbStore } from './knowledge/kb-store';
 import { StratzSync } from './knowledge/stratz-sync';
+import { MetaService } from './knowledge/meta-sync';
+import { z } from 'zod';
 import { registerIpc } from './ipc/register';
 import { EngineLink } from './lifecycle/engine-link';
 import { handleMediaProtocol, registerMediaScheme } from './media/media-protocol';
@@ -128,6 +131,36 @@ if (!app.requestSingleInstanceLock()) {
         log: (...a) => liveLog(...a),
       });
       setTimeout(() => void stratz.refreshIfStale().then((r) => liveLog('stratz', { result: r })), 120_000).unref();
+    }
+
+    // Мета патча на главной: OpenDota heroStats + описания патчей Valve; через 20 с после запуска и раз в 6 часов,
+    // только вне матча. Без сети — кэш. DOTACOACH_NO_UPDATE_CHECK (автотесты) — в сеть не ходим, только кэш
+    const meta = new MetaService({
+      cacheDir: kbCacheDir,
+      heroes: () => { const k = kb.get(); return 'error' in k ? [] : k.heroes; },
+      ranked: () => kb.statsRanked(),
+      inMatch: () => liveSeesDota() || Date.now() - gsiInMatchAt < 60_000,
+      log: (...a) => liveLog(...a),
+      onChange: () => { if (ui && !ui.isDestroyed()) ui.webContents.send(IPC.metaChanged); },
+    });
+    const bracketArg = z.enum(['all', 'mid', 'high']);
+    ipcMain.handle(IPC.metaGet, (e, arg: unknown) => {
+      if (!isTrustedSender(e)) throw new Error('Untrusted IPC sender');
+      return meta.state(bracketArg.parse(arg));
+    });
+    ipcMain.handle(IPC.metaHero, (e, arg: unknown) => {
+      if (!isTrustedSender(e)) throw new Error('Untrusted IPC sender');
+      const a = z.object({ hero: z.string().regex(/^[a-z0-9_]{2,40}$/), bracket: bracketArg }).parse(arg);
+      return meta.heroChanges(a.hero, a.bracket);
+    });
+    ipcMain.handle(IPC.metaRefresh, (e) => {
+      if (!isTrustedSender(e)) throw new Error('Untrusted IPC sender');
+      return process.env.DOTACOACH_NO_UPDATE_CHECK ? 'offline' : meta.refreshIfStale(true);
+    });
+    if (!process.env.DOTACOACH_NO_UPDATE_CHECK) {
+      const tick = () => void meta.refreshIfStale().then((r) => r !== 'fresh' && liveLog('meta', { result: r }));
+      setTimeout(tick, 20_000).unref();
+      setInterval(tick, 30 * 60_000).unref();
     }
 
     engine = new EngineLink(ui);

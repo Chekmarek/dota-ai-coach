@@ -13,6 +13,14 @@ const api: DotaCoachApi = {
   showMatchups: () => ipcRenderer.invoke(IPC.coachMatchups),
   draftSuggest: (req) => ipcRenderer.invoke(IPC.draftSuggest, req),
   draftLive: () => ipcRenderer.invoke(IPC.draftLive),
+  metaGet: (bracket) => ipcRenderer.invoke(IPC.metaGet, bracket),
+  metaHero: (hero, bracket) => ipcRenderer.invoke(IPC.metaHero, { hero, bracket }),
+  metaRefresh: () => ipcRenderer.invoke(IPC.metaRefresh),
+  onMetaChanged: (fn) => {
+    const listener = () => fn();
+    ipcRenderer.on(IPC.metaChanged, listener);
+    return () => ipcRenderer.removeListener(IPC.metaChanged, listener);
+  },
   listHistory: () => ipcRenderer.invoke(IPC.historyList),
   getHistory: (id) => ipcRenderer.invoke(IPC.historyGet, id),
   onHistoryChanged: (fn) => {

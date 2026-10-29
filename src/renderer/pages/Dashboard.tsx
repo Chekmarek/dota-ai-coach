@@ -12,6 +12,7 @@ import { GameModeBadge, gsiStatus, useTick } from '../components/gsi';
 import { HintsFeed } from '../components/hints';
 import { Icon, type IconName } from '../components/icons';
 import { UpdateBanner } from './Updates';
+import { MetaCard } from '../components/meta';
 
 const HUD_LABEL = { gameClock: 'Время', gold: 'Золото', health: 'Здоровье', mana: 'Мана', level: 'Уровень' } as const;
 
@@ -135,6 +136,8 @@ export function Dashboard({ onNavigate }: PageProps) {
           {exclusive ? 'Windows не даёт рисовать поверх такого окна: в Доте выберите «Полноэкранный в окне» (Настройки → Видео).' : null}
         </Step>
       </div>
+
+      <MetaCard />
 
       <div className="grid-2">
         <Card title="Подсказки сейчас">

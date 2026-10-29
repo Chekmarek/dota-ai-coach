@@ -70,6 +70,18 @@ test('приложение запускается, все 13 экранов от
   }
 });
 
+test('главная: «Мета патча» — вкладки позиций и честное «нет данных» без сети', async () => {
+  const { app, ui } = await launch(tmp());
+  try {
+    await expect(ui.locator('[data-testid="meta-positions"] button')).toHaveCount(6);
+    await expect(ui.locator('[data-testid="meta-note"]')).toContainText('Статистики ещё нет');
+    await ui.selectOption('[data-testid="meta-bracket"]', 'all');
+    await expect(ui.locator('[data-testid="meta-note"]')).toBeVisible();
+  } finally {
+    await app.close();
+  }
+});
+
 test('драфт: враг добавляется поиском, есть кандидаты и угрозы, «Беру» показывает матчапы', async () => {
   const { app, ui } = await launch(tmp());
   try {
@@ -127,11 +139,15 @@ test('безопасность: в интерфейсе нет доступа к
       'installUpdate',
       'listGsiSessions',
       'listHistory',
+      'metaGet',
+      'metaHero',
+      'metaRefresh',
       'onAiChunk',
       'onAiState',
       'onCoachState',
       'onGsiState',
       'onHistoryChanged',
+      'onMetaChanged',
       'onProgressAward',
       'onSettingsChanged',
       'onSoundPlay',

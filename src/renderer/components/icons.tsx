@@ -28,7 +28,10 @@ export type IconName =
   | 'alert'
   | 'bolt'
   | 'help'
-  | 'hourglass';
+  | 'hourglass'
+  | 'trend-up'
+  | 'trend-down'
+  | 'refresh';
 
 const PATHS: Record<IconName, ReactNode> = {
   dashboard: (
@@ -58,6 +61,9 @@ const PATHS: Record<IconName, ReactNode> = {
     </>
   ),
   match: <path d="M3 12h4l2.5-6.5 5 13L17 12h4" />,
+  'trend-up': <path d="M4 16.5 9.5 11l3.5 3.5L20 7.5M14.5 7.5H20V13" />,
+  'trend-down': <path d="M4 7.5 9.5 13l3.5-3.5 7 7M14.5 16.5H20V11" />,
+  refresh: <path d="M19.5 12a7.5 7.5 0 1 1-2.2-5.3M19.5 4v4.5H15" />,
   draft: (
     <>
       <path d="M14.5 17.5 3 6V3h3l11.5 11.5M13 19l6-6M16 16l4 4M19 21l2-2" />
